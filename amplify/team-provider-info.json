@@ -1,0 +1,25 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-ridertrackerfrontend-dev-170918-authRole",
+      "UnauthRoleArn": "arn:aws:iam::459525634969:role/amplify-ridertrackerfrontend-dev-170918-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::459525634969:role/amplify-ridertrackerfrontend-dev-170918-authRole",
+      "Region": "us-west-2",
+      "DeploymentBucketName": "amplify-ridertrackerfrontend-dev-170918-deployment",
+      "UnauthRoleName": "amplify-ridertrackerfrontend-dev-170918-unauthRole",
+      "StackName": "amplify-ridertrackerfrontend-dev-170918",
+      "StackId": "arn:aws:cloudformation:us-west-2:459525634969:stack/amplify-ridertrackerfrontend-dev-170918/70987cf0-e329-11ee-80c9-02347753f1a5",
+      "AmplifyAppId": "d2rer3qe5id7ua"
+    },
+    "categories": {
+      "auth": {
+        "ridertrackerfrontend7a015b2e": {
+          "userPoolId": "us-west-2_oReiYsdqI",
+          "userPoolName": "RiderTrackerPool",
+          "webClientId": "7nhgujeqd20mqpu59m58fis9uo",
+          "nativeClientId": "7nhgujeqd20mqpu59m58fis9uo"
+        }
+      }
+    }
+  }
+}
