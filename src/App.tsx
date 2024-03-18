@@ -8,7 +8,7 @@ import {
 } from "react-router-dom"
 import Riders from './routes/Riders'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { getBuses, getDrivers, getRiders } from './API'
+import { getBuses, getDrivers, getOrganizations, getRiders, getScans } from './API'
 import Root from './routes/Root'
 import Drivers from './routes/Drivers'
 import Buses from './routes/Buses'
@@ -17,11 +17,14 @@ import Unauthorized from './routes/Protected/Unauthorized'
 import { getHeaviestRole } from './helpers/GetHeaviestRole'
 import './index.css'
 import { Box } from '@mui/material'
+import { RoleContext } from './contexts/RoleContext'
+import Scans from './routes/Scans'
+import Organizations from './routes/Organizations'
 
 type AppProps = {
   signOut?: UseAuthenticator["signOut"]
   user?: AuthUser
-};
+}
 
 function App({ user }: AppProps) {
   const [groups, setGroups] = useState<string[]>()
@@ -61,23 +64,37 @@ function App({ user }: AppProps) {
       children: [
         {
           path: '/buses',
-          element: <ProtectedRoute role={heaviestRole} route='/buses'><Buses /></ProtectedRoute>,
+          element: <ProtectedRoute route='/buses'><Buses /></ProtectedRoute>,
           loader: () => {
             return getBuses(token ?? '')
           }
         },
         {
           path: '/drivers',
-          element: <ProtectedRoute role={heaviestRole} route='/drivers'><Drivers /></ProtectedRoute>,
+          element: <ProtectedRoute route='/drivers'><Drivers /></ProtectedRoute>,
           loader: () => {
             return getDrivers(token ?? '')
           }
         },
         {
+          path: '/organizations',
+          element: <ProtectedRoute route='/organizations'><Organizations /></ProtectedRoute>,
+          loader: () => {
+            return getOrganizations(token ?? '')
+          }
+        },
+        {
           path: '/riders',
-          element: <ProtectedRoute role={heaviestRole} route='/riders'><Riders /></ProtectedRoute>,
+          element: <ProtectedRoute route='/riders'><Riders /></ProtectedRoute>,
           loader: () => {
             return getRiders(token ?? '')
+          }
+        },
+        {
+          path: '/scans',
+          element: <ProtectedRoute route='/scans'><Scans /></ProtectedRoute>,
+          loader: () => {
+            return getScans(token ?? '')
           }
         },
         {
@@ -90,7 +107,9 @@ function App({ user }: AppProps) {
 
   return (
     <Box height='100%'>
-      {router ? <RouterProvider router={router} /> : null}
+      <RoleContext.Provider value={{heaviestRole, setHeaviestRole}}>
+        {router ? <RouterProvider router={router} /> : null}
+      </RoleContext.Provider>
     </Box>
   )
 }

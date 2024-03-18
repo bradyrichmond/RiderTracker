@@ -1,16 +1,18 @@
-import { PropsWithChildren } from "react"
+import { PropsWithChildren, useContext } from "react"
 import { Navigate } from "react-router-dom"
 import { ROUTE_PROTECTION } from "../../constants/RouteProtection"
+import { RoleContext } from "../../contexts/RoleContext"
 
 interface ProtectedRouteProps {
-    role: string
     route: string
 }
 
-const ProtectedRoute = ({ role, route, children }: PropsWithChildren<ProtectedRouteProps>) => {
-    const routePermissions = ROUTE_PROTECTION.find((rp) => rp.name === role);
+const ProtectedRoute = ({ route, children }: PropsWithChildren<ProtectedRouteProps>) => {
+    const roleContext = useContext(RoleContext)
+    const role = roleContext.heaviestRole
+    const routePermissions = ROUTE_PROTECTION.find((rp) => rp.name === role)
 
-    if (routePermissions && (routePermissions.routes.includes(route) || routePermissions?.routes.includes("*"))) {
+    if (routePermissions && !routePermissions.routes.includes(route)) {
         return <Navigate to="/unauthorized" replace />
     }
 

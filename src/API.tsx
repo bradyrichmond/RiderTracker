@@ -40,6 +40,26 @@ export const getDrivers = async (token: string) => {
     }
 }
 
+export const getOrganizations = async (token: string) => {
+    if (!token) {
+        console.error('Missing token')
+        return []
+    }
+
+    try {
+        const organizations = await fetch(`${BASE_NAME}/organizations`, {
+            headers: {
+                'Authorization': token
+            }
+        })
+
+        return organizations
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return []
+    }
+}
+
 export const getRiders = async (token: string) => {
     if (!token) {
         console.error('Missing token')
@@ -54,6 +74,26 @@ export const getRiders = async (token: string) => {
         })
 
         return riders
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return []
+    }
+}
+
+export const getScans = async (token: string) => {
+    if (!token) {
+        console.error('Missing token')
+        return []
+    }
+
+    try {
+        const scans = await fetch(`${BASE_NAME}/scans`, {
+            headers: {
+                'Authorization': token
+            }
+        })
+
+        return scans
     } catch (e) {
         console.error(JSON.stringify(e))
         return []
