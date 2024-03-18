@@ -1,9 +1,11 @@
+import { BusType } from "./types/BusType"
+
 const BASE_NAME = 'https://gkupwyoi70.execute-api.us-west-2.amazonaws.com/dev'
 
 export const getBuses = async (token: string) => {
     if (!token) {
         console.error('Missing token')
-        return []
+        return new Response()
     }
 
     try {
@@ -16,14 +18,37 @@ export const getBuses = async (token: string) => {
         return buses
     } catch (e) {
         console.error(JSON.stringify(e))
-        return []
+        return new Response()
+    }
+}
+
+export const createBus = async (token: string, body: BusType) => {
+    if (!token) {
+        console.error('Missing token')
+        return new Response()
+    }
+
+    try {
+        const buses = await fetch(`${BASE_NAME}/buses`, {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token
+            }
+        })
+
+        return buses
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return new Response()
     }
 }
 
 export const getDrivers = async (token: string) => {
     if (!token) {
         console.error('Missing token')
-        return []
+        return new Response()
     }
 
     try {
@@ -36,14 +61,14 @@ export const getDrivers = async (token: string) => {
         return drivers
     } catch (e) {
         console.error(JSON.stringify(e))
-        return []
+        return new Response()
     }
 }
 
 export const getOrganizations = async (token: string) => {
     if (!token) {
         console.error('Missing token')
-        return []
+        return new Response()
     }
 
     try {
@@ -56,14 +81,14 @@ export const getOrganizations = async (token: string) => {
         return organizations
     } catch (e) {
         console.error(JSON.stringify(e))
-        return []
+        return new Response()
     }
 }
 
 export const getRiders = async (token: string) => {
     if (!token) {
         console.error('Missing token')
-        return []
+        return new Response()
     }
 
     try {
@@ -76,14 +101,14 @@ export const getRiders = async (token: string) => {
         return riders
     } catch (e) {
         console.error(JSON.stringify(e))
-        return []
+        return new Response()
     }
 }
 
 export const getScans = async (token: string) => {
     if (!token) {
         console.error('Missing token')
-        return []
+        return new Response()
     }
 
     try {
@@ -96,6 +121,6 @@ export const getScans = async (token: string) => {
         return scans
     } catch (e) {
         console.error(JSON.stringify(e))
-        return []
+        return new Response()
     }
 }

@@ -64,10 +64,7 @@ function App({ user }: AppProps) {
       children: [
         {
           path: '/buses',
-          element: <ProtectedRoute route='/buses'><Buses /></ProtectedRoute>,
-          loader: () => {
-            return getBuses(token ?? '')
-          }
+          element: <ProtectedRoute route='/buses'><Buses /></ProtectedRoute>
         },
         {
           path: '/drivers',
@@ -107,7 +104,7 @@ function App({ user }: AppProps) {
 
   return (
     <Box height='100%'>
-      <RoleContext.Provider value={{heaviestRole, setHeaviestRole}}>
+      <RoleContext.Provider value={{heaviestRole, setHeaviestRole, token: token?.toString() ?? '', setToken}}>
         {router ? <RouterProvider router={router} /> : null}
       </RoleContext.Provider>
     </Box>
