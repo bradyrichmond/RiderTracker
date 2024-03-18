@@ -16,4 +16,10 @@
 html, body, #root {
   padding: 0;
   margin: 0;
+  height: 100%
+}
+
+:any-link {
+  text-decoration: none;
+  color: #000000;
 }

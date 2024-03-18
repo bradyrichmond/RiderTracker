@@ -1,9 +1,17 @@
 import { Box } from "@mui/material"
 import { Outlet } from "react-router-dom"
+import BottomNav from "../../components/Navigation"
 
 const Root = () => {
     return (
-        <Box><Outlet /></Box>
+        <Box display='flex' flexDirection='column' height='100%'>
+            <Box flex='1' display='flex' padding='2rem'>
+                <Outlet />
+            </Box>
+            <Box>
+                <BottomNav />
+            </Box>
+        </Box>
     )
 }
 

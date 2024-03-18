@@ -1,4 +1,3 @@
-import './App.css'
 import { withAuthenticator } from '@aws-amplify/ui-react'
 import { fetchAuthSession, type AuthUser } from "aws-amplify/auth"
 import { type UseAuthenticator } from "@aws-amplify/ui-react-core"
@@ -16,6 +15,8 @@ import Buses from './routes/Buses'
 import ProtectedRoute from './routes/Protected/ProtectedRoute'
 import Unauthorized from './routes/Protected/Unauthorized'
 import { getHeaviestRole } from './helpers/GetHeaviestRole'
+import './index.css'
+import { Box } from '@mui/material'
 
 type AppProps = {
   signOut?: UseAuthenticator["signOut"]
@@ -88,9 +89,9 @@ function App({ user }: AppProps) {
   }, [groups, heaviestRole])
 
   return (
-    <div>
+    <Box height='100%'>
       {router ? <RouterProvider router={router} /> : null}
-    </div>
+    </Box>
   )
 }
 
