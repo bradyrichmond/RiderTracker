@@ -1,47 +1,95 @@
 import './App.css'
-import { withAuthenticator, Button, Heading } from '@aws-amplify/ui-react'
+import { withAuthenticator } from '@aws-amplify/ui-react'
 import { fetchAuthSession, type AuthUser } from "aws-amplify/auth"
 import { type UseAuthenticator } from "@aws-amplify/ui-react-core"
 import '@aws-amplify/ui-react/styles.css'
-import { DriverType } from './types/DriverType'
-import { useEffect, useState } from 'react'
+import {
+  createBrowserRouter,
+  RouterProvider,
+} from "react-router-dom"
+import Riders from './routes/Riders'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { getBuses, getDrivers, getRiders } from './API'
+import Root from './routes/Root'
+import Drivers from './routes/Drivers'
+import Buses from './routes/Buses'
+import ProtectedRoute from './routes/Protected/ProtectedRoute'
+import Unauthorized from './routes/Protected/Unauthorized'
+import { getHeaviestRole } from './helpers/GetHeaviestRole'
 
 type AppProps = {
   signOut?: UseAuthenticator["signOut"]
   user?: AuthUser
 };
 
-function App({ signOut, user }: AppProps) {
-  const [drivers, setDrivers] = useState<DriverType[]>([])
+function App({ user }: AppProps) {
+  const [groups, setGroups] = useState<string[]>()
+  const [token, setToken] = useState<string>()
+  const [heaviestRole, setHeaviestRole] = useState<string>('RiderTracker_Guardian')
 
-  useEffect(() => {
-    fetchDrivers()
+  const updateGroups = useCallback(async () => {
+    const session = await fetchAuthSession()
+    const idToken = session.tokens?.idToken
+    const sessionGroups = idToken?.payload["cognito:roles"]
+    const sessionGroupsArray = sessionGroups as Array<string>
+    const trimmedGroups:string[] = []
+
+    sessionGroupsArray.forEach((sg) => {
+      trimmedGroups.push(sg.split('/')[1]);
+    })
+
+    setGroups(trimmedGroups)
+    setToken(idToken?.toString() ?? '')
   }, [user])
 
-  const fetchDrivers = async () => {
-    const { tokens } = await fetchAuthSession()
-    const idToken = tokens?.idToken
+  useEffect(() => {
+    updateGroups()
+  }, [updateGroups])
 
-    if (idToken) {
-      const response = await fetch('https://gkupwyoi70.execute-api.us-west-2.amazonaws.com/dev/drivers', {
-        method: "GET",
-        headers: {
-          "Authorization": idToken.toString()
-        }
-      })
-      const fetchedDrivers = await response.json()
-      setDrivers(fetchedDrivers);
+  useEffect(() => {
+    if (groups) {
+      const heaviestRoleFromGroups = getHeaviestRole(groups ?? [])
+      setHeaviestRole(heaviestRoleFromGroups ?? '')
     }
-  }
+  }, [groups])
+
+  const router = useMemo(() => {
+    return createBrowserRouter([{
+      path: '/',
+      element: <Root />,
+      children: [
+        {
+          path: '/buses',
+          element: <ProtectedRoute role={heaviestRole} route='/buses'><Buses /></ProtectedRoute>,
+          loader: () => {
+            return getBuses(token ?? '')
+          }
+        },
+        {
+          path: '/drivers',
+          element: <ProtectedRoute role={heaviestRole} route='/drivers'><Drivers /></ProtectedRoute>,
+          loader: () => {
+            return getDrivers(token ?? '')
+          }
+        },
+        {
+          path: '/riders',
+          element: <ProtectedRoute role={heaviestRole} route='/riders'><Riders /></ProtectedRoute>,
+          loader: () => {
+            return getRiders(token ?? '')
+          }
+        },
+        {
+          path: '/unauthorized',
+          element: <Unauthorized />
+        }
+      ]
+    }])
+  }, [groups, heaviestRole])
 
   return (
     <div>
-      <Heading level={1}>Hello {user?.username}</Heading>
-      <Button onClick={signOut}>Sign out</Button>
-      <h2>Drivers</h2>
-      <div>
-        {JSON.stringify(drivers)}
-      </div>
+      {router ? <RouterProvider router={router} /> : null}
     </div>
   )
 }
