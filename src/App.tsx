@@ -8,7 +8,6 @@ import {
 } from "react-router-dom"
 import Riders from './routes/Riders'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { getBuses, getDrivers, getOrganizations, getRiders, getScans } from './API'
 import Root from './routes/Root'
 import Drivers from './routes/Drivers'
 import Buses from './routes/Buses'

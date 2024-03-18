@@ -25,8 +25,7 @@ const AddRiderModal = ({ organizationId, cancelAction, submitAction }: AddRiderM
     const roleContext = useContext(RoleContext)
     const {
         register,
-        handleSubmit,
-        formState: { errors },
+        handleSubmit
       } = useForm<AddRiderInputs>()
 
     useEffect(() => {

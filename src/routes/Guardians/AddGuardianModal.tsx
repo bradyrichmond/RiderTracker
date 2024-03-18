@@ -25,8 +25,7 @@ const AddGuardianModal = ({ organizationId, cancelAction, submitAction }: AddGua
     const roleContext = useContext(RoleContext)
     const {
         register,
-        handleSubmit,
-        formState: { errors },
+        handleSubmit
       } = useForm<AddGuardianInput>()
 
     useEffect(() => {

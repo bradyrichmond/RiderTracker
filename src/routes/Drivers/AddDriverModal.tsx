@@ -25,8 +25,7 @@ const AddDriverModal = ({ organizationId, cancelAction, submitAction }: AddDrive
     const roleContext = useContext(RoleContext)
     const {
         register,
-        handleSubmit,
-        formState: { errors },
+        handleSubmit
       } = useForm<AddDriverInputs>()
 
     useEffect(() => {
