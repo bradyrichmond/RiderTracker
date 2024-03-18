@@ -5,6 +5,7 @@ import { RoleContext } from "../../contexts/RoleContext"
 import { OrganizationType } from "../../types/OrganizationType"
 import { createOrganization, getOrganizations } from "../../API"
 import {v4 as uuidv4} from 'uuid'
+import { Link } from "react-router-dom"
 
 const Organizations = () => {
     const [organizations, setOrganizations] = useState<OrganizationType[]>([])
@@ -38,7 +39,7 @@ const Organizations = () => {
                     return (
                     <Box key={organization.id} display='flex' flexDirection='row' borderBottom='1px solid #000'>
                         <Box padding='2rem'>
-                            <Typography>{organization.id}</Typography>
+                            <Link to={`/organizations/${organization.id}`}><Typography>{organization.id}</Typography></Link>
                         </Box>
                     </Box>)
                 })}

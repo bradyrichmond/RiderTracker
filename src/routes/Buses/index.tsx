@@ -5,6 +5,7 @@ import { useContext, useEffect, useState } from "react"
 import AddBusModal from "./AddBusModal"
 import { createBus, getBuses } from "../../API"
 import { RoleContext } from "../../contexts/RoleContext"
+import { Link } from "react-router-dom"
 
 const Buses = () => {
     const [isAddingBus, setIsAddingBus] = useState(false)
@@ -52,7 +53,7 @@ const Buses = () => {
                     return (
                         <Box key={bus.id} display='flex' flexDirection='row' borderBottom='1px solid #000'>
                             <Box padding='2rem'>
-                                <Typography>{bus.id}</Typography>
+                                <Link to={`/buses/${bus.id}`}><Typography>{bus.id}</Typography></Link>
                             </Box>
                             <Box padding='2rem'>
                                 <Typography>{bus.busNumber}</Typography>

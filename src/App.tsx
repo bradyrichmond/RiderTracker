@@ -21,6 +21,11 @@ import { RoleContext } from './contexts/RoleContext'
 import Scans from './routes/Scans'
 import Organizations from './routes/Organizations'
 import Guardians from './routes/Guardians'
+import Bus from './routes/Buses/Bus'
+import Driver from './routes/Drivers/Driver'
+import Guardian from './routes/Guardians/Guardian'
+import Organization from './routes/Organizations/Organization'
+import Rider from './routes/Riders/Rider'
 
 type AppProps = {
   signOut?: UseAuthenticator["signOut"]
@@ -68,12 +73,24 @@ function App({ user }: AppProps) {
           element: <ProtectedRoute route='/buses'><Buses /></ProtectedRoute>
         },
         {
+          path: '/buses/:id',
+          element: <ProtectedRoute route='/buses/:id'><Bus /></ProtectedRoute>
+        },
+        {
           path: '/drivers',
           element: <ProtectedRoute route='/drivers'><Drivers /></ProtectedRoute>
         },
         {
+          path: '/drivers/:id',
+          element: <ProtectedRoute route='/drivers/:id'><Driver /></ProtectedRoute>
+        },
+        {
           path: '/guardians',
           element: <ProtectedRoute route='/guardians'><Guardians /></ProtectedRoute>
+        },
+        {
+          path: '/guardians/:id',
+          element: <ProtectedRoute route='/guardians/:id'><Guardian /></ProtectedRoute>
         },
         {
           path: '/organizations',
@@ -81,8 +98,18 @@ function App({ user }: AppProps) {
           
         },
         {
+          path: '/organizations/:id',
+          element: <ProtectedRoute route='/organizations/:id'><Organization /></ProtectedRoute>
+          
+        },
+        {
           path: '/riders',
           element: <ProtectedRoute route='/riders'><Riders /></ProtectedRoute>
+          
+        },
+        {
+          path: '/riders/:id',
+          element: <ProtectedRoute route='/riders/:id'><Rider /></ProtectedRoute>
           
         },
         {

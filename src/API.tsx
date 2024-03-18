@@ -27,6 +27,26 @@ export const getBuses = async (token: string) => {
     }
 }
 
+export const getBusById = async (token: string, busId: string) => {
+    if (!token) {
+        console.error('Missing token')
+        return new Response()
+    }
+
+    try {
+        const bus = await fetch(`${BASE_NAME}/buses/${busId}`, {
+            headers: {
+                'Authorization': token
+            }
+        })
+
+        return bus
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return new Response()
+    }
+}
+
 export const createBus = async (token: string, body: BusType) => {
     if (!token) {
         console.error('Missing token')
@@ -64,6 +84,26 @@ export const getDrivers = async (token: string) => {
         })
 
         return drivers
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return new Response()
+    }
+}
+
+export const getDriverById = async (token: string, id: string) => {
+    if (!token) {
+        console.error('Missing token')
+        return new Response()
+    }
+
+    try {
+        const driver = await fetch(`${BASE_NAME}/drivers/${id}`, {
+            headers: {
+                'Authorization': token
+            }
+        })
+
+        return driver
     } catch (e) {
         console.error(JSON.stringify(e))
         return new Response()
@@ -113,6 +153,26 @@ export const getGuardians = async (token: string) => {
     }
 }
 
+export const getGuardianById = async (token: string, id: string) => {
+    if (!token) {
+        console.error('Missing token')
+        return new Response()
+    }
+
+    try {
+        const guardian = await fetch(`${BASE_NAME}/guardians/${id}`, {
+            headers: {
+                'Authorization': token
+            }
+        })
+
+        return guardian
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return new Response()
+    }   
+}
+
 export const createGuardian = async (token: string, body: GuardianType) => {
     if (!token) {
         console.error('Missing token')
@@ -156,6 +216,26 @@ export const getOrganizations = async (token: string) => {
     }
 }
 
+export const getOrganizationById = async (token: string, id: string) => {
+    if (!token) {
+        console.error('Missing token')
+        return new Response()
+    }
+
+    try {
+        const organization = await fetch(`${BASE_NAME}/organizations/${id}`, {
+            headers: {
+                'Authorization': token
+            }
+        })
+
+        return organization
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return new Response()
+    }
+}
+
 export const createOrganization = async (token: string, body: OrganizationType) => {
     if (!token) {
         console.error('Missing token')
@@ -193,6 +273,26 @@ export const getRiders = async (token: string) => {
         })
 
         return riders
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return new Response()
+    }
+}
+
+export const getRiderById = async (token: string, id: string) => {
+    if (!token) {
+        console.error('Missing token')
+        return new Response()
+    }
+
+    try {
+        const rider = await fetch(`${BASE_NAME}/riders/${id}`, {
+            headers: {
+                'Authorization': token
+            }
+        })
+
+        return rider
     } catch (e) {
         console.error(JSON.stringify(e))
         return new Response()

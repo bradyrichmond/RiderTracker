@@ -5,6 +5,7 @@ import { RoleContext } from "../../contexts/RoleContext"
 import { GuardianType } from "../../types/GuardianType"
 import { createGuardian, getGuardians } from "../../API"
 import AddGuardianModal from "./AddGuardianModal"
+import { Link } from "react-router-dom"
 
 const Guardians = () => {
     const [isAddingGuardian, setIsAddingGuardian] = useState(false)
@@ -52,7 +53,7 @@ const Guardians = () => {
                     return (
                     <Box key={guardian.id} display='flex' flexDirection='row' borderBottom='1px solid #000'>
                         <Box padding='2rem'>
-                            <Typography>{guardian.id}</Typography>
+                            <Link to={`/guardians/${guardian.id}`}><Typography>{guardian.id}</Typography></Link>
                         </Box>
                         <Box padding='2rem'>
                             <Typography>{guardian.firstName}</Typography>

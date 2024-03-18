@@ -5,6 +5,7 @@ import AddDriverModal from "./AddDriverModal"
 import { createDriver, getDrivers } from "../../API"
 import { RoleContext } from "../../contexts/RoleContext"
 import { DriverType } from "../../types/DriverType"
+import { Link } from "react-router-dom"
 
 const Drivers = () => {
     const [isAddingDriver, setIsAddingDriver] = useState(false)
@@ -52,13 +53,16 @@ const Drivers = () => {
                     return (
                     <Box key={driver.id} display='flex' flexDirection='row' borderBottom='1px solid #000'>
                         <Box padding='2rem'>
-                            <Typography>{driver.id}</Typography>
+                            <Link to={`/drivers/${driver.id}`}><Typography>{driver.id}</Typography></Link>
                         </Box>
                         <Box padding='2rem'>
                             <Typography>{driver.firstName}</Typography>
                         </Box>
                         <Box padding='2rem'>
                             <Typography>{driver.lastName}</Typography>
+                        </Box>
+                        <Box padding='2rem'>
+                            <Typography>{driver.organizationId}</Typography>
                         </Box>
                     </Box>)
                 })}

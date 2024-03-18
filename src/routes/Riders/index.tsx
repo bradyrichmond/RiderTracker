@@ -5,6 +5,7 @@ import { RoleContext } from "../../contexts/RoleContext"
 import { RiderType } from "../../types/RiderType"
 import { createRider, getRiders } from "../../API"
 import AddRiderModal from "./AddRiderModal"
+import { Link } from "react-router-dom"
 
 const Riders = () => {
     const [isAddingRider, setIsAddingRider] = useState(false)
@@ -52,7 +53,7 @@ const Riders = () => {
                     return (
                     <Box key={rider.id} display='flex' flexDirection='row' borderBottom='1px solid #000'>
                         <Box padding='2rem'>
-                            <Typography>{rider.id}</Typography>
+                            <Link to={`/riders/${rider.id}`}><Typography>{rider.id}</Typography></Link>
                         </Box>
                         <Box padding='2rem'>
                             <Typography>{rider.firstName}</Typography>
