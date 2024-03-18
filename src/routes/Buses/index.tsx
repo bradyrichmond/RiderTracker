@@ -50,14 +50,18 @@ const Buses = () => {
             <Box flex='1' borderTop='1px solid #000'>
                 {buses && buses.map((bus) => {
                     return (
-                    <Box key={bus.id} display='flex' flexDirection='row' borderBottom='1px solid #000'>
-                        <Box padding='2rem'>
-                            <Typography>{bus.id}</Typography>
+                        <Box key={bus.id} display='flex' flexDirection='row' borderBottom='1px solid #000'>
+                            <Box padding='2rem'>
+                                <Typography>{bus.id}</Typography>
+                            </Box>
+                            <Box padding='2rem'>
+                                <Typography>{bus.busNumber}</Typography>
+                            </Box>
+                            <Box padding='2rem'>
+                                <Typography>{bus.organizationId}</Typography>
+                            </Box>
                         </Box>
-                        <Box padding='2rem'>
-                            <Typography>{bus.busNumber}</Typography>
-                        </Box>
-                    </Box>)
+                    )
                 })}
             </Box>
             <Box padding='2rem'>

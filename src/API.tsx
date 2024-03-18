@@ -1,4 +1,9 @@
 import { BusType } from "./types/BusType"
+import { DriverType } from "./types/DriverType"
+import { GuardianType } from "./types/GuardianType"
+import { OrganizationType } from "./types/OrganizationType"
+import { RiderType } from "./types/RiderType"
+import { ScanType } from "./types/ScanType"
 
 const BASE_NAME = 'https://gkupwyoi70.execute-api.us-west-2.amazonaws.com/dev'
 
@@ -65,6 +70,72 @@ export const getDrivers = async (token: string) => {
     }
 }
 
+export const createDriver = async (token: string, body: DriverType) => {
+    if (!token) {
+        console.error('Missing token')
+        return new Response()
+    }
+
+    try {
+        const drivers = await fetch(`${BASE_NAME}/drivers`, {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token
+            }
+        })
+
+        return drivers
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return new Response()
+    }
+}
+
+export const getGuardians = async (token: string) => {
+    if (!token) {
+        console.error('Missing token')
+        return new Response()
+    }
+
+    try {
+        const guardians = await fetch(`${BASE_NAME}/guardians`, {
+            headers: {
+                'Authorization': token
+            }
+        })
+
+        return guardians
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return new Response()
+    }
+}
+
+export const createGuardian = async (token: string, body: GuardianType) => {
+    if (!token) {
+        console.error('Missing token')
+        return new Response()
+    }
+
+    try {
+        const guardians = await fetch(`${BASE_NAME}/guardians`, {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token
+            }
+        })
+
+        return guardians
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return new Response()
+    }
+}
+
 export const getOrganizations = async (token: string) => {
     if (!token) {
         console.error('Missing token')
@@ -74,6 +145,29 @@ export const getOrganizations = async (token: string) => {
     try {
         const organizations = await fetch(`${BASE_NAME}/organizations`, {
             headers: {
+                'Authorization': token
+            }
+        })
+
+        return organizations
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return new Response()
+    }
+}
+
+export const createOrganization = async (token: string, body: OrganizationType) => {
+    if (!token) {
+        console.error('Missing token')
+        return new Response()
+    }
+
+    try {
+        const organizations = await fetch(`${BASE_NAME}/organizations`, {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json',
                 'Authorization': token
             }
         })
@@ -105,6 +199,29 @@ export const getRiders = async (token: string) => {
     }
 }
 
+export const createRider = async (token: string, body: RiderType) => {
+    if (!token) {
+        console.error('Missing token')
+        return new Response()
+    }
+
+    try {
+        const riders = await fetch(`${BASE_NAME}/riders`, {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token
+            }
+        })
+
+        return riders
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return new Response()
+    }
+}
+
 export const getScans = async (token: string) => {
     if (!token) {
         console.error('Missing token')
@@ -114,6 +231,29 @@ export const getScans = async (token: string) => {
     try {
         const scans = await fetch(`${BASE_NAME}/scans`, {
             headers: {
+                'Authorization': token
+            }
+        })
+
+        return scans
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return new Response()
+    }
+}
+
+export const createScan = async (token: string, body: ScanType) => {
+    if (!token) {
+        console.error('Missing token')
+        return new Response()
+    }
+
+    try {
+        const scans = await fetch(`${BASE_NAME}/scans`, {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json',
                 'Authorization': token
             }
         })

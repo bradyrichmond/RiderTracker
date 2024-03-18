@@ -37,7 +37,7 @@ const AddBusModal = ({ organizationId, cancelAction, submitAction }: AddBusModal
 
     const handleCreateBus = () => {
         setDisabledButtons(true)
-        const newBusId = uuidv4();
+        const newBusId = uuidv4()
         submitAction({ id: newBusId, organizationId: orgId, busNumber })
     }
 

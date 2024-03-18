@@ -20,6 +20,7 @@ import { Box } from '@mui/material'
 import { RoleContext } from './contexts/RoleContext'
 import Scans from './routes/Scans'
 import Organizations from './routes/Organizations'
+import Guardians from './routes/Guardians'
 
 type AppProps = {
   signOut?: UseAuthenticator["signOut"]
@@ -68,31 +69,26 @@ function App({ user }: AppProps) {
         },
         {
           path: '/drivers',
-          element: <ProtectedRoute route='/drivers'><Drivers /></ProtectedRoute>,
-          loader: () => {
-            return getDrivers(token ?? '')
-          }
+          element: <ProtectedRoute route='/drivers'><Drivers /></ProtectedRoute>
+        },
+        {
+          path: '/guardians',
+          element: <ProtectedRoute route='/guardians'><Guardians /></ProtectedRoute>
         },
         {
           path: '/organizations',
-          element: <ProtectedRoute route='/organizations'><Organizations /></ProtectedRoute>,
-          loader: () => {
-            return getOrganizations(token ?? '')
-          }
+          element: <ProtectedRoute route='/organizations'><Organizations /></ProtectedRoute>
+          
         },
         {
           path: '/riders',
-          element: <ProtectedRoute route='/riders'><Riders /></ProtectedRoute>,
-          loader: () => {
-            return getRiders(token ?? '')
-          }
+          element: <ProtectedRoute route='/riders'><Riders /></ProtectedRoute>
+          
         },
         {
           path: '/scans',
-          element: <ProtectedRoute route='/scans'><Scans /></ProtectedRoute>,
-          loader: () => {
-            return getScans(token ?? '')
-          }
+          element: <ProtectedRoute route='/scans'><Scans /></ProtectedRoute>
+          
         },
         {
           path: '/unauthorized',

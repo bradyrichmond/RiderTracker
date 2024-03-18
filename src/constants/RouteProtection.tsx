@@ -1,10 +1,17 @@
 const ALL_ROUTES: string[] = [
     "/",
     "/buses",
+    "/buses/:id",
     "/drivers",
+    "/drivers/:id",
+    "/guardians",
+    "/guardians/:id",
     "/organizations",
+    "/organizations/:id",
     "/riders",
-    "/scans"
+    "/riders/:id",
+    "/scans",
+    "/scans/:id"
 ];
 
 export const ROUTE_PROTECTION = [
