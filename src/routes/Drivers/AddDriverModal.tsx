@@ -7,7 +7,7 @@ import {v4 as uuidv4} from 'uuid'
 import { DriverType } from '../../types/DriverType'
 import { useForm, SubmitHandler } from "react-hook-form"
 
-interface AddDriverModalProps {
+export interface AddDriverModalProps {
     organizationId?: string
     cancelAction: () => void
     submitAction: (_newDriver: DriverType) => void

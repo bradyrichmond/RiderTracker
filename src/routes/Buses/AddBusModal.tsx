@@ -6,7 +6,7 @@ import { OrganizationType } from '../../types/OrganizationType'
 import { BusType } from '../../types/BusType'
 import {v4 as uuidv4} from 'uuid'
 
-interface AddBusModalProps {
+export interface AddBusModalProps {
     organizationId?: string
     cancelAction: () => void
     submitAction: (_newBus: BusType) => void
@@ -38,7 +38,7 @@ const AddBusModal = ({ organizationId, cancelAction, submitAction }: AddBusModal
     const handleCreateBus = () => {
         setDisabledButtons(true)
         const newBusId = uuidv4()
-        submitAction({ id: newBusId, organizationId: orgId, busNumber })
+        submitAction({ id: newBusId, organizationId: orgId ?? organizationId, busNumber })
     }
 
     const handleBusNumberChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -46,7 +46,7 @@ const AddBusModal = ({ organizationId, cancelAction, submitAction }: AddBusModal
     }
 
     return (
-        <Box sx={{background: '#ffffff'}} borderRadius='2rem' padding='2rem' minWidth='50%' minHeight='50%' display='flex' flexDirection='column'>
+        <Box sx={{background: '#ffffff'}} borderRadius='2rem' padding='2rem' minWidth='50%' display='flex' flexDirection='column'>
             <Box display='flex' justifyContent='center' alignItems='center' marginBottom='2rem'>
                 <Typography variant='h2'>Add Bus</Typography>
             </Box>
@@ -64,7 +64,11 @@ const AddBusModal = ({ organizationId, cancelAction, submitAction }: AddBusModal
                     </Select>
                 </FormControl>
                 :
-                null
+                <Box>
+                    <Typography>
+                        Organization Id: {organizationId}
+                    </Typography>
+                </Box>
             }
             <Box marginTop='2rem'>
                 <TextField label="Bus Number" variant="outlined" fullWidth value={busNumber} onChange={handleBusNumberChange}/>

@@ -47,6 +47,26 @@ export const getBusById = async (token: string, busId: string) => {
     }
 }
 
+export const getBusesForOrganization = async (token: string, organizationId: string) => {
+    if (!token) {
+        console.error('Missing token')
+        return new Response()
+    }
+
+    try {
+        const buses = await fetch(`${BASE_NAME}/organization/${organizationId}/buses`, {
+            headers: {
+                'Authorization': token
+            }
+        })
+
+        return buses
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return new Response()
+    }
+}
+
 export const createBus = async (token: string, body: BusType) => {
     if (!token) {
         console.error('Missing token')

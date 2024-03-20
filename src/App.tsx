@@ -26,6 +26,7 @@ import Guardian from './routes/Guardians/Guardian'
 import Organization from './routes/Organizations/Organization'
 import Rider from './routes/Riders/Rider'
 import Home from './routes/Root/Home'
+import TestIndex from './routes/Buses/TestIndex'
 
 type AppProps = {
   signOut?: UseAuthenticator["signOut"]
@@ -74,7 +75,7 @@ function App({ user }: AppProps) {
         },
         {
           path: '/buses',
-          element: <ProtectedRoute route='/buses'><Buses /></ProtectedRoute>
+          element: <ProtectedRoute route='/buses'><TestIndex /></ProtectedRoute>
         },
         {
           path: '/buses/:id',
@@ -104,6 +105,11 @@ function App({ user }: AppProps) {
         {
           path: '/organizations/:id',
           element: <ProtectedRoute route='/organizations/:id'><Organization /></ProtectedRoute>
+          
+        },
+        {
+          path: '/organizations/:id/buses',
+          element: <ProtectedRoute route='/organizations/:id/buses'><Buses fetchBusesForOrg /></ProtectedRoute>
           
         },
         {

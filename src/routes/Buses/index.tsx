@@ -3,21 +3,27 @@ import { BusType } from "../../types/BusType"
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { useContext, useEffect, useState } from "react"
 import AddBusModal from "./AddBusModal"
-import { createBus, getBuses } from "../../API"
+import { createBus, getBuses, getBusesForOrganization } from "../../API"
 import { RoleContext } from "../../contexts/RoleContext"
 import { Link } from "react-router-dom"
+import { useParams } from 'react-router-dom'
 
-const Buses = () => {
+interface BusesProps {
+    fetchBusesForOrg?: boolean
+}
+
+const Buses = ({ fetchBusesForOrg }:BusesProps) => {
     const [isAddingBus, setIsAddingBus] = useState(false)
     const [buses, setBuses] = useState<BusType[]>([])
     const roleContext = useContext(RoleContext)
+    const { id } = useParams()
 
     useEffect(() => {
         updateBuses()
     }, [roleContext.token])
 
     const updateBuses = async () => {
-        const newBusesResponse = await getBuses(roleContext.token)
+        const newBusesResponse = (fetchBusesForOrg && id) ? await getBusesForOrganization(roleContext.token, id) : await getBuses(roleContext.token)
         const newBuses = await newBusesResponse.json()
         setBuses(newBuses)
     }
@@ -40,7 +46,7 @@ const Buses = () => {
         <Box height='100%' flexDirection='column'>
             <Modal open={isAddingBus} onClose={hideModal}>
                 <Box display='flex' justifyContent='center' alignItems='center' height='100%'>
-                    <AddBusModal cancelAction={hideModal} submitAction={createBusAction} />
+                    <AddBusModal cancelAction={hideModal} submitAction={createBusAction} organizationId={id}/>
                 </Box>
             </Modal>
             <Box marginBottom='2rem'>
