@@ -4,15 +4,10 @@ import { getOrganizations } from '../../API'
 import { RoleContext } from '../../contexts/RoleContext'
 import { OrganizationType } from '../../types/OrganizationType'
 import { BusType } from '../../types/BusType'
-import {v4 as uuidv4} from 'uuid'
+import { v4 as uuidv4 } from 'uuid'
+import { ModalProps } from '../../components/EntityViewer'
 
-export interface AddBusModalProps {
-    organizationId?: string
-    cancelAction: () => void
-    submitAction: (_newBus: BusType) => void
-}
-
-const AddBusModal = ({ organizationId, cancelAction, submitAction }: AddBusModalProps) => {
+const AddBusModal = ({ organizationId, cancelAction, submitAction }: ModalProps<BusType>) => {
     const [orgId, setOrgId] = useState('')
     const [busNumber, setBusNumber] = useState('')
     const [disableButtons, setDisabledButtons] = useState(false)

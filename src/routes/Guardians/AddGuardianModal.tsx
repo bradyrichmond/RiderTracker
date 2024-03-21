@@ -7,7 +7,7 @@ import { useForm, SubmitHandler } from "react-hook-form"
 import { GuardianType } from '../../types/GuardianType'
 import { getGuardians } from '../../API'
 
-interface AddGuardianModalProps {
+export interface AddGuardianModalProps {
     organizationId?: string
     cancelAction: () => void
     submitAction: (_newGuardian: GuardianType) => void

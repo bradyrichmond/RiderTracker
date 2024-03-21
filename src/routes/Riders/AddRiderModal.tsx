@@ -7,7 +7,7 @@ import {v4 as uuidv4} from 'uuid'
 import { useForm, SubmitHandler } from "react-hook-form"
 import { RiderType } from '../../types/RiderType'
 
-interface AddRiderModalProps {
+export interface AddRiderModalProps {
     organizationId?: string
     cancelAction: () => void
     submitAction: (_newRider: RiderType) => void

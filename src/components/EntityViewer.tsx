@@ -1,8 +1,7 @@
 import { Box, Button, Modal, Typography } from "@mui/material"
 import AddCircleIcon from '@mui/icons-material/AddCircle'
-import { useContext, useEffect, useState } from "react"
+import { ComponentType, useContext, useEffect, useState } from "react"
 import { RoleContext } from "../contexts/RoleContext"
-import { Link } from "react-router-dom"
 import { useParams } from 'react-router-dom'
 import { BusType } from "../types/BusType"
 import { DriverType } from "../types/DriverType"
@@ -10,20 +9,37 @@ import { GuardianType } from "../types/GuardianType"
 import { OrganizationType } from "../types/OrganizationType"
 import { RiderType } from "../types/RiderType"
 import { ScanType } from "../types/ScanType"
+import AddEntityModal, { FormData } from "./AddEntityModal"
+
+export interface ModalProps<T> {
+    cancelAction: () => void
+    organizationId?: string
+    submitAction: (_newEntity: T) => void
+    titleSingular: string
+}
+
+interface RowProps<T> {
+    entity: T
+}
 
 interface EntityViewerProps<T> {
+    createEntity(_token: string, _body: T): Promise<Response>
     fetchForOrg?: boolean
     getEntities(_token: string, id?: string): Promise<T[]>
+    modalFormInputs?: FormData
+    Row: ComponentType<RowProps<T>>
     titleSingular: string
     titlePlural: string
-    rowLinkPath: string
 }
+
 
 const EntityViewer = <T extends 
         BusType | DriverType | GuardianType | OrganizationType | RiderType | ScanType>(
-            {
-                getEntities, titleSingular, titlePlural, rowLinkPath
-            }:EntityViewerProps<T>) => {
+    {
+        createEntity, getEntities, modalFormInputs, Row, titleSingular, titlePlural
+    }:EntityViewerProps<T>
+) => {
+    const [showModal, setShowModal] = useState(false);
     const [entities, setEntities] = useState<T[]>([])
     const roleContext = useContext(RoleContext)
     const { id } = useParams()
@@ -37,8 +53,25 @@ const EntityViewer = <T extends
         setEntities(newEntities)
     }
 
+    const toggleShowModal = () => {
+        setShowModal((cur: boolean) => !cur)
+    }
+
+    const submitAction = async (newEntity: T) => {
+        toggleShowModal()
+        await createEntity(roleContext.token, newEntity)
+        updateEntities()
+    }
+
     return (
         <Box height='100%' flexDirection='column'>
+            {modalFormInputs ?
+                <Modal open={showModal} onClose={toggleShowModal} sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                    <AddEntityModal<T> cancelAction={toggleShowModal} submitAction={submitAction} titleSingular={titleSingular} formDefaultValues={modalFormInputs} organizationId={id} />
+                </Modal>
+                :
+                null
+            }
             <Box marginBottom='2rem'>
                 <Typography variant='h2'>
                     {titlePlural}
@@ -47,16 +80,12 @@ const EntityViewer = <T extends
             <Box flex='1' borderTop='1px solid #000'>
                 {entities && entities.map((entity) => {
                     return (
-                        <Box key={entity.id} display='flex' flexDirection='row' borderBottom='1px solid #000'>
-                            <Box padding='2rem'>
-                                <Link to={`/${rowLinkPath}/${entity.id}`}><Typography>{entity.id}</Typography></Link>
-                            </Box>
-                        </Box>
+                        <Row key={entity.id} entity={entity} />
                     )
                 })}
             </Box>
             <Box padding='2rem'>
-                <Button variant='contained'>
+                <Button variant='contained' onClick={toggleShowModal}>
                     <Box display='flex' flexDirection='row' justifyContent=''>
                         <AddCircleIcon />
                         <Box flex='1' marginLeft='1rem'>
@@ -69,4 +98,4 @@ const EntityViewer = <T extends
     )
 }
 
-export default EntityViewer;
+export default EntityViewer
