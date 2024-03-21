@@ -25,6 +25,7 @@ interface RowProps<T> {
 interface EntityViewerProps<T> {
     createEntity(_token: string, _body: T): Promise<Response>
     fetchForOrg?: boolean
+    entityFactory: (args: string[]) => T
     getEntities(_token: string, id?: string): Promise<T[]>
     modalFormInputs?: FormData
     Row: ComponentType<RowProps<T>>
@@ -36,7 +37,7 @@ interface EntityViewerProps<T> {
 const EntityViewer = <T extends 
         BusType | DriverType | GuardianType | OrganizationType | RiderType | ScanType>(
     {
-        createEntity, getEntities, modalFormInputs, Row, titleSingular, titlePlural
+        createEntity, entityFactory, getEntities, modalFormInputs, Row, titleSingular, titlePlural
     }:EntityViewerProps<T>
 ) => {
     const [showModal, setShowModal] = useState(false);
@@ -67,7 +68,7 @@ const EntityViewer = <T extends
         <Box height='100%' flexDirection='column'>
             {modalFormInputs ?
                 <Modal open={showModal} onClose={toggleShowModal} sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                    <AddEntityModal<T> cancelAction={toggleShowModal} submitAction={submitAction} titleSingular={titleSingular} formDefaultValues={modalFormInputs} organizationId={id} />
+                    <AddEntityModal<T> cancelAction={toggleShowModal} entityFactory={entityFactory}submitAction={submitAction} titleSingular={titleSingular} formDefaultValues={modalFormInputs} organizationId={id} />
                 </Modal>
                 :
                 null

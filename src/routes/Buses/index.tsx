@@ -3,6 +3,7 @@ import EntityViewer from "../../components/EntityViewer"
 import { BusType } from "../../types/BusType"
 import { useParams } from 'react-router-dom'
 import BusRow from "./BusRow"
+import { busFactory } from "./BusFactory"
 
 interface BusesProps {
     fetchForOrg?: boolean
@@ -21,6 +22,7 @@ const Buses = ({ fetchForOrg }: BusesProps) => {
     return (
         <EntityViewer<BusType>
             createEntity={createBus}
+            entityFactory={busFactory}
             getEntities={getBusesAction}
             modalFormInputs={{inputs: [
                 { name: "Organization Id", inputType: "select" },

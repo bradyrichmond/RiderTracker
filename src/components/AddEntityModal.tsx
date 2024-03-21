@@ -1,4 +1,4 @@
-import { Box, Button, FormControl, Input, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
+import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField, Typography } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { useFieldArray, useForm, Controller } from "react-hook-form"
@@ -14,13 +14,14 @@ import { ScanType } from "../types/ScanType"
 export interface AddEntityModalProps<T> {
     organizationId?: string
     cancelAction: () => void
-    submitAction?: (newEntity: T) => Promise<void>
-    titleSingular: string
+    entityFactory: (args: string[]) => T
     formDefaultValues: FormData
+    submitAction: (newEntity: T) => Promise<void>
+    titleSingular: string
 }
 
 export interface FormInput {
-    name: string,
+    name: string
     inputType?: string
     options?: string[]
 }
@@ -29,7 +30,10 @@ export interface FormData {
     inputs: FormInput[]
 }
 
-const AddEntityModal = <T extends BusType  | DriverType | GuardianType | OrganizationType | RiderType | ScanType>({ organizationId, cancelAction, submitAction, formDefaultValues, titleSingular }: AddEntityModalProps<T>) => {
+const AddEntityModal = <T extends 
+        BusType  | DriverType | GuardianType | OrganizationType | RiderType | ScanType>({ 
+        cancelAction, entityFactory, formDefaultValues, organizationId, submitAction, titleSingular 
+    }: AddEntityModalProps<T>) => {
     const [disableButtons, setDisabledButtons] = useState(false)
     const [availableOrgIds, setAvailableOrgIds] = useState<string[]>([])
     const [dropdownIndex, setDropdownIndex] = useState<number>()
@@ -69,9 +73,12 @@ const AddEntityModal = <T extends BusType  | DriverType | GuardianType | Organiz
     }
 
     const handleCreateEntity = () => {
-        // setDisabledButtons(true)
-        const newEntityId = uuidv4()
-        console.log(JSON.stringify({ id: newEntityId, ...values }))
+        setDisabledButtons(true)
+        const entityId = uuidv4()
+        const args = values.map((v) => v.name)
+        args.unshift(entityId)
+        const newEntity = entityFactory(args)
+        submitAction(newEntity)   
     }
 
     const pickRenderElement = (field: FormInput, index: number) => {
@@ -121,6 +128,7 @@ const AddEntityModal = <T extends BusType  | DriverType | GuardianType | Organiz
                     )
                 })
                 }
+                {JSON.stringify(values)}
                 <Box display='flex' justifyContent='space-evenly' alignItems='center' padding='2rem' flex='1'>
                     <Button variant='contained' onClick={cancelAction} disabled={disableButtons} sx={{padding: '1rem', minWidth: '25%'}}>
                         <Typography variant='h5'>Cancel</Typography>
