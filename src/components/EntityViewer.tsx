@@ -59,7 +59,7 @@ const EntityViewer = <T extends
     }
 
     const submitAction = async (newEntity: T) => {
-        toggleShowModal()
+        modalFormInputs && toggleShowModal()
         await createEntity(roleContext.token, newEntity)
         updateEntities()
     }
@@ -85,16 +85,20 @@ const EntityViewer = <T extends
                     )
                 })}
             </Box>
-            <Box padding='2rem'>
-                <Button variant='contained' onClick={toggleShowModal}>
-                    <Box display='flex' flexDirection='row' justifyContent=''>
-                        <AddCircleIcon />
-                        <Box flex='1' marginLeft='1rem'>
-                            <Typography>Add {titleSingular}</Typography>
+            {modalFormInputs ? 
+                <Box padding='2rem'>
+                    <Button variant='contained' onClick={toggleShowModal}>
+                        <Box display='flex' flexDirection='row' justifyContent=''>
+                            <AddCircleIcon />
+                            <Box flex='1' marginLeft='1rem'>
+                                <Typography>Add {titleSingular}</Typography>
+                            </Box>
                         </Box>
-                    </Box>
-                </Button>
-            </Box>
+                    </Button>
+                </Box>
+                :
+                null
+            }
         </Box>
     )
 }

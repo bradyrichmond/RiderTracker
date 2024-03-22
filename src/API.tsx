@@ -130,6 +130,26 @@ export const getDriverById = async (token: string, id: string) => {
     }
 }
 
+export const getDriversForOrganization = async (token: string, organizationId: string) => {
+    if (!token) {
+        console.error('Missing token')
+        return new Response()
+    }
+
+    try {
+        const guardians = await fetch(`${BASE_NAME}/organization/${organizationId}/drivers`, {
+            headers: {
+                'Authorization': token
+            }
+        })
+
+        return guardians
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return new Response()
+    }
+}
+
 export const createDriver = async (token: string, body: DriverType) => {
     if (!token) {
         console.error('Missing token')
@@ -191,6 +211,26 @@ export const getGuardianById = async (token: string, id: string) => {
         console.error(JSON.stringify(e))
         return new Response()
     }   
+}
+
+export const getGuardiansForOrganization = async (token: string, organizationId: string) => {
+    if (!token) {
+        console.error('Missing token')
+        return new Response()
+    }
+
+    try {
+        const guardians = await fetch(`${BASE_NAME}/organization/${organizationId}/guardians`, {
+            headers: {
+                'Authorization': token
+            }
+        })
+
+        return guardians
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return new Response()
+    }
 }
 
 export const createGuardian = async (token: string, body: GuardianType) => {
@@ -313,6 +353,26 @@ export const getRiderById = async (token: string, id: string) => {
         })
 
         return rider
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return new Response()
+    }
+}
+
+export const getRidersForOrganization = async (token: string, organizationId: string) => {
+    if (!token) {
+        console.error('Missing token')
+        return new Response()
+    }
+
+    try {
+        const riders = await fetch(`${BASE_NAME}/organization/${organizationId}/riders`, {
+            headers: {
+                'Authorization': token
+            }
+        })
+
+        return riders
     } catch (e) {
         console.error(JSON.stringify(e))
         return new Response()

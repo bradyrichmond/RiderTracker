@@ -1,84 +1,39 @@
-import { Box, Button, Modal, Typography } from "@mui/material"
-import AddCircleIcon from '@mui/icons-material/AddCircle'
-import { useContext, useEffect, useState } from "react"
-import AddDriverModal from "./AddDriverModal"
-import { createDriver, getDrivers } from "../../API"
-import { RoleContext } from "../../contexts/RoleContext"
+import { createDriver, getDrivers, getDriversForOrganization } from "../../API"
+import EntityViewer from "../../components/EntityViewer"
+import { useParams } from 'react-router-dom'
+import DriverRow from "./DriverRow"
 import { DriverType } from "../../types/DriverType"
-import { Link } from "react-router-dom"
+import { driverFactory } from "./DriverFactory"
 
-const Drivers = () => {
-    const [isAddingDriver, setIsAddingDriver] = useState(false)
-    const [drivers, setDrivers] = useState<DriverType[]>([])
-    const roleContext = useContext(RoleContext)
+interface DriversProps {
+    fetchForOrg?: boolean
+}
 
-    useEffect(() => {
-        updateDrivers()
-    }, [roleContext.token])
+const Drivers = ({ fetchForOrg }: DriversProps) => {
+    const { id } = useParams()
+    const getDriversFunction = (fetchForOrg && id) ? getDriversForOrganization : getDrivers
 
-    const updateDrivers = async () => {
-        const newDriversResponse = await getDrivers(roleContext.token)
-        const newDrivers = await newDriversResponse.json()
-        setDrivers(newDrivers)
+    const getDriversAction = async (token: string, id?: string): Promise<DriverType[]> => {
+        const drivers = await getDriversFunction(token, id ?? '')
+        const DriversResult = await drivers.json()
+        return DriversResult
     }
-
-    const showModal = () => {
-        setIsAddingDriver(true);
-    }
-
-    const hideModal = () => {
-        setIsAddingDriver(false);
-    }
-
-    const createDriverAction = async (newDriver: DriverType) => {
-        await createDriver(roleContext.token, newDriver)
-        hideModal()
-        updateDrivers()
-    }
-
+    
     return (
-        <Box height='100%' flexDirection='column'>
-            <Modal open={isAddingDriver} onClose={hideModal}>
-                <Box display='flex' justifyContent='center' alignItems='center' height='100%'>
-                    <AddDriverModal cancelAction={hideModal} submitAction={createDriverAction} />
-                </Box>
-            </Modal>
-            <Box marginBottom='2rem'>
-                <Typography variant='h2'>
-                    Drivers
-                </Typography>
-            </Box>
-            <Box flex='1' borderTop='1px solid #000'>
-                {drivers && drivers.map((driver) => {
-                    return (
-                    <Box key={driver.id} display='flex' flexDirection='row' borderBottom='1px solid #000'>
-                        <Box padding='2rem'>
-                            <Link to={`/drivers/${driver.id}`}><Typography>{driver.id}</Typography></Link>
-                        </Box>
-                        <Box padding='2rem'>
-                            <Typography>{driver.firstName}</Typography>
-                        </Box>
-                        <Box padding='2rem'>
-                            <Typography>{driver.lastName}</Typography>
-                        </Box>
-                        <Box padding='2rem'>
-                            <Typography>{driver.organizationId}</Typography>
-                        </Box>
-                    </Box>)
-                })}
-            </Box>
-            <Box padding='2rem'>
-                <Button onClick={showModal} variant='contained'>
-                    <Box display='flex' flexDirection='row' justifyContent=''>
-                        <AddCircleIcon />
-                        <Box flex='1' marginLeft='1rem'>
-                            <Typography>Add Driver</Typography>
-                        </Box>
-                    </Box>
-                </Button>
-            </Box>
-        </Box>
+        <EntityViewer<DriverType>
+            createEntity={createDriver}
+            entityFactory={driverFactory}
+            getEntities={getDriversAction}
+            modalFormInputs={{inputs: [
+                { name: "Organization Id", inputType: "select" },
+                { name: "First Name" },
+                { name: "Last Name" }
+            ]}}
+            Row={DriverRow}
+            titleSingular='Driver'
+            titlePlural='Drivers'
+        />
     )
 }
 
-export default Drivers;
+export default Drivers

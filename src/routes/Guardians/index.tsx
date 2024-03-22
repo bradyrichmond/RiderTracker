@@ -1,84 +1,39 @@
-import { Box, Button, Modal, Typography } from "@mui/material"
-import AddCircleIcon from '@mui/icons-material/AddCircle'
-import { useContext, useEffect, useState } from "react"
-import { RoleContext } from "../../contexts/RoleContext"
+import { createGuardian, getGuardians, getGuardiansForOrganization } from "../../API"
+import EntityViewer from "../../components/EntityViewer"
+import { useParams } from 'react-router-dom'
 import { GuardianType } from "../../types/GuardianType"
-import { createGuardian, getGuardians } from "../../API"
-import AddGuardianModal from "./AddGuardianModal"
-import { Link } from "react-router-dom"
+import { guardianFactory } from "./GuardianFactory"
+import GuardianRow from "./GuardianRow"
 
-const Guardians = () => {
-    const [isAddingGuardian, setIsAddingGuardian] = useState(false)
-    const [guardians, setGuardians] = useState<GuardianType[]>([])
-    const roleContext = useContext(RoleContext)
+interface GuardiansProps {
+    fetchForOrg?: boolean
+}
 
-    useEffect(() => {
-        updateGuardians()
-    }, [roleContext.token])
+const Guardians = ({ fetchForOrg }: GuardiansProps) => {
+    const { id } = useParams()
+    const getGuardiansFunction = (fetchForOrg && id) ? getGuardiansForOrganization : getGuardians
 
-    const updateGuardians = async () => {
-        const newGuardiansResponse = await getGuardians(roleContext.token)
-        const newGuardians = await newGuardiansResponse.json()
-        setGuardians(newGuardians)
+    const getGuardiansAction = async (token: string, id?: string): Promise<GuardianType[]> => {
+        const guardians = await getGuardiansFunction(token, id ?? '')
+        const guardiansResult = await guardians.json()
+        return guardiansResult
     }
-
-    const showModal = () => {
-        setIsAddingGuardian(true);
-    }
-
-    const hideModal = () => {
-        setIsAddingGuardian(false);
-    }
-
-    const createGuardianAction = async (newGuardian: GuardianType) => {
-        await createGuardian(roleContext.token, newGuardian)
-        hideModal()
-        updateGuardians()
-    }
-
+    
     return (
-        <Box height='100%' flexDirection='column'>
-            <Modal open={isAddingGuardian} onClose={hideModal}>
-                <Box display='flex' justifyContent='center' alignItems='center' height='100%'>
-                    <AddGuardianModal cancelAction={hideModal} submitAction={createGuardianAction} />
-                </Box>
-            </Modal>
-            <Box marginBottom='2rem'>
-                <Typography variant='h2'>
-                    Guardians
-                </Typography>
-            </Box>
-            <Box flex='1' borderTop='1px solid #000'>
-                {guardians && guardians.map((guardian) => {
-                    return (
-                    <Box key={guardian.id} display='flex' flexDirection='row' borderBottom='1px solid #000'>
-                        <Box padding='2rem'>
-                            <Link to={`/guardians/${guardian.id}`}><Typography>{guardian.id}</Typography></Link>
-                        </Box>
-                        <Box padding='2rem'>
-                            <Typography>{guardian.firstName}</Typography>
-                        </Box>
-                        <Box padding='2rem'>
-                            <Typography>{guardian.lastName}</Typography>
-                        </Box>
-                        <Box padding='2rem'>
-                            <Typography>{guardian.organizationId}</Typography>
-                        </Box>
-                    </Box>)
-                })}
-            </Box>
-            <Box padding='2rem'>
-                <Button onClick={showModal} variant='contained'>
-                    <Box display='flex' flexDirection='row' justifyContent=''>
-                        <AddCircleIcon />
-                        <Box flex='1' marginLeft='1rem'>
-                            <Typography>Add Guardian</Typography>
-                        </Box>
-                    </Box>
-                </Button>
-            </Box>
-        </Box>
+        <EntityViewer<GuardianType>
+            createEntity={createGuardian}
+            entityFactory={guardianFactory}
+            getEntities={getGuardiansAction}
+            modalFormInputs={{inputs: [
+                { name: "Organization Id", inputType: "select" },
+                { name: "First Name" },
+                { name: "Last Name" }
+            ]}}
+            Row={GuardianRow}
+            titleSingular='Guardian'
+            titlePlural='Guardians'
+        />
     )
 }
 
-export default Guardians;
+export default Guardians

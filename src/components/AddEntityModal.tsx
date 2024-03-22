@@ -128,7 +128,6 @@ const AddEntityModal = <T extends
                     )
                 })
                 }
-                {JSON.stringify(values)}
                 <Box display='flex' justifyContent='space-evenly' alignItems='center' padding='2rem' flex='1'>
                     <Button variant='contained' onClick={cancelAction} disabled={disableButtons} sx={{padding: '1rem', minWidth: '25%'}}>
                         <Typography variant='h5'>Cancel</Typography>
