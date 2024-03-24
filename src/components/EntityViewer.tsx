@@ -68,7 +68,7 @@ const EntityViewer = <T extends
         <Box height='100%' flexDirection='column'>
             {modalFormInputs ?
                 <Modal open={showModal} onClose={toggleShowModal} sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                    <AddEntityModal<T> cancelAction={toggleShowModal} entityFactory={entityFactory}submitAction={submitAction} titleSingular={titleSingular} formDefaultValues={modalFormInputs} organizationId={id} />
+                    <AddEntityModal<T> cancelAction={toggleShowModal} entityFactory={entityFactory} submitAction={submitAction} titleSingular={titleSingular} formDefaultValues={modalFormInputs} organizationId={id} />
                 </Modal>
                 :
                 null

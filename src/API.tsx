@@ -1,5 +1,6 @@
 import { BusType } from "./types/BusType"
 import { DriverType } from "./types/DriverType"
+import { GuardianRiderLinkType } from "./types/GuardianRiderLinkType"
 import { GuardianType } from "./types/GuardianType"
 import { OrganizationType } from "./types/OrganizationType"
 import { RiderType } from "./types/RiderType"
@@ -256,6 +257,29 @@ export const createGuardian = async (token: string, body: GuardianType) => {
     }
 }
 
+export const createGuardianRiderLink = async (token: string, body: GuardianRiderLinkType) => {
+    if (!token) {
+        console.error('Missing token')
+        return new Response()
+    }
+
+    try {
+        const results = await fetch(`${BASE_NAME}/relationships/guardians-riders`, {
+            method: 'POST',
+            body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token
+            }
+        })
+
+        return results
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return new Response()
+    }
+}
+
 export const getOrganizations = async (token: string) => {
     if (!token) {
         console.error('Missing token')
@@ -366,17 +390,63 @@ export const getRidersForOrganization = async (token: string, organizationId: st
     }
 
     try {
-        const riders = await fetch(`${BASE_NAME}/organization/${organizationId}/riders`, {
+        const ridersData = await fetch(`${BASE_NAME}/organizations/${organizationId}/riders`, {
             headers: {
                 'Authorization': token
             }
         })
+
+        const riders = await ridersData.json()
 
         return riders
     } catch (e) {
         console.error(JSON.stringify(e))
         return new Response()
     }
+}
+
+export const getRidersForGuardian = async (token: string, guardianId: string) => {
+    if (!token) {
+        console.error('Missing token')
+        return new Response()
+    }
+
+    try {
+        const riderIdsRaw = await fetch(`${BASE_NAME}/guardians/${guardianId}/riders`, {
+            headers: {
+                'Authorization': token
+            }
+        })
+
+        const riderIds = await riderIdsRaw.json()
+        const trimmedIds = trimRelationshipEntityTypes(riderIds)
+
+        const ridersRaw = await fetch(`${BASE_NAME}/riders/batchGetById`, {
+            method: 'POST',
+            body: JSON.stringify(trimmedIds),
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json'
+            }
+        })
+
+        const riders = await ridersRaw.json()
+
+        return riders
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return new Response()
+    }
+}
+
+const trimRelationshipEntityTypes = (toBeTrimmed: string[]) => {
+    const trimmedIds:string[] = []
+
+    toBeTrimmed.forEach((i) => {
+        trimmedIds.push(i.split("#")[1])
+    })
+
+    return trimmedIds
 }
 
 export const createRider = async (token: string, body: RiderType) => {

@@ -5,6 +5,6 @@ export function guardianFactory(args: string[]): GuardianType {
         id: args[0],
         organizationId: args[1],
         firstName: args[2],
-        lastName: args[2],
+        lastName: args[3],
     };
 }

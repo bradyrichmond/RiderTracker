@@ -10,6 +10,7 @@ import { GuardianType } from "../types/GuardianType"
 import { OrganizationType } from "../types/OrganizationType"
 import { RiderType } from "../types/RiderType"
 import { ScanType } from "../types/ScanType"
+import { GuardianRiderLinkType } from '../types/GuardianRiderLinkType'
 
 export interface AddEntityModalProps<T> {
     organizationId?: string
@@ -23,20 +24,24 @@ export interface AddEntityModalProps<T> {
 export interface FormInput {
     name: string
     inputType?: string
-    options?: string[]
+    options?: OptionsType[]
 }
 
 export interface FormData {
     inputs: FormInput[]
 }
 
+export interface OptionsType {
+    label: string
+    id: string
+}
+
 const AddEntityModal = <T extends 
-        BusType  | DriverType | GuardianType | OrganizationType | RiderType | ScanType>({ 
+        BusType  | DriverType | GuardianType | OrganizationType | RiderType | ScanType | GuardianRiderLinkType>({ 
         cancelAction, entityFactory, formDefaultValues, organizationId, submitAction, titleSingular 
     }: AddEntityModalProps<T>) => {
     const [disableButtons, setDisabledButtons] = useState(false)
-    const [availableOrgIds, setAvailableOrgIds] = useState<string[]>([])
-    const [dropdownIndex, setDropdownIndex] = useState<number>()
+    const [availableOrgIds, setAvailableOrgIds] = useState<OptionsType[]>([])
     const roleContext = useContext(RoleContext)
     const {
         control,
@@ -47,7 +52,7 @@ const AddEntityModal = <T extends
         defaultValues: formDefaultValues
     })
 
-    const { fields, remove } = useFieldArray({
+    const { fields } = useFieldArray({
         control,
         name: "inputs"
     })
@@ -56,38 +61,38 @@ const AddEntityModal = <T extends
         getAvailableOrgIds()
     }, [])
 
-    useEffect(() => {
-        if (organizationId) {
-            remove(dropdownIndex)
-        }
-    }, [dropdownIndex])
-
     const values = watch("inputs")
 
     const getAvailableOrgIds = async () => {
         const token = roleContext.token;
         const rawResponse = await getOrganizations(token)
         const response = await rawResponse.json()
-        const mappedOrgIds = response.map((o: OrganizationType) => o.id)
+        const mappedOrgIds = response.map((o: OrganizationType) => {
+            return { label: o.id, id: o.id }
+        })
         setAvailableOrgIds(mappedOrgIds)
     }
 
     const handleCreateEntity = () => {
         setDisabledButtons(true)
         const entityId = uuidv4()
-        const args = values.map((v) => v.name)
+        const updatedValues = organizationId ? replaceOrgIdInValues(values) : values
+        const args = updatedValues.map((v) => v.name)
         args.unshift(entityId)
         const newEntity = entityFactory(args)
         submitAction(newEntity)   
     }
 
+    const replaceOrgIdInValues = (rawValues: FormInput[]): FormInput[] => {
+        rawValues.shift()
+        const newOrgIdElement = { name: organizationId ?? '' }
+        rawValues.unshift(newOrgIdElement)
+        return rawValues
+    }
+
     const pickRenderElement = (field: FormInput, index: number) => {
         switch (field.inputType) {
             case "select":
-                if (!field.options) {
-                    setDropdownIndex(index)
-                } 
-
                 return (
                     <FormControl fullWidth>
                         <InputLabel id={`${field.name}Label`}>{field.name}</InputLabel>
@@ -98,13 +103,14 @@ const AddEntityModal = <T extends
                             {...register(`inputs.${index}.name`)}
                         >
                             {field.options ? 
-                                field.options.map((f) => <MenuItem key={f} value={f}>{f}</MenuItem>)
+                                field.options.map((f) => <MenuItem key={f.id} value={f.id}>{f.label}</MenuItem>)
                                 :
-                                availableOrgIds.map((aoi) => <MenuItem key={aoi} value={aoi}>{aoi}</MenuItem>)
+                                availableOrgIds.map((aoi) => <MenuItem key={aoi.id} value={aoi.id}>{aoi.id}</MenuItem>)
                             }
                         </Select>
                     </FormControl>
                 )
+                break;
             default:
                 return <TextField label={field.name} fullWidth {...register(`inputs.${index}.name`)}/>
         }
@@ -119,11 +125,14 @@ const AddEntityModal = <T extends
                 {fields.map((field, index) => {
                     return (
                         <Box key={field.id} marginTop='2rem'>
+                            {field.name === "Organization Id" && organizationId ?
+                            <Typography>Organization Id: {organizationId}</Typography>
+                            :
                             <Controller
                                 render={() => pickRenderElement(field, index) }
                                 name={`inputs.${index}.name`}
                                 control={control}
-                            />
+                            />}
                         </Box>
                     )
                 })

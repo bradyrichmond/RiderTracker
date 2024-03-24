@@ -4,6 +4,7 @@ import { RoleContext } from "../../contexts/RoleContext"
 import { useParams } from 'react-router-dom'
 import { GuardianType } from "../../types/GuardianType"
 import { getGuardianById } from "../../API"
+import GuardiansRiders from "./GuardiansRiders"
 
 const Guardian = () => {
     const roleContext = useContext(RoleContext)
@@ -17,8 +18,12 @@ const Guardian = () => {
     const getGuardianData = async () => {
         if (id) {
             const rawGuardianData = await getGuardianById(roleContext.token, id)
-            const guardianData = await rawGuardianData.json()
-            setGuardian(guardianData)
+            try {
+                const guardianData = await rawGuardianData.json()
+                setGuardian(guardianData)
+            } catch {
+                console.error('Error setting guardian')
+            }
         }
     }
 
@@ -26,6 +31,7 @@ const Guardian = () => {
         <Box height='100%'>
             <Typography>Guardian Name: {guardian?.firstName} {guardian?.lastName}</Typography>
             <Typography>Organization: {guardian?.organizationId}</Typography>
+            <GuardiansRiders organizationId={guardian?.organizationId ?? ''} />
         </Box>
     )
 }
