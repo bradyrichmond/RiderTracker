@@ -221,11 +221,52 @@ export const getGuardiansForOrganization = async (token: string, organizationId:
     }
 
     try {
-        const guardians = await fetch(`${BASE_NAME}/organization/${organizationId}/guardians`, {
+        const guardiansRaw = await fetch(`${BASE_NAME}/organization/${organizationId}/guardians`, {
             headers: {
                 'Authorization': token
             }
         })
+
+        const guardians = await guardiansRaw.json()
+
+        return guardians
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return new Response()
+    }
+}
+
+export const getGuardiansForRider = async (token: string, riderId: string) => {
+    if (!token) {
+        console.error('Missing token')
+        return new Response()
+    }
+
+    if (!riderId) {
+        console.error('Missing riderId')
+        return new Response()
+    }
+
+    try {
+        const guardianIdsRaw = await fetch(`${BASE_NAME}/riders/${riderId}/guardians`, {
+            headers: {
+                'Authorization': token
+            }
+        })
+
+        const guardianIds = await guardianIdsRaw.json()
+        const trimmedIds = trimRelationshipEntityTypes(guardianIds)
+
+        const guardiansRaw = await fetch(`${BASE_NAME}/guardians/batchGetById`, {
+            method: 'POST',
+            body: JSON.stringify(trimmedIds),
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json'
+            }
+        })
+
+        const guardians = await guardiansRaw.json()
 
         return guardians
     } catch (e) {

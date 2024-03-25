@@ -4,6 +4,7 @@ import { RoleContext } from "../../contexts/RoleContext"
 import { useParams } from 'react-router-dom'
 import { RiderType } from "../../types/RiderType"
 import { getRiderById } from "../../API"
+import RidersGuardians from "./RidersGuardians"
 
 const Rider = () => {
     const roleContext = useContext(RoleContext)
@@ -26,6 +27,7 @@ const Rider = () => {
         <Box height='100%'>
             <Typography>Rider Name: {rider?.firstName} {rider?.lastName}</Typography>
             <Typography>Organization: {rider?.organizationId}</Typography>
+            <RidersGuardians organizationId={rider?.organizationId ?? ''}/>
         </Box>
     )
 }
