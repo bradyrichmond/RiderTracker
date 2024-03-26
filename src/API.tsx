@@ -339,11 +339,13 @@ export const getOrganizationById = async (token: string, id: string) => {
     }
 
     try {
-        const organization = await fetch(`${BASE_NAME}/organizations/${id}`, {
+        const organizationData = await fetch(`${BASE_NAME}/organizations/${id}`, {
             headers: {
                 'Authorization': token
             }
         })
+
+        const organization = await organizationData.json()
 
         return organization
     } catch (e) {

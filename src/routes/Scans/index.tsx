@@ -18,4 +18,4 @@ const Scans = () => {
     )
 }
 
-export default Scans;
+export default Scans
