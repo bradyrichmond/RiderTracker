@@ -114,7 +114,7 @@ const GuardiansRiders = ({ organizationId, guardian, getGuardianData }: Guardian
                 />
             </Modal>
             <Typography variant="h2">Riders</Typography>
-            {riders.length > 0 && riders.map((r) => <RiderRow key={r.id} entity={r} deleteAction={deleteRiderLink} />)}
+            {riders.length > 0 && riders.map((r) => <RiderRow key={r.id} entity={r} deleteAction={deleteRiderLink} deleteTooltipTitle="Remove this rider guardian link" />)}
             <Box marginTop='2rem'>
                 <Button variant='contained' onClick={toggleShowModal}>
                     <Box display='flex' flexDirection='row' justifyContent=''>

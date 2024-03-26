@@ -48,7 +48,7 @@ const AddRiderModal = ({ organizationId, cancelAction, submitAction }: AddRiderM
         const { firstName, lastName } = data;
         setDisabledButtons(true)
         const newRiderId = uuidv4()
-        submitAction({id: newRiderId, firstName, lastName, organizationId: orgId})
+        submitAction({id: newRiderId, firstName, lastName, organizationId: orgId, guardianRiderLinks: [""]})
     }
 
     return (

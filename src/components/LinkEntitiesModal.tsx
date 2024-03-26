@@ -9,7 +9,7 @@ import { pickRenderElement } from '../helpers/FormRenderHelpers'
 interface LinkEntitiesModalProps<T> {
     cancelAction: () => void
     entity: T
-    entityFactory: (args: string[], newLinkIds: string[]) => T
+    entityFactory: (args: string[]) => T
     formDefaultValues: FormDataType
     submitAction: (newEntity: T) => Promise<void>
     title: string
@@ -44,7 +44,8 @@ const LinkEntitiesModal = <T extends
         const oldLinkIds = entity.guardianRiderLinks
         const newLinkIds = [...oldLinkIds, newId]
         const filteredLinkIds = newLinkIds.filter((l) => l !== "")
-        const newEntity = entityFactory([entity.id, entity.organizationId, entity.firstName, entity.lastName], filteredLinkIds)
+        const newEntity = entityFactory([entity.id, entity.organizationId, entity.firstName, entity.lastName])
+        newEntity.guardianRiderLinks = filteredLinkIds
         submitAction(newEntity)   
     }
 

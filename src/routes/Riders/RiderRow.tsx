@@ -5,12 +5,15 @@ import LinkOffIcon from '@mui/icons-material/LinkOff'
 
 interface RiderRowProps {
     entity: RiderType
-    deleteAction: (id: string) => void
+    deleteAction?: (id: string) => void
+    deleteTooltipTitle?: string
 }
 
-const RiderRow = ({ entity, deleteAction }: RiderRowProps) => {
+const RiderRow = ({ entity, deleteAction, deleteTooltipTitle }: RiderRowProps) => {
     const handleDelete = () => {
-        deleteAction(entity.id)
+        if (deleteAction) {
+            deleteAction(entity.id)
+        }
     }
 
     return (
@@ -24,11 +27,15 @@ const RiderRow = ({ entity, deleteAction }: RiderRowProps) => {
             <Box padding='2rem' display='flex' justifyContent='center' alignItems='center'>
                 <Typography>{entity.lastName}</Typography>
             </Box>
-            <Box padding='2rem' display='flex' justifyContent='center' alignItems='center' onClick={handleDelete}>
-                <Tooltip title='Remove guardian from rider'>
-                    <LinkOffIcon fontSize="large" />
-                </Tooltip>
-            </Box>
+            {deleteAction ?
+                <Box padding='2rem' display='flex' justifyContent='center' alignItems='center' onClick={handleDelete}>
+                    <Tooltip title={deleteTooltipTitle}>
+                        <LinkOffIcon fontSize="large" />
+                    </Tooltip>
+                </Box>
+                :
+                null
+            }
         </Box>
     )
 }

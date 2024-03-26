@@ -21,12 +21,14 @@ export interface ModalProps<T> {
 
 interface RowProps<T> {
     entity: T
+    deleteAction?: () => {}
+    deleteTooltipTitle?: string
 }
 
 interface EntityViewerProps<T> {
     createEntity(_token: string, _body: T): Promise<Response>
     fetchForOrg?: boolean
-    entityFactory: (args: string[]) => T
+    entityFactory: (args: string[]) => T 
     getEntities(_token: string, id?: string): Promise<T[]>
     modalFormInputs?: FormDataType
     Row: ComponentType<RowProps<T>>

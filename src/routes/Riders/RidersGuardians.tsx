@@ -13,9 +13,10 @@ import GuardianRow from "../Guardians/GuardianRow"
 interface GuardianRidersProps {
     organizationId: string
     rider: RiderType
+    getRiderData(): Promise<void>
 }
 
-const GuardiansRiders = ({ organizationId, rider }: GuardianRidersProps) => {
+const GuardiansRiders = ({ organizationId, rider, getRiderData }: GuardianRidersProps) => {
     const [guardians, setGuardians] = useState<GuardianType[]>([])
     const [allGuardians, setAllGuardians] = useState<OptionsType[]>([])
     const [showModal, setShowModal] = useState<boolean>(false)
@@ -28,6 +29,8 @@ const GuardiansRiders = ({ organizationId, rider }: GuardianRidersProps) => {
     }, [roleContext.token, organizationId])
 
     const updateGuardians = async () => {
+        await getRiderData()
+
         if (rider) {
             const guardianData = await getBulkGuardiansById(roleContext.token, rider.guardianRiderLinks)
             setGuardians(guardianData)
@@ -55,7 +58,7 @@ const GuardiansRiders = ({ organizationId, rider }: GuardianRidersProps) => {
     const submitAction = async (updatedRider: RiderType) => {
         toggleShowModal()
         await updateRider(roleContext.token, updatedRider)
-        const guardianToBeUpdated = updatedRider.guardianRiderLinks.pop();
+        const guardianToBeUpdated = updatedRider.guardianRiderLinks.pop()
 
         if (guardianToBeUpdated) {
             const updatedGuardian = await generateUpdatedGuardian(guardianToBeUpdated)
