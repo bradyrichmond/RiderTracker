@@ -30,7 +30,7 @@ const Guardian = () => {
         <Box height='100%'>
             <Typography>Guardian Name: {guardian?.firstName} {guardian?.lastName}</Typography>
             <Typography>Organization: {guardian?.organizationId}</Typography>
-            {guardian ? <GuardiansRiders organizationId={guardian?.organizationId ?? ''} guardian={guardian} /> : null}
+            {guardian ? <GuardiansRiders organizationId={guardian?.organizationId ?? ''} guardian={guardian} getGuardianData={getGuardianData} /> : null}
         </Box>
     )
 }

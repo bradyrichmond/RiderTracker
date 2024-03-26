@@ -1,7 +1,7 @@
 import { Box, Button, Typography, Modal } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
 import { RoleContext } from "../../contexts/RoleContext"
-import { getRiderById, getBulkRidersById, getRidersForOrganization, updateRider, updateGuardian } from "../../API"
+import { getRiderById, getBulkRidersById, getRidersForOrganization, updateRider, updateGuardian, getGuardianById } from "../../API"
 import { RiderType } from "../../types/RiderType"
 import RiderRow from "../Riders/RiderRow"
 import LinkIcon from '@mui/icons-material/Link'
@@ -11,11 +11,12 @@ import { guardianFactory } from "./GuardianFactory"
 import { OptionsType } from "../../types/FormTypes"
 
 interface GuardianRidersProps {
-    organizationId: string,
+    organizationId: string
     guardian: GuardianType
+    getGuardianData(): Promise<void>
 }
 
-const GuardiansRiders = ({ organizationId, guardian }: GuardianRidersProps) => {
+const GuardiansRiders = ({ organizationId, guardian, getGuardianData }: GuardianRidersProps) => {
     const [riders, setRiders] = useState<RiderType[]>([])
     const [allRiders, setAllRiders] = useState<OptionsType[]>([])
     const [showModal, setShowModal] = useState<boolean>(false)
@@ -28,6 +29,8 @@ const GuardiansRiders = ({ organizationId, guardian }: GuardianRidersProps) => {
     }, [roleContext.token, organizationId])
 
     const updateRiders = async () => {
+        await getGuardianData()
+
         if (guardianId) {
             // Make sure there are no empty strings in the existing links
             const filteredRiderIds = guardian.guardianRiderLinks.filter((r) => r !== "")
@@ -60,19 +63,39 @@ const GuardiansRiders = ({ organizationId, guardian }: GuardianRidersProps) => {
         const riderToBeUpdated = updatedGuardian.guardianRiderLinks.pop();
 
         if (riderToBeUpdated) {
-            const updatedRider = await generateUpdatedRider(riderToBeUpdated)
+            const updatedRider = await generateRiderWithAddedGuardian(riderToBeUpdated)
             await updateRider(roleContext.token, updatedRider)
         }
 
         updateRiders()
     }
 
-    const generateUpdatedRider = async (riderId: string) => {
+    const generateRiderWithAddedGuardian = async (riderId: string) => {
         const riderToUpdate = await getRiderById(roleContext.token, riderId)
         riderToUpdate.guardianRiderLinks.push(guardianId)
-        const newGuardianRiderLinks = riderToUpdate.filter((r: string) => r !== "")
+        const newGuardianRiderLinks = riderToUpdate.guardianRiderLinks.filter((r: string) => r !== "")
         riderToUpdate.guardianRiderLinks = newGuardianRiderLinks
         return riderToUpdate
+    }
+
+    const deleteRiderLink = async (riderId: string) => {
+        await removeRiderFromGuardian(riderId)
+        await removeGuardianFromRider(riderId)
+        updateRiders()
+    }
+
+    const removeRiderFromGuardian = async (riderId: string) => {
+        const newGuardian = guardian;
+        const newLinks = newGuardian.guardianRiderLinks.filter((r) => r !== riderId)
+        newGuardian.guardianRiderLinks = newLinks.length > 0 ? newLinks : [""]
+        await updateGuardian(roleContext.token, newGuardian)
+    }
+
+    const removeGuardianFromRider = async (riderId: string) => {
+        const riderToUpdate: RiderType = await getRiderById(roleContext.token, riderId)
+        const newLinks = riderToUpdate.guardianRiderLinks.filter((g) => g !== guardianId)
+        riderToUpdate.guardianRiderLinks = newLinks.length > 0 ? newLinks : [""]
+        await updateRider(roleContext.token, riderToUpdate)
     }
 
     return (
@@ -91,7 +114,7 @@ const GuardiansRiders = ({ organizationId, guardian }: GuardianRidersProps) => {
                 />
             </Modal>
             <Typography variant="h2">Riders</Typography>
-            {riders.length > 0 && riders.map((r) => <RiderRow key={r.id} entity={r} />)}
+            {riders.length > 0 && riders.map((r) => <RiderRow key={r.id} entity={r} deleteAction={deleteRiderLink} />)}
             <Box marginTop='2rem'>
                 <Button variant='contained' onClick={toggleShowModal}>
                     <Box display='flex' flexDirection='row' justifyContent=''>

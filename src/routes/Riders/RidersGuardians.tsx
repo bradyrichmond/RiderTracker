@@ -73,6 +73,26 @@ const GuardiansRiders = ({ organizationId, rider }: GuardianRidersProps) => {
         return guardianToUpdate
     }
 
+    const deleteGuardianLink = async (guardianId: string) => {
+        await removeGuardianFromRider(guardianId)
+        await removeRiderFromGuardian(guardianId)
+        updateGuardians()
+    }
+
+    const removeGuardianFromRider = async (guardianId: string) => {
+        const newRider = rider;
+        const newLinks = newRider.guardianRiderLinks.filter((g) => g !== guardianId)
+        newRider.guardianRiderLinks = newLinks.length > 0 ? newLinks : [""]
+        await updateRider(roleContext.token, newRider)
+    }
+
+    const removeRiderFromGuardian = async (guardianId: string) => {
+        const guardianToUpdate: GuardianType = await getGuardianById(roleContext.token, guardianId)
+        const newLinks = guardianToUpdate.guardianRiderLinks.filter((r) => r !== riderId)
+        guardianToUpdate.guardianRiderLinks = newLinks.length > 0 ? newLinks : [""]
+        await updateGuardian(roleContext.token, guardianToUpdate)
+    }    
+
     return (
         <Box>
             <Modal open={showModal} onClose={toggleShowModal} sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
@@ -89,7 +109,7 @@ const GuardiansRiders = ({ organizationId, rider }: GuardianRidersProps) => {
                 />
             </Modal>
             <Typography variant="h2">Guardians</Typography>
-            {guardians.length > 0 ? guardians.map((g) => <GuardianRow key={g.id} entity={g} />) : <Typography>This rider has no guardians assigned.</Typography>}
+            {guardians.length > 0 ? guardians.map((g) => <GuardianRow key={g.id} entity={g} deleteAction={deleteGuardianLink} />) : <Typography>This rider has no guardians assigned.</Typography>}
             <Box marginTop='2rem'>
                 <Button variant='contained' onClick={toggleShowModal}>
                     <Box display='flex' flexDirection='row' justifyContent=''>
