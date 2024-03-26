@@ -1,7 +1,7 @@
 import { Box, Button, Typography, Modal } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
 import { RoleContext } from "../../contexts/RoleContext"
-import { getRiderById, getBulkRidersById, getRidersForOrganization, updateRider, updateGuardian, getGuardianById } from "../../API"
+import { getRiderById, getBulkRidersById, getRidersForOrganization, updateRider, updateGuardian } from "../../API"
 import { RiderType } from "../../types/RiderType"
 import RiderRow from "../Riders/RiderRow"
 import LinkIcon from '@mui/icons-material/Link'
