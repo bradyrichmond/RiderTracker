@@ -1,24 +1,25 @@
 import { Box, Button, Typography, Modal } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
 import { RoleContext } from "../../contexts/RoleContext"
-import { createGuardianRiderLink, getGuardiansForOrganization, getGuardiansForRider } from "../../API"
+import { updateRider, updateGuardian, getGuardiansForOrganization, getBulkGuardiansById, getGuardianById } from "../../API"
+import { RiderType } from "../../types/RiderType"
 import LinkIcon from '@mui/icons-material/Link'
-import AddEntityModal, { OptionsType } from "../../components/AddEntityModal"
-import { GuardianRiderLinkType } from "../../types/GuardianRiderLinkType"
 import { GuardianType } from "../../types/GuardianType"
-import { guardianRiderLinkFactory } from "../Guardians/GuardianRiderLinkFactory"
+import LinkEntitiesModal from "../../components/LinkEntitiesModal"
+import { OptionsType } from "../../types/FormTypes"
+import { riderFactory } from "./RiderFactory"
 import GuardianRow from "../Guardians/GuardianRow"
 
-interface RidersGuardiansProps {
+interface GuardianRidersProps {
     organizationId: string
+    rider: RiderType
 }
 
-const RidersGuardians = ({ organizationId }: RidersGuardiansProps) => {
+const GuardiansRiders = ({ organizationId, rider }: GuardianRidersProps) => {
     const [guardians, setGuardians] = useState<GuardianType[]>([])
     const [allGuardians, setAllGuardians] = useState<OptionsType[]>([])
     const [showModal, setShowModal] = useState<boolean>(false)
-    const { id: riderId } = useParams()
+    const { id: riderId } = rider
     const roleContext = useContext(RoleContext)
 
     useEffect(() => {
@@ -27,8 +28,8 @@ const RidersGuardians = ({ organizationId }: RidersGuardiansProps) => {
     }, [roleContext.token, organizationId])
 
     const updateGuardians = async () => {
-        if (riderId) {
-            const guardianData = await getGuardiansForRider(roleContext.token, riderId)
+        if (rider) {
+            const guardianData = await getBulkGuardiansById(roleContext.token, rider.guardianRiderLinks)
             setGuardians(guardianData)
         }
     }
@@ -37,8 +38,8 @@ const RidersGuardians = ({ organizationId }: RidersGuardiansProps) => {
         const guardianData = await getGuardiansForOrganization(roleContext.token, organizationId)
 
         try {
-            const mapped = guardianData.map((g: GuardianType) => {
-                return { label: `${g.firstName} ${g.lastName}`, id: g.id }
+            const mapped = guardianData.map((r: RiderType) => {
+                return { label: `${r.firstName} ${r.lastName}`, id: r.id }
             })
             
             setAllGuardians(mapped)
@@ -51,37 +52,44 @@ const RidersGuardians = ({ organizationId }: RidersGuardiansProps) => {
         setShowModal((c) => !c)
     }
 
-    const submitAction = async (badEntity: GuardianRiderLinkType) => {
+    const submitAction = async (updatedRider: RiderType) => {
         toggleShowModal()
-        // fix entity generation
-        const newEntity = generateEntity(badEntity)
-        await createGuardianRiderLink(roleContext.token, newEntity)
+        await updateRider(roleContext.token, updatedRider)
+        const guardianToBeUpdated = updatedRider.guardianRiderLinks.pop();
+
+        if (guardianToBeUpdated) {
+            const updatedGuardian = await generateUpdatedGuardian(guardianToBeUpdated)
+            await updateGuardian(roleContext.token, updatedGuardian)
+        }
+
         updateGuardians()
     }
 
-    const generateEntity = (entity: GuardianRiderLinkType) => {
-        // guardian id is not the sk, but the factory puts it in the sk position
-        const args = [entity.id, entity.organizationId, `Rider#${riderId}`, `Guardian#${entity.sk}`]
-        return guardianRiderLinkFactory(args)
+    const generateUpdatedGuardian = async (guardianId: string ) => {
+        const guardianToUpdate: GuardianType = await getGuardianById(roleContext.token, guardianId)
+        guardianToUpdate.guardianRiderLinks.push(riderId)
+        const newGuardianRiderLinks = guardianToUpdate.guardianRiderLinks.filter((g: string) => g !== "")
+        guardianToUpdate.guardianRiderLinks = newGuardianRiderLinks
+        return guardianToUpdate
     }
 
     return (
         <Box>
             <Modal open={showModal} onClose={toggleShowModal} sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                <AddEntityModal<GuardianRiderLinkType> 
-                    organizationId={organizationId}
+                <LinkEntitiesModal<RiderType> 
                     cancelAction={toggleShowModal}
-                    entityFactory={guardianRiderLinkFactory} 
-                    titleSingular='Guardian Rider Link'
+                    entity={rider}
+                    entityFactory={riderFactory} 
+                    title='Link Rider to a new Guardian'
                     submitAction={submitAction}
+                    submitButtonText="Create Link"
                     formDefaultValues={{inputs: [
-                        { name: "Organization Id", inputType: "select" },
                         { name: "Guardian", inputType: "select", options: allGuardians}
                     ]}}
                 />
             </Modal>
             <Typography variant="h2">Guardians</Typography>
-            {guardians.length > 0 && guardians.map((g) => <GuardianRow key={g.id} entity={g} />)}
+            {guardians.length > 0 ? guardians.map((g) => <GuardianRow key={g.id} entity={g} />) : <Typography>This rider has no guardians assigned.</Typography>}
             <Box marginTop='2rem'>
                 <Button variant='contained' onClick={toggleShowModal}>
                     <Box display='flex' flexDirection='row' justifyContent=''>
@@ -96,4 +104,4 @@ const RidersGuardians = ({ organizationId }: RidersGuardiansProps) => {
     )
 }
 
-export default RidersGuardians
+export default GuardiansRiders

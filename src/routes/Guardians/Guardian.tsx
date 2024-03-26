@@ -17,9 +17,8 @@ const Guardian = () => {
 
     const getGuardianData = async () => {
         if (id) {
-            const rawGuardianData = await getGuardianById(roleContext.token, id)
             try {
-                const guardianData = await rawGuardianData.json()
+                const guardianData = await getGuardianById(roleContext.token, id)
                 setGuardian(guardianData)
             } catch {
                 console.error('Error setting guardian')
@@ -31,7 +30,7 @@ const Guardian = () => {
         <Box height='100%'>
             <Typography>Guardian Name: {guardian?.firstName} {guardian?.lastName}</Typography>
             <Typography>Organization: {guardian?.organizationId}</Typography>
-            <GuardiansRiders organizationId={guardian?.organizationId ?? ''} />
+            {guardian ? <GuardiansRiders organizationId={guardian?.organizationId ?? ''} guardian={guardian} /> : null}
         </Box>
     )
 }

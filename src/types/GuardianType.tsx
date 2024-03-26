@@ -3,4 +3,5 @@ export interface GuardianType {
     firstName: string
     lastName: string
     organizationId: string
+    guardianRiderLinks: string[]
 }

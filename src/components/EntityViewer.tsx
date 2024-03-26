@@ -9,7 +9,8 @@ import { GuardianType } from "../types/GuardianType"
 import { OrganizationType } from "../types/OrganizationType"
 import { RiderType } from "../types/RiderType"
 import { ScanType } from "../types/ScanType"
-import AddEntityModal, { FormData } from "./AddEntityModal"
+import AddEntityModal from "./AddEntityModal"
+import { FormDataType } from "../types/FormTypes"
 
 export interface ModalProps<T> {
     cancelAction: () => void
@@ -27,7 +28,7 @@ interface EntityViewerProps<T> {
     fetchForOrg?: boolean
     entityFactory: (args: string[]) => T
     getEntities(_token: string, id?: string): Promise<T[]>
-    modalFormInputs?: FormData
+    modalFormInputs?: FormDataType
     Row: ComponentType<RowProps<T>>
     titleSingular: string
     titlePlural: string

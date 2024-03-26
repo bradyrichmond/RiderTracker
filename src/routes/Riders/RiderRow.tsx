@@ -17,7 +17,7 @@ const RiderRow = ({ entity }: RiderRowProps) => {
             </Box>
             <Box padding='2rem'>
                 <Typography>{entity.lastName}</Typography>
-            </Box>            
+            </Box>
         </Box>
     )
 }

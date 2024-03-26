@@ -17,8 +17,7 @@ const Rider = () => {
 
     const getRiderData = async () => {
         if (id) {
-            const rawRiderData = await getRiderById(roleContext.token, id)
-            const riderData = await rawRiderData.json()
+            const riderData = await getRiderById(roleContext.token, id)
             setRider(riderData)
         }
     }
@@ -27,7 +26,7 @@ const Rider = () => {
         <Box height='100%'>
             <Typography>Rider Name: {rider?.firstName} {rider?.lastName}</Typography>
             <Typography>Organization: {rider?.organizationId}</Typography>
-            <RidersGuardians organizationId={rider?.organizationId ?? ''}/>
+            {rider ? <RidersGuardians organizationId={rider?.organizationId ?? ''} rider={rider} /> : null}
         </Box>
     )
 }

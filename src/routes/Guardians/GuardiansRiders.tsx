@@ -1,24 +1,25 @@
 import { Box, Button, Typography, Modal } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
 import { RoleContext } from "../../contexts/RoleContext"
-import { createGuardianRiderLink, getRidersForGuardian, getRidersForOrganization } from "../../API"
+import { getRiderById, getBulkRidersById, getRidersForOrganization, updateRider, updateGuardian } from "../../API"
 import { RiderType } from "../../types/RiderType"
 import RiderRow from "../Riders/RiderRow"
-import LinkIcon from '@mui/icons-material/Link';
-import AddEntityModal, { OptionsType } from "../../components/AddEntityModal"
-import { guardianRiderLinkFactory } from "./GuardianRiderLinkFactory"
-import { GuardianRiderLinkType } from "../../types/GuardianRiderLinkType"
+import LinkIcon from '@mui/icons-material/Link'
+import { GuardianType } from "../../types/GuardianType"
+import LinkEntitiesModal from "../../components/LinkEntitiesModal"
+import { guardianFactory } from "./GuardianFactory"
+import { OptionsType } from "../../types/FormTypes"
 
 interface GuardianRidersProps {
-    organizationId: string
+    organizationId: string,
+    guardian: GuardianType
 }
 
-const GuardiansRiders = ({ organizationId }: GuardianRidersProps) => {
+const GuardiansRiders = ({ organizationId, guardian }: GuardianRidersProps) => {
     const [riders, setRiders] = useState<RiderType[]>([])
     const [allRiders, setAllRiders] = useState<OptionsType[]>([])
     const [showModal, setShowModal] = useState<boolean>(false)
-    const { id: guardianId } = useParams()
+    const { id: guardianId } = guardian
     const roleContext = useContext(RoleContext)
 
     useEffect(() => {
@@ -28,7 +29,9 @@ const GuardiansRiders = ({ organizationId }: GuardianRidersProps) => {
 
     const updateRiders = async () => {
         if (guardianId) {
-            const riderData = await getRidersForGuardian(roleContext.token, guardianId)
+            // Make sure there are no empty strings in the existing links
+            const filteredRiderIds = guardian.guardianRiderLinks.filter((r) => r !== "")
+            const riderData = await getBulkRidersById(roleContext.token, filteredRiderIds)
             setRiders(riderData)
         }
     }
@@ -51,30 +54,38 @@ const GuardiansRiders = ({ organizationId }: GuardianRidersProps) => {
         setShowModal((c) => !c)
     }
 
-    const submitAction = async (badEntity: GuardianRiderLinkType) => {
+    const submitAction = async (updatedGuardian: GuardianType) => {
         toggleShowModal()
-        // fix entity generation
-        const newEntity = generateEntity(badEntity)
-        await createGuardianRiderLink(roleContext.token, newEntity)
+        await updateGuardian(roleContext.token, updatedGuardian)
+        const riderToBeUpdated = updatedGuardian.guardianRiderLinks.pop();
+
+        if (riderToBeUpdated) {
+            const updatedRider = await generateUpdatedRider(riderToBeUpdated)
+            await updateRider(roleContext.token, updatedRider)
+        }
+
         updateRiders()
     }
 
-    const generateEntity = (entity: GuardianRiderLinkType) => {
-        const args = [entity.id, entity.organizationId, `Rider#${entity.sk}`, `Guardian#${guardianId}`]
-        return guardianRiderLinkFactory(args)
+    const generateUpdatedRider = async (riderId: string) => {
+        const riderToUpdate = await getRiderById(roleContext.token, riderId)
+        riderToUpdate.guardianRiderLinks.push(guardianId)
+        const newGuardianRiderLinks = riderToUpdate.filter((r: string) => r !== "")
+        riderToUpdate.guardianRiderLinks = newGuardianRiderLinks
+        return riderToUpdate
     }
 
     return (
         <Box>
             <Modal open={showModal} onClose={toggleShowModal} sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                <AddEntityModal<GuardianRiderLinkType> 
-                    organizationId={organizationId}
+                <LinkEntitiesModal<GuardianType> 
                     cancelAction={toggleShowModal}
-                    entityFactory={guardianRiderLinkFactory} 
-                    titleSingular='Guardian Rider Link'
+                    entity={guardian}
+                    entityFactory={guardianFactory} 
+                    title='Link Guardian to a new Rider'
                     submitAction={submitAction}
+                    submitButtonText="Create Link"
                     formDefaultValues={{inputs: [
-                        { name: "Organization Id", inputType: "select" },
                         { name: "Rider", inputType: "select", options: allRiders}
                     ]}}
                 />
