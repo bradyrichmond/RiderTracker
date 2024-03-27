@@ -1,7 +1,7 @@
 import { Box, Button, Tooltip, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
 import { RoleContext } from "../../contexts/RoleContext"
-import { getGuardiansForOrganization } from "../../API"
+import { deleteGuardian, getGuardiansForOrganization } from "../../API"
 import { useNavigate, useParams } from "react-router-dom"
 import { GuardianType } from "../../types/GuardianType"
 import { DataGrid } from '@mui/x-data-grid'
@@ -28,14 +28,15 @@ const OrganizationGuardians = () => {
         navigate(`/guardians/${id}`)
     }
     
-    const deleteGuardian = (id: string) => {
-        console.log(`delete ${id}`)
+    const deleteGuardianAction = async (id: string) => {
+        await deleteGuardian(roleContext.token, id)
+        updateGuardians()
     }
 
     return (
-        <Box>
+        <Box minHeight='300px'>
             <Typography variant="h2">Guardians</Typography>
-            <DataGrid rows={guardians} columns={[
+            <DataGrid hideFooterPagination autoHeight rows={guardians} columns={[
                 { field: 'firstName',  headerName: 'First Name', flex: 1},
                 { field: 'lastName',  headerName: 'Last Name', flex: 1},
                 { field: 'viewDetails', headerName: '', flex: 1, renderCell: (params) => {
@@ -54,7 +55,7 @@ const OrganizationGuardians = () => {
                         <Button
                             variant="contained"
                             size="small"
-                            onClick={() => deleteGuardian(params.row.id)}
+                            onClick={() => deleteGuardianAction(params.row.id)}
                         >
                             <Tooltip title='Delete Guardian?'>
                                 <PersonRemoveIcon />

@@ -1,7 +1,7 @@
 import { Box, Button, Tooltip, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
 import { RoleContext } from "../../contexts/RoleContext"
-import { getRidersForOrganization } from "../../API"
+import { deleteRider, getRidersForOrganization } from "../../API"
 import { RiderType } from "../../types/RiderType"
 import { useNavigate, useParams } from "react-router-dom"
 import { DataGrid } from '@mui/x-data-grid'
@@ -28,14 +28,15 @@ const OrganizationRiders = () => {
         navigate(`/riders/${id}`)
     }
 
-    const deleteRider = (id: string) => {
-        console.log(`Deleting rider ${id}`)
+    const deleteRiderAction = async (id: string) => {
+        await deleteRider(roleContext.token, id)
+        updateRiders()
     }
 
     return (
-        <Box>
+        <Box minHeight='300px'>
             <Typography variant="h2">Riders</Typography>
-            <DataGrid rows={riders} columns={[
+            <DataGrid hideFooterPagination autoHeight rows={riders} columns={[
                 { field: 'firstName',  headerName: 'First Name', flex: 1},
                 { field: 'lastName',  headerName: 'Last Name', flex: 1},
                 { field: 'viewDetails', headerName: '', flex: 1, renderCell: (params) => {
@@ -54,7 +55,7 @@ const OrganizationRiders = () => {
                         <Button
                             variant="contained"
                             size="small"
-                            onClick={() => deleteRider(params.row.id)}
+                            onClick={() => deleteRiderAction(params.row.id)}
                         >
                             <Tooltip title='Delete Guardian?'>
                                 <PersonRemoveIcon />

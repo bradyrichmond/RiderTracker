@@ -98,6 +98,30 @@ export const createBus = async (token: string, body: BusType) => {
     }
 }
 
+export const deleteBus = async (token: string, id: string) => {
+    if (!token) {
+        console.error('Missing token')
+        return new Response()
+    }
+
+    try {
+        const busesData = await fetch(`${BASE_NAME}/buses/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token
+            }
+        })
+
+        const buses = await busesData.json()
+
+        return buses
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return new Response()
+    }
+}
+
 export const getDrivers = async (token: string) => {
     if (!token) {
         console.error('Missing token')
@@ -182,6 +206,30 @@ export const createDriver = async (token: string, body: DriverType) => {
 
 
         const drivers = driversData.json()
+
+        return drivers
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return new Response()
+    }
+}
+
+export const deleteDriver = async (token: string, id: string) => {
+    if (!token) {
+        console.error('Missing token')
+        return new Response()
+    }
+
+    try {
+        const driversData = await fetch(`${BASE_NAME}/drivers/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token
+            }
+        })
+
+        const drivers = await driversData.json()
 
         return drivers
     } catch (e) {
@@ -333,6 +381,30 @@ export const createGuardian = async (token: string, body: GuardianType) => {
     }
 }
 
+export const deleteGuardian = async (token: string, id: string) => {
+    if (!token) {
+        console.error('Missing token')
+        return new Response()
+    }
+
+    try {
+        const guradianData = await fetch(`${BASE_NAME}/guradians/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token
+            }
+        })
+
+        const guradian = await guradianData.json()
+
+        return guradian
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return new Response()
+    }
+}
+
 export const getOrganizations = async (token: string) => {
     if (!token) {
         console.error('Missing token')
@@ -387,6 +459,30 @@ export const createOrganization = async (token: string, body: OrganizationType) 
         const organizationsData = await fetch(`${BASE_NAME}/organizations`, {
             method: 'POST',
             body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token
+            }
+        })
+
+        const organizations = await organizationsData.json()
+
+        return organizations
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return new Response()
+    }
+}
+
+export const deleteOrganization = async (token: string, id: string) => {
+    if (!token) {
+        console.error('Missing token')
+        return new Response()
+    }
+
+    try {
+        const organizationsData = await fetch(`${BASE_NAME}/organizations/${id}`, {
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': token
@@ -545,6 +641,30 @@ export const createRider = async (token: string, body: RiderType) => {
     }
 }
 
+export const deleteRider = async (token: string, id: string) => {
+    if (!token) {
+        console.error('Missing token')
+        return new Response()
+    }
+
+    try {
+        const ridersData = await fetch(`${BASE_NAME}/riders/${id}`, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token
+            }
+        })
+
+        const riders = await ridersData.json()
+
+        return riders
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return new Response()
+    }
+}
+
 export const getScans = async (token: string) => {
     if (!token) {
         console.error('Missing token')
@@ -577,6 +697,30 @@ export const createScan = async (token: string, body: ScanType) => {
         const scansData = await fetch(`${BASE_NAME}/scans`, {
             method: 'POST',
             body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': token
+            }
+        })
+
+        const scans = await scansData.json()
+
+        return scans
+    } catch (e) {
+        console.error(JSON.stringify(e))
+        return new Response()
+    }
+}
+
+export const deleteScan = async (token: string, id: string) => {
+    if (!token) {
+        console.error('Missing token')
+        return new Response()
+    }
+
+    try {
+        const scansData = await fetch(`${BASE_NAME}/scans/${id}`, {
+            method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': token
