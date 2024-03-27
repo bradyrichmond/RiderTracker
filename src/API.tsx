@@ -14,11 +14,13 @@ export const getBuses = async (token: string) => {
     }
 
     try {
-        const buses = await fetch(`${BASE_NAME}/buses`, {
+        const busesData = await fetch(`${BASE_NAME}/buses`, {
             headers: {
                 'Authorization': token
             }
         })
+
+        const buses = await busesData.json()
 
         return buses
     } catch (e) {
@@ -34,11 +36,13 @@ export const getBusById = async (token: string, busId: string) => {
     }
 
     try {
-        const bus = await fetch(`${BASE_NAME}/buses/${busId}`, {
+        const busData = await fetch(`${BASE_NAME}/buses/${busId}`, {
             headers: {
                 'Authorization': token
             }
         })
+
+        const bus = await busData.json()
 
         return bus
     } catch (e) {
@@ -54,11 +58,13 @@ export const getBusesForOrganization = async (token: string, organizationId: str
     }
 
     try {
-        const buses = await fetch(`${BASE_NAME}/organization/${organizationId}/buses`, {
+        const busesData = await fetch(`${BASE_NAME}/organization/${organizationId}/buses`, {
             headers: {
                 'Authorization': token
             }
         })
+
+        const buses = await busesData.json()
 
         return buses
     } catch (e) {
@@ -74,7 +80,7 @@ export const createBus = async (token: string, body: BusType) => {
     }
 
     try {
-        const buses = await fetch(`${BASE_NAME}/buses`, {
+        const busesData = await fetch(`${BASE_NAME}/buses`, {
             method: 'POST',
             body: JSON.stringify(body),
             headers: {
@@ -82,6 +88,8 @@ export const createBus = async (token: string, body: BusType) => {
                 'Authorization': token
             }
         })
+
+        const buses = await busesData.json()
 
         return buses
     } catch (e) {
@@ -97,11 +105,13 @@ export const getDrivers = async (token: string) => {
     }
 
     try {
-        const drivers = await fetch(`${BASE_NAME}/drivers`, {
+        const driversData = await fetch(`${BASE_NAME}/drivers`, {
             headers: {
                 'Authorization': token
             }
         })
+
+        const drivers = await driversData.json()
 
         return drivers
     } catch (e) {
@@ -117,11 +127,13 @@ export const getDriverById = async (token: string, id: string) => {
     }
 
     try {
-        const driver = await fetch(`${BASE_NAME}/drivers/${id}`, {
+        const driverData = await fetch(`${BASE_NAME}/drivers/${id}`, {
             headers: {
                 'Authorization': token
             }
         })
+
+        const driver = await driverData.json()
 
         return driver
     } catch (e) {
@@ -137,13 +149,15 @@ export const getDriversForOrganization = async (token: string, organizationId: s
     }
 
     try {
-        const guardians = await fetch(`${BASE_NAME}/organization/${organizationId}/drivers`, {
+        const driversData = await fetch(`${BASE_NAME}/organizations/${organizationId}/drivers`, {
             headers: {
                 'Authorization': token
             }
         })
 
-        return guardians
+        const drivers = await driversData.json()
+
+        return drivers
     } catch (e) {
         console.error(JSON.stringify(e))
         return new Response()
@@ -157,7 +171,7 @@ export const createDriver = async (token: string, body: DriverType) => {
     }
 
     try {
-        const drivers = await fetch(`${BASE_NAME}/drivers`, {
+        const driversData = await fetch(`${BASE_NAME}/drivers`, {
             method: 'POST',
             body: JSON.stringify(body),
             headers: {
@@ -165,6 +179,9 @@ export const createDriver = async (token: string, body: DriverType) => {
                 'Authorization': token
             }
         })
+
+
+        const drivers = driversData.json()
 
         return drivers
     } catch (e) {
@@ -180,11 +197,13 @@ export const getGuardians = async (token: string) => {
     }
 
     try {
-        const guardians = await fetch(`${BASE_NAME}/guardians`, {
+        const guardiansData = await fetch(`${BASE_NAME}/guardians`, {
             headers: {
                 'Authorization': token
             }
         })
+
+        const guardians = await guardiansData.json()
 
         return guardians
     } catch (e) {
@@ -200,13 +219,13 @@ export const getGuardianById = async (token: string, id: string) => {
     }
 
     try {
-        const guardianRaw = await fetch(`${BASE_NAME}/guardians/${id}`, {
+        const guardianData = await fetch(`${BASE_NAME}/guardians/${id}`, {
             headers: {
                 'Authorization': token
             }
         })
 
-        const guardian = await guardianRaw.json()
+        const guardian = await guardianData.json()
 
         return guardian
     } catch (e) {
@@ -222,13 +241,13 @@ export const getGuardiansForOrganization = async (token: string, organizationId:
     }
 
     try {
-        const guardiansRaw = await fetch(`${BASE_NAME}/organizations/${organizationId}/guardians`, {
+        const guardiansData = await fetch(`${BASE_NAME}/organizations/${organizationId}/guardians`, {
             headers: {
                 'Authorization': token
             }
         })
 
-        const guardians = await guardiansRaw.json()
+        const guardians = await guardiansData.json()
 
         return guardians
     } catch (e) {
@@ -244,7 +263,7 @@ export const getBulkGuardiansById = async (token: string, guardianIds: string[])
     }
 
     try {
-        const guardiansRaw = await fetch(`${BASE_NAME}/guardians/batchGetById`, {
+        const guardiansData = await fetch(`${BASE_NAME}/guardians/batchGetById`, {
             method: 'POST',
             body: JSON.stringify(guardianIds),
             headers: {
@@ -253,9 +272,9 @@ export const getBulkGuardiansById = async (token: string, guardianIds: string[])
             }
         })
 
-        const guardiansText = await guardiansRaw.text()
+        const guardiansText = await guardiansData.text()
 
-        const guardians = JSON.parse(guardiansText)
+        const guardians = await JSON.parse(guardiansText)
 
         return guardians
     } catch (e) {
@@ -271,7 +290,7 @@ export const updateGuardian = async (token: string, guardian: GuardianType) => {
     }
 
     try {
-        const guardiansRaw = await fetch(`${BASE_NAME}/guardians/${guardian.id}`, {
+        const guardiansData = await fetch(`${BASE_NAME}/guardians/${guardian.id}`, {
             method: 'PUT',
             body: JSON.stringify(guardian),
             headers: {
@@ -280,7 +299,7 @@ export const updateGuardian = async (token: string, guardian: GuardianType) => {
             }
         })
 
-        const guardians = await guardiansRaw.json()
+        const guardians = await guardiansData.json()
 
         return guardians
     } catch (e) {
@@ -296,7 +315,7 @@ export const createGuardian = async (token: string, body: GuardianType) => {
     }
 
     try {
-        const guardians = await fetch(`${BASE_NAME}/guardians`, {
+        const guardiansData = await fetch(`${BASE_NAME}/guardians`, {
             method: 'POST',
             body: JSON.stringify(body),
             headers: {
@@ -304,6 +323,8 @@ export const createGuardian = async (token: string, body: GuardianType) => {
                 'Authorization': token
             }
         })
+
+        const guardians = await guardiansData.json()
 
         return guardians
     } catch (e) {
@@ -319,11 +340,13 @@ export const getOrganizations = async (token: string) => {
     }
 
     try {
-        const organizations = await fetch(`${BASE_NAME}/organizations`, {
+        const organizationsData = await fetch(`${BASE_NAME}/organizations`, {
             headers: {
                 'Authorization': token
             }
         })
+
+        const organizations = organizationsData.json()
 
         return organizations
     } catch (e) {
@@ -361,7 +384,7 @@ export const createOrganization = async (token: string, body: OrganizationType) 
     }
 
     try {
-        const organizations = await fetch(`${BASE_NAME}/organizations`, {
+        const organizationsData = await fetch(`${BASE_NAME}/organizations`, {
             method: 'POST',
             body: JSON.stringify(body),
             headers: {
@@ -369,6 +392,8 @@ export const createOrganization = async (token: string, body: OrganizationType) 
                 'Authorization': token
             }
         })
+
+        const organizations = await organizationsData.json()
 
         return organizations
     } catch (e) {
@@ -384,11 +409,13 @@ export const getRiders = async (token: string) => {
     }
 
     try {
-        const riders = await fetch(`${BASE_NAME}/riders`, {
+        const ridersData = await fetch(`${BASE_NAME}/riders`, {
             headers: {
                 'Authorization': token
             }
         })
+
+        const riders = await ridersData.json()
 
         return riders
     } catch (e) {
@@ -410,7 +437,7 @@ export const getRiderById = async (token: string, id: string) => {
             }
         })
 
-        const rider = riderRaw.json()
+        const rider = await riderRaw.json()
 
         return rider
     } catch (e) {
@@ -500,7 +527,7 @@ export const createRider = async (token: string, body: RiderType) => {
     }
 
     try {
-        const riders = await fetch(`${BASE_NAME}/riders`, {
+        const ridersData = await fetch(`${BASE_NAME}/riders`, {
             method: 'POST',
             body: JSON.stringify(body),
             headers: {
@@ -508,6 +535,8 @@ export const createRider = async (token: string, body: RiderType) => {
                 'Authorization': token
             }
         })
+
+        const riders = await ridersData.json()
 
         return riders
     } catch (e) {
@@ -523,11 +552,13 @@ export const getScans = async (token: string) => {
     }
 
     try {
-        const scans = await fetch(`${BASE_NAME}/scans`, {
+        const scansData = await fetch(`${BASE_NAME}/scans`, {
             headers: {
                 'Authorization': token
             }
         })
+
+        const scans = await scansData.json()
 
         return scans
     } catch (e) {
@@ -543,7 +574,7 @@ export const createScan = async (token: string, body: ScanType) => {
     }
 
     try {
-        const scans = await fetch(`${BASE_NAME}/scans`, {
+        const scansData = await fetch(`${BASE_NAME}/scans`, {
             method: 'POST',
             body: JSON.stringify(body),
             headers: {
@@ -551,6 +582,8 @@ export const createScan = async (token: string, body: ScanType) => {
                 'Authorization': token
             }
         })
+
+        const scans = await scansData.json()
 
         return scans
     } catch (e) {
