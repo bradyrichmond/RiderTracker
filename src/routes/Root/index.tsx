@@ -5,7 +5,7 @@ import BottomNav from "../../components/Navigation"
 const Root = () => {
     return (
         <Box display='flex' flexDirection='column' height='100%'>
-            <Box flex='1' display='flex' padding='2rem'>
+            <Box flex='1' display='flex' padding='2rem' width='100%'>
                 <Outlet />
             </Box>
             <Box>

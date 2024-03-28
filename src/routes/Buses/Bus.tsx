@@ -16,8 +16,7 @@ const Bus = () => {
 
     const getBusData = async () => {
         if (id) {
-            const rawBusData = await getBusById(roleContext.token, id)
-            const busData = await rawBusData.json()
+            const busData = await getBusById(roleContext.token, id)
             setBus(busData)
         }
     }

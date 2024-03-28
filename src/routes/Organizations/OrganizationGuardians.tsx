@@ -6,6 +6,7 @@ import { useNavigate, useParams } from "react-router-dom"
 import { GuardianType } from "../../types/GuardianType"
 import { DataGrid } from '@mui/x-data-grid'
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
+import InfoIcon from '@mui/icons-material/Info'
 
 const OrganizationGuardians = () => {
     const [guardians, setGuardians] = useState<GuardianType[]>([])
@@ -45,8 +46,10 @@ const OrganizationGuardians = () => {
                             variant="contained"
                             size="small"
                             onClick={() => showGuardianDetails(params.row.id)}
-                            >
-                            View Details
+                        >
+                            <Tooltip title='View Details'>
+                                <InfoIcon />
+                            </Tooltip>
                         </Button>
                     )
                 }},

@@ -16,8 +16,7 @@ const Driver = () => {
 
     const getDriverData = async () => {
         if (id) {
-            const rawDriverData = await getDriverById(roleContext.token, id)
-            const driverData = await rawDriverData.json()
+            const driverData = await getDriverById(roleContext.token, id)
             setDriver(driverData)
         }
     }

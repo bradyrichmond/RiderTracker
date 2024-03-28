@@ -1,4 +1,4 @@
-import { Box, Button, Typography, Modal } from "@mui/material"
+import { Box, Button, Typography, Modal, Tooltip } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
 import { RoleContext } from "../../contexts/RoleContext"
 import { updateRider, updateGuardian, getGuardiansForOrganization, getBulkGuardiansById, getGuardianById } from "../../API"
@@ -8,7 +8,10 @@ import { GuardianType } from "../../types/GuardianType"
 import LinkEntitiesModal from "../../components/LinkEntitiesModal"
 import { OptionsType } from "../../types/FormTypes"
 import { riderFactory } from "./RiderFactory"
-import GuardianRow from "../Guardians/GuardianRow"
+import { DataGrid } from '@mui/x-data-grid'
+import { useNavigate } from "react-router-dom"
+import LinkOffIcon from '@mui/icons-material/LinkOff'
+import InfoIcon from '@mui/icons-material/Info'
 
 interface GuardianRidersProps {
     organizationId: string
@@ -22,6 +25,7 @@ const GuardiansRiders = ({ organizationId, rider, getRiderData }: GuardianRiders
     const [showModal, setShowModal] = useState<boolean>(false)
     const { id: riderId } = rider
     const roleContext = useContext(RoleContext)
+    const navigate = useNavigate()
 
     useEffect(() => {
         updateGuardians()
@@ -94,7 +98,11 @@ const GuardiansRiders = ({ organizationId, rider, getRiderData }: GuardianRiders
         const newLinks = guardianToUpdate.guardianRiderLinks.filter((r) => r !== riderId)
         guardianToUpdate.guardianRiderLinks = newLinks.length > 0 ? newLinks : [""]
         await updateGuardian(roleContext.token, guardianToUpdate)
-    }    
+    }
+
+    const viewGuardianDetails = (guardianId: string) => {
+        navigate(`/guardians/${guardianId}`)
+    }
 
     return (
         <Box>
@@ -112,7 +120,36 @@ const GuardiansRiders = ({ organizationId, rider, getRiderData }: GuardianRiders
                 />
             </Modal>
             <Typography variant="h2">Guardians</Typography>
-            {guardians.length > 0 ? guardians.map((g) => <GuardianRow key={g.id} entity={g} deleteAction={deleteGuardianLink} />) : <Typography>This rider has no guardians assigned.</Typography>}
+            <DataGrid hideFooterPagination autoHeight rows={guardians} columns={[
+                { field: 'firstName',  headerName: 'First Name', flex: 1},
+                { field: 'lastName',  headerName: 'Last Name', flex: 1},
+                { field: 'viewDetails', headerName: '', flex: 1, renderCell: (params) => {
+                    return (
+                        <Button
+                            variant="contained"
+                            size="small"
+                            onClick={() => viewGuardianDetails(params.row.id)}
+                        >
+                            <Tooltip title='View Details'>
+                                <InfoIcon />
+                            </Tooltip>
+                        </Button>
+                    )
+                }},
+                { field: 'delete', headerName: '', flex: 1, renderCell: (params) => {
+                    return (
+                        <Button
+                            variant="contained"
+                            size="small"
+                            onClick={() => deleteGuardianLink(params.row.id)}
+                        >
+                            <Tooltip title='Remove guardian from rider'>
+                                <LinkOffIcon />
+                            </Tooltip>
+                        </Button>
+                    )
+                }}
+            ]} />
             <Box marginTop='2rem'>
                 <Button variant='contained' onClick={toggleShowModal}>
                     <Box display='flex' flexDirection='row' justifyContent=''>

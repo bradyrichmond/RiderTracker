@@ -6,6 +6,7 @@ import { RiderType } from "../../types/RiderType"
 import { useNavigate, useParams } from "react-router-dom"
 import { DataGrid } from '@mui/x-data-grid'
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
+import InfoIcon from '@mui/icons-material/Info'
 
 const OrganizationRiders = () => {
     const [riders, setRiders] = useState<RiderType[]>([])
@@ -45,8 +46,10 @@ const OrganizationRiders = () => {
                             variant="contained"
                             size="small"
                             onClick={() => showRiderDetails(params.row.id)}
-                            >
-                            View Details
+                        >
+                            <Tooltip title='View Details'>
+                                <InfoIcon />
+                            </Tooltip>
                         </Button>
                     )
                 }},

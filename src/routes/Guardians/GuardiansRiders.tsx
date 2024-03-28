@@ -1,27 +1,31 @@
-import { Box, Button, Typography, Modal } from "@mui/material"
+import { Box, Button, Typography, Modal, Tooltip } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
 import { RoleContext } from "../../contexts/RoleContext"
-import { getRiderById, getBulkRidersById, getRidersForOrganization, updateRider, updateGuardian } from "../../API"
+import { updateRider, updateGuardian, getRidersForOrganization, getBulkRidersById, getRiderById } from "../../API"
 import { RiderType } from "../../types/RiderType"
-import RiderRow from "../Riders/RiderRow"
 import LinkIcon from '@mui/icons-material/Link'
 import { GuardianType } from "../../types/GuardianType"
 import LinkEntitiesModal from "../../components/LinkEntitiesModal"
-import { guardianFactory } from "./GuardianFactory"
 import { OptionsType } from "../../types/FormTypes"
+import { DataGrid } from '@mui/x-data-grid'
+import { useNavigate } from "react-router-dom"
+import LinkOffIcon from '@mui/icons-material/LinkOff'
+import InfoIcon from '@mui/icons-material/Info'
+import { guardianFactory } from "./GuardianFactory"
 
-interface GuardianRidersProps {
+interface RidersGuardiansProps {
     organizationId: string
     guardian: GuardianType
     getGuardianData(): Promise<void>
 }
 
-const GuardiansRiders = ({ organizationId, guardian, getGuardianData }: GuardianRidersProps) => {
+const GuardiansRiders = ({ organizationId, guardian, getGuardianData }: RidersGuardiansProps) => {
     const [riders, setRiders] = useState<RiderType[]>([])
     const [allRiders, setAllRiders] = useState<OptionsType[]>([])
     const [showModal, setShowModal] = useState<boolean>(false)
     const { id: guardianId } = guardian
     const roleContext = useContext(RoleContext)
+    const navigate = useNavigate()
 
     useEffect(() => {
         updateRiders()
@@ -31,10 +35,8 @@ const GuardiansRiders = ({ organizationId, guardian, getGuardianData }: Guardian
     const updateRiders = async () => {
         await getGuardianData()
 
-        if (guardianId) {
-            // Make sure there are no empty strings in the existing links
-            const filteredRiderIds = guardian.guardianRiderLinks.filter((r) => r !== "")
-            const riderData = await getBulkRidersById(roleContext.token, filteredRiderIds)
+        if (guardian) {
+            const riderData = await getBulkRidersById(roleContext.token, guardian.guardianRiderLinks)
             setRiders(riderData)
         }
     }
@@ -43,7 +45,7 @@ const GuardiansRiders = ({ organizationId, guardian, getGuardianData }: Guardian
         const riderData = await getRidersForOrganization(roleContext.token, organizationId)
 
         try {
-            const mapped = riderData.map((r: RiderType) => {
+            const mapped = riderData.map((r: GuardianType) => {
                 return { label: `${r.firstName} ${r.lastName}`, id: r.id }
             })
             
@@ -60,27 +62,27 @@ const GuardiansRiders = ({ organizationId, guardian, getGuardianData }: Guardian
     const submitAction = async (updatedGuardian: GuardianType) => {
         toggleShowModal()
         await updateGuardian(roleContext.token, updatedGuardian)
-        const riderToBeUpdated = updatedGuardian.guardianRiderLinks.pop();
+        const riderToBeUpdated = updatedGuardian.guardianRiderLinks.pop()
 
         if (riderToBeUpdated) {
-            const updatedRider = await generateRiderWithAddedGuardian(riderToBeUpdated)
+            const updatedRider = await generateUpdatedRider(riderToBeUpdated)
             await updateRider(roleContext.token, updatedRider)
         }
 
         updateRiders()
     }
 
-    const generateRiderWithAddedGuardian = async (riderId: string) => {
-        const riderToUpdate = await getRiderById(roleContext.token, riderId)
-        riderToUpdate.guardianRiderLinks.push(guardianId)
-        const newGuardianRiderLinks = riderToUpdate.guardianRiderLinks.filter((r: string) => r !== "")
-        riderToUpdate.guardianRiderLinks = newGuardianRiderLinks
-        return riderToUpdate
+    const generateUpdatedRider = async (riderId: string ) => {
+        const riderToBeUpdated: RiderType = await getRiderById(roleContext.token, riderId)
+        riderToBeUpdated.guardianRiderLinks.push(riderId)
+        const newGuardianRiderLinks = riderToBeUpdated.guardianRiderLinks.filter((g: string) => g !== "")
+        riderToBeUpdated.guardianRiderLinks = newGuardianRiderLinks
+        return riderToBeUpdated
     }
 
-    const deleteRiderLink = async (riderId: string) => {
-        await removeRiderFromGuardian(riderId)
-        await removeGuardianFromRider(riderId)
+    const deleteGuardianLink = async (guardianId: string) => {
+        await removeGuardianFromRider(guardianId)
+        await removeRiderFromGuardian(guardianId)
         updateRiders()
     }
 
@@ -88,20 +90,24 @@ const GuardiansRiders = ({ organizationId, guardian, getGuardianData }: Guardian
         const newGuardian = guardian;
         const newLinks = newGuardian.guardianRiderLinks.filter((r) => r !== riderId)
         newGuardian.guardianRiderLinks = newLinks.length > 0 ? newLinks : [""]
-        await updateGuardian(roleContext.token, newGuardian)
+        await updateRider(roleContext.token, newGuardian)
     }
 
     const removeGuardianFromRider = async (riderId: string) => {
-        const riderToUpdate: RiderType = await getRiderById(roleContext.token, riderId)
-        const newLinks = riderToUpdate.guardianRiderLinks.filter((g) => g !== guardianId)
-        riderToUpdate.guardianRiderLinks = newLinks.length > 0 ? newLinks : [""]
-        await updateRider(roleContext.token, riderToUpdate)
+        const riderToBeUpdated: RiderType = await getRiderById(roleContext.token, riderId)
+        const newLinks = riderToBeUpdated.guardianRiderLinks.filter((g) => g !== guardianId)
+        riderToBeUpdated.guardianRiderLinks = newLinks.length > 0 ? newLinks : [""]
+        await updateRider(roleContext.token, riderToBeUpdated)
+    }
+
+    const viewRiderDetails = (riderId: string) => {
+        navigate(`/riders/${riderId}`)
     }
 
     return (
         <Box>
             <Modal open={showModal} onClose={toggleShowModal} sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                <LinkEntitiesModal<GuardianType> 
+                <LinkEntitiesModal<RiderType> 
                     cancelAction={toggleShowModal}
                     entity={guardian}
                     entityFactory={guardianFactory} 
@@ -109,18 +115,47 @@ const GuardiansRiders = ({ organizationId, guardian, getGuardianData }: Guardian
                     submitAction={submitAction}
                     submitButtonText="Create Link"
                     formDefaultValues={{inputs: [
-                        { name: "Rider", inputType: "select", options: allRiders}
+                        { name: "Guardian", inputType: "select", options: allRiders}
                     ]}}
                 />
             </Modal>
             <Typography variant="h2">Riders</Typography>
-            {riders.length > 0 && riders.map((r) => <RiderRow key={r.id} entity={r} deleteAction={deleteRiderLink} deleteTooltipTitle="Remove this rider guardian link" />)}
+            <DataGrid hideFooterPagination autoHeight rows={riders} columns={[
+                { field: 'firstName',  headerName: 'First Name', flex: 1},
+                { field: 'lastName',  headerName: 'Last Name', flex: 1},
+                { field: 'viewDetails', headerName: '', flex: 1, renderCell: (params) => {
+                    return (
+                        <Button
+                            variant="contained"
+                            size="small"
+                            onClick={() => viewRiderDetails(params.row.id)}
+                        >
+                            <Tooltip title='View Details'>
+                                <InfoIcon />
+                            </Tooltip>
+                        </Button>
+                    )
+                }},
+                { field: 'delete', headerName: '', flex: 1, renderCell: (params) => {
+                    return (
+                        <Button
+                            variant="contained"
+                            size="small"
+                            onClick={() => deleteGuardianLink(params.row.id)}
+                        >
+                            <Tooltip title='Remove guardian from rider'>
+                                <LinkOffIcon />
+                            </Tooltip>
+                        </Button>
+                    )
+                }}
+            ]} />
             <Box marginTop='2rem'>
                 <Button variant='contained' onClick={toggleShowModal}>
                     <Box display='flex' flexDirection='row' justifyContent=''>
                         <LinkIcon />
                         <Box flex='1' marginLeft='1rem'>
-                            <Typography>Link Rider to this Guardian</Typography>
+                            <Typography>Link Guardian to this Rider</Typography>
                         </Box>
                     </Box>
                 </Button>

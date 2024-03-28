@@ -1,6 +1,6 @@
 import { Box, Button, Modal, Typography } from "@mui/material"
 import AddCircleIcon from '@mui/icons-material/AddCircle'
-import { ComponentType, useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { RoleContext } from "../contexts/RoleContext"
 import { useParams } from 'react-router-dom'
 import { BusType } from "../types/BusType"
@@ -11,6 +11,7 @@ import { RiderType } from "../types/RiderType"
 import { ScanType } from "../types/ScanType"
 import AddEntityModal from "./AddEntityModal"
 import { FormDataType } from "../types/FormTypes"
+import { DataGrid, GridColDef } from '@mui/x-data-grid'
 
 export interface ModalProps<T> {
     cancelAction: () => void
@@ -19,19 +20,14 @@ export interface ModalProps<T> {
     titleSingular: string
 }
 
-interface RowProps<T> {
-    entity: T
-    deleteAction?: () => {}
-    deleteTooltipTitle?: string
-}
-
 interface EntityViewerProps<T> {
     createEntity(_token: string, _body: T): Promise<Response>
     fetchForOrg?: boolean
     entityFactory: (args: string[]) => T 
-    getEntities(_token: string, id?: string): Promise<T[]>
+    getEntities(_token: string, id?: string): void
+    entities: T[]
     modalFormInputs?: FormDataType
-    Row: ComponentType<RowProps<T>>
+    gridColumns: GridColDef[]
     titleSingular: string
     titlePlural: string
 }
@@ -40,11 +36,10 @@ interface EntityViewerProps<T> {
 const EntityViewer = <T extends 
         BusType | DriverType | GuardianType | OrganizationType | RiderType | ScanType>(
     {
-        createEntity, entityFactory, getEntities, modalFormInputs, Row, titleSingular, titlePlural
+        createEntity, entityFactory, entities, getEntities, modalFormInputs, gridColumns, titleSingular, titlePlural
     }:EntityViewerProps<T>
 ) => {
-    const [showModal, setShowModal] = useState(false);
-    const [entities, setEntities] = useState<T[]>([])
+    const [showModal, setShowModal] = useState(false)
     const roleContext = useContext(RoleContext)
     const { id } = useParams()
 
@@ -52,9 +47,8 @@ const EntityViewer = <T extends
         updateEntities()
     }, [roleContext.token])
 
-    const updateEntities = async () => {
-        const newEntities = await getEntities(roleContext.token, id)
-        setEntities(newEntities)
+    const updateEntities = () => {
+        getEntities(roleContext.token, id)
     }
 
     const toggleShowModal = () => {
@@ -68,7 +62,7 @@ const EntityViewer = <T extends
     }
 
     return (
-        <Box height='100%' flexDirection='column'>
+        <Box height='100%' width='100%' flexDirection='column'>
             {modalFormInputs ?
                 <Modal open={showModal} onClose={toggleShowModal} sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                     <AddEntityModal<T> cancelAction={toggleShowModal} entityFactory={entityFactory} submitAction={submitAction} titleSingular={titleSingular} formDefaultValues={modalFormInputs} organizationId={id} />
@@ -82,11 +76,7 @@ const EntityViewer = <T extends
                 </Typography>
             </Box>
             <Box flex='1' borderTop='1px solid #000'>
-                {entities && entities.map((entity) => {
-                    return (
-                        <Row key={entity.id} entity={entity} />
-                    )
-                })}
+                <DataGrid autoHeight rows={entities} columns={gridColumns} />
             </Box>
             {modalFormInputs ? 
                 <Box padding='2rem'>
