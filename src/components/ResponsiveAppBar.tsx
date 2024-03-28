@@ -11,63 +11,10 @@ import Button from '@mui/material/Button'
 import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import AdbIcon from '@mui/icons-material/Adb'
-import DirectionsBusIcon from '@mui/icons-material/DirectionsBus'
-import WorkIcon from '@mui/icons-material/Work'
-import ChildCareIcon from '@mui/icons-material/ChildCare'
-import ArticleIcon from '@mui/icons-material/Article'
-import CorporateFareIcon from '@mui/icons-material/CorporateFare'
-import PersonIcon from '@mui/icons-material/Person'
-import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew'
-import { ComponentType, MouseEvent, useState } from 'react'
-import { NavItemType } from './NavigationDrawer'
+import { ComponentType, MouseEvent, useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { signOut } from 'aws-amplify/auth'
-
-interface SettingNavItemType extends NavItemType {
-    action?(): Promise<void>
-}
-
-const pages: NavItemType[] = [
-    {
-        path: '/buses',
-        label: 'Buses',
-        Icon: DirectionsBusIcon
-    },
-    {
-        path: '/drivers',
-        label: 'Drivers',
-        Icon: WorkIcon
-    },
-    {
-        path: '/guardians',
-        label: 'Guardians',
-        Icon: PersonIcon
-    },
-    {
-        path: '/organizations',
-        label: 'Organizations',
-        Icon: CorporateFareIcon
-    },
-    {
-        path: '/riders',
-        label: 'Riders',
-        Icon: ChildCareIcon
-    },
-    {
-        path: '/scans',
-        label: 'Scans',
-        Icon: ArticleIcon
-    },
-]
-
-const settings: SettingNavItemType[] = [
-    {
-        action: signOut,
-        label: 'Sign Out',
-        Icon: PowerSettingsNewIcon,
-        path: ''
-    }
-]
+import { RoleContext } from '../contexts/RoleContext'
+import { ROUTE_PROTECTION } from '../constants/RouteProtection'
 
 interface MenuItemWithIconProps {
     Icon: ComponentType
@@ -91,6 +38,10 @@ const ResponsiveAppBar = () => {
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null)
     const navigate = useNavigate()
+    const roleContext = useContext(RoleContext)
+    const routeProtection = ROUTE_PROTECTION.find((r) => r.name === roleContext.heaviestRole)
+    const pages = routeProtection?.navItems ?? []
+    const settings = routeProtection?.settingsItems ?? []
 
     const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget)
