@@ -1,4 +1,4 @@
-import { Box } from "@mui/material"
+import { Box, Container } from "@mui/material"
 import { Outlet } from "react-router-dom"
 import NavigationContainer from "../../components/NavigationContainer"
 
@@ -8,9 +8,11 @@ const Root = () => {
             <Box>
                 <NavigationContainer />
             </Box>
-            <Box flex='1' display='flex' padding='2rem' width='100%' overflow='auto'>
-                <Outlet />
-            </Box>
+            <Container sx={{mb: '2rem'}}>
+                <Box height='100%' sx={{overflow: 'auto'}}>
+                    <Outlet />
+                </Box>
+            </Container>
         </Box>
     )
 }

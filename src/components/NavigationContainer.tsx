@@ -1,20 +1,19 @@
-import MenuIcon from '@mui/icons-material/Menu'
-import { Box, Button } from '@mui/material'
-import { useState } from 'react'
+import { Box } from '@mui/material'
+import { ComponentType, useState } from 'react'
 import DirectionsBusIcon from '@mui/icons-material/DirectionsBus'
 import WorkIcon from '@mui/icons-material/Work'
 import ChildCareIcon from '@mui/icons-material/ChildCare'
 import ArticleIcon from '@mui/icons-material/Article'
 import CorporateFareIcon from '@mui/icons-material/CorporateFare'
 import PersonIcon from '@mui/icons-material/Person'
-import NavigationDrawer, { NavItemType } from './NavigationDrawer'
+import NavigationDrawer from './NavigationDrawer'
+import ResponsiveAppBar from './ResponsiveAppBar'
 
-{/* <NavLink path='/buses' icon={<DirectionsBusIcon />} label='Buses' /> */}
-//                 <NavLink path='/drivers' icon={<WorkIcon />} label='Drivers' />
-//                 <NavLink path='/guardians' icon={<PersonIcon />} label='Guardians' />
-//                 <NavLink path='/organizations' icon={<CorporateFareIcon />} label='Organizations' />
-//                 <NavLink path='/riders' icon={<ChildCareIcon />} label='Riders' />
-//                 <NavLink path='/scans' icon={<ArticleIcon />} label='Scans' />
+export interface NavItemType {
+    label: string
+    path: string
+    Icon: ComponentType
+}
 
 const navItems: NavItemType[] = [
     {
@@ -57,11 +56,12 @@ const NavigationContainer = () => {
     }
 
     return (
-        <Box width='100%' padding='2rem' display='flex' flexDirection='row' justifyContent='flex-end'>
+        <Box width='100%' display='flex' flexDirection='row' justifyContent='flex-end'>
             <NavigationDrawer toggleDrawer={toggleDrawer} open={open} navItems={navItems} />
-            <Button onClick={toggleDrawer}>
+            <ResponsiveAppBar />
+            {/* <Button onClick={toggleDrawer}>
                 <MenuIcon fontSize='large' />
-            </Button>
+            </Button> */}
         </Box>
     )
 }

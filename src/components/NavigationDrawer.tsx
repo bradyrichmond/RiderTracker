@@ -23,7 +23,7 @@ export interface NavItemType {
 const NavigationDrawer = ({ toggleDrawer, open, navItems }: NavigationDrawerProps) => {
     const navigate = useNavigate()
     return (
-        <Drawer anchor='right' open={open}>
+        <Drawer anchor='top' open={open}>
             <Box
                 sx={{ width: 250 }}
                 role="presentation"
