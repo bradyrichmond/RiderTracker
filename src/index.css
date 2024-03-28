@@ -26,3 +26,10 @@ html, body, #root {
 :any-link:hover {
   cursor: pointer;
 }
+
+*{
+  -ms-overflow-style: none;
+}
+::-webkit-scrollbar {
+  display: none;
+}

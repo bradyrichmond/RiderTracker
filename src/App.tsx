@@ -15,7 +15,7 @@ import ProtectedRoute from './routes/Protected/ProtectedRoute'
 import Unauthorized from './routes/Protected/Unauthorized'
 import { getHeaviestRole } from './helpers/GetHeaviestRole'
 import './index.css'
-import { Box } from '@mui/material'
+import { Container } from '@mui/material'
 import { RoleContext } from './contexts/RoleContext'
 import Scans from './routes/Scans'
 import Organizations from './routes/Organizations'
@@ -135,11 +135,11 @@ function App({ user }: AppProps) {
   }, [groups, heaviestRole])
 
   return (
-    <Box height='100%'>
+    <Container sx={{height: '100%'}}>
       <RoleContext.Provider value={{heaviestRole, setHeaviestRole, token: token?.toString() ?? '', setToken}}>
         {router ? <RouterProvider router={router} /> : null}
       </RoleContext.Provider>
-    </Box>
+    </Container>
   )
 }
 

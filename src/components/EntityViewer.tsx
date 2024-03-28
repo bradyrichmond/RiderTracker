@@ -62,7 +62,7 @@ const EntityViewer = <T extends
     }
 
     return (
-        <Box height='100%' width='100%' flexDirection='column'>
+        <Box height='100%' width='100%' display='flex' flexDirection='column'>
             {modalFormInputs ?
                 <Modal open={showModal} onClose={toggleShowModal} sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
                     <AddEntityModal<T> cancelAction={toggleShowModal} entityFactory={entityFactory} submitAction={submitAction} titleSingular={titleSingular} formDefaultValues={modalFormInputs} organizationId={id} />
@@ -70,28 +70,30 @@ const EntityViewer = <T extends
                 :
                 null
             }
-            <Box marginBottom='2rem'>
-                <Typography variant='h2'>
-                    {titlePlural}
-                </Typography>
-            </Box>
-            <Box flex='1' borderTop='1px solid #000'>
-                <DataGrid autoHeight rows={entities} columns={gridColumns} />
-            </Box>
-            {modalFormInputs ? 
-                <Box padding='2rem'>
-                    <Button variant='contained' onClick={toggleShowModal}>
-                        <Box display='flex' flexDirection='row' justifyContent=''>
-                            <AddCircleIcon />
-                            <Box flex='1' marginLeft='1rem'>
-                                <Typography>Add {titleSingular}</Typography>
-                            </Box>
-                        </Box>
-                    </Button>
+            <Box marginBottom='2rem' display='flex' flexDirection='row'>
+                <Box display='flex' justifyContent='center' alignItems='center'>
+                    <Typography variant='h2'>
+                        {titlePlural}
+                    </Typography>
                 </Box>
-                :
-                null
-            }
+                {modalFormInputs ? 
+                    <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
+                        <Button variant='contained' onClick={toggleShowModal}>
+                            <Box display='flex' flexDirection='row'>
+                                <AddCircleIcon />
+                                <Box flex='1' marginLeft='1rem'>
+                                    <Typography>Add {titleSingular}</Typography>
+                                </Box>
+                            </Box>
+                        </Button>
+                    </Box>
+                    :
+                    null
+                }
+            </Box>
+            <Box flex='1'>
+                <DataGrid rows={entities} columns={gridColumns} />
+            </Box>
         </Box>
     )
 }

@@ -45,7 +45,7 @@ const Buses = ({ fetchForOrg }: BusesProps) => {
             ]}}
             gridColumns={[
                 { field: 'id',  headerName: 'ID', flex: 1},
-                { field: 'viewDetails', headerName: '', flex: 1, renderCell: (params) => {
+                { field: 'viewDetails', headerName: '', renderCell: (params) => {
                     return (
                         <Button
                             variant="contained"
@@ -58,7 +58,7 @@ const Buses = ({ fetchForOrg }: BusesProps) => {
                         </Button>
                     )
                 }},
-                { field: 'delete', headerName: '', flex: 1, renderCell: (params) => {
+                { field: 'delete', headerName: '', renderCell: (params) => {
                     return (
                         <Button
                             variant="contained"
