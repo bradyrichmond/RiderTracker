@@ -59,9 +59,6 @@ const NavigationContainer = () => {
         <Box width='100%' display='flex' flexDirection='row' justifyContent='flex-end'>
             <NavigationDrawer toggleDrawer={toggleDrawer} open={open} navItems={navItems} />
             <ResponsiveAppBar />
-            {/* <Button onClick={toggleDrawer}>
-                <MenuIcon fontSize='large' />
-            </Button> */}
         </Box>
     )
 }

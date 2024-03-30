@@ -6,7 +6,6 @@ import { useContext, useState } from "react"
 import { Button, Tooltip } from "@mui/material"
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
-import { RoleContext } from "../../contexts/RoleContext"
 import { ApiContext } from "../../contexts/ApiContext"
 
 interface DriversProps {

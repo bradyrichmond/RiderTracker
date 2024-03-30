@@ -11,7 +11,7 @@ import Button from '@mui/material/Button'
 import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import AdbIcon from '@mui/icons-material/Adb'
-import { ComponentType, MouseEvent, useContext, useState } from 'react'
+import { ComponentType, MouseEvent, useContext, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { RoleContext } from '../contexts/RoleContext'
 import { ROUTE_PROTECTION } from '../constants/RouteProtection'
@@ -42,6 +42,17 @@ const ResponsiveAppBar = () => {
     const routeProtection = ROUTE_PROTECTION.find((r) => r.name === roleContext.heaviestRole)
     const pages = routeProtection?.navItems ?? []
     const settings = routeProtection?.settingsItems ?? []
+    const nameAbbrev = useMemo(() => {
+        if (roleContext.userFullName) {
+            const split = roleContext.userFullName.split(' ')
+            const resultArr = []
+            for (let splitItem of split) {
+                console.log(splitItem)
+                resultArr.push(splitItem[0])
+            }
+            return resultArr.join('')
+        }
+    }, [roleContext.userFullName])
 
     const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget)
@@ -69,13 +80,13 @@ const ResponsiveAppBar = () => {
                             noWrap
                             component="a"
                             sx={{
-                            mr: 2,
-                            display: { xs: 'none', md: 'flex' },
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
+                                mr: 2,
+                                display: { xs: 'none', md: 'flex' },
+                                fontFamily: 'monospace',
+                                fontWeight: 700,
+                                letterSpacing: '.3rem',
+                                color: 'inherit',
+                                textDecoration: 'none'
                             }}
                             onClick={() => navigate('/')}
                         >
@@ -158,7 +169,7 @@ const ResponsiveAppBar = () => {
                         <Box sx={{ flexGrow: 0 }}>
                             <Tooltip title="Open settings">
                                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                                    <Avatar alt={roleContext.userFullName}>{nameAbbrev}</Avatar>
                                 </IconButton>
                             </Tooltip>
                             <Menu

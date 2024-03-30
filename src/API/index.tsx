@@ -35,6 +35,7 @@ export class RiderTrackerAPI {
     }
 
     async execute(apiFunction: ApiFunction, args: any[]) {
+        // Example use: api.execute(api.riders.getRidersForOrganization, [organizationId])
         try {
             return await this.callApiFunction(apiFunction, args);
         } catch (error) {

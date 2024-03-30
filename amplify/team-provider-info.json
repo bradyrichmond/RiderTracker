@@ -12,18 +12,18 @@
       "AmplifyAppId": "d2rer3qe5id7ua"
     },
     "categories": {
-      "auth": {
-        "ridertrackerfrontend7a015b2e": {
-          "userPoolId": "us-west-2_oReiYsdqI",
-          "userPoolName": "RiderTrackerPool",
-          "webClientId": "7nhgujeqd20mqpu59m58fis9uo",
-          "nativeClientId": "7nhgujeqd20mqpu59m58fis9uo"
-        }
-      },
       "hosting": {
         "amplifyhosting": {
           "appId": "d2rer3qe5id7ua",
           "type": "cicd"
+        }
+      },
+      "auth": {
+        "ridertrackerfrontend3ab46c03": {
+          "userPoolId": "us-west-2_ZUnF9FnC5",
+          "userPoolName": "RiderTracker_DEV",
+          "webClientId": "5s19cgoegpol3asnveoqbsgtjn",
+          "nativeClientId": "5s19cgoegpol3asnveoqbsgtjn"
         }
       }
     }

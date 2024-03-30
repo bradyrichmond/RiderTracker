@@ -1,5 +1,5 @@
 import { withAuthenticator } from '@aws-amplify/ui-react'
-import { fetchAuthSession, type AuthUser } from "aws-amplify/auth"
+import { fetchAuthSession, fetchUserAttributes, type AuthUser } from "aws-amplify/auth"
 import { type UseAuthenticator } from "@aws-amplify/ui-react-core"
 import '@aws-amplify/ui-react/styles.css'
 import {
@@ -26,7 +26,6 @@ import Guardian from './routes/Guardians/Guardian'
 import Organization from './routes/Organizations/Organization'
 import Rider from './routes/Riders/Rider'
 import Home from './routes/Root/Home'
-import { RIDERTRACKER_ROLES } from './constants/Roles'
 import MyRiders from './routes/Riders/MyRiders'
 import { ApiContext } from './contexts/ApiContext'
 import { RiderTrackerAPI } from './API'
@@ -39,7 +38,9 @@ type AppProps = {
 function App({ user }: AppProps) {
   const [groups, setGroups] = useState<string[]>()
   const [api, setApi] = useState<RiderTrackerAPI>(new RiderTrackerAPI(''))
-  const [heaviestRole, setHeaviestRole] = useState<string>('RiderTracker_Guardian')
+  const [heaviestRole, setHeaviestRole] = useState<string>('')
+  const [userFullName, setUserFullName] = useState<string>('')
+  const [userPictureUrl, setUserPictureUrl] = useState<string>('')
 
   const initialize = useCallback(async () => {
     const session = await fetchAuthSession()
@@ -53,6 +54,7 @@ function App({ user }: AppProps) {
     })
 
     initializeApi(idToken?.toString() ?? '')
+    initializeUserData()
 
     setGroups(trimmedGroups)
   }, [user])
@@ -64,7 +66,6 @@ function App({ user }: AppProps) {
   useEffect(() => {
     if (groups) {
       const heaviestRoleFromGroups = getHeaviestRole(groups ?? [])
-      // setHeaviestRole(RIDERTRACKER_ROLES.GUARDIAN)
       setHeaviestRole(heaviestRoleFromGroups)
     }
   }, [groups])
@@ -72,6 +73,20 @@ function App({ user }: AppProps) {
   const initializeApi = (token: string) => {
     const apiInstance = new RiderTrackerAPI(token)
     setApi(apiInstance)
+  }
+
+  const initializeUserData = async () => {
+    try {
+      const userAttributes = await fetchUserAttributes();
+      const { given_name, family_name, picture } = userAttributes
+      setUserFullName(`${given_name} ${family_name}`)
+
+      if (picture) {
+        setUserPictureUrl(picture)
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   const router = useMemo(() => {
@@ -151,9 +166,9 @@ function App({ user }: AppProps) {
 
   return (
     <Box width='100%' height='100%'>
-      <RoleContext.Provider value={{heaviestRole, setHeaviestRole}}>
+      <RoleContext.Provider value={{heaviestRole, setHeaviestRole, userFullName, setUserFullName, userPictureUrl, setUserPictureUrl}}>
         <ApiContext.Provider value={{api, setApi}}>
-          {router ? <RouterProvider router={router} /> : null}
+          {heaviestRole ? <RouterProvider router={router} /> : null}
         </ApiContext.Provider>
       </RoleContext.Provider>
     </Box>

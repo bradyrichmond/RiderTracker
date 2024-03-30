@@ -1,12 +1,15 @@
 {
   "authSelections": "userPoolOnly",
-  "resourceName": "ridertrackerfrontend7a015b2e",
+  "resourceName": "ridertrackerfrontend3ab46c03",
   "serviceType": "imported",
   "region": "us-west-2",
   "usernameAttributes": [
     "email"
   ],
+  "authProvidersUserPool": [],
   "requiredAttributes": [
+    "given_name",
+    "family_name",
     "email"
   ],
   "passwordPolicyMinLength": 8,

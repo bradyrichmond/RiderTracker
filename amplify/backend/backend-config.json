@@ -1,6 +1,6 @@
 {
   "auth": {
-    "ridertrackerfrontend7a015b2e": {
+    "ridertrackerfrontend3ab46c03": {
       "customAuth": false,
       "dependsOn": [],
       "providerPlugin": "awscloudformation",
@@ -16,35 +16,35 @@
     }
   },
   "parameters": {
-    "AMPLIFY_auth_ridertrackerfrontend7a015b2e_nativeClientId": {
+    "AMPLIFY_auth_ridertrackerfrontend3ab46c03_nativeClientId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "ridertrackerfrontend7a015b2e"
+          "resourceName": "ridertrackerfrontend3ab46c03"
         }
       ]
     },
-    "AMPLIFY_auth_ridertrackerfrontend7a015b2e_userPoolId": {
+    "AMPLIFY_auth_ridertrackerfrontend3ab46c03_userPoolId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "ridertrackerfrontend7a015b2e"
+          "resourceName": "ridertrackerfrontend3ab46c03"
         }
       ]
     },
-    "AMPLIFY_auth_ridertrackerfrontend7a015b2e_userPoolName": {
+    "AMPLIFY_auth_ridertrackerfrontend3ab46c03_userPoolName": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "ridertrackerfrontend7a015b2e"
+          "resourceName": "ridertrackerfrontend3ab46c03"
         }
       ]
     },
-    "AMPLIFY_auth_ridertrackerfrontend7a015b2e_webClientId": {
+    "AMPLIFY_auth_ridertrackerfrontend3ab46c03_webClientId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "ridertrackerfrontend7a015b2e"
+          "resourceName": "ridertrackerfrontend3ab46c03"
         }
       ]
     },
