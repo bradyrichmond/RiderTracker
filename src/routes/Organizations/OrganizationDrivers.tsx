@@ -1,26 +1,27 @@
 import { Box, Button, Tooltip, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
 import { RoleContext } from "../../contexts/RoleContext"
-import { deleteDriver, getDriversForOrganization } from "../../API"
 import { useNavigate, useParams } from "react-router-dom"
 import { DataGrid } from '@mui/x-data-grid'
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
 import { DriverType } from "../../types/DriverType"
+import { ApiContext } from "../../contexts/ApiContext"
 
 const OrganizationDrivers = () => {
     const [drivers, setDrivers] = useState<DriverType[]>([])
     const { id: organizationId } = useParams()
     const roleContext = useContext(RoleContext)
     const navigate = useNavigate()
+    const { api } = useContext(ApiContext)
 
     useEffect(() => {
         updateDrivers()
-    }, [roleContext.token, organizationId])
+    }, [roleContext, organizationId])
 
     const updateDrivers = async () => {
         if (organizationId) {
-            const driverData = await getDriversForOrganization(roleContext.token, organizationId)
+            const driverData = await api.execute(api.drivers.getDriversForOrganization, [organizationId])
             setDrivers(driverData);
         }
     }
@@ -30,7 +31,7 @@ const OrganizationDrivers = () => {
     }
     
     const deleteDriverAction = async (id: string) => {
-        await deleteDriver(roleContext.token, id)
+        await api.execute(api.drivers.deleteDriver, [id])
         updateDrivers()
     }
 

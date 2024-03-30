@@ -1,26 +1,27 @@
 import { Box, Button, Tooltip, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
 import { RoleContext } from "../../contexts/RoleContext"
-import { deleteRider, getRidersForOrganization } from "../../API"
 import { RiderType } from "../../types/RiderType"
 import { useNavigate, useParams } from "react-router-dom"
 import { DataGrid } from '@mui/x-data-grid'
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
+import { ApiContext } from "../../contexts/ApiContext"
 
 const OrganizationRiders = () => {
     const [riders, setRiders] = useState<RiderType[]>([])
     const { id: organizationId } = useParams()
     const navigate = useNavigate()
     const roleContext = useContext(RoleContext)
+    const { api } = useContext(ApiContext)
 
     useEffect(() => {
         updateRiders()
-    }, [roleContext.token, organizationId])
+    }, [roleContext, organizationId])
 
     const updateRiders = async () => {
         if (organizationId) {
-            const riderData = await getRidersForOrganization(roleContext.token, organizationId)
+            const riderData = await api.execute(api.riders.getRidersForOrganization, [organizationId])
             setRiders(riderData);
         }
     }
@@ -30,7 +31,7 @@ const OrganizationRiders = () => {
     }
 
     const deleteRiderAction = async (id: string) => {
-        await deleteRider(roleContext.token, id)
+        await api.execute(api.riders.deleteRider, [id])
         updateRiders()
     }
 

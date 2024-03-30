@@ -21,15 +21,15 @@ export interface ModalProps<T> {
 }
 
 interface EntityViewerProps<T> {
-    createEntity(_token: string, _body: T): Promise<Response>
+    createEntity(_body: T): Promise<void>
     fetchForOrg?: boolean
     entityFactory: (args: string[]) => T 
-    getEntities(_token: string, id?: string): void
+    getEntities(id?: string): void
     entities: T[]
     modalFormInputs?: FormDataType
     gridColumns: GridColDef[]
-    titleSingular: string
-    titlePlural: string
+    titleSingular?: string
+    titlePlural?: string
 }
 
 
@@ -45,10 +45,10 @@ const EntityViewer = <T extends
 
     useEffect(() => {
         updateEntities()
-    }, [roleContext.token])
+    }, [roleContext])
 
     const updateEntities = () => {
-        getEntities(roleContext.token, id)
+        getEntities(id)
     }
 
     const toggleShowModal = () => {
@@ -57,7 +57,7 @@ const EntityViewer = <T extends
 
     const submitAction = async (newEntity: T) => {
         modalFormInputs && toggleShowModal()
-        await createEntity(roleContext.token, newEntity)
+        await createEntity(newEntity)
         updateEntities()
     }
 
@@ -65,7 +65,7 @@ const EntityViewer = <T extends
         <Box height='100%' width='100%' display='flex' flexDirection='column'>
             {modalFormInputs ?
                 <Modal open={showModal} onClose={toggleShowModal} sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                    <AddEntityModal<T> cancelAction={toggleShowModal} entityFactory={entityFactory} submitAction={submitAction} titleSingular={titleSingular} formDefaultValues={modalFormInputs} organizationId={id} />
+                    <AddEntityModal<T> cancelAction={toggleShowModal} entityFactory={entityFactory} submitAction={submitAction} titleSingular={titleSingular ?? ''} formDefaultValues={modalFormInputs} organizationId={id} />
                 </Modal>
                 :
                 null

@@ -3,20 +3,21 @@ import { useContext, useEffect, useState } from "react"
 import { RoleContext } from "../../contexts/RoleContext"
 import { useParams } from 'react-router-dom'
 import { DriverType } from "../../types/DriverType"
-import { getDriverById } from "../../API"
+import { ApiContext } from "../../contexts/ApiContext"
 
 const Driver = () => {
     const roleContext = useContext(RoleContext)
     const [driver, setDriver] = useState<DriverType>()
     const { id } = useParams()
+    const { api } = useContext(ApiContext)
 
     useEffect(() => {
         getDriverData()
-    }, [roleContext.token, id])
+    }, [roleContext, id])
 
     const getDriverData = async () => {
         if (id) {
-            const driverData = await getDriverById(roleContext.token, id)
+            const driverData = await api.execute(api.drivers.getDriverById, [id])
             setDriver(driverData)
         }
     }

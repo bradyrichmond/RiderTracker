@@ -1,4 +1,3 @@
-import { createDriver, deleteDriver, getDrivers, getDriversForOrganization } from "../../API"
 import EntityViewer from "../../components/EntityViewer"
 import { useNavigate, useParams } from 'react-router-dom'
 import { DriverType } from "../../types/DriverType"
@@ -8,6 +7,7 @@ import { Button, Tooltip } from "@mui/material"
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
 import { RoleContext } from "../../contexts/RoleContext"
+import { ApiContext } from "../../contexts/ApiContext"
 
 interface DriversProps {
     fetchForOrg?: boolean
@@ -17,11 +17,11 @@ const Drivers = ({ fetchForOrg }: DriversProps) => {
     const [drivers, setDrivers] = useState<DriverType[]>([])
     const { id } = useParams()
     const navigate = useNavigate()
-    const getDriversFunction = (fetchForOrg && id) ? getDriversForOrganization : getDrivers
-    const roleContext = useContext(RoleContext)
+    const { api } = useContext(ApiContext)
+    const getDriversFunction = (fetchForOrg && id) ? api.drivers.getDriversForOrganization : api.drivers.getDrivers
 
     const updateDriversAction = async () => {
-        const drivers = await getDriversFunction(roleContext.token, id ?? '')
+        const drivers = await api.execute(getDriversFunction, [id ?? ''])
         setDrivers(drivers)
     }
 
@@ -30,13 +30,17 @@ const Drivers = ({ fetchForOrg }: DriversProps) => {
     }
 
     const deleteDriverAction = async (driverId: string) => {
-        await deleteDriver(roleContext.token, driverId)
+        await api.execute(api.drivers.deleteDriver, [driverId])
         updateDriversAction()
+    }
+
+    const createDriverAction = async (driver: DriverType) => {
+        return await api.execute(api.drivers.createDriver, [driver])
     }
     
     return (
         <EntityViewer<DriverType>
-            createEntity={createDriver}
+            createEntity={createDriverAction}
             entityFactory={driverFactory}
             getEntities={updateDriversAction}
             entities={drivers}

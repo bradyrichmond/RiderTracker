@@ -1,13 +1,12 @@
-import { createBus, deleteBus, getBuses, getBusesForOrganization } from "../../API"
 import EntityViewer from "../../components/EntityViewer"
 import { BusType } from "../../types/BusType"
 import { useNavigate, useParams } from 'react-router-dom'
 import { busFactory } from "./BusFactory"
 import { useContext, useState } from "react"
 import { Button, Tooltip } from "@mui/material"
-import { RoleContext } from "../../contexts/RoleContext"
 import InfoIcon from '@mui/icons-material/Info'
 import NoTransferIcon from '@mui/icons-material/NoTransfer'
+import { ApiContext } from "../../contexts/ApiContext"
 
 interface BusesProps {
     fetchForOrg?: boolean
@@ -16,13 +15,13 @@ interface BusesProps {
 const Buses = ({ fetchForOrg }: BusesProps) => {
     const [buses, setBuses] = useState<BusType[]>([])
     const { id } = useParams()
+    const { api } = useContext(ApiContext)
     const navigate = useNavigate()
-    const roleContext = useContext(RoleContext)
-    const getBusesFunction = (fetchForOrg && id) ? getBusesForOrganization : getBuses
+    const getBusesFunction = (fetchForOrg && id) ? api.buses.getBusesForOrganization : api.buses.getBuses
 
-    const updateBusesAction = async (token: string, id?: string) => {
-        const buses = await getBusesFunction(token, id ?? '')
-        setBuses(buses)
+    const updateBusesAction = async (id?: string) => {
+        const buses = await api.execute(getBusesFunction, [id])
+        setBuses(buses ?? [])
     }
 
     const viewBusDetails = (busId: string) => {
@@ -30,12 +29,17 @@ const Buses = ({ fetchForOrg }: BusesProps) => {
     }
 
     const deleteBusAction = async (busId: string) => {
-        await deleteBus(roleContext.token, busId)
+        await api.execute(api.buses.deleteBus, [busId])
+        updateBusesAction()
+    }
+
+    const createBusAction = async (newBus: BusType) => {
+        return await api.execute(api.buses.createBus, [newBus])
     }
     
     return (
         <EntityViewer<BusType>
-            createEntity={createBus}
+            createEntity={createBusAction}
             entityFactory={busFactory}
             getEntities={updateBusesAction}
             entities={buses}
@@ -52,7 +56,7 @@ const Buses = ({ fetchForOrg }: BusesProps) => {
                             size="small"
                             onClick={() => viewBusDetails(params.row.id)}
                         >
-                            <Tooltip title='Delete Guardian?'>
+                            <Tooltip title='View details'>
                                 <InfoIcon />
                             </Tooltip>
                         </Button>
@@ -65,7 +69,7 @@ const Buses = ({ fetchForOrg }: BusesProps) => {
                             size="small"
                             onClick={() => deleteBusAction(params.row.id)}
                         >
-                            <Tooltip title='Delete Guardian?'>
+                            <Tooltip title='Delete Bus?'>
                                 <NoTransferIcon />
                             </Tooltip>
                         </Button>

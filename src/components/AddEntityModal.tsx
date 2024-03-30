@@ -2,8 +2,6 @@ import { Box, Button, Typography } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { useFieldArray, useForm, Controller, FormProvider } from "react-hook-form"
-import { RoleContext } from '../contexts/RoleContext'
-import { getOrganizations } from '../API'
 import { BusType } from '../types/BusType'
 import { DriverType } from "../types/DriverType"
 import { GuardianType } from "../types/GuardianType"
@@ -12,6 +10,7 @@ import { RiderType } from "../types/RiderType"
 import { ScanType } from "../types/ScanType"
 import { AddEntityModalProps, FormInputType, OptionsType, FormDataType } from '../types/FormTypes'
 import { pickRenderElement } from '../helpers/FormRenderHelpers'
+import { ApiContext } from '../contexts/ApiContext'
 
 const AddEntityModal = <T extends 
         BusType  | DriverType | GuardianType | OrganizationType | RiderType | ScanType>({ 
@@ -19,10 +18,10 @@ const AddEntityModal = <T extends
     }: AddEntityModalProps<T>) => {
     const [disableButtons, setDisabledButtons] = useState(false)
     const [availableOrgIds, setAvailableOrgIds] = useState<OptionsType[]>([])
-    const roleContext = useContext(RoleContext)
     const formMethods = useForm<FormDataType>({
         defaultValues: formDefaultValues
     })
+    const { api } = useContext(ApiContext)
 
     const {
         control,
@@ -42,9 +41,7 @@ const AddEntityModal = <T extends
     const values = watch("inputs")
 
     const getAvailableOrgIds = async () => {
-        const token = roleContext.token;
-        const rawResponse = await getOrganizations(token)
-        const response = await rawResponse.json()
+        const response = await api.execute(api.organizations.getOrganizations, [])
         const mappedOrgIds = response.map((o: OrganizationType) => {
             return { label: o.id, id: o.id }
         })

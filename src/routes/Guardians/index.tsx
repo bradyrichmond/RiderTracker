@@ -1,4 +1,3 @@
-import { createGuardian, deleteGuardian, getGuardians, getGuardiansForOrganization } from "../../API"
 import EntityViewer from "../../components/EntityViewer"
 import { useNavigate, useParams } from 'react-router-dom'
 import { GuardianType } from "../../types/GuardianType"
@@ -7,7 +6,7 @@ import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
 import { useContext, useState } from "react"
 import { Button, Tooltip } from "@mui/material"
-import { RoleContext } from "../../contexts/RoleContext"
+import { ApiContext } from "../../contexts/ApiContext"
 
 interface GuardiansProps {
     fetchForOrg?: boolean
@@ -16,27 +15,32 @@ interface GuardiansProps {
 const Guardians = ({ fetchForOrg }: GuardiansProps) => {
     const { id } = useParams()
     const [guardians, setGuardians] = useState<GuardianType[]>([])
-    const getGuardiansFunction = (fetchForOrg && id) ? getGuardiansForOrganization : getGuardians
+    const { api } = useContext(ApiContext)
+    const getGuardiansFunction = (fetchForOrg && id) ? api.guardians.getGuardiansForOrganization : api.guardians.getGuardians
     const navigate = useNavigate()
-    const roleContext = useContext(RoleContext)
 
-    const updateGuardians = async (token: string, id?: string) => {
-        const guardiansData = await getGuardiansFunction(token, id ?? '')
+    const updateGuardians = async () => {
+        const guardiansData = await api.execute(getGuardiansFunction, [id])
         setGuardians(guardiansData)
     }
 
     const deleteGuardianAction = async (guardianId: string) => {
-        await deleteGuardian(roleContext.token, guardianId)
-        updateGuardians(roleContext.token)
+        // await deleteGuardian(roleContext.token, guardianId)
+        await api.execute(api.guardians.deleteGuardian, [guardianId])
+        updateGuardians()
     }
 
     const viewGuardianDetails = (guardianId: string) => {
         navigate(`/guardians/${guardianId}`)
     }
+
+    const createGuardianAction = async (newGuardian: GuardianType) => {
+        return await api.execute(api.guardians.createGuardian, [newGuardian])
+    }
     
     return (
         <EntityViewer<GuardianType>
-            createEntity={createGuardian}
+            createEntity={createGuardianAction}
             entityFactory={guardianFactory}
             getEntities={updateGuardians}
             entities={guardians}

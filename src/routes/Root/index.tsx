@@ -8,7 +8,7 @@ const Root = () => {
             <Box>
                 <NavigationContainer />
             </Box>
-            <Container sx={{mb: '2rem'}}>
+            <Container sx={{mb: '2rem', height: '100%'}}>
                 <Box height='100%' sx={{overflow: 'auto'}}>
                     <Outlet />
                 </Box>

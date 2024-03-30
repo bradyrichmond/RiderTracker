@@ -3,21 +3,22 @@ import { useContext, useEffect, useState } from "react"
 import { RoleContext } from "../../contexts/RoleContext"
 import { useParams } from 'react-router-dom'
 import { RiderType } from "../../types/RiderType"
-import { getRiderById } from "../../API"
 import RidersGuardians from "./RidersGuardians"
+import { ApiContext } from "../../contexts/ApiContext"
 
 const Rider = () => {
     const roleContext = useContext(RoleContext)
+    const { api } = useContext(ApiContext)
     const [rider, setRider] = useState<RiderType>()
     const { id } = useParams()
 
     useEffect(() => {
         getRiderData()
-    }, [roleContext.token, id])
+    }, [roleContext, id])
 
     const getRiderData = async () => {
         if (id) {
-            const riderData = await getRiderById(roleContext.token, id)
+            const riderData = await api.execute(api.riders.getRiderById, [id])
             setRider(riderData)
         }
     }

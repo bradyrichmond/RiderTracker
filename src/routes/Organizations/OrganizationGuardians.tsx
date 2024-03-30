@@ -1,26 +1,27 @@
 import { Box, Button, Tooltip, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
 import { RoleContext } from "../../contexts/RoleContext"
-import { deleteGuardian, getGuardiansForOrganization } from "../../API"
 import { useNavigate, useParams } from "react-router-dom"
 import { GuardianType } from "../../types/GuardianType"
 import { DataGrid } from '@mui/x-data-grid'
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
+import { ApiContext } from "../../contexts/ApiContext"
 
 const OrganizationGuardians = () => {
     const [guardians, setGuardians] = useState<GuardianType[]>([])
     const { id: organizationId } = useParams()
     const roleContext = useContext(RoleContext)
     const navigate = useNavigate()
+    const { api } = useContext(ApiContext)
 
     useEffect(() => {
         updateGuardians()
-    }, [roleContext.token, organizationId])
+    }, [roleContext, organizationId])
 
     const updateGuardians = async () => {
         if (organizationId) {
-            const guardianData = await getGuardiansForOrganization(roleContext.token, organizationId)
+            const guardianData = await api.execute(api.guardians.getGuardiansForOrganization, [organizationId])
             setGuardians(guardianData);
         }
     }
@@ -30,7 +31,7 @@ const OrganizationGuardians = () => {
     }
     
     const deleteGuardianAction = async (id: string) => {
-        await deleteGuardian(roleContext.token, id)
+        await api.execute(api.guardians.deleteGuardian, [id])
         updateGuardians()
     }
 

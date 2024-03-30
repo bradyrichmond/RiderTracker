@@ -1,11 +1,10 @@
 import { Box, Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField, Typography } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
-import { getOrganizations } from '../../API'
-import { RoleContext } from '../../contexts/RoleContext'
 import { OrganizationType } from '../../types/OrganizationType'
 import {v4 as uuidv4} from 'uuid'
 import { useForm, SubmitHandler } from "react-hook-form"
 import { RiderType } from '../../types/RiderType'
+import { ApiContext } from '../../contexts/ApiContext'
 
 export interface AddRiderModalProps {
     organizationId?: string
@@ -22,7 +21,7 @@ const AddRiderModal = ({ organizationId, cancelAction, submitAction }: AddRiderM
     const [orgId, setOrgId] = useState('')
     const [disableButtons, setDisabledButtons] = useState(false)
     const [availableOrgIds, setAvailableOrgIds] = useState<string[]>([])
-    const roleContext = useContext(RoleContext)
+    const { api } = useContext(ApiContext)
     const {
         register,
         handleSubmit
@@ -33,8 +32,7 @@ const AddRiderModal = ({ organizationId, cancelAction, submitAction }: AddRiderM
     }, [])
 
     const getAvailableOrgIds = async () => {
-        const token = roleContext.token;
-        const rawResponse = await getOrganizations(token)
+        const rawResponse = await api.execute(api.organizations.getOrganizations, [])
         const response = await rawResponse.json()
         const mappedOrgIds = response.map((o: OrganizationType) => o.id)
         setAvailableOrgIds(mappedOrgIds)

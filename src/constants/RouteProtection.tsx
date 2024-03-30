@@ -65,6 +65,7 @@ const GUARDIAN_ROUTES: string[] = [
     "/",
     "/buses/:id",
     "/drivers/:id",
+    "/my-riders",
     "/riders/:id"
 ]
 
@@ -149,7 +150,7 @@ const DRIVER_NAV_ITEMS: NavItemType[] = [
 
 const GUARDIAN_NAV_ITEMS: NavItemType[] = [
     {
-        path: '/riders/:id',
+        path: '/my-riders',
         label: 'Riders',
         Icon: ChildCareIcon
     }

@@ -26,6 +26,10 @@ import Guardian from './routes/Guardians/Guardian'
 import Organization from './routes/Organizations/Organization'
 import Rider from './routes/Riders/Rider'
 import Home from './routes/Root/Home'
+import { RIDERTRACKER_ROLES } from './constants/Roles'
+import MyRiders from './routes/Riders/MyRiders'
+import { ApiContext } from './contexts/ApiContext'
+import { RiderTrackerAPI } from './API'
 
 type AppProps = {
   signOut?: UseAuthenticator["signOut"]
@@ -34,34 +38,41 @@ type AppProps = {
 
 function App({ user }: AppProps) {
   const [groups, setGroups] = useState<string[]>()
-  const [token, setToken] = useState<string>()
+  const [api, setApi] = useState<RiderTrackerAPI>(new RiderTrackerAPI(''))
   const [heaviestRole, setHeaviestRole] = useState<string>('RiderTracker_Guardian')
 
-  const updateGroups = useCallback(async () => {
+  const initialize = useCallback(async () => {
     const session = await fetchAuthSession()
     const idToken = session.tokens?.idToken
     const sessionGroups = idToken?.payload["cognito:roles"]
     const sessionGroupsArray = sessionGroups as Array<string>
-    const trimmedGroups:string[] = []
+    const trimmedGroups: string[] = []
 
     sessionGroupsArray.forEach((sg) => {
       trimmedGroups.push(sg.split('/')[1]);
     })
 
+    initializeApi(idToken?.toString() ?? '')
+
     setGroups(trimmedGroups)
-    setToken(idToken?.toString() ?? '')
   }, [user])
 
   useEffect(() => {
-    updateGroups()
-  }, [updateGroups])
+    initialize()
+  }, [initialize])
 
   useEffect(() => {
     if (groups) {
       const heaviestRoleFromGroups = getHeaviestRole(groups ?? [])
-      setHeaviestRole(heaviestRoleFromGroups ?? '')
+      // setHeaviestRole(RIDERTRACKER_ROLES.GUARDIAN)
+      setHeaviestRole(heaviestRoleFromGroups)
     }
   }, [groups])
+
+  const initializeApi = (token: string) => {
+    const apiInstance = new RiderTrackerAPI(token)
+    setApi(apiInstance)
+  }
 
   const router = useMemo(() => {
     return createBrowserRouter([{
@@ -95,6 +106,10 @@ function App({ user }: AppProps) {
         {
           path: '/guardians/:id',
           element: <ProtectedRoute route='/guardians/:id'><Guardian /></ProtectedRoute>
+        },
+        {
+          path: '/my-riders',
+          element: <ProtectedRoute route='/my-riders'><MyRiders /></ProtectedRoute>
         },
         {
           path: '/organizations',
@@ -135,9 +150,11 @@ function App({ user }: AppProps) {
   }, [groups, heaviestRole])
 
   return (
-    <Box width='100%'>
-      <RoleContext.Provider value={{heaviestRole, setHeaviestRole, token: token?.toString() ?? '', setToken}}>
-        {router ? <RouterProvider router={router} /> : null}
+    <Box width='100%' height='100%'>
+      <RoleContext.Provider value={{heaviestRole, setHeaviestRole}}>
+        <ApiContext.Provider value={{api, setApi}}>
+          {router ? <RouterProvider router={router} /> : null}
+        </ApiContext.Provider>
       </RoleContext.Provider>
     </Box>
   )

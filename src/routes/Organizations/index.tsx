@@ -1,21 +1,20 @@
 import { useContext, useState } from "react"
-import { createOrganization, deleteOrganization, getOrganizations } from "../../API"
 import EntityViewer from "../../components/EntityViewer"
 import { OrganizationType } from "../../types/OrganizationType"
 import { organizationFactory } from "./OrganizationFactory"
-import { RoleContext } from "../../contexts/RoleContext"
 import { Button, Tooltip } from "@mui/material"
 import CancelIcon from '@mui/icons-material/Cancel'
 import InfoIcon from '@mui/icons-material/Info'
 import { useNavigate } from "react-router-dom"
+import { ApiContext } from "../../contexts/ApiContext"
 
 const Organizations = () => {
     const [organizations, setOrganizations] = useState<OrganizationType[]>([])
-    const roleContext = useContext(RoleContext)
     const navigate = useNavigate()
+    const { api } = useContext(ApiContext)
 
     const updateOrganizations = async () => {
-        const organizationsData = await getOrganizations(roleContext.token)
+        const organizationsData = await api.execute(api.organizations.getOrganizations, [])
         setOrganizations(organizationsData)
     }
 
@@ -24,7 +23,12 @@ const Organizations = () => {
     }
 
     const deleteOrganizationAction = async (organizationId: string) => {
-        await deleteOrganization(roleContext.token, organizationId)
+        await api.execute(api.organizations.deleteOrganization, [organizationId])
+        updateOrganizations()
+    }
+
+    const createOrganization = async (newOrganization: OrganizationType) => {
+        await api.execute(api.organizations.createOrganization, [newOrganization])
         updateOrganizations()
     }
     

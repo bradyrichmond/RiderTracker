@@ -2,21 +2,22 @@ import { Box, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
 import { RoleContext } from "../../contexts/RoleContext"
 import { BusType } from '../../types/BusType'
-import { getBusById } from "../../API"
 import { useParams } from 'react-router-dom'
+import { ApiContext } from "../../contexts/ApiContext"
 
 const Bus = () => {
     const roleContext = useContext(RoleContext)
     const [bus, setBus] = useState<BusType>()
     const { id } = useParams()
+    const { api } = useContext(ApiContext)
 
     useEffect(() => {
         getBusData()
-    }, [roleContext.token, id])
+    }, [roleContext, id])
 
     const getBusData = async () => {
         if (id) {
-            const busData = await getBusById(roleContext.token, id)
+            const busData = await api.execute(api.buses.getBusById, [id])
             setBus(busData)
         }
     }

@@ -3,22 +3,23 @@ import { useContext, useEffect, useState } from "react"
 import { RoleContext } from "../../contexts/RoleContext"
 import { useParams } from 'react-router-dom'
 import { GuardianType } from "../../types/GuardianType"
-import { getGuardianById } from "../../API"
 import GuardiansRiders from "./GuardiansRiders"
+import { ApiContext } from "../../contexts/ApiContext"
 
 const Guardian = () => {
     const roleContext = useContext(RoleContext)
     const [guardian, setGuardian] = useState<GuardianType>()
     const { id } = useParams()
+    const { api } = useContext(ApiContext)
 
     useEffect(() => {
         getGuardianData()
-    }, [roleContext.token, id])
+    }, [roleContext, id])
 
     const getGuardianData = async () => {
         if (id) {
             try {
-                const guardianData = await getGuardianById(roleContext.token, id)
+                const guardianData = await api.execute(api.guardians.getGuardianById, [id])
                 setGuardian(guardianData)
             } catch {
                 console.error('Error setting guardian')

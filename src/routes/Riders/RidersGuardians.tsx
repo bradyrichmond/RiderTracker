@@ -1,7 +1,6 @@
 import { Box, Button, Typography, Modal, Tooltip } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
 import { RoleContext } from "../../contexts/RoleContext"
-import { updateRider, updateGuardian, getGuardiansForOrganization, getBulkGuardiansById, getGuardianById } from "../../API"
 import { RiderType } from "../../types/RiderType"
 import LinkIcon from '@mui/icons-material/Link'
 import { GuardianType } from "../../types/GuardianType"
@@ -12,6 +11,7 @@ import { DataGrid } from '@mui/x-data-grid'
 import { useNavigate } from "react-router-dom"
 import LinkOffIcon from '@mui/icons-material/LinkOff'
 import InfoIcon from '@mui/icons-material/Info'
+import { ApiContext } from "../../contexts/ApiContext"
 
 interface GuardianRidersProps {
     organizationId: string
@@ -25,24 +25,25 @@ const GuardiansRiders = ({ organizationId, rider, getRiderData }: GuardianRiders
     const [showModal, setShowModal] = useState<boolean>(false)
     const { id: riderId } = rider
     const roleContext = useContext(RoleContext)
+    const { api } = useContext(ApiContext)
     const navigate = useNavigate()
 
     useEffect(() => {
         updateGuardians()
         updateAllGuardians()
-    }, [roleContext.token, organizationId])
+    }, [roleContext, organizationId])
 
     const updateGuardians = async () => {
         await getRiderData()
 
         if (rider) {
-            const guardianData = await getBulkGuardiansById(roleContext.token, rider.guardianRiderLinks)
+            const guardianData = await api.execute(api.guardians.getBulkGuardiansById, [rider.guardianRiderLinks])
             setGuardians(guardianData)
         }
     }
 
     const updateAllGuardians = async () => {
-        const guardianData = await getGuardiansForOrganization(roleContext.token, organizationId)
+        const guardianData = await api.execute(api.guardians.getGuardiansForOrganization, [organizationId])
 
         try {
             const mapped = guardianData.map((r: RiderType) => {
@@ -61,19 +62,19 @@ const GuardiansRiders = ({ organizationId, rider, getRiderData }: GuardianRiders
 
     const submitAction = async (updatedRider: RiderType) => {
         toggleShowModal()
-        await updateRider(roleContext.token, updatedRider)
+        await api.execute(api.riders.updateRider, [updatedRider])
         const guardianToBeUpdated = updatedRider.guardianRiderLinks.pop()
 
         if (guardianToBeUpdated) {
             const updatedGuardian = await generateUpdatedGuardian(guardianToBeUpdated)
-            await updateGuardian(roleContext.token, updatedGuardian)
+            await api.execute(api.guardians.updateGuardian, [updatedGuardian])
         }
 
         updateGuardians()
     }
 
     const generateUpdatedGuardian = async (guardianId: string ) => {
-        const guardianToUpdate: GuardianType = await getGuardianById(roleContext.token, guardianId)
+        const guardianToUpdate: GuardianType = await api.execute(api.guardians.getGuardianById, [guardianId])
         guardianToUpdate.guardianRiderLinks.push(riderId)
         const newGuardianRiderLinks = guardianToUpdate.guardianRiderLinks.filter((g: string) => g !== "")
         guardianToUpdate.guardianRiderLinks = newGuardianRiderLinks
@@ -90,14 +91,15 @@ const GuardiansRiders = ({ organizationId, rider, getRiderData }: GuardianRiders
         const newRider = rider;
         const newLinks = newRider.guardianRiderLinks.filter((g) => g !== guardianId)
         newRider.guardianRiderLinks = newLinks.length > 0 ? newLinks : [""]
-        await updateRider(roleContext.token, newRider)
+        await api.execute(api.riders.updateRider, [newRider])
     }
 
     const removeRiderFromGuardian = async (guardianId: string) => {
-        const guardianToUpdate: GuardianType = await getGuardianById(roleContext.token, guardianId)
+        // const guardianToUpdate: GuardianType = await getGuardianById(roleContext.token, guardianId)
+        const guardianToUpdate: GuardianType = await api.execute(api.guardians.getGuardianById, [guardianId])
         const newLinks = guardianToUpdate.guardianRiderLinks.filter((r) => r !== riderId)
         guardianToUpdate.guardianRiderLinks = newLinks.length > 0 ? newLinks : [""]
-        await updateGuardian(roleContext.token, guardianToUpdate)
+        await api.execute(api.guardians.updateGuardian, [guardianToUpdate])
     }
 
     const viewGuardianDetails = (guardianId: string) => {

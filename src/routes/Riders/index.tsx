@@ -1,4 +1,3 @@
-import { createGuardian, deleteRider, getRiders, getRidersForOrganization } from "../../API"
 import EntityViewer from "../../components/EntityViewer"
 import { useNavigate, useParams } from 'react-router-dom'
 import { RiderType } from "../../types/RiderType"
@@ -6,8 +5,9 @@ import { riderFactory } from "./RiderFactory"
 import { Button, Tooltip } from "@mui/material"
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
-import { RoleContext } from "../../contexts/RoleContext"
 import { useContext, useState } from "react"
+import { ApiContext } from "../../contexts/ApiContext"
+import { GuardianType } from "../../types/GuardianType"
 
 interface RidersProps {
     fetchForOrg?: boolean
@@ -17,11 +17,11 @@ const Riders = ({ fetchForOrg }: RidersProps) => {
     const { id } = useParams()
     const [riders, setRiders] = useState<RiderType[]>([])
     const navigate = useNavigate()
-    const roleContext = useContext(RoleContext)
-    const getRidersFunction = (fetchForOrg && id) ? getRidersForOrganization : getRiders
+    const { api } = useContext(ApiContext)
+    const getRidersFunction = (fetchForOrg && id) ? api.riders.getRidersForOrganization : api.riders.getRiders
 
-    const getRidersAction = async (token: string, id?: string) => {
-        const riders = await getRidersFunction(token, id ?? '')
+    const getRidersAction = async (id?: string) => {
+        const riders = await api.execute(getRidersFunction, [id ?? ''])
         setRiders(riders)
     }
 
@@ -30,8 +30,11 @@ const Riders = ({ fetchForOrg }: RidersProps) => {
     }
 
     const deleteRiderAction = async (riderId: string) => {
-        await deleteRider(roleContext.token, riderId)
+        await api.execute(api.riders.deleteRider, [riderId])
+    }
 
+    const createGuardian = async (newGuardian: GuardianType) => {
+        await api.execute(api.guardians.createGuardian, [newGuardian])
     }
     
     return (
@@ -54,8 +57,10 @@ const Riders = ({ fetchForOrg }: RidersProps) => {
                             variant="contained"
                             size="small"
                             onClick={() => viewRiderDetails(params.row.id)}
-                            >
-                            <InfoIcon />
+                        >
+                            <Tooltip title='Delete Guardian?'>
+                                <InfoIcon />
+                            </Tooltip>
                         </Button>
                     )
                 }},
