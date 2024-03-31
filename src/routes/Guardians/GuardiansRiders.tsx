@@ -115,7 +115,7 @@ const GuardiansRiders = ({ guardian, getGuardianData }: RidersGuardiansProps) =>
                     submitAction={submitAction}
                     submitButtonText="Create Link"
                     formDefaultValues={{inputs: [
-                        { name: "Guardian", inputType: "select", options: allRiders}
+                        { name: "Rider", inputType: "select", options: allRiders}
                     ]}}
                     open={showModal}
                 />
