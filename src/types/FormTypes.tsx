@@ -5,6 +5,7 @@ export interface AddEntityModalProps<T> {
     formDefaultValues: FormDataType
     submitAction: (newEntity: T) => Promise<void>
     titleSingular: string
+    open: boolean
 }
 
 export interface FormInputType {

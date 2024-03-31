@@ -27,7 +27,7 @@ const Rider = () => {
         <Box height='100%'>
             <Typography>Rider Name: {rider?.firstName} {rider?.lastName}</Typography>
             <Typography>Organization: {rider?.organizationId}</Typography>
-            {rider ? <RidersGuardians organizationId={rider?.organizationId ?? ''} rider={rider} getRiderData={getRiderData} /> : null}
+            {rider ? <RidersGuardians rider={rider} getRiderData={getRiderData} /> : null}
         </Box>
     )
 }

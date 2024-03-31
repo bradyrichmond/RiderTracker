@@ -1,4 +1,4 @@
-import { Box, Button, Typography, Modal, Tooltip } from "@mui/material"
+import { Box, Button, Typography, Tooltip } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
 import { RoleContext } from "../../contexts/RoleContext"
 import { RiderType } from "../../types/RiderType"
@@ -14,12 +14,11 @@ import { guardianFactory } from "./GuardianFactory"
 import { ApiContext } from "../../contexts/ApiContext"
 
 interface RidersGuardiansProps {
-    organizationId: string
     guardian: GuardianType
     getGuardianData(): Promise<void>
 }
 
-const GuardiansRiders = ({ organizationId, guardian, getGuardianData }: RidersGuardiansProps) => {
+const GuardiansRiders = ({ guardian, getGuardianData }: RidersGuardiansProps) => {
     const [riders, setRiders] = useState<RiderType[]>([])
     const [allRiders, setAllRiders] = useState<OptionsType[]>([])
     const [showModal, setShowModal] = useState<boolean>(false)
@@ -31,7 +30,7 @@ const GuardiansRiders = ({ organizationId, guardian, getGuardianData }: RidersGu
     useEffect(() => {
         updateRiders()
         updateAllRiders()
-    }, [roleContext, organizationId])
+    }, [roleContext, guardian.organizationId])
 
     const updateRiders = async () => {
         await getGuardianData()
@@ -43,7 +42,7 @@ const GuardiansRiders = ({ organizationId, guardian, getGuardianData }: RidersGu
     }
 
     const updateAllRiders = async () => {
-        const riderData = await api.execute(api.riders.getRidersForOrganization, [organizationId])
+        const riderData = await api.execute(api.riders.getRidersForOrganization, [guardian.organizationId])
 
         try {
             const mapped = riderData.map((r: GuardianType) => {
@@ -107,7 +106,7 @@ const GuardiansRiders = ({ organizationId, guardian, getGuardianData }: RidersGu
 
     return (
         <Box>
-            <Modal open={showModal} onClose={toggleShowModal} sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+            {allRiders.length > 0 ? 
                 <LinkEntitiesModal<RiderType> 
                     cancelAction={toggleShowModal}
                     entity={guardian}
@@ -118,8 +117,11 @@ const GuardiansRiders = ({ organizationId, guardian, getGuardianData }: RidersGu
                     formDefaultValues={{inputs: [
                         { name: "Guardian", inputType: "select", options: allRiders}
                     ]}}
+                    open={showModal}
                 />
-            </Modal>
+            :
+                null
+            }
             <Typography variant="h2">Riders</Typography>
             <DataGrid hideFooterPagination autoHeight rows={riders} columns={[
                 { field: 'firstName',  headerName: 'First Name', flex: 1},
@@ -156,7 +158,7 @@ const GuardiansRiders = ({ organizationId, guardian, getGuardianData }: RidersGu
                     <Box display='flex' flexDirection='row' justifyContent=''>
                         <LinkIcon />
                         <Box flex='1' marginLeft='1rem'>
-                            <Typography>Link Guardian to this Rider</Typography>
+                            <Typography>Link another Rider to this Guardian</Typography>
                         </Box>
                     </Box>
                 </Button>

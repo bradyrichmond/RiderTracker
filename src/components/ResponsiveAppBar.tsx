@@ -47,7 +47,6 @@ const ResponsiveAppBar = () => {
             const split = roleContext.userFullName.split(' ')
             const resultArr = []
             for (let splitItem of split) {
-                console.log(splitItem)
                 resultArr.push(splitItem[0])
             }
             return resultArr.join('')

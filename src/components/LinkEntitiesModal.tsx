@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import { useState } from 'react'
 import { useFieldArray, useForm, Controller, FormProvider } from "react-hook-form"
 import { GuardianType } from "../types/GuardianType"
@@ -14,11 +14,12 @@ interface LinkEntitiesModalProps<T> {
     submitAction: (newEntity: T) => Promise<void>
     title: string
     submitButtonText: string
+    open: boolean
 }
 
 const LinkEntitiesModal = <T extends 
         GuardianType | RiderType>({ 
-        cancelAction, entity, entityFactory, formDefaultValues, submitAction, title, submitButtonText 
+        cancelAction, entity, entityFactory, formDefaultValues, submitAction, title, submitButtonText, open
     }: LinkEntitiesModalProps<T>) => {
     const [disableButtons, setDisabledButtons] = useState(false)
     const formMethods = useForm<FormDataType>({
@@ -50,12 +51,18 @@ const LinkEntitiesModal = <T extends
     }
 
     return (
-        <Box sx={{background: '#ffffff'}} borderRadius='2rem' padding='2rem' minWidth='50%' minHeight='50%' display='flex' flexDirection='column'>
-            <Box display='flex' justifyContent='center' alignItems='center' marginBottom='2rem'>
-                <Typography variant='h2'>{title}</Typography>
-            </Box>
-            <FormProvider {...formMethods} >
-                <form onSubmit={handleSubmit(handleCreateEntity)}>
+        <Dialog
+            open={open}
+            onClose={cancelAction}
+            PaperProps={{
+                component: 'form',
+                onSubmit: handleSubmit(handleCreateEntity),
+                sx: { padding: '2rem', minWidth: '25%' }
+            }}
+        >
+            <DialogTitle textAlign='center'>{title}</DialogTitle>
+            <DialogContent>
+                <FormProvider {...formMethods} >
                     {fields.map((field, index) => {
                         return (
                             <Box key={field.id} marginTop='2rem'>
@@ -66,19 +73,14 @@ const LinkEntitiesModal = <T extends
                                 />
                             </Box>
                         )
-                    })
-                    }
-                    <Box display='flex' justifyContent='space-evenly' alignItems='center' padding='2rem' flex='1'>
-                        <Button variant='contained' onClick={cancelAction} disabled={disableButtons} sx={{padding: '1rem', minWidth: '25%'}}>
-                            <Typography variant='h5'>Cancel</Typography>
-                        </Button>
-                        <Button type='submit' variant='contained' disabled={disableButtons} sx={{padding: '1rem', minWidth: '25%'}}>
-                            <Typography variant='h5'>{submitButtonText}</Typography>
-                        </Button>
-                    </Box>
-                </form>
-            </FormProvider>
-        </Box>
+                    })}
+                </FormProvider>
+            </DialogContent>
+            <DialogActions sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                <Button disabled={disableButtons} variant='contained' onClick={cancelAction}>Cancel</Button>
+                <Button disabled={disableButtons} variant='contained' type="submit">{submitButtonText}</Button>
+            </DialogActions>
+        </Dialog>
     )
 }
 

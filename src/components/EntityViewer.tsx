@@ -1,4 +1,4 @@
-import { Box, Button, Modal, Typography } from "@mui/material"
+import { Box, Button, Typography } from "@mui/material"
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { useContext, useEffect, useState } from "react"
 import { RoleContext } from "../contexts/RoleContext"
@@ -64,9 +64,15 @@ const EntityViewer = <T extends
     return (
         <Box height='100%' width='100%' display='flex' flexDirection='column'>
             {modalFormInputs ?
-                <Modal open={showModal} onClose={toggleShowModal} sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
-                    <AddEntityModal<T> cancelAction={toggleShowModal} entityFactory={entityFactory} submitAction={submitAction} titleSingular={titleSingular ?? ''} formDefaultValues={modalFormInputs} organizationId={id} />
-                </Modal>
+                <AddEntityModal<T> 
+                    cancelAction={toggleShowModal} 
+                    entityFactory={entityFactory}
+                    submitAction={submitAction}
+                    titleSingular={titleSingular ?? ''}
+                    formDefaultValues={modalFormInputs}
+                    organizationId={id}
+                    open={showModal}
+                />
                 :
                 null
             }

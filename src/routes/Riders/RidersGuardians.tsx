@@ -1,4 +1,4 @@
-import { Box, Button, Typography, Modal, Tooltip } from "@mui/material"
+import { Box, Button, Typography, Tooltip } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
 import { RoleContext } from "../../contexts/RoleContext"
 import { RiderType } from "../../types/RiderType"
@@ -14,12 +14,11 @@ import InfoIcon from '@mui/icons-material/Info'
 import { ApiContext } from "../../contexts/ApiContext"
 
 interface GuardianRidersProps {
-    organizationId: string
     rider: RiderType
     getRiderData(): Promise<void>
 }
 
-const GuardiansRiders = ({ organizationId, rider, getRiderData }: GuardianRidersProps) => {
+const GuardiansRiders = ({ rider, getRiderData }: GuardianRidersProps) => {
     const [guardians, setGuardians] = useState<GuardianType[]>([])
     const [allGuardians, setAllGuardians] = useState<OptionsType[]>([])
     const [showModal, setShowModal] = useState<boolean>(false)
@@ -31,7 +30,7 @@ const GuardiansRiders = ({ organizationId, rider, getRiderData }: GuardianRiders
     useEffect(() => {
         updateGuardians()
         updateAllGuardians()
-    }, [roleContext, organizationId])
+    }, [roleContext, rider.organizationId])
 
     const updateGuardians = async () => {
         await getRiderData()
@@ -43,7 +42,7 @@ const GuardiansRiders = ({ organizationId, rider, getRiderData }: GuardianRiders
     }
 
     const updateAllGuardians = async () => {
-        const guardianData = await api.execute(api.guardians.getGuardiansForOrganization, [organizationId])
+        const guardianData = await api.execute(api.guardians.getGuardiansForOrganization, [rider.organizationId])
 
         try {
             const mapped = guardianData.map((r: RiderType) => {
@@ -95,7 +94,6 @@ const GuardiansRiders = ({ organizationId, rider, getRiderData }: GuardianRiders
     }
 
     const removeRiderFromGuardian = async (guardianId: string) => {
-        // const guardianToUpdate: GuardianType = await getGuardianById(roleContext.token, guardianId)
         const guardianToUpdate: GuardianType = await api.execute(api.guardians.getGuardianById, [guardianId])
         const newLinks = guardianToUpdate.guardianRiderLinks.filter((r) => r !== riderId)
         guardianToUpdate.guardianRiderLinks = newLinks.length > 0 ? newLinks : [""]
@@ -108,7 +106,7 @@ const GuardiansRiders = ({ organizationId, rider, getRiderData }: GuardianRiders
 
     return (
         <Box>
-            <Modal open={showModal} onClose={toggleShowModal} sx={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+            {allGuardians.length > 0 ?
                 <LinkEntitiesModal<RiderType> 
                     cancelAction={toggleShowModal}
                     entity={rider}
@@ -119,8 +117,11 @@ const GuardiansRiders = ({ organizationId, rider, getRiderData }: GuardianRiders
                     formDefaultValues={{inputs: [
                         { name: "Guardian", inputType: "select", options: allGuardians}
                     ]}}
+                    open={showModal}
                 />
-            </Modal>
+                :
+                null
+            }
             <Typography variant="h2">Guardians</Typography>
             <DataGrid hideFooterPagination autoHeight rows={guardians} columns={[
                 { field: 'firstName',  headerName: 'First Name', flex: 1},
@@ -157,7 +158,7 @@ const GuardiansRiders = ({ organizationId, rider, getRiderData }: GuardianRiders
                     <Box display='flex' flexDirection='row' justifyContent=''>
                         <LinkIcon />
                         <Box flex='1' marginLeft='1rem'>
-                            <Typography>Link Guardian to this Rider</Typography>
+                            <Typography>Link another Guardian to this Rider</Typography>
                         </Box>
                     </Box>
                 </Button>

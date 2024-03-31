@@ -1,4 +1,4 @@
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { useFieldArray, useForm, Controller, FormProvider } from "react-hook-form"
@@ -14,7 +14,7 @@ import { ApiContext } from '../contexts/ApiContext'
 
 const AddEntityModal = <T extends 
         BusType  | DriverType | GuardianType | OrganizationType | RiderType | ScanType>({ 
-        cancelAction, entityFactory, formDefaultValues, organizationId, submitAction, titleSingular 
+        cancelAction, entityFactory, formDefaultValues, organizationId, submitAction, titleSingular, open 
     }: AddEntityModalProps<T>) => {
     const [disableButtons, setDisabledButtons] = useState(false)
     const [availableOrgIds, setAvailableOrgIds] = useState<OptionsType[]>([])
@@ -65,17 +65,23 @@ const AddEntityModal = <T extends
         return rawValues
     }
 
-    return (
-        <Box sx={{background: '#ffffff'}} borderRadius='2rem' padding='2rem' minWidth='50%' minHeight='50%' display='flex' flexDirection='column'>
-            <Box display='flex' justifyContent='center' alignItems='center' marginBottom='2rem'>
-                <Typography variant='h2'>Add {titleSingular}</Typography>
-            </Box>
-            <FormProvider {...formMethods} >
-                <form onSubmit={handleSubmit(handleCreateEntity)}>
+    return (    
+        <Dialog
+            open={open}
+            onClose={cancelAction}
+            PaperProps={{
+                component: 'form',
+                onSubmit: handleSubmit(handleCreateEntity),
+                sx: { padding: '2rem', minWidth: '25%' }
+            }}
+        >
+            <DialogTitle textAlign='center'>Add {titleSingular}</DialogTitle>
+            <DialogContent>
+                <FormProvider {...formMethods} >
                     {fields.map((field, index) => {
                         if (field.name === "Organization Id") {
                             if (organizationId) {
-                                return (<Typography>Organization Id: {organizationId}</Typography>)
+                                return;
                             }
 
                             field.options = availableOrgIds
@@ -90,19 +96,14 @@ const AddEntityModal = <T extends
                                 />
                             </Box>
                         )
-                    })
-                    }
-                    <Box display='flex' justifyContent='space-evenly' alignItems='center' padding='2rem' flex='1'>
-                        <Button variant='contained' onClick={cancelAction} disabled={disableButtons} sx={{padding: '1rem', minWidth: '25%'}}>
-                            <Typography variant='h5'>Cancel</Typography>
-                        </Button>
-                        <Button type='submit' variant='contained' disabled={disableButtons} sx={{padding: '1rem', minWidth: '25%'}}>
-                            <Typography variant='h5'>Create {titleSingular}</Typography>
-                        </Button>
-                    </Box>
-                </form>
-            </FormProvider>
-        </Box>
+                    })}
+                </FormProvider>
+            </DialogContent>
+            <DialogActions sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
+                <Button disabled={disableButtons} variant='contained' onClick={cancelAction}>Cancel</Button>
+                <Button disabled={disableButtons} variant='contained' type="submit">Create {titleSingular}</Button>
+            </DialogActions>
+        </Dialog>
     )
 }
 
