@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom"
 import LinkOffIcon from '@mui/icons-material/LinkOff'
 import InfoIcon from '@mui/icons-material/Info'
 import { guardianFactory } from "./GuardianFactory"
-import { ApiContext } from "../../contexts/ApiContext"
+import { ApiContext } from "../../contexts/ApiContextProvider"
 
 interface RidersGuardiansProps {
     guardian: GuardianType

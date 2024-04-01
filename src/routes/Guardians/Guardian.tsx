@@ -4,7 +4,7 @@ import { RoleContext } from "../../contexts/RoleContextProvider"
 import { useParams } from 'react-router-dom'
 import { GuardianType } from "../../types/GuardianType"
 import GuardiansRiders from "./GuardiansRiders"
-import { ApiContext } from "../../contexts/ApiContext"
+import { ApiContext } from "../../contexts/ApiContextProvider"
 
 const Guardian = () => {
     const roleContext = useContext(RoleContext)

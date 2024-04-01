@@ -6,7 +6,7 @@ import { useContext, useState } from "react"
 import { Button, Tooltip } from "@mui/material"
 import InfoIcon from '@mui/icons-material/Info'
 import NoTransferIcon from '@mui/icons-material/NoTransfer'
-import { ApiContext } from "../../contexts/ApiContext"
+import { ApiContext } from "../../contexts/ApiContextProvider"
 
 interface BusesProps {
     fetchForOrg?: boolean

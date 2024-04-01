@@ -24,7 +24,7 @@ import Unauthorized from "../Protected/Unauthorized"
 import { RoleContext } from "../../contexts/RoleContextProvider"
 import { RiderTrackerAPI } from "../../API"
 import { RiderTrackerRole, isRiderTrackerRole } from "../../constants/Roles"
-import { ApiContext } from "../../contexts/ApiContext"
+import { ApiContext } from "../../contexts/ApiContextProvider"
 
 interface RootRouterProps {
     user: AuthUser

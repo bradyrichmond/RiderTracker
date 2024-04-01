@@ -11,7 +11,7 @@ import { DataGrid } from '@mui/x-data-grid'
 import { useNavigate } from "react-router-dom"
 import LinkOffIcon from '@mui/icons-material/LinkOff'
 import InfoIcon from '@mui/icons-material/Info'
-import { ApiContext } from "../../contexts/ApiContext"
+import { ApiContext } from "../../contexts/ApiContextProvider"
 
 interface GuardianRidersProps {
     rider: RiderType

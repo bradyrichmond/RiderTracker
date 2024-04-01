@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react"
 import { RoleContext } from "../../contexts/RoleContextProvider"
 import { BusType } from '../../types/BusType'
 import { useParams } from 'react-router-dom'
-import { ApiContext } from "../../contexts/ApiContext"
+import { ApiContext } from "../../contexts/ApiContextProvider"
 
 const Bus = () => {
     const roleContext = useContext(RoleContext)

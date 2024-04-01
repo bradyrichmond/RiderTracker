@@ -4,7 +4,7 @@ import { OrganizationType } from '../../types/OrganizationType'
 import {v4 as uuidv4} from 'uuid'
 import { useForm, SubmitHandler } from "react-hook-form"
 import { RiderType } from '../../types/RiderType'
-import { ApiContext } from '../../contexts/ApiContext'
+import { ApiContext } from '../../contexts/ApiContextProvider'
 
 export interface AddRiderModalProps {
     organizationId?: string

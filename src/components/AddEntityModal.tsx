@@ -10,7 +10,7 @@ import { RiderType } from "../types/RiderType"
 import { ScanType } from "../types/ScanType"
 import { AddEntityModalProps, FormInputType, OptionsType, FormDataType } from '../types/FormTypes'
 import { pickRenderElement } from '../helpers/FormRenderHelpers'
-import { ApiContext } from '../contexts/ApiContext'
+import { ApiContext } from '../contexts/ApiContextProvider'
 
 const AddEntityModal = <T extends 
         BusType  | DriverType | GuardianType | OrganizationType | RiderType | ScanType>({ 

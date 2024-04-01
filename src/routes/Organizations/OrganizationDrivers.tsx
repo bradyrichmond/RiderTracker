@@ -6,7 +6,7 @@ import { DataGrid } from '@mui/x-data-grid'
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
 import { DriverType } from "../../types/DriverType"
-import { ApiContext } from "../../contexts/ApiContext"
+import { ApiContext } from "../../contexts/ApiContextProvider"
 
 const OrganizationDrivers = () => {
     const [drivers, setDrivers] = useState<DriverType[]>([])

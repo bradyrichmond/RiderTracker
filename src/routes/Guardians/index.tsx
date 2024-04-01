@@ -6,7 +6,7 @@ import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
 import { useContext, useState } from "react"
 import { Button, Tooltip } from "@mui/material"
-import { ApiContext } from "../../contexts/ApiContext"
+import { ApiContext } from "../../contexts/ApiContextProvider"
 
 interface GuardiansProps {
     fetchForOrg?: boolean
@@ -25,7 +25,6 @@ const Guardians = ({ fetchForOrg }: GuardiansProps) => {
     }
 
     const deleteGuardianAction = async (guardianId: string) => {
-        // await deleteGuardian(roleContext.token, guardianId)
         await api.execute(api.guardians.deleteGuardian, [guardianId])
         updateGuardians()
     }

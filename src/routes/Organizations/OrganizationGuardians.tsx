@@ -6,7 +6,7 @@ import { GuardianType } from "../../types/GuardianType"
 import { DataGrid } from '@mui/x-data-grid'
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
-import { ApiContext } from "../../contexts/ApiContext"
+import { ApiContext } from "../../contexts/ApiContextProvider"
 
 const OrganizationGuardians = () => {
     const [guardians, setGuardians] = useState<GuardianType[]>([])

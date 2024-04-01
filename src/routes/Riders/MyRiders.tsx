@@ -6,7 +6,7 @@ import { Box, Button, Tooltip } from "@mui/material"
 import InfoIcon from '@mui/icons-material/Info'
 import { useContext, useState } from "react"
 import { GuardianType } from "../../types/GuardianType"
-import { ApiContext } from "../../contexts/ApiContext"
+import { ApiContext } from "../../contexts/ApiContextProvider"
 
 const MyRiders = () => {
     const { id } = useParams()

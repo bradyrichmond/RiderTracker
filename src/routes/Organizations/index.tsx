@@ -6,7 +6,7 @@ import { Button, Tooltip } from "@mui/material"
 import CancelIcon from '@mui/icons-material/Cancel'
 import InfoIcon from '@mui/icons-material/Info'
 import { useNavigate } from "react-router-dom"
-import { ApiContext } from "../../contexts/ApiContext"
+import { ApiContext } from "../../contexts/ApiContextProvider"
 
 const Organizations = () => {
     const [organizations, setOrganizations] = useState<OrganizationType[]>([])
