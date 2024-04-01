@@ -13,7 +13,7 @@ import MenuItem from '@mui/material/MenuItem'
 import AdbIcon from '@mui/icons-material/Adb'
 import { ComponentType, MouseEvent, useContext, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { RoleContext } from '../contexts/RoleContext'
+import { RoleContext } from '../contexts/RoleContextProvider'
 import { ROUTE_PROTECTION } from '../constants/RouteProtection'
 
 interface MenuItemWithIconProps {

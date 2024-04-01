@@ -1,23 +1,22 @@
 import { RoleWithWeightType } from "../types/RoleWithWeightType";
-import { RIDERTRACKER_ROLES } from "./Roles";
 
 // Drivers should never be OrgAdmins, right?
 
 export const ROLE_WEIGHTS:RoleWithWeightType[] = [
     {
-        name: RIDERTRACKER_ROLES.WIZARD,
+        name: "RiderTracker_Wizard",
         weight: 1
     },
     {
-        name: RIDERTRACKER_ROLES.ORG_ADMIN,
+        name: "RiderTracker_OrgAdmin",
         weight: 5
     },
     {
-        name: RIDERTRACKER_ROLES.DRIVER,
+        name: "RiderTracker_Driver",
         weight: 5
     },
     {
-        name: RIDERTRACKER_ROLES.GUARDIAN,
+        name: "RiderTracker_Guardian",
         weight: 10
     }
 ]

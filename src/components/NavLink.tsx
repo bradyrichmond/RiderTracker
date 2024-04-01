@@ -2,7 +2,7 @@ import { Box, Typography } from "@mui/material"
 import { ReactNode, useContext } from "react"
 import { Link } from "react-router-dom"
 import { ROUTE_PROTECTION } from "../constants/RouteProtection"
-import { RoleContext } from "../contexts/RoleContext"
+import { RoleContext } from "../contexts/RoleContextProvider"
 
 interface NavLinkProps {
     icon: ReactNode

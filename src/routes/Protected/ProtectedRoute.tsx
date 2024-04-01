@@ -1,7 +1,7 @@
 import { PropsWithChildren, useContext } from "react"
 import { Navigate } from "react-router-dom"
 import { ROUTE_PROTECTION } from "../../constants/RouteProtection"
-import { RoleContext } from "../../contexts/RoleContext"
+import { RoleContext } from "../../contexts/RoleContextProvider"
 
 interface ProtectedRouteProps {
     route: string

@@ -1,6 +1,6 @@
 import { Box, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
-import { RoleContext } from "../../contexts/RoleContext"
+import { RoleContext } from "../../contexts/RoleContextProvider"
 import { useParams } from 'react-router-dom'
 import { GuardianType } from "../../types/GuardianType"
 import GuardiansRiders from "./GuardiansRiders"

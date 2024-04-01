@@ -1,5 +1,4 @@
 import { NavItemType } from "../components/NavigationDrawer"
-import { RIDERTRACKER_ROLES } from "./Roles"
 import DirectionsBusIcon from '@mui/icons-material/DirectionsBus'
 import WorkIcon from '@mui/icons-material/Work'
 import ChildCareIcon from '@mui/icons-material/ChildCare'
@@ -167,25 +166,25 @@ const SETTINGS_NAV_ITEMS: SettingsItemType[] = [
 
 export const ROUTE_PROTECTION = [
     {
-        name: RIDERTRACKER_ROLES.WIZARD,
+        name: "RiderTracker_Wizard",
         routes: ALL_ROUTES,
         navItems: WIZARD_NAV_ITEMS,
         settingsItems: SETTINGS_NAV_ITEMS
     },
     {
-        name: RIDERTRACKER_ROLES.ORG_ADMIN,
+        name: "RiderTracker_OrgAdmin",
         routes: ORG_ADMIN_ROUTES,
         navItems: ORG_ADMIN_NAV_ITEMS,
         settingsItems: SETTINGS_NAV_ITEMS
     },
     {
-        name: RIDERTRACKER_ROLES.DRIVER,
+        name: "RiderTracker_Driver",
         routes: DRIVER_ROUTES,
         navItems: DRIVER_NAV_ITEMS,
         settingsItems: SETTINGS_NAV_ITEMS
     },
     {
-        name: RIDERTRACKER_ROLES.GUARDIAN,
+        name: "RiderTracker_Guardian",
         routes: GUARDIAN_ROUTES,
         navItems: GUARDIAN_NAV_ITEMS,
         settingsItems: SETTINGS_NAV_ITEMS
