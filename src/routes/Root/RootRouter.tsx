@@ -32,7 +32,7 @@ interface RootRouterProps {
 
 const RootRouter = ({ user }: RootRouterProps) => {
     const [isInitialized, setIsInitialized] = useState(false)
-    const { userFullName, setUserFullName, heaviestRole, setHeaviestRole, setUserPictureUrl } = useContext(RoleContext)
+    const { setUserFullName, heaviestRole, setHeaviestRole, setUserPictureUrl } = useContext(RoleContext)
     const { setApi } = useContext(ApiContext)
 
     const initialize = useCallback(async () => {
