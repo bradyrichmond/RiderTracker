@@ -7,6 +7,9 @@ import { Button, Tooltip } from "@mui/material"
 import InfoIcon from '@mui/icons-material/Info'
 import NoTransferIcon from '@mui/icons-material/NoTransfer'
 import { ApiContext } from "../../contexts/ApiContextProvider"
+import { GridColDef } from '@mui/x-data-grid'
+import { RoleContext } from "../../contexts/RoleContextProvider"
+import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "../../constants/Roles"
 
 interface BusesProps {
     fetchForOrg?: boolean
@@ -16,6 +19,7 @@ const Buses = ({ fetchForOrg }: BusesProps) => {
     const [buses, setBuses] = useState<BusType[]>([])
     const { id } = useParams()
     const { api } = useContext(ApiContext)
+    const { heaviestRole } = useContext(RoleContext)
     const navigate = useNavigate()
     const getBusesFunction = (fetchForOrg && id) ? api.buses.getBusesForOrganization : api.buses.getBuses
 
@@ -36,33 +40,30 @@ const Buses = ({ fetchForOrg }: BusesProps) => {
     const createBusAction = async (newBus: BusType) => {
         return await api.execute(api.buses.createBus, [newBus])
     }
-    
-    return (
-        <EntityViewer<BusType>
-            createEntity={createBusAction}
-            entityFactory={busFactory}
-            getEntities={updateBusesAction}
-            entities={buses}
-            modalFormInputs={{inputs: [
-                { name: "Organization Id", inputType: "select" },
-                { name: "Bus Number" }
-            ]}}
-            gridColumns={[
-                { field: 'id',  headerName: 'ID', flex: 1},
-                { field: 'viewDetails', headerName: '', renderCell: (params) => {
-                    return (
-                        <Button
-                            variant="contained"
-                            size="small"
-                            onClick={() => viewBusDetails(params.row.id)}
-                        >
-                            <Tooltip title='View details'>
-                                <InfoIcon />
-                            </Tooltip>
-                        </Button>
-                    )
-                }},
-                { field: 'delete', headerName: '', renderCell: (params) => {
+
+    const generateGridColumns = (): GridColDef[] => {
+        const initialGridColumns:GridColDef[] = [
+            { field: 'id',  headerName: 'ID', flex: 1},
+            { field: 'viewDetails', headerName: '', renderCell: (params) => {
+                return (
+                    <Button
+                        variant="contained"
+                        size="small"
+                        onClick={() => viewBusDetails(params.row.id)}
+                    >
+                        <Tooltip title='View details'>
+                            <InfoIcon />
+                        </Tooltip>
+                    </Button>
+                )
+            }}
+        ]
+
+        if (RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.DELETE_BUS)) {
+            initialGridColumns.push({ 
+                field: 'delete',
+                headerName: '',
+                renderCell: (params) => {
                     return (
                         <Button
                             variant="contained"
@@ -74,8 +75,24 @@ const Buses = ({ fetchForOrg }: BusesProps) => {
                             </Tooltip>
                         </Button>
                     )
-                }}
-            ]}
+                }
+            })
+        }
+
+        return initialGridColumns
+    }
+    
+    return (
+        <EntityViewer<BusType>
+            createEntity={createBusAction}
+            entityFactory={busFactory}
+            getEntities={updateBusesAction}
+            entities={buses}
+            modalFormInputs={{inputs: [
+                { name: "Organization Id", inputType: "select" },
+                { name: "Bus Number" }
+            ]}}
+            gridColumns={generateGridColumns()}
             titleSingular='Bus'
             titlePlural='Buses'
         />

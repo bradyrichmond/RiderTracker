@@ -33,7 +33,7 @@ export type RiderTrackerAction =
   
 export type RiderTrackerPermissions = RiderTrackerPermission[];
   
-const permissions: Record<RiderTrackerAction, RiderTrackerPermission> = {
+export const permissions: Record<RiderTrackerAction, RiderTrackerPermission> = {
     CREATE_BUS: { action: "CREATE_BUS", name: "Create Bus", resourceType: "buses" },
     UPDATE_BUS: { action: "UPDATE_BUS", name: "Update Bus", resourceType: "buses" },
     DELETE_BUS: { action: "DELETE_BUS", name: "Delete Bus", resourceType: "buses", requiresConfirmation: true },
