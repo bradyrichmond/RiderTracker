@@ -7,11 +7,15 @@ import CancelIcon from '@mui/icons-material/Cancel'
 import InfoIcon from '@mui/icons-material/Info'
 import { useNavigate } from "react-router-dom"
 import { ApiContext } from "../../contexts/ApiContextProvider"
+import { GridColDef } from "@mui/x-data-grid"
+import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "../../constants/Roles"
+import { RoleContext } from "../../contexts/RoleContextProvider"
 
 const Organizations = () => {
     const [organizations, setOrganizations] = useState<OrganizationType[]>([])
     const navigate = useNavigate()
     const { api } = useContext(ApiContext)
+    const { heaviestRole } = useContext(RoleContext)
 
     const updateOrganizations = async () => {
         const organizationsData = await api.execute(api.organizations.getOrganizations, [])
@@ -31,29 +35,28 @@ const Organizations = () => {
         await api.execute(api.organizations.createOrganization, [newOrganization])
         updateOrganizations()
     }
-    
-    return (
-        <EntityViewer<OrganizationType>
-            createEntity={createOrganization}
-            entityFactory={organizationFactory}
-            getEntities={updateOrganizations}
-            entities={organizations}
-            gridColumns={[
-                { field: 'id',  headerName: 'id', flex: 1},
-                { field: 'viewDetails', headerName: '', flex: 1, renderCell: (params) => {
-                    return (
-                        <Button
-                            variant="contained"
-                            size="small"
-                            onClick={() => showOrganizationDetails(params.row.id)}
-                        >
-                            <Tooltip title='View Details'>
-                                <InfoIcon />
-                            </Tooltip>
-                        </Button>
-                    )
-                }},
-                { field: 'delete', headerName: '', flex: 1, renderCell: (params) => {
+
+    const generateGridColumns = (): GridColDef[] => {
+        const initialGridColumns: GridColDef[] = [
+            { field: 'id',  headerName: 'id', flex: 1},
+            { field: 'viewDetails', headerName: '', flex: 1, renderCell: (params) => {
+                return (
+                    <Button
+                        variant="contained"
+                        size="small"
+                        onClick={() => showOrganizationDetails(params.row.id)}
+                    >
+                        <Tooltip title='View Details'>
+                            <InfoIcon />
+                        </Tooltip>
+                    </Button>
+                )
+            }}
+        ]
+
+        if (RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.DELETE_ORGANIZATION)) {
+            initialGridColumns.push({
+                field: 'delete', headerName: '', flex: 1, renderCell: (params) => {
                     return (
                         <Button
                             variant="contained"
@@ -65,8 +68,20 @@ const Organizations = () => {
                             </Tooltip>
                         </Button>
                     )
-                }}
-            ]}
+                }
+            })
+        }
+
+        return initialGridColumns
+    }
+    
+    return (
+        <EntityViewer<OrganizationType>
+            createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_ORGANIZATION) ? createOrganization : undefined}
+            entityFactory={organizationFactory}
+            getEntities={updateOrganizations}
+            entities={organizations}
+            gridColumns={generateGridColumns()}
             titleSingular='Organization'
             titlePlural='Organizations'
         />

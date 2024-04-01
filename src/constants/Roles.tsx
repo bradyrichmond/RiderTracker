@@ -24,12 +24,16 @@ export type RiderTrackerAction =
     | "CREATE_GUARDIAN"
     | "UPDATE_GUARDIAN"
     | "DELETE_GUARDIAN"
+    | "LINK_GUARDIAN_TO_RIDER"
+    | "UNLINK_GUARDIAN_FROM_RIDER"
     | "CREATE_ORGANIZATION"
     | "UPDATE_ORGANIZATION"
     | "DELETE_ORGANIZATION"
     | "CREATE_RIDER"
     | "UPDATE_RIDER"
-    | "DELETE_RIDER";
+    | "DELETE_RIDER"
+    | "LINK_RIDER_TO_GUARDIAN"
+    | "UNLINK_RIDER_FROM_GUARDIAN"
   
 export type RiderTrackerPermissions = RiderTrackerPermission[];
   
@@ -43,12 +47,16 @@ export const permissions: Record<RiderTrackerAction, RiderTrackerPermission> = {
     CREATE_GUARDIAN: { action: "CREATE_GUARDIAN", name: "Create Guardian", resourceType: "guardians" },
     UPDATE_GUARDIAN: { action: "UPDATE_GUARDIAN", name: "Update Guardian", resourceType: "guardians" },
     DELETE_GUARDIAN: { action: "DELETE_GUARDIAN", name: "Delete Guardian", resourceType: "guardians", requiresConfirmation: true },
+    LINK_GUARDIAN_TO_RIDER: { action: "LINK_GUARDIAN_TO_RIDER", name: "Link Guardian to Rider", resourceType: "guardians" },
+    UNLINK_GUARDIAN_FROM_RIDER: { action: "UNLINK_GUARDIAN_FROM_RIDER", name: "Unink Guardian from Rider", resourceType: "guardians" },
     CREATE_ORGANIZATION: { action: "CREATE_ORGANIZATION", name: "Create Organization", resourceType: "organizations" },
     UPDATE_ORGANIZATION: { action: "UPDATE_ORGANIZATION", name: "Update Organization", resourceType: "organizations" },
     DELETE_ORGANIZATION: { action: "DELETE_ORGANIZATION", name: "Delete Organization", resourceType: "organizations", requiresConfirmation: true },
     CREATE_RIDER: { action: "CREATE_RIDER", name: "Create Rider", resourceType: "riders" },
     UPDATE_RIDER: { action: "UPDATE_RIDER", name: "Update Rider", resourceType: "riders" },
     DELETE_RIDER: { action: "DELETE_RIDER", name: "Delete Rider", resourceType: "riders", requiresConfirmation: true },
+    LINK_RIDER_TO_GUARDIAN: { action: "LINK_RIDER_TO_GUARDIAN", name: "Link Rider to Guardian", resourceType: "riders" },
+    UNLINK_RIDER_FROM_GUARDIAN: { action: "UNLINK_RIDER_FROM_GUARDIAN", name: "Unlink Rider from Guardian", resourceType: "riders" },
 };
   
 export const RIDERTRACKER_PERMISSIONS_BY_ROLE: Record<RiderTrackerRole, RiderTrackerPermissions> = {
@@ -63,11 +71,15 @@ export const RIDERTRACKER_PERMISSIONS_BY_ROLE: Record<RiderTrackerRole, RiderTra
         permissions.CREATE_GUARDIAN,
         permissions.UPDATE_GUARDIAN,
         permissions.DELETE_GUARDIAN,
+        permissions.LINK_GUARDIAN_TO_RIDER,
+        permissions.UNLINK_GUARDIAN_FROM_RIDER,
         permissions.UPDATE_ORGANIZATION,
         permissions.DELETE_ORGANIZATION,
         permissions.CREATE_RIDER,
         permissions.UPDATE_RIDER,
-        permissions.DELETE_RIDER
+        permissions.DELETE_RIDER,
+        permissions.LINK_RIDER_TO_GUARDIAN,
+        permissions.UNLINK_RIDER_FROM_GUARDIAN
     ],
     "RiderTracker_Driver": [
         permissions.UPDATE_BUS,

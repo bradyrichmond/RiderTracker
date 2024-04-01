@@ -7,6 +7,9 @@ import { Button, Tooltip } from "@mui/material"
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
 import { ApiContext } from "../../contexts/ApiContextProvider"
+import { GridColDef } from '@mui/x-data-grid'
+import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "../../constants/Roles"
+import { RoleContext } from "../../contexts/RoleContextProvider"
 
 interface DriversProps {
     fetchForOrg?: boolean
@@ -17,6 +20,7 @@ const Drivers = ({ fetchForOrg }: DriversProps) => {
     const { id } = useParams()
     const navigate = useNavigate()
     const { api } = useContext(ApiContext)
+    const { heaviestRole } = useContext(RoleContext)
     const getDriversFunction = (fetchForOrg && id) ? api.drivers.getDriversForOrganization : api.drivers.getDrivers
 
     const updateDriversAction = async () => {
@@ -36,35 +40,29 @@ const Drivers = ({ fetchForOrg }: DriversProps) => {
     const createDriverAction = async (driver: DriverType) => {
         return await api.execute(api.drivers.createDriver, [driver])
     }
-    
-    return (
-        <EntityViewer<DriverType>
-            createEntity={createDriverAction}
-            entityFactory={driverFactory}
-            getEntities={updateDriversAction}
-            entities={drivers}
-            modalFormInputs={{inputs: [
-                { name: "Organization Id", inputType: "select" },
-                { name: "First Name" },
-                { name: "Last Name" }
-            ]}}
-            gridColumns={[
-                { field: 'firstName',  headerName: 'First Name', flex: 1},
-                { field: 'lastName',  headerName: 'Last Name', flex: 1},
-                { field: 'viewDetails', headerName: '', flex: 1, renderCell: (params) => {
-                    return (
-                        <Button
-                            variant="contained"
-                            size="small"
-                            onClick={() => viewDriverDetails(params.row.id)}
-                        >
-                            <Tooltip title='View Details'>
-                                <InfoIcon />
-                            </Tooltip>
-                        </Button>
-                    )
-                }},
-                { field: 'delete', headerName: '', flex: 1, renderCell: (params) => {
+
+    const generateGridColumns = (): GridColDef[] => {
+        const initialGridColumns: GridColDef[] = [
+            { field: 'firstName',  headerName: 'First Name', flex: 1},
+            { field: 'lastName',  headerName: 'Last Name', flex: 1},
+            { field: 'viewDetails', headerName: '', flex: 1, renderCell: (params) => {
+                return (
+                    <Button
+                        variant="contained"
+                        size="small"
+                        onClick={() => viewDriverDetails(params.row.id)}
+                    >
+                        <Tooltip title='View Details'>
+                            <InfoIcon />
+                        </Tooltip>
+                    </Button>
+                )
+            }}
+        ]
+
+        if (RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.DELETE_DRIVER)) {
+            initialGridColumns.push({
+                field: 'delete', headerName: '', flex: 1, renderCell: (params) => {
                     return (
                         <Button
                             variant="contained"
@@ -76,8 +74,25 @@ const Drivers = ({ fetchForOrg }: DriversProps) => {
                             </Tooltip>
                         </Button>
                     )
-                }}
-            ]}
+                }
+            })
+        }
+
+        return initialGridColumns
+    }
+    
+    return (
+        <EntityViewer<DriverType>
+            createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_DRIVER) ? createDriverAction : undefined}
+            entityFactory={driverFactory}
+            getEntities={updateDriversAction}
+            entities={drivers}
+            modalFormInputs={{inputs: [
+                { name: "Organization Id", inputType: "select" },
+                { name: "First Name" },
+                { name: "Last Name" }
+            ]}}
+            gridColumns={generateGridColumns()}
             titleSingular='Driver'
             titlePlural='Drivers'
         />

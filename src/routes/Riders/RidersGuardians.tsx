@@ -12,6 +12,8 @@ import { useNavigate } from "react-router-dom"
 import LinkOffIcon from '@mui/icons-material/LinkOff'
 import InfoIcon from '@mui/icons-material/Info'
 import { ApiContext } from "../../contexts/ApiContextProvider"
+import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "../../constants/Roles"
+import { GridColDef } from "@mui/x-data-grid"
 
 interface GuardianRidersProps {
     rider: RiderType
@@ -23,14 +25,14 @@ const GuardiansRiders = ({ rider, getRiderData }: GuardianRidersProps) => {
     const [allGuardians, setAllGuardians] = useState<OptionsType[]>([])
     const [showModal, setShowModal] = useState<boolean>(false)
     const { id: riderId } = rider
-    const roleContext = useContext(RoleContext)
+    const { heaviestRole } = useContext(RoleContext)
     const { api } = useContext(ApiContext)
     const navigate = useNavigate()
 
     useEffect(() => {
         updateGuardians()
         updateAllGuardians()
-    }, [roleContext, rider.organizationId])
+    }, [heaviestRole, rider.organizationId])
 
     const updateGuardians = async () => {
         await getRiderData()
@@ -104,6 +106,46 @@ const GuardiansRiders = ({ rider, getRiderData }: GuardianRidersProps) => {
         navigate(`/guardians/${guardianId}`)
     }
 
+    const generateGridColumns = (): GridColDef[] => {
+        const initialGridColumns: GridColDef[] = [
+            { field: 'firstName',  headerName: 'First Name', flex: 1},
+            { field: 'lastName',  headerName: 'Last Name', flex: 1},
+            { field: 'viewDetails', headerName: '', flex: 1, renderCell: (params) => {
+                return (
+                    <Button
+                        variant="contained"
+                        size="small"
+                        onClick={() => viewGuardianDetails(params.row.id)}
+                    >
+                        <Tooltip title='View Details'>
+                            <InfoIcon />
+                        </Tooltip>
+                    </Button>
+                )
+            }}
+        ]
+
+        if (RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.UNLINK_RIDER_FROM_GUARDIAN)) {
+            initialGridColumns.push({ 
+                field: 'delete', headerName: '', flex: 1, renderCell: (params) => {
+                    return (
+                        <Button
+                            variant="contained"
+                            size="small"
+                            onClick={() => deleteGuardianLink(params.row.id)}
+                        >
+                            <Tooltip title='Remove guardian from rider'>
+                                <LinkOffIcon />
+                            </Tooltip>
+                        </Button>
+                    )
+                }
+            })
+        }
+
+        return initialGridColumns
+    }
+
     return (
         <Box>
             {allGuardians.length > 0 ?
@@ -123,46 +165,21 @@ const GuardiansRiders = ({ rider, getRiderData }: GuardianRidersProps) => {
                 null
             }
             <Typography variant="h2">Guardians</Typography>
-            <DataGrid hideFooterPagination autoHeight rows={guardians} columns={[
-                { field: 'firstName',  headerName: 'First Name', flex: 1},
-                { field: 'lastName',  headerName: 'Last Name', flex: 1},
-                { field: 'viewDetails', headerName: '', flex: 1, renderCell: (params) => {
-                    return (
-                        <Button
-                            variant="contained"
-                            size="small"
-                            onClick={() => viewGuardianDetails(params.row.id)}
-                        >
-                            <Tooltip title='View Details'>
-                                <InfoIcon />
-                            </Tooltip>
-                        </Button>
-                    )
-                }},
-                { field: 'delete', headerName: '', flex: 1, renderCell: (params) => {
-                    return (
-                        <Button
-                            variant="contained"
-                            size="small"
-                            onClick={() => deleteGuardianLink(params.row.id)}
-                        >
-                            <Tooltip title='Remove guardian from rider'>
-                                <LinkOffIcon />
-                            </Tooltip>
-                        </Button>
-                    )
-                }}
-            ]} />
-            <Box marginTop='2rem'>
-                <Button variant='contained' onClick={toggleShowModal}>
-                    <Box display='flex' flexDirection='row' justifyContent=''>
-                        <LinkIcon />
-                        <Box flex='1' marginLeft='1rem'>
-                            <Typography>Link another Guardian to this Rider</Typography>
+            <DataGrid hideFooterPagination autoHeight rows={guardians} columns={generateGridColumns()} />
+            {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.LINK_RIDER_TO_GUARDIAN) ?
+                <Box marginTop='2rem'>
+                    <Button variant='contained' onClick={toggleShowModal}>
+                        <Box display='flex' flexDirection='row' justifyContent=''>
+                            <LinkIcon />
+                            <Box flex='1' marginLeft='1rem'>
+                                <Typography>Link another Guardian to this Rider</Typography>
+                            </Box>
                         </Box>
-                    </Box>
-                </Button>
-            </Box>
+                    </Button>
+                </Box>
+                : 
+                null
+            }
         </Box>
     )
 }

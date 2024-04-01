@@ -23,15 +23,10 @@ const MyRiders = () => {
     const viewRiderDetails = (riderId: string) => {
         navigate(`/riders/${riderId}`)
     }
-
-    const createRider = async (_newRider: RiderType) => {
-        console.error(`You're not allowed to do that, Dave.`)
-    }
     
     return (
         <Box height='100%'>
             <EntityViewer<RiderType>
-                createEntity={createRider}
                 entityFactory={riderFactory}
                 getEntities={getRidersAction}
                 entities={riders}

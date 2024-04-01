@@ -7,6 +7,9 @@ import InfoIcon from '@mui/icons-material/Info'
 import { useContext, useState } from "react"
 import { Button, Tooltip } from "@mui/material"
 import { ApiContext } from "../../contexts/ApiContextProvider"
+import { GridColDef } from "@mui/x-data-grid"
+import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "../../constants/Roles"
+import { RoleContext } from "../../contexts/RoleContextProvider"
 
 interface GuardiansProps {
     fetchForOrg?: boolean
@@ -16,6 +19,7 @@ const Guardians = ({ fetchForOrg }: GuardiansProps) => {
     const { id } = useParams()
     const [guardians, setGuardians] = useState<GuardianType[]>([])
     const { api } = useContext(ApiContext)
+    const { heaviestRole } = useContext(RoleContext)
     const getGuardiansFunction = (fetchForOrg && id) ? api.guardians.getGuardiansForOrganization : api.guardians.getGuardians
     const navigate = useNavigate()
 
@@ -36,35 +40,29 @@ const Guardians = ({ fetchForOrg }: GuardiansProps) => {
     const createGuardianAction = async (newGuardian: GuardianType) => {
         return await api.execute(api.guardians.createGuardian, [newGuardian])
     }
-    
-    return (
-        <EntityViewer<GuardianType>
-            createEntity={createGuardianAction}
-            entityFactory={guardianFactory}
-            getEntities={updateGuardians}
-            entities={guardians}
-            modalFormInputs={{inputs: [
-                { name: "Organization Id", inputType: "select" },
-                { name: "First Name" },
-                { name: "Last Name" }
-            ]}}
-            gridColumns={[
-                { field: 'firstName',  headerName: 'First Name', flex: 1},
-                { field: 'lastName',  headerName: 'Last Name', flex: 1},
-                { field: 'viewDetails', headerName: '', flex: 1, renderCell: (params) => {
-                    return (
-                        <Button
-                            variant="contained"
-                            size="small"
-                            onClick={() => viewGuardianDetails(params.row.id)}
-                        >
-                            <Tooltip title='View Details'>
-                                <InfoIcon />
-                            </Tooltip>
-                        </Button>
-                    )
-                }},
-                { field: 'delete', headerName: '', flex: 1, renderCell: (params) => {
+
+    const generateGridColumns = (): GridColDef[] => {
+        const initialGridColumns: GridColDef[] = [
+            { field: 'firstName',  headerName: 'First Name', flex: 1},
+            { field: 'lastName',  headerName: 'Last Name', flex: 1},
+            { field: 'viewDetails', headerName: '', flex: 1, renderCell: (params) => {
+                return (
+                    <Button
+                        variant="contained"
+                        size="small"
+                        onClick={() => viewGuardianDetails(params.row.id)}
+                    >
+                        <Tooltip title='View Details'>
+                            <InfoIcon />
+                        </Tooltip>
+                    </Button>
+                )
+            }}
+        ]
+
+        if (RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.DELETE_GUARDIAN)) {
+            initialGridColumns.push({
+                field: 'delete', headerName: '', flex: 1, renderCell: (params) => {
                     return (
                         <Button
                             variant="contained"
@@ -76,8 +74,25 @@ const Guardians = ({ fetchForOrg }: GuardiansProps) => {
                             </Tooltip>
                         </Button>
                     )
-                }}
-            ]}
+                }
+            })
+        }
+
+        return initialGridColumns
+    }
+    
+    return (
+        <EntityViewer<GuardianType>
+            createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_GUARDIAN) ? createGuardianAction : undefined}
+            entityFactory={guardianFactory}
+            getEntities={updateGuardians}
+            entities={guardians}
+            modalFormInputs={{inputs: [
+                { name: "Organization Id", inputType: "select" },
+                { name: "First Name" },
+                { name: "Last Name" }
+            ]}}
+            gridColumns={generateGridColumns()}
             titleSingular='Guardian'
             titlePlural='Guardians'
         />

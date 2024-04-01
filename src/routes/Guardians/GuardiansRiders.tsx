@@ -12,6 +12,8 @@ import LinkOffIcon from '@mui/icons-material/LinkOff'
 import InfoIcon from '@mui/icons-material/Info'
 import { guardianFactory } from "./GuardianFactory"
 import { ApiContext } from "../../contexts/ApiContextProvider"
+import { GridColDef } from "@mui/x-data-grid"
+import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "../../constants/Roles"
 
 interface RidersGuardiansProps {
     guardian: GuardianType
@@ -26,6 +28,7 @@ const GuardiansRiders = ({ guardian, getGuardianData }: RidersGuardiansProps) =>
     const roleContext = useContext(RoleContext)
     const { api } = useContext(ApiContext)
     const navigate = useNavigate()
+    const { heaviestRole } = useContext(RoleContext)
 
     useEffect(() => {
         updateRiders()
@@ -104,6 +107,46 @@ const GuardiansRiders = ({ guardian, getGuardianData }: RidersGuardiansProps) =>
         navigate(`/riders/${riderId}`)
     }
 
+    const generateGridColumns = (): GridColDef[] => {
+        const initialGridColumns: GridColDef[] = [
+            { field: 'firstName',  headerName: 'First Name', flex: 1},
+            { field: 'lastName',  headerName: 'Last Name', flex: 1},
+            { field: 'viewDetails', headerName: '', flex: 1, renderCell: (params) => {
+                return (
+                    <Button
+                        variant="contained"
+                        size="small"
+                        onClick={() => viewRiderDetails(params.row.id)}
+                    >
+                        <Tooltip title='View Details'>
+                            <InfoIcon />
+                        </Tooltip>
+                    </Button>
+                )
+            }}
+        ]
+
+        if (RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.LINK_GUARDIAN_TO_RIDER)) {
+            initialGridColumns.push({
+                field: 'delete', headerName: '', flex: 1, renderCell: (params) => {
+                    return (
+                        <Button
+                            variant="contained"
+                            size="small"
+                            onClick={() => deleteGuardianLink(params.row.id)}
+                        >
+                            <Tooltip title='Remove guardian from rider'>
+                                <LinkOffIcon />
+                            </Tooltip>
+                        </Button>
+                    )
+                }
+            })
+        }
+
+        return initialGridColumns
+    }
+
     return (
         <Box>
             {allRiders.length > 0 ? 
@@ -123,46 +166,21 @@ const GuardiansRiders = ({ guardian, getGuardianData }: RidersGuardiansProps) =>
                 null
             }
             <Typography variant="h2">Riders</Typography>
-            <DataGrid hideFooterPagination autoHeight rows={riders} columns={[
-                { field: 'firstName',  headerName: 'First Name', flex: 1},
-                { field: 'lastName',  headerName: 'Last Name', flex: 1},
-                { field: 'viewDetails', headerName: '', flex: 1, renderCell: (params) => {
-                    return (
-                        <Button
-                            variant="contained"
-                            size="small"
-                            onClick={() => viewRiderDetails(params.row.id)}
-                        >
-                            <Tooltip title='View Details'>
-                                <InfoIcon />
-                            </Tooltip>
-                        </Button>
-                    )
-                }},
-                { field: 'delete', headerName: '', flex: 1, renderCell: (params) => {
-                    return (
-                        <Button
-                            variant="contained"
-                            size="small"
-                            onClick={() => deleteGuardianLink(params.row.id)}
-                        >
-                            <Tooltip title='Remove guardian from rider'>
-                                <LinkOffIcon />
-                            </Tooltip>
-                        </Button>
-                    )
-                }}
-            ]} />
-            <Box marginTop='2rem'>
-                <Button variant='contained' onClick={toggleShowModal}>
-                    <Box display='flex' flexDirection='row' justifyContent=''>
-                        <LinkIcon />
-                        <Box flex='1' marginLeft='1rem'>
-                            <Typography>Link another Rider to this Guardian</Typography>
+            <DataGrid hideFooterPagination autoHeight rows={riders} columns={generateGridColumns()} />
+            {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.LINK_GUARDIAN_TO_RIDER) ?
+                <Box marginTop='2rem'>
+                    <Button variant='contained' onClick={toggleShowModal}>
+                        <Box display='flex' flexDirection='row' justifyContent=''>
+                            <LinkIcon />
+                            <Box flex='1' marginLeft='1rem'>
+                                <Typography>Link another Rider to this Guardian</Typography>
+                            </Box>
                         </Box>
-                    </Box>
-                </Button>
-            </Box>
+                    </Button>
+                </Box>
+                :
+                null
+            }
         </Box>
     )
 }
