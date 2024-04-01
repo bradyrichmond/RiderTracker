@@ -5,7 +5,7 @@ import {
     RouterProvider,
     createBrowserRouter
 } from "react-router-dom"
-import { useCallback, useContext, useEffect, useMemo } from "react"
+import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 import Scans from '../Scans'
 import Organizations from '../Organizations'
 import Guardians from '../Guardians'
@@ -31,7 +31,8 @@ interface RootRouterProps {
 }
 
 const RootRouter = ({ user }: RootRouterProps) => {
-    const { setUserFullName, heaviestRole, setHeaviestRole, setUserPictureUrl } = useContext(RoleContext)
+    const [isInitialized, setIsInitialized] = useState(false)
+    const { userFullName, setUserFullName, heaviestRole, setHeaviestRole, setUserPictureUrl } = useContext(RoleContext)
     const { setApi } = useContext(ApiContext)
 
     const initialize = useCallback(async () => {
@@ -52,7 +53,8 @@ const RootRouter = ({ user }: RootRouterProps) => {
         setHeaviestRole(heaviestRoleFromGroups)
 
         initializeApi(idToken?.toString() ?? '')
-        initializeUserData()
+        await initializeUserData()
+        setIsInitialized(true)
     }, [user])
 
     useEffect(() => {
@@ -156,7 +158,7 @@ const RootRouter = ({ user }: RootRouterProps) => {
 
     return (
         <>
-            {heaviestRole ? <RouterProvider router={router} /> : null}
+            {isInitialized ? <RouterProvider router={router} /> : null}
         </>
     )
 }
