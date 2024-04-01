@@ -21,7 +21,7 @@ export interface ModalProps<T> {
 }
 
 interface EntityViewerProps<T> {
-    createEntity(_body: T): Promise<void>
+    createEntity?(_body: T): Promise<void>
     fetchForOrg?: boolean
     entityFactory: (args: string[]) => T 
     getEntities(id?: string): void
@@ -56,9 +56,11 @@ const EntityViewer = <T extends
     }
 
     const submitAction = async (newEntity: T) => {
-        modalFormInputs && toggleShowModal()
-        await createEntity(newEntity)
-        updateEntities()
+        if (modalFormInputs && createEntity) {
+            modalFormInputs && toggleShowModal()
+            await createEntity(newEntity)
+            updateEntities()
+        }
     }
 
     return (
@@ -82,7 +84,7 @@ const EntityViewer = <T extends
                         {titlePlural}
                     </Typography>
                 </Box>
-                {modalFormInputs ? 
+                {modalFormInputs && createEntity ? 
                     <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
                         <Button variant='contained' onClick={toggleShowModal}>
                             <Box display='flex' flexDirection='row'>

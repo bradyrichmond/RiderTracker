@@ -84,7 +84,7 @@ const Buses = ({ fetchForOrg }: BusesProps) => {
     
     return (
         <EntityViewer<BusType>
-            createEntity={createBusAction}
+            createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_BUS) ? createBusAction : undefined}
             entityFactory={busFactory}
             getEntities={updateBusesAction}
             entities={buses}
