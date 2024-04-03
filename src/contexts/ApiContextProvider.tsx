@@ -1,15 +1,14 @@
 import { createContext } from "react";
+import { PropsWithChildren, useState } from "react"
+import RiderTrackerAPI from "../API";
  
 export const ApiContext = createContext({
     api: new RiderTrackerAPI(''),
     setApi: (_role: RiderTrackerAPI) => {}
 });
 
-import { PropsWithChildren, useState } from "react"
-import { RiderTrackerAPI } from "../API";
-
 export const ApiContextProvider = ({ children }: PropsWithChildren<{}>) => {
-    const [api, setApi] = useState(new RiderTrackerAPI(''))
+    const [api, setApi] = useState<RiderTrackerAPI>(new RiderTrackerAPI(''))
 
     return (
         <ApiContext.Provider value={{ api, setApi }}>

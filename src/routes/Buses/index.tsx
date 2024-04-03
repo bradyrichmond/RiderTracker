@@ -11,17 +11,13 @@ import { GridColDef } from '@mui/x-data-grid'
 import { RoleContext } from "../../contexts/RoleContextProvider"
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "../../constants/Roles"
 
-interface BusesProps {
-    fetchForOrg?: boolean
-}
-
-const Buses = ({ fetchForOrg }: BusesProps) => {
+const Buses = () => {
     const [buses, setBuses] = useState<BusType[]>([])
     const { id } = useParams()
     const { api } = useContext(ApiContext)
     const { heaviestRole } = useContext(RoleContext)
     const navigate = useNavigate()
-    const getBusesFunction = (fetchForOrg && id) ? api.buses.getBusesForOrganization : api.buses.getBuses
+    const getBusesFunction = id ? api.buses.getBusesForOrganization : api.buses.getBuses
 
     const updateBusesAction = async (id?: string) => {
         const buses = await api.execute(getBusesFunction, [id])

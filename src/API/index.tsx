@@ -7,11 +7,11 @@ import { ScanApis, ScanApiFunctionTypes } from './ScanApis'
 
 export const API_BASE_NAME = 'https://gkupwyoi70.execute-api.us-west-2.amazonaws.com/dev' // this will need to change with environment
 
-interface ApiFunction {
-    (...args: any[]): Promise<any>;
-  }
+export interface ApiFunction {
+    (...args: any[]): Promise<any>
+}
 
-export class RiderTrackerAPI {
+class RiderTrackerAPI {
     token: string
     buses: BusApiFunctionTypes
     drivers: DriverApiFunctionTypes
@@ -49,3 +49,5 @@ export class RiderTrackerAPI {
     }
 
 }
+
+export default RiderTrackerAPI
