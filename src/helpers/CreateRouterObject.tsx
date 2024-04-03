@@ -1,4 +1,4 @@
-import { RouteObject, createBrowserRouter } from "react-router-dom"
+import { createBrowserRouter } from "react-router-dom"
 
 import Bus from '@/routes/Buses/Bus'
 import Buses from '@/routes/Buses'

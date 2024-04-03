@@ -37,15 +37,15 @@ class RiderTrackerAPI {
     async execute(apiFunction: ApiFunction, args: any[]) {
         // Example use: api.execute(api.riders.getRidersForOrganization, [organizationId])
         try {
-            return await this.callApiFunction(apiFunction, args);
+            return await this.callApiFunction(apiFunction, args)
         } catch (error) {
-            throw error;
+            throw error
         }
     }
 
     private async callApiFunction(apiFunction: ApiFunction, ...args: any[]): Promise<any> {
-        const modifiedArgs = [this.token, ...args];
-        return await apiFunction(...modifiedArgs);
+        const modifiedArgs = [this.token, ...args]
+        return await apiFunction(...modifiedArgs)
     }
 
 }

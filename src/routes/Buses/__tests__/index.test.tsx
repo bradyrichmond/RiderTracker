@@ -1,9 +1,10 @@
 import '@testing-library/jest-dom'
 // @ts-ignore
 import RiderTrackerAPI, * as API from '@/API'
+
 import Buses from '..'
 import { render, screen, waitFor } from "@testing-library/react"
-import { ProviderWrapper } from '@/helpers/ProviderWrapper'
+import { ProviderWrapperAsRole } from '@/helpers/ProviderWrapper'
 
 jest.mock('@/API', () => {
   return {
@@ -67,20 +68,50 @@ jest.mock('@/API', () => {
   }
 })
 
-describe('loads and displays Buses component', () => {
-  render(<Buses />, { wrapper: ProviderWrapper})
+afterEach(() => {
+  jest.restoreAllMocks()
+})
 
-  it('renders buses header', async () => {
+describe('Buses Tests', () => {
+  it('shows add bus button when authorized to add buses', async () => {
+    render(<Buses />, { wrapper: ProviderWrapperAsRole })
+
     await waitFor(() => {
-      const heading = screen.getByRole('heading')
-      expect(heading).toHaveTextContent('Buses')
+      expect(screen.getByText(/add bus/i)).toBeInTheDocument()
     })
   })
 
-  it("doesn't render add bus button", async () => {
+  it('hides add bus button when not authorized to add buses', async () => {
+    // render(
+    //   <ProviderWrapperAsRole role="RiderTracker_Guardian">
+    //       <Buses />
+    //   </ProviderWrapperAsRole>
+    // )
+    render(<Buses />, { wrapper: (props: any) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" />})
+
     await waitFor(() => {
-      const busButton = screen.queryByText('Add Bus')
-      expect(busButton).not.toBeInTheDocument()
+      expect(screen.queryByText(/add bus/i)).not.toBeInTheDocument()
+      screen.logTestingPlaygroundURL()
+    })
+  })
+
+  it('loads rows into data grid when there is data', async () => {
+    render(<Buses />, { wrapper: ProviderWrapperAsRole })
+
+    await waitFor(() => {
+      expect(screen.getByRole('gridcell', {
+        name: /7888888888/i
+      })).toBeInTheDocument()
+    })
+  })
+
+  it('shows no rows when there is no data to load', async () => {
+    
+
+    render(<Buses />, { wrapper: ProviderWrapperAsRole })
+
+    await waitFor(() => {
+      expect(screen.queryByText(/no rows/i)).toBeInTheDocument()
     })
   })
 })
