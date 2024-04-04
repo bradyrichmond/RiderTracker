@@ -82,11 +82,6 @@ describe('Buses Tests', () => {
   })
 
   it('hides add bus button when not authorized to add buses', async () => {
-    // render(
-    //   <ProviderWrapperAsRole role="RiderTracker_Guardian">
-    //       <Buses />
-    //   </ProviderWrapperAsRole>
-    // )
     render(<Buses />, { wrapper: (props: any) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" />})
 
     await waitFor(() => {
