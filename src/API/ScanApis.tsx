@@ -1,12 +1,7 @@
 import { ScanType } from "../types/ScanType"
-import { API_BASE_NAME } from "."
+import { API_BASE_NAME } from "./API"
 
 const getScans = async (token: string) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const scansData = await fetch(`${API_BASE_NAME}/scans`, {
             headers: {
@@ -18,17 +13,11 @@ const getScans = async (token: string) => {
 
         return scans
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 
 const createScan = async (token: string, body: ScanType) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const scansData = await fetch(`${API_BASE_NAME}/scans`, {
             method: 'POST',
@@ -43,17 +32,11 @@ const createScan = async (token: string, body: ScanType) => {
 
         return scans
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 
 const deleteScan = async (token: string, id: string) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const scansData = await fetch(`${API_BASE_NAME}/scans/${id}`, {
             method: 'DELETE',
@@ -67,8 +50,7 @@ const deleteScan = async (token: string, id: string) => {
 
         return scans
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 

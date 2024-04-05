@@ -1,11 +1,10 @@
 import '@testing-library/jest-dom'
-// @ts-ignore
-import RiderTrackerAPI, * as API from '@/API'
 import Buses from '..'
+import { ApiFunction } from '@/API/API'
 import { render, screen, waitFor } from "@testing-library/react"
 import { ProviderWrapperAsRole } from '@/helpers/ProviderWrapper'
 
-jest.mock('@/API', () => {
+jest.mock('@/API/API', () => {
   return {
     default: jest.fn().mockImplementation(() => {
       return {
@@ -57,7 +56,7 @@ jest.mock('@/API', () => {
             ]
           }
         },
-        execute: async (action: API.ApiFunction, args: any[]) => {
+        execute: async (action: ApiFunction, args: any[]) => {
           const modifiedArgs = ['THISisAtoken', ...args]
           const result = await action(...modifiedArgs)
           return result

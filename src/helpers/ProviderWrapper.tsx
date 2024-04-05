@@ -1,7 +1,7 @@
 import { RoleContext, RoleContextProvider } from '@/contexts/RoleContextProvider'
 import { ApiContextProvider } from '@/contexts/ApiContextProvider'
 import { PropsWithChildren, useContext, useEffect } from 'react'
-import { BrowserRouter } from 'react-router-dom'
+import { MemoryRouter } from 'react-router-dom'
 
 interface AsRole {
     role?: string
@@ -9,19 +9,19 @@ interface AsRole {
 
 export const ProviderWrapper = ({ children }: PropsWithChildren) => {
     return (
-        <BrowserRouter>
+        <MemoryRouter>
             <RoleContextProvider>
                 <ApiContextProvider>
                     {children}
                 </ApiContextProvider>
             </RoleContextProvider>
-        </BrowserRouter>
+        </MemoryRouter>
     )
 }
 
 export const ProviderWrapperAsRole = ({ children, role }: PropsWithChildren<AsRole>) => {
     return (
-        <BrowserRouter>
+        <MemoryRouter>
             <RoleContextProvider>
                 <ApiContextProvider>
                     <AsRole role={role}>
@@ -29,7 +29,7 @@ export const ProviderWrapperAsRole = ({ children, role }: PropsWithChildren<AsRo
                     </AsRole>
                 </ApiContextProvider>
             </RoleContextProvider>
-        </BrowserRouter>
+        </MemoryRouter>
     )
 }
 

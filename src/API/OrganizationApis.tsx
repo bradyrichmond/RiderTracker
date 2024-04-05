@@ -1,12 +1,7 @@
 import { OrganizationType } from "../types/OrganizationType"
-import { API_BASE_NAME } from "."
+import { API_BASE_NAME } from "./API"
 
 const getOrganizations = async (token: string) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const organizationsData = await fetch(`${API_BASE_NAME}/organizations`, {
             headers: {
@@ -18,17 +13,11 @@ const getOrganizations = async (token: string) => {
 
         return organizations
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 
 const getOrganizationById = async (token: string, id: string) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const organizationData = await fetch(`${API_BASE_NAME}/organizations/${id}`, {
             headers: {
@@ -40,17 +29,11 @@ const getOrganizationById = async (token: string, id: string) => {
 
         return organization
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 
 const createOrganization = async (token: string, body: OrganizationType) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const organizationsData = await fetch(`${API_BASE_NAME}/organizations`, {
             method: 'POST',
@@ -65,17 +48,11 @@ const createOrganization = async (token: string, body: OrganizationType) => {
 
         return organizations
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 
 const deleteOrganization = async (token: string, id: string) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const organizationsData = await fetch(`${API_BASE_NAME}/organizations/${id}`, {
             method: 'DELETE',
@@ -89,8 +66,7 @@ const deleteOrganization = async (token: string, id: string) => {
 
         return organizations
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 

@@ -1,12 +1,7 @@
 import { BusType } from "../types/BusType"
-import { API_BASE_NAME } from "."
+import { API_BASE_NAME } from "./API"
 
 const getBuses = async (token: string) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const busesData = await fetch(`${API_BASE_NAME}/buses`, {
             headers: {
@@ -18,17 +13,11 @@ const getBuses = async (token: string) => {
 
         return buses
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 
 const getBusById = async (token: string, busId: string) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const busData = await fetch(`${API_BASE_NAME}/buses/${busId}`, {
             headers: {
@@ -40,17 +29,11 @@ const getBusById = async (token: string, busId: string) => {
 
         return bus
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 
 const getBusesForOrganization = async (token: string, organizationId: string) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const busesData = await fetch(`${API_BASE_NAME}/organization/${organizationId}/buses`, {
             headers: {
@@ -62,17 +45,11 @@ const getBusesForOrganization = async (token: string, organizationId: string) =>
 
         return buses
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 
 const createBus = async (token: string, body: BusType) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const busesData = await fetch(`${API_BASE_NAME}/buses`, {
             method: 'POST',
@@ -87,17 +64,11 @@ const createBus = async (token: string, body: BusType) => {
 
         return buses
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 
 const deleteBus = async (token: string, id: string) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const busesData = await fetch(`${API_BASE_NAME}/buses/${id}`, {
             method: 'DELETE',
@@ -111,15 +82,14 @@ const deleteBus = async (token: string, id: string) => {
 
         return buses
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 
 export interface BusApiFunctionTypes {
-    getBuses(token: string): Promise<BusType>,
+    getBuses(token: string): Promise<BusType[]>,
     getBusById(token: string, id: string): Promise<BusType>,
-    getBusesForOrganization(token: string, organizationId: string): Promise<BusType>,
+    getBusesForOrganization(token: string, organizationId: string): Promise<BusType[]>,
     createBus(token: string, body: BusType): Promise<BusType>,
     deleteBus(token: string, id: string): Promise<BusType>,
 }

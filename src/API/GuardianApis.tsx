@@ -1,12 +1,7 @@
 import { GuardianType } from "../types/GuardianType"
-import { API_BASE_NAME } from "."
+import { API_BASE_NAME } from "./API"
 
 const getGuardians = async (token: string) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const guardiansData = await fetch(`${API_BASE_NAME}/guardians`, {
             headers: {
@@ -18,17 +13,11 @@ const getGuardians = async (token: string) => {
 
         return guardians
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 
 const getGuardianById = async (token: string, id: string) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const guardianData = await fetch(`${API_BASE_NAME}/guardians/${id}`, {
             headers: {
@@ -40,17 +29,11 @@ const getGuardianById = async (token: string, id: string) => {
 
         return guardian
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }   
 }
 
 const getGuardiansForOrganization = async (token: string, organizationId: string) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const guardiansData = await fetch(`${API_BASE_NAME}/organizations/${organizationId}/guardians`, {
             headers: {
@@ -62,17 +45,11 @@ const getGuardiansForOrganization = async (token: string, organizationId: string
 
         return guardians
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 
 const getBulkGuardiansById = async (token: string, guardianIds: string[]) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const guardiansData = await fetch(`${API_BASE_NAME}/guardians/batchGetById`, {
             method: 'POST',
@@ -89,17 +66,11 @@ const getBulkGuardiansById = async (token: string, guardianIds: string[]) => {
 
         return guardians
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 
 const updateGuardian = async (token: string, guardian: GuardianType) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const guardiansData = await fetch(`${API_BASE_NAME}/guardians/${guardian.id}`, {
             method: 'PUT',
@@ -114,17 +85,11 @@ const updateGuardian = async (token: string, guardian: GuardianType) => {
 
         return guardians
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 
 const createGuardian = async (token: string, body: GuardianType) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const guardiansData = await fetch(`${API_BASE_NAME}/guardians`, {
             method: 'POST',
@@ -139,17 +104,11 @@ const createGuardian = async (token: string, body: GuardianType) => {
 
         return guardians
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 
 const deleteGuardian = async (token: string, id: string) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const guardianData = await fetch(`${API_BASE_NAME}/guardians/${id}`, {
             method: 'DELETE',
@@ -163,8 +122,7 @@ const deleteGuardian = async (token: string, id: string) => {
 
         return guardian
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 

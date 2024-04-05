@@ -1,12 +1,7 @@
 import { DriverType } from "../types/DriverType"
-import { API_BASE_NAME } from "."
+import { API_BASE_NAME } from "./API"
 
 const getDrivers = async (token: string) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const driversData = await fetch(`${API_BASE_NAME}/drivers`, {
             headers: {
@@ -18,17 +13,11 @@ const getDrivers = async (token: string) => {
 
         return drivers
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 
 const getDriverById = async (token: string, id: string) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const driverData = await fetch(`${API_BASE_NAME}/drivers/${id}`, {
             headers: {
@@ -40,17 +29,11 @@ const getDriverById = async (token: string, id: string) => {
 
         return driver
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 
 const getDriversForOrganization = async (token: string, organizationId: string) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const driversData = await fetch(`${API_BASE_NAME}/organizations/${organizationId}/drivers`, {
             headers: {
@@ -62,17 +45,11 @@ const getDriversForOrganization = async (token: string, organizationId: string) 
 
         return drivers
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 
 const createDriver = async (token: string, body: DriverType) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const driversData = await fetch(`${API_BASE_NAME}/drivers`, {
             method: 'POST',
@@ -88,17 +65,11 @@ const createDriver = async (token: string, body: DriverType) => {
 
         return drivers
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 
 const deleteDriver = async (token: string, id: string) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const driversData = await fetch(`${API_BASE_NAME}/drivers/${id}`, {
             method: 'DELETE',
@@ -112,8 +83,7 @@ const deleteDriver = async (token: string, id: string) => {
 
         return drivers
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 

@@ -1,12 +1,7 @@
 import { RiderType } from "../types/RiderType"
-import { API_BASE_NAME } from "."
+import { API_BASE_NAME } from "./API"
 
 const getRiders = async (token: string) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const ridersData = await fetch(`${API_BASE_NAME}/riders`, {
             headers: {
@@ -18,17 +13,11 @@ const getRiders = async (token: string) => {
 
         return riders
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 
 const getRiderById = async (token: string, id: string) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const riderRaw = await fetch(`${API_BASE_NAME}/riders/${id}`, {
             headers: {
@@ -40,17 +29,11 @@ const getRiderById = async (token: string, id: string) => {
 
         return rider
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 
 const getRidersForOrganization = async (token: string, organizationId: string) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const ridersData = await fetch(`${API_BASE_NAME}/organizations/${organizationId}/riders`, {
             headers: {
@@ -62,17 +45,11 @@ const getRidersForOrganization = async (token: string, organizationId: string) =
 
         return riders
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 
 const getBulkRidersById = async (token: string, riderIds: string[]) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const ridersRaw = await fetch(`${API_BASE_NAME}/riders/batchGetById`, {
             method: 'POST',
@@ -89,17 +66,11 @@ const getBulkRidersById = async (token: string, riderIds: string[]) => {
 
         return riders
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 
 const updateRider = async (token: string, rider: RiderType) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const ridersRaw = await fetch(`${API_BASE_NAME}/riders/${rider.id}`, {
             method: 'PUT',
@@ -114,17 +85,11 @@ const updateRider = async (token: string, rider: RiderType) => {
 
         return riders
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 
 const createRider = async (token: string, body: RiderType) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const ridersData = await fetch(`${API_BASE_NAME}/riders`, {
             method: 'POST',
@@ -139,17 +104,11 @@ const createRider = async (token: string, body: RiderType) => {
 
         return riders
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 
 const deleteRider = async (token: string, id: string) => {
-    if (!token) {
-        console.error('Missing token')
-        return new Response()
-    }
-
     try {
         const ridersData = await fetch(`${API_BASE_NAME}/riders/${id}`, {
             method: 'DELETE',
@@ -163,8 +122,7 @@ const deleteRider = async (token: string, id: string) => {
 
         return riders
     } catch (e) {
-        console.error(JSON.stringify(e))
-        return new Response()
+        throw new Error(JSON.stringify(e))
     }
 }
 
