@@ -1,7 +1,6 @@
 import '@testing-library/jest-dom'
 // @ts-ignore
 import RiderTrackerAPI, * as API from '@/API'
-
 import Buses from '..'
 import { render, screen, waitFor } from "@testing-library/react"
 import { ProviderWrapperAsRole } from '@/helpers/ProviderWrapper'
@@ -86,7 +85,6 @@ describe('Buses Tests', () => {
 
     await waitFor(() => {
       expect(screen.queryByText(/add bus/i)).not.toBeInTheDocument()
-      screen.logTestingPlaygroundURL()
     })
   })
 
@@ -101,8 +99,6 @@ describe('Buses Tests', () => {
   })
 
   it('shows no rows when there is no data to load', async () => {
-    
-
     render(<Buses />, { wrapper: ProviderWrapperAsRole })
 
     await waitFor(() => {
