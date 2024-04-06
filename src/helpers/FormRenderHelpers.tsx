@@ -21,6 +21,7 @@ export const pickRenderElement = (field: FormInputType, index: number) => {
                         id={`${field.name}SelectItem`}
                         label={field.name}
                         {...register(`inputs.${index}.name`)}
+                        defaultValue={field?.options && field?.options?.length > 0 ? field.options[0].id : ""}
                     >
                         {field.options ? field.options.map((f) => <MenuItem key={f.id} value={f.id}>{f.label}</MenuItem>) : null}
                     </Select>
