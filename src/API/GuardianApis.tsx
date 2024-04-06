@@ -1,5 +1,5 @@
 import { GuardianType } from "../types/GuardianType"
-import { API_BASE_NAME } from "./API"
+import { API_BASE_NAME } from "."
 
 const getGuardians = async (token: string) => {
     try {

@@ -1,5 +1,5 @@
 import { BusType } from "../types/BusType"
-import { API_BASE_NAME } from "./API"
+import { API_BASE_NAME } from "."
 
 const getBuses = async (token: string) => {
     try {
@@ -13,7 +13,7 @@ const getBuses = async (token: string) => {
 
         return buses
     } catch (e) {
-        throw new Error(JSON.stringify(e))
+        throw new Error(e as string)
     }
 }
 
@@ -29,7 +29,7 @@ const getBusById = async (token: string, busId: string) => {
 
         return bus
     } catch (e) {
-        throw new Error(JSON.stringify(e))
+        throw new Error(e as string)
     }
 }
 
@@ -45,7 +45,7 @@ const getBusesForOrganization = async (token: string, organizationId: string) =>
 
         return buses
     } catch (e) {
-        throw new Error(JSON.stringify(e))
+        throw new Error(e as string)
     }
 }
 
@@ -64,7 +64,7 @@ const createBus = async (token: string, body: BusType) => {
 
         return buses
     } catch (e) {
-        throw new Error(JSON.stringify(e))
+        throw new Error(e as string)
     }
 }
 
@@ -82,7 +82,7 @@ const deleteBus = async (token: string, id: string) => {
 
         return buses
     } catch (e) {
-        throw new Error(JSON.stringify(e))
+        throw new Error(e as string)
     }
 }
 
@@ -94,7 +94,7 @@ export interface BusApiFunctionTypes {
     deleteBus(token: string, id: string): Promise<BusType>,
 }
 
-export const BusApis: BusApiFunctionTypes = {
+export default {
     getBuses,
     getBusById,
     getBusesForOrganization,

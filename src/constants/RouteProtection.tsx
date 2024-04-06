@@ -6,7 +6,7 @@ import ArticleIcon from '@mui/icons-material/Article'
 import CorporateFareIcon from '@mui/icons-material/CorporateFare'
 import PersonIcon from '@mui/icons-material/Person'
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew'
-import { signOut } from 'aws-amplify/auth'
+import { signOut } from "aws-amplify/auth"
 
 interface SettingsItemType extends NavItemType {
     action?(): Promise<void>

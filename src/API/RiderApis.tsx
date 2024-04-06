@@ -1,5 +1,5 @@
 import { RiderType } from "../types/RiderType"
-import { API_BASE_NAME } from "./API"
+import { API_BASE_NAME } from "."
 
 const getRiders = async (token: string) => {
     try {

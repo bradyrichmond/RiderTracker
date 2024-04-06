@@ -1,5 +1,5 @@
 import { ScanType } from "../types/ScanType"
-import { API_BASE_NAME } from "./API"
+import { API_BASE_NAME } from "."
 
 const getScans = async (token: string) => {
     try {

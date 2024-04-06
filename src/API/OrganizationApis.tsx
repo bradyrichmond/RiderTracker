@@ -1,5 +1,5 @@
 import { OrganizationType } from "../types/OrganizationType"
-import { API_BASE_NAME } from "./API"
+import { API_BASE_NAME } from "."
 
 const getOrganizations = async (token: string) => {
     try {
@@ -13,7 +13,7 @@ const getOrganizations = async (token: string) => {
 
         return organizations
     } catch (e) {
-        throw new Error(JSON.stringify(e))
+        throw new SyntaxError(e as string)
     }
 }
 
@@ -29,7 +29,7 @@ const getOrganizationById = async (token: string, id: string) => {
 
         return organization
     } catch (e) {
-        throw new Error(JSON.stringify(e))
+        throw new SyntaxError(e as string)
     }
 }
 
@@ -48,7 +48,7 @@ const createOrganization = async (token: string, body: OrganizationType) => {
 
         return organizations
     } catch (e) {
-        throw new Error(JSON.stringify(e))
+        throw new SyntaxError(e as string)
     }
 }
 
@@ -66,7 +66,7 @@ const deleteOrganization = async (token: string, id: string) => {
 
         return organizations
     } catch (e) {
-        throw new Error(JSON.stringify(e))
+        throw new SyntaxError(e as string)
     }
 }
 
@@ -77,7 +77,7 @@ export interface OrganizationApiFunctionTypes {
     deleteOrganization(token: string, id: string): Promise<OrganizationType>
 }
 
-export const OrganizationApis: OrganizationApiFunctionTypes = {
+export default {
     getOrganizations,
     getOrganizationById,
     createOrganization,

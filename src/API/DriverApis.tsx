@@ -1,5 +1,5 @@
 import { DriverType } from "../types/DriverType"
-import { API_BASE_NAME } from "./API"
+import { API_BASE_NAME } from "."
 
 const getDrivers = async (token: string) => {
     try {

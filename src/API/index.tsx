@@ -1,7 +1,7 @@
-import { BusApis, BusApiFunctionTypes } from './BusApis'
+import BusApis, { BusApiFunctionTypes } from './BusApis'
 import { DriverApis, DriverApiFunctionTypes } from './DriverApis'
 import { GuardianApis, GuardianApiFunctionTypes } from './GuardianApis'
-import { OrganizationApis, OrganizationApiFunctionTypes } from './OrganizationApis'
+import OrganizationApis, { OrganizationApiFunctionTypes } from './OrganizationApis'
 import { RiderApis, RiderApiFunctionTypes } from './RiderApis'
 import { ScanApis, ScanApiFunctionTypes } from './ScanApis'
 
@@ -37,6 +37,9 @@ class RiderTrackerAPI {
     async execute(apiFunction: ApiFunction, args: any[]) {
         // Example use: api.execute(api.riders.getRidersForOrganization, [organizationId])
         try {
+            if (!this.token) {
+                throw new SyntaxError('Missing Token! Is the API intialized?')
+            }
             return await this.callApiFunction(apiFunction, args)
         } catch (error) {
             throw error
