@@ -60,7 +60,7 @@ export interface ScanApiFunctionTypes {
     deleteScan(token: string, id: string): Promise<ScanType>
 }
 
-export const ScanApis: ScanApiFunctionTypes =  {
+export default {
     getScans,
     createScan,
     deleteScan

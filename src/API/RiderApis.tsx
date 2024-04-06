@@ -136,7 +136,7 @@ export interface RiderApiFunctionTypes {
     deleteRider(token: string, id: string): Promise<RiderType>,
 }
 
-export const RiderApis: RiderApiFunctionTypes = {
+export default {
     getRiders,
     getRiderById,
     getRidersForOrganization,

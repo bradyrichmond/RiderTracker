@@ -136,7 +136,7 @@ export interface GuardianApiFunctionTypes {
     deleteGuardian(token: string, id: string): Promise<GuardianType>
 }
 
-export const GuardianApis: GuardianApiFunctionTypes = {
+export default {
     getGuardians,
     getGuardianById,
     getGuardiansForOrganization,

@@ -95,7 +95,7 @@ export interface DriverApiFunctionTypes {
     deleteDriver(token: string, id: string): Promise<DriverType[]>
 }
 
-export const DriverApis: DriverApiFunctionTypes = {
+export default {
     getDrivers,
     getDriverById,
     getDriversForOrganization,

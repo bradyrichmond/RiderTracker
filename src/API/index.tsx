@@ -1,9 +1,9 @@
 import BusApis, { BusApiFunctionTypes } from './BusApis'
-import { DriverApis, DriverApiFunctionTypes } from './DriverApis'
-import { GuardianApis, GuardianApiFunctionTypes } from './GuardianApis'
+import DriverApis, { DriverApiFunctionTypes } from './DriverApis'
+import GuardianApis, { GuardianApiFunctionTypes } from './GuardianApis'
 import OrganizationApis, { OrganizationApiFunctionTypes } from './OrganizationApis'
-import { RiderApis, RiderApiFunctionTypes } from './RiderApis'
-import { ScanApis, ScanApiFunctionTypes } from './ScanApis'
+import RiderApis, { RiderApiFunctionTypes } from './RiderApis'
+import ScanApis, { ScanApiFunctionTypes } from './ScanApis'
 
 export const API_BASE_NAME = 'https://gkupwyoi70.execute-api.us-west-2.amazonaws.com/dev' // this will need to change with environment
 
