@@ -69,7 +69,7 @@ const Drivers = ({ fetchForOrg }: DriversProps) => {
                             size="small"
                             onClick={() => deleteDriverAction(params.row.id)}
                         >
-                            <Tooltip title='Delete Guardian'>
+                            <Tooltip title='Delete Driver'>
                                 <PersonRemoveIcon />
                             </Tooltip>
                         </Button>

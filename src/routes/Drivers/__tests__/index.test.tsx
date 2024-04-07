@@ -105,4 +105,22 @@ describe('Drivers Tests', () => {
       expect(screen.queryByText(/no rows/i)).toBeInTheDocument()
     })
   })
+
+  it('shows tooltips when action buttons are hovered', async () => {
+    render(<Drivers />, { wrapper: ProviderWrapperAsRole })
+
+    await waitFor(async () => {
+        const viewDetailButtons = await screen.findAllByTestId("InfoIcon")
+        await userEvent.hover(viewDetailButtons[0])
+        const viewDetailsTooltip = await screen.findByText(/view details/i)
+        expect(viewDetailsTooltip).toBeInTheDocument()
+    })
+
+    await waitFor(async () => {
+        const deleteDriverButtons = await screen.findAllByTestId("PersonRemoveIcon")
+        await userEvent.hover(deleteDriverButtons[0])
+        const deleteDriverTooltip = await screen.findByText(/delete driver/i)
+        expect(deleteDriverTooltip).toBeInTheDocument()
+    })
+  })
 })
