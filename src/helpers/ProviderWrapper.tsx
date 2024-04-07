@@ -5,6 +5,7 @@ import { MemoryRouter } from 'react-router-dom'
 
 interface AsRole {
     role?: string
+    routes?: []
 }
 
 export const ProviderWrapper = ({ children }: PropsWithChildren) => {
@@ -19,9 +20,9 @@ export const ProviderWrapper = ({ children }: PropsWithChildren) => {
     )
 }
 
-export const ProviderWrapperAsRole = ({ children, role }: PropsWithChildren<AsRole>) => {
+export const ProviderWrapperAsRole = ({ children, role, routes }: PropsWithChildren<AsRole>) => {
     return (
-        <MemoryRouter>
+        <MemoryRouter initialEntries={routes ?? ['/']}>
             <RoleContextProvider>
                 <ApiContextProvider>
                     <AsRole role={role}>
