@@ -52,7 +52,7 @@ const Riders = ({ fetchForOrg }: RidersProps) => {
                         size="small"
                         onClick={() => viewRiderDetails(params.row.id)}
                     >
-                        <Tooltip title='Delete Guardian?'>
+                        <Tooltip title='View Details'>
                             <InfoIcon />
                         </Tooltip>
                     </Button>

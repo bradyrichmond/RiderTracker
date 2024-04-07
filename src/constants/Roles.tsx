@@ -89,7 +89,6 @@ export const RIDERTRACKER_PERMISSIONS_BY_ROLE: Record<RiderTrackerRole, RiderTra
         permissions.UPDATE_RIDER
     ],
     "RiderTracker_Guardian": [
-        permissions.UPDATE_RIDER,
-        permissions.DELETE_RIDER
+        permissions.UPDATE_RIDER
     ]
 };  
