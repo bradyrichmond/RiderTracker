@@ -48,7 +48,7 @@ const GuardiansRiders = ({ rider, getRiderData }: GuardianRidersProps) => {
         const guardianData = await api.execute(api.guardians.getGuardiansForOrganization, [rider.organizationId])
 
         try {
-            const mapped = guardianData.map((r: RiderType) => {
+            const mapped = guardianData.map((r: GuardianType) => {
                 return { label: `${r.firstName} ${r.lastName}`, id: r.id }
             })
             

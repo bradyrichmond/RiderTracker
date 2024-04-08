@@ -6,7 +6,6 @@ import { Button, Tooltip } from "@mui/material"
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
 import { useContext, useState } from "react"
-import { GuardianType } from "../../types/GuardianType"
 import { ApiContext } from "../../contexts/ApiContextProvider"
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "../../constants/Roles"
 import { GridColDef } from "@mui/x-data-grid"
@@ -37,8 +36,8 @@ const Riders = ({ fetchForOrg }: RidersProps) => {
         await api.execute(api.riders.deleteRider, [riderId])
     }
 
-    const createGuardian = async (newGuardian: GuardianType) => {
-        await api.execute(api.guardians.createGuardian, [newGuardian])
+    const createRider = async (newRider: RiderType) => {
+        await api.execute(api.riders.createRider, [newRider])
     }
 
     const generateGridColumns = (): GridColDef[] => {
@@ -69,7 +68,7 @@ const Riders = ({ fetchForOrg }: RidersProps) => {
                             size="small"
                             onClick={() => deleteRiderAction(params.row.id)}
                         >
-                            <Tooltip title='Delete Guardian?'>
+                            <Tooltip title='Delete Rider?'>
                                 <PersonRemoveIcon />
                             </Tooltip>
                         </Button>
@@ -83,7 +82,7 @@ const Riders = ({ fetchForOrg }: RidersProps) => {
     
     return (
         <EntityViewer<RiderType>
-            createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_RIDER) ? createGuardian : undefined}
+            createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_RIDER) ? createRider : undefined}
             entityFactory={riderFactory}
             getEntities={getRidersAction}
             entities={riders}

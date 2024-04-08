@@ -32,6 +32,9 @@ export type RiderTrackerAction =
     | "CREATE_RIDER"
     | "UPDATE_RIDER"
     | "DELETE_RIDER"
+    | "CREATE_SCAN"
+    | "UPDATE_SCAN"
+    | "DELETE_SCAN"
     | "LINK_RIDER_TO_GUARDIAN"
     | "UNLINK_RIDER_FROM_GUARDIAN"
   
@@ -55,6 +58,9 @@ export const permissions: Record<RiderTrackerAction, RiderTrackerPermission> = {
     CREATE_RIDER: { action: "CREATE_RIDER", name: "Create Rider", resourceType: "riders" },
     UPDATE_RIDER: { action: "UPDATE_RIDER", name: "Update Rider", resourceType: "riders" },
     DELETE_RIDER: { action: "DELETE_RIDER", name: "Delete Rider", resourceType: "riders", requiresConfirmation: true },
+    CREATE_SCAN: { action: "CREATE_SCAN", name: "Create Scan", resourceType: "scans" },
+    UPDATE_SCAN: { action: "UPDATE_SCAN", name: "Update Scan", resourceType: "scans" },
+    DELETE_SCAN: { action: "DELETE_SCAN", name: "Delete Scan", resourceType: "scans", requiresConfirmation: true },
     LINK_RIDER_TO_GUARDIAN: { action: "LINK_RIDER_TO_GUARDIAN", name: "Link Rider to Guardian", resourceType: "riders" },
     UNLINK_RIDER_FROM_GUARDIAN: { action: "UNLINK_RIDER_FROM_GUARDIAN", name: "Unlink Rider from Guardian", resourceType: "riders" },
 };
@@ -78,6 +84,9 @@ export const RIDERTRACKER_PERMISSIONS_BY_ROLE: Record<RiderTrackerRole, RiderTra
         permissions.CREATE_RIDER,
         permissions.UPDATE_RIDER,
         permissions.DELETE_RIDER,
+        permissions.CREATE_SCAN,
+        permissions.UPDATE_SCAN,
+        permissions.DELETE_SCAN,
         permissions.LINK_RIDER_TO_GUARDIAN,
         permissions.UNLINK_RIDER_FROM_GUARDIAN
     ],
@@ -86,7 +95,8 @@ export const RIDERTRACKER_PERMISSIONS_BY_ROLE: Record<RiderTrackerRole, RiderTra
         permissions.DELETE_BUS,
         permissions.UPDATE_DRIVER,
         permissions.CREATE_RIDER,
-        permissions.UPDATE_RIDER
+        permissions.UPDATE_RIDER,
+        permissions.CREATE_SCAN
     ],
     "RiderTracker_Guardian": [
         permissions.UPDATE_RIDER
