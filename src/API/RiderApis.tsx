@@ -60,9 +60,7 @@ const getBulkRidersById = async (token: string, riderIds: string[]) => {
             }
         })
 
-        const ridersText = await ridersRaw.text()
-
-        const riders = JSON.parse(ridersText)
+        const riders = ridersRaw.json()
 
         return riders
     } catch (e) {

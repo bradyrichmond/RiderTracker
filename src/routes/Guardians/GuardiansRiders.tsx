@@ -39,8 +39,12 @@ const GuardiansRiders = ({ guardian, getGuardianData }: RidersGuardiansProps) =>
         await getGuardianData()
 
         if (guardian) {
-            const riderData = await api.execute(api.riders.getBulkRidersById, guardian.guardianRiderLinks)
-            setRiders(riderData)
+            const filteredGuardianRiderLinks = guardian.guardianRiderLinks.filter((g) => g !== "")
+
+            if (filteredGuardianRiderLinks.length > 0) {
+                const riderData = await api.execute(api.riders.getBulkRidersById, guardian.guardianRiderLinks)
+                setRiders(riderData)
+            }
         }
     }
 

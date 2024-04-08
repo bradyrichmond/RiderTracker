@@ -54,7 +54,7 @@ const getGuardiansForOrganization = async (_token: string, organizationId: strin
 ])
 
 const getBulkGuardiansById = async (_token: string, guardianIds: string[]) => {
-    const guardians = []
+    const guardians: GuardianType[] = []
 
     guardianIds.forEach((g) => guardians.push({
         "id": g,
@@ -65,6 +65,8 @@ const getBulkGuardiansById = async (_token: string, guardianIds: string[]) => {
             "123456"
         ]
     }))
+
+    return guardians
 }
 
 const updateGuardian = async (_token: string, _guardian: GuardianType) => Promise.resolve({})

@@ -60,9 +60,7 @@ const getBulkGuardiansById = async (token: string, guardianIds: string[]) => {
             }
         })
 
-        const guardiansText = await guardiansData.text()
-
-        const guardians = await JSON.parse(guardiansText)
+        const guardians = await guardiansData.json()
 
         return guardians
     } catch (e) {

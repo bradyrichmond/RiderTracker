@@ -7,7 +7,7 @@ const getRiders = async (_token: string) => Promise.resolve([
         "lastName": "James",
         "organizationId": "00492e30-ab34-44f6-9843-44f47f2cdf27",
         "guardianRiderLinks": [
-            ""
+            "123456"
         ]
     },
     {
@@ -16,7 +16,7 @@ const getRiders = async (_token: string) => Promise.resolve([
         "lastName": "Ashley",
         "organizationId": "00492e30-ab34-44f6-9843-44f47f2cdf27",
         "guardianRiderLinks": [
-            ""
+            "123456"
         ]
     },
     {
@@ -25,7 +25,7 @@ const getRiders = async (_token: string) => Promise.resolve([
         "lastName": "Tester",
         "organizationId": "00492e30-ab34-44f6-9843-44f47f2cdf27",
         "guardianRiderLinks": [
-            ""
+            "123456"
         ]
     }
 ])
@@ -36,7 +36,7 @@ const getRiderById = async (_token: string, id: string) => Promise.resolve({
     "lastName": "Tester",
     "organizationId": "00492e30-ab34-44f6-9843-44f47f2cdf27",
     "guardianRiderLinks": [
-        ""
+        "123456"
     ]
 })
 
@@ -47,7 +47,7 @@ const getRidersForOrganization = async (_token: string, organizationId: string) 
         "lastName": "James",
         "organizationId": organizationId,
         "guardianRiderLinks": [
-            ""
+            "123456"
         ]
     },
     {
@@ -56,7 +56,7 @@ const getRidersForOrganization = async (_token: string, organizationId: string) 
         "lastName": "Ashley",
         "organizationId": organizationId,
         "guardianRiderLinks": [
-            ""
+            "123456"
         ]
     },
     {
@@ -65,23 +65,25 @@ const getRidersForOrganization = async (_token: string, organizationId: string) 
         "lastName": "Tester",
         "organizationId": organizationId,
         "guardianRiderLinks": [
-            ""
+            "123456"
         ]
     }
 ])
 
 const getBulkRidersById = async (_token: string, riderIds: string[]) => {
-    const riders = []
+    const riders: RiderType[] = []
 
-    riderIds.forEach((r) => riders.push( {
+    riderIds.forEach((r) => riders.push({
         "id": r,
         "firstName": "Johnny",
         "lastName": "Tester",
         "organizationId": "00492e30-ab34-44f6-9843-44f47f2cdf27",
         "guardianRiderLinks": [
-            ""
+            "123456"
         ]
     }))
+
+    return riders
 }
 
 const updateRider = async (_token: string, _rider: RiderType) => Promise.resolve({})
