@@ -7,7 +7,7 @@ import { useContext, useEffect, useState } from "react"
 import { useNavigate, useParams } from "react-router-dom"
 import { scanFactory } from './ScanFactory'
 import { GridColDef } from "@mui/x-data-grid"
-import { Button, Tooltip } from "@mui/material"
+import { Box, Button, Tooltip } from "@mui/material"
 import InfoIcon from '@mui/icons-material/Info'
 import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove'
 import { OptionsType } from "@/types/FormTypes"
@@ -15,6 +15,7 @@ import { RiderType } from "@/types/RiderType"
 import { DriverType } from "@/types/DriverType"
 import { useDeviceLocation } from "@/hooks/useDeviceLocation"
 import { locationFactory } from "./LocationFactory"
+import { AppShortcut } from "@mui/icons-material"
 
 const Scans = () => {
     const [scans, setScans] = useState<ScanType[]>([])
@@ -78,7 +79,7 @@ const Scans = () => {
         try {
             const fetchedLocation = await getCurrentPosition()
             const generatedLocation = locationFactory(fetchedLocation)
-            const scanWithLocation = { ...newScan, deviceLocationOnSubmit: generatedLocation }
+            const scanWithLocation = { ...newScan, deviceLocationOnSubmit: generatedLocation, manualScan: true }
             await api.execute(api.scans.createScan, [scanWithLocation])
         } catch (e) {
             console.log(e)
@@ -88,6 +89,21 @@ const Scans = () => {
     const generateGridColumns = (): GridColDef[] => {
         const initialGridColumns: GridColDef[] = [
             { field: 'stopId',  headerName: 'Stop Id', flex: 1, align: 'center', headerAlign: 'center' },
+            { field: 'manualScan', headerName: '', renderCell: (params) => {
+                return  (
+                    <>
+                        {params.row.manualScan ?
+                            <Box height='100%' width='100%' display='flex' justifyContent='center' alignItems='center'>
+                                <Tooltip title='Manually entered scan'>
+                                    <AppShortcut />
+                                </Tooltip>
+                            </Box>
+                            :
+                            null
+                        }
+                    </>
+                )
+            }},
             { field: 'driverId',  headerName: 'Driver Id', flex: 1, align: 'center', headerAlign: 'center' },
             { field: 'riderCount',  headerName: 'Rider Count', flex: 1, align: 'center', headerAlign: 'center', renderCell: (params) => {
                 const riderIds = params.row.riderIds ?? []
@@ -99,7 +115,7 @@ const Scans = () => {
 
                 return (!lat || !lon) ? 'Unknown' : `(${lat}, ${lon})`
             }},
-            { field: 'viewDetails', headerName: '', flex: 1, align: 'center', headerAlign: 'center', renderCell: (params) => {
+            { field: 'viewDetails', headerName: '', align: 'center', headerAlign: 'center', renderCell: (params) => {
                 return (
                     <Button
                         variant="contained"
@@ -116,7 +132,7 @@ const Scans = () => {
 
         if (RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.DELETE_SCAN)) {
             initialGridColumns.push({
-                field: 'delete', headerName: '', flex: 1, align: 'center', headerAlign: 'center', renderCell: (params) => {
+                field: 'delete', headerName: '', align: 'center', headerAlign: 'center', renderCell: (params) => {
                     return (
                         <Button
                             variant="contained"
@@ -135,7 +151,6 @@ const Scans = () => {
         return initialGridColumns
     }
 
-    // potentially needs its own viewer, for the add modal
     return (
         <>
             {riders.length > 0 && drivers.length > 0 ?
