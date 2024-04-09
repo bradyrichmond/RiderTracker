@@ -55,7 +55,8 @@ const AddEntityModal = <T extends
         const args = updatedValues.map((v) => v.name)
         args.unshift(entityId)
         const newEntity = entityFactory(args)
-        submitAction(newEntity)   
+        submitAction(newEntity)
+        setDisabledButtons(false)
     }
 
     const replaceOrgIdInValues = (rawValues: FormInputType[]): FormInputType[] => {

@@ -9,7 +9,8 @@ const getScans = async (token: string) => {
             }
         })
 
-        const scans = await scansData.json()
+        const scansJson = await scansData.json()
+        const { scans } = scansJson
 
         return scans
     } catch (e) {

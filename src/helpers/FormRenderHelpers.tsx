@@ -13,6 +13,12 @@ export const pickRenderElement = (field: FormInputType, index: number) => {
 
     switch (field.inputType) {
         case "select":
+            let selectDefaultValue = ""
+            if (field.options) {
+                const top = field.options[0]
+                selectDefaultValue = top ? top.id : ""
+            }
+
             return (
                 <FormControl fullWidth>
                     <InputLabel id={`${field.name}Label`}>{field.name}</InputLabel>
@@ -21,7 +27,7 @@ export const pickRenderElement = (field: FormInputType, index: number) => {
                         id={`${field.name}SelectItem`}
                         label={field.name}
                         {...register(`inputs.${index}.name`)}
-                        defaultValue={field?.options && field?.options?.length > 0 ? field.options[0].id : ""}
+                        defaultValue={selectDefaultValue}
                     >
                         {field.options ? field.options.map((f) => <MenuItem key={f.id} value={f.id}>{f.label}</MenuItem>) : null}
                     </Select>

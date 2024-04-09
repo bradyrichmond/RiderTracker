@@ -13,6 +13,8 @@ import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove'
 import { OptionsType } from "@/types/FormTypes"
 import { RiderType } from "@/types/RiderType"
 import { DriverType } from "@/types/DriverType"
+import { useDeviceLocation } from "@/hooks/useDeviceLocation"
+import { locationFactory } from "./LocationFactory"
 
 const Scans = () => {
     const [scans, setScans] = useState<ScanType[]>([])
@@ -22,6 +24,7 @@ const Scans = () => {
     const { heaviestRole } = useContext(RoleContext)
     const { id: organizationId } = useParams()
     const navigate = useNavigate()
+    const { getCurrentPosition } = useDeviceLocation()
 
     useEffect(() => {
         updateAllRiders()
@@ -29,7 +32,7 @@ const Scans = () => {
     }, [organizationId])
 
     const updateAllRiders = async () => {
-        const riderData = await api.execute(api.riders.getRidersForOrganization, [organizationId])
+        const riderData = await api.execute(organizationId ? api.riders.getRidersForOrganization : api.riders.getRiders, [organizationId])
 
         try {
             const mapped = riderData.map((r: RiderType) => {
@@ -43,7 +46,7 @@ const Scans = () => {
     }
 
     const updateAllDrivers = async () => {
-        const driverData = await api.execute(api.drivers.getDriversForOrganization, [organizationId])
+        const driverData = await api.execute(organizationId ? api.drivers.getDriversForOrganization : api.drivers.getDrivers, [organizationId])
 
         try {
             const mapped = driverData.map((r: DriverType) => {
@@ -72,8 +75,14 @@ const Scans = () => {
     }
 
     const createScan = async (newScan: ScanType) => {
-        // need to add device location here
-        await api.execute(api.scans.createScan, [newScan])
+        try {
+            const fetchedLocation = await getCurrentPosition()
+            const generatedLocation = locationFactory(fetchedLocation)
+            const scanWithLocation = { ...newScan, deviceLocationOnSubmit: generatedLocation }
+            await api.execute(api.scans.createScan, [scanWithLocation])
+        } catch (e) {
+            console.log(e)
+        }
     }
 
     const generateGridColumns = (): GridColDef[] => {
@@ -128,20 +137,27 @@ const Scans = () => {
 
     // potentially needs its own viewer, for the add modal
     return (
-        <EntityViewer<ScanType>
-            createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_SCAN) ? createScan : undefined}
-            entityFactory={scanFactory}
-            getEntities={getScansAction}
-            modalFormInputs={{inputs: [
-                { name: "Organization Id", inputType: "select" },
-                { name: "Driver", inputType: "select", options: drivers },
-                { name: "Rider", inputType: "select", options: riders }
-            ]}}
-            entities={scans}
-            gridColumns={generateGridColumns()}
-            titleSingular='Scan'
-            titlePlural='Scans'
-        />
+        <>
+            {riders.length > 0 && drivers.length > 0 ?
+                <EntityViewer<ScanType>
+                    createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_SCAN) ? createScan : undefined}
+                    entityFactory={scanFactory}
+                    getEntities={getScansAction}
+                    modalFormInputs={{inputs: [
+                        { name: "Organization Id", inputType: "select" },
+                        { name: "Driver", inputType: "select", options: drivers },
+                        { name: "Rider", inputType: "select", options: riders },
+                        { name: "Stop Id" }
+                    ]}}
+                    entities={scans}
+                    gridColumns={generateGridColumns()}
+                    titleSingular='Scan'
+                    titlePlural='Scans'
+                />
+                :
+                null
+            }
+        </>
     )
 }
 

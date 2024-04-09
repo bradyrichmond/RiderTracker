@@ -2,6 +2,7 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { render, screen, waitFor, waitForElementToBeRemoved } from "@testing-library/react"
 import { ProviderWrapperAsRole } from '@/helpers/ProviderWrapper'
+import Scans from '..'
 // @ts-ignore
 import ScanApis from '@/API/ScanApis'
 jest.mock('@/API/ScanApis')
@@ -13,8 +14,10 @@ import DriverApis from '@/API/DriverApis'
 jest.mock('@/API/DriverApis')
 // @ts-ignore
 import OrganizationApis from '@/API/OrganizationApis'
-import Scans from '..'
 jest.mock('@/API/OrganizationApis')
+// @ts-ignore
+import { useDeviceLocation } from '@/hooks/useDeviceLocation'
+jest.mock('@/hooks/useDeviceLocation')
 
 afterEach(() => {
   jest.restoreAllMocks()

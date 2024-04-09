@@ -46,13 +46,8 @@ class RiderTrackerAPI {
         }
     }
 
-    private async callApiFunction(apiFunction: ApiFunction, ...args: any[]): Promise<any> {
+    private async callApiFunction(apiFunction: ApiFunction, args: any[]): Promise<any> {
         const modifiedArgs = [this.token, ...args]
-        // if (apiFunction === this.guardians.getBulkGuardiansById) {
-        //     if (modifiedArgs[1] && Array.isArray(modifiedArgs[1])) {
-        //         alert(JSON.stringify(modifiedArgs[1]))
-        //     }
-        // }
         return await apiFunction(...modifiedArgs)
     }
 
