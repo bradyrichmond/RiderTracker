@@ -11,17 +11,13 @@ import { GridColDef } from '@mui/x-data-grid'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "../../constants/Roles"
 import { RoleContext } from "../../contexts/RoleContextProvider"
 
-interface DriversProps {
-    fetchForOrg?: boolean
-}
-
-const Drivers = ({ fetchForOrg }: DriversProps) => {
+const Drivers = () => {
     const [drivers, setDrivers] = useState<DriverType[]>([])
     const { id } = useParams()
     const navigate = useNavigate()
     const { api } = useContext(ApiContext)
     const { heaviestRole } = useContext(RoleContext)
-    const getDriversFunction = (fetchForOrg && id) ? api.drivers.getDriversForOrganization : api.drivers.getDrivers
+    const getDriversFunction = id ? api.drivers.getDriversForOrganization : api.drivers.getDrivers
 
     const updateDriversAction = async () => {
         const drivers = await api.execute(getDriversFunction, [id ?? ''])

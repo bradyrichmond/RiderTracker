@@ -11,17 +11,13 @@ import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "../../constants/R
 import { GridColDef } from "@mui/x-data-grid"
 import { RoleContext } from "../../contexts/RoleContextProvider"
 
-interface RidersProps {
-    fetchForOrg?: boolean
-}
-
-const Riders = ({ fetchForOrg }: RidersProps) => {
+const Riders = () => {
     const { id } = useParams()
     const [riders, setRiders] = useState<RiderType[]>([])
     const navigate = useNavigate()
     const { api } = useContext(ApiContext)
     const { heaviestRole } = useContext(RoleContext)
-    const getRidersFunction = (fetchForOrg && id) ? api.riders.getRidersForOrganization : api.riders.getRiders
+    const getRidersFunction = id ? api.riders.getRidersForOrganization : api.riders.getRiders
 
     const getRidersAction = async (id?: string) => {
         const riders = await api.execute(getRidersFunction, [id ?? ''])

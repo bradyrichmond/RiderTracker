@@ -11,16 +11,12 @@ import { GridColDef } from "@mui/x-data-grid"
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "../../constants/Roles"
 import { RoleContext } from "../../contexts/RoleContextProvider"
 
-interface GuardiansProps {
-    fetchForOrg?: boolean
-}
-
-const Guardians = ({ fetchForOrg }: GuardiansProps) => {
+const Guardians = () => {
     const { id } = useParams()
     const [guardians, setGuardians] = useState<GuardianType[]>([])
     const { api } = useContext(ApiContext)
     const { heaviestRole } = useContext(RoleContext)
-    const getGuardiansFunction = (fetchForOrg && id) ? api.guardians.getGuardiansForOrganization : api.guardians.getGuardians
+    const getGuardiansFunction = id ? api.guardians.getGuardiansForOrganization : api.guardians.getGuardians
     const navigate = useNavigate()
 
     const updateGuardians = async () => {

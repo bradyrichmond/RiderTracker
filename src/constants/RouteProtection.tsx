@@ -6,6 +6,7 @@ import ArticleIcon from '@mui/icons-material/Article'
 import CorporateFareIcon from '@mui/icons-material/CorporateFare'
 import PersonIcon from '@mui/icons-material/Person'
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew'
+import PlaceIcon from '@mui/icons-material/Place'
 import { signOut } from "aws-amplify/auth"
 
 interface SettingsItemType extends NavItemType {
@@ -27,11 +28,14 @@ const ALL_ROUTES: string[] = [
     "/organizations/:id/guardians",
     "/organizations/:id/riders",
     "/organizations/:id/scans",
+    "/organizations/:id/stops",
     "/riders",
     "/riders/:id",
     "/riders/:id/scans",
     "/scans",
-    "/scans/:id"
+    "/scans/:id",
+    "/stops",
+    "/stops/:id"
 ];
 
 const ORG_ADMIN_ROUTES: string[] = [
@@ -45,9 +49,11 @@ const ORG_ADMIN_ROUTES: string[] = [
     "/organizations/:id/guardians",
     "/organizations/:id/riders",
     "/organizations/:id/scans",
+    "/organizations/:id/stops",
     "/riders/:id",
     "/riders/:id/scans",
-    "/scans/:id"
+    "/scans/:id",
+    "/stops/:id"
 ]
 
 const DRIVER_ROUTES: string[] = [
@@ -98,6 +104,11 @@ const WIZARD_NAV_ITEMS: NavItemType[] = [
         path: '/scans',
         label: 'Scans',
         Icon: ArticleIcon
+    },
+    {
+        path: '/stops',
+        label: 'Stops',
+        Icon: PlaceIcon
     }
 ]
 
@@ -126,6 +137,11 @@ const ORG_ADMIN_NAV_ITEMS: NavItemType[] = [
         path: '/organizations/:id/scans',
         label: 'Scans',
         Icon: ArticleIcon
+    },
+    {
+        path: '/organizations/:id/stops',
+        label: 'Stops',
+        Icon: PlaceIcon
     }
 ]
 

@@ -56,16 +56,6 @@ const createScan = async (_token: string, _body: ScanType) => Promise.resolve({}
 
 const deleteScan = async (_token: string, _id: string) => Promise.resolve({})
 
-export interface ScanApiFunctionTypes {
-    getScans(token: string): Promise<ScanType[]>,
-    getScanById(token: string, id: string): Promise<ScanType>,
-    getScansForOrganization(token: string, organizationId: string): Promise<ScanType[]>,
-    getBulkScansById(token: string, ids: string[]): Promise<ScanType[]>,
-    updateScan(token: string, rider: ScanType): Promise<ScanType>,
-    createScan(token: string, rider: ScanType): Promise<ScanType>,
-    deleteScan(token: string, id: string): Promise<ScanType>
-}
-
 export default {
     getScans,
     getScanById,

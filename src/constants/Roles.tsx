@@ -1,4 +1,4 @@
-type ResourceType = "buses" | "drivers" | "guardians" | "organizations" | "riders" | "scans"
+type ResourceType = "buses" | "drivers" | "guardians" | "organizations" | "riders" | "scans" | "stops"
 
 interface RiderTrackerPermission {
     action: RiderTrackerAction;
@@ -35,6 +35,9 @@ export type RiderTrackerAction =
     | "CREATE_SCAN"
     | "UPDATE_SCAN"
     | "DELETE_SCAN"
+    | "CREATE_STOP"
+    | "UPDATE_STOP"
+    | "DELETE_STOP"
     | "LINK_RIDER_TO_GUARDIAN"
     | "UNLINK_RIDER_FROM_GUARDIAN"
   
@@ -61,6 +64,9 @@ export const permissions: Record<RiderTrackerAction, RiderTrackerPermission> = {
     CREATE_SCAN: { action: "CREATE_SCAN", name: "Create Scan", resourceType: "scans" },
     UPDATE_SCAN: { action: "UPDATE_SCAN", name: "Update Scan", resourceType: "scans" },
     DELETE_SCAN: { action: "DELETE_SCAN", name: "Delete Scan", resourceType: "scans", requiresConfirmation: true },
+    CREATE_STOP: { action: "CREATE_STOP", name: "Create Stop", resourceType: "stops" },
+    UPDATE_STOP: { action: "UPDATE_STOP", name: "Update Stop", resourceType: "stops" },
+    DELETE_STOP: { action: "DELETE_STOP", name: "Delete Stop", resourceType: "stops", requiresConfirmation: true },
     LINK_RIDER_TO_GUARDIAN: { action: "LINK_RIDER_TO_GUARDIAN", name: "Link Rider to Guardian", resourceType: "riders" },
     UNLINK_RIDER_FROM_GUARDIAN: { action: "UNLINK_RIDER_FROM_GUARDIAN", name: "Unlink Rider from Guardian", resourceType: "riders" },
 };
@@ -87,6 +93,9 @@ export const RIDERTRACKER_PERMISSIONS_BY_ROLE: Record<RiderTrackerRole, RiderTra
         permissions.CREATE_SCAN,
         permissions.UPDATE_SCAN,
         permissions.DELETE_SCAN,
+        permissions.CREATE_STOP,
+        permissions.UPDATE_STOP,
+        permissions.DELETE_STOP,
         permissions.LINK_RIDER_TO_GUARDIAN,
         permissions.UNLINK_RIDER_FROM_GUARDIAN
     ],

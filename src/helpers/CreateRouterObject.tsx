@@ -17,6 +17,8 @@ import Riders from '@/routes/Riders'
 import Root from '@/routes/Root'
 import Unauthorized from '@/routes/Protected/Unauthorized'
 import Scan from "@/routes/Scans/Scan"
+import Stops from "@/routes/Stops"
+import { Typography } from "@mui/material"
 
 export const createRouterObject = () => {
     return createBrowserRouter([{
@@ -89,6 +91,16 @@ export const createRouterObject = () => {
             {
                 path: '/scans/:id',
                 element: <ProtectedRoute route='/scans/:id'><Scan /></ProtectedRoute>
+            
+            },
+            {
+                path: '/stops',
+                element: <ProtectedRoute route='/stops'><Stops /></ProtectedRoute>
+            
+            },
+            {
+                path: '/stops/:id',
+                element: <ProtectedRoute route='/stops/:id'><Typography>Stop</Typography></ProtectedRoute>
             
             },
             {

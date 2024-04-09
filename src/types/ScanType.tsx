@@ -1,3 +1,5 @@
+import { LocationType } from "./LocationType"
+
 export interface ScanType {
     id: string
     organizationId: string
@@ -7,9 +9,4 @@ export interface ScanType {
     deviceLocationOnSubmit?: LocationType
     createdAt: number,
     manualScan?: boolean
-}
-
-export interface LocationType {
-    lat: number
-    lon: number
 }
