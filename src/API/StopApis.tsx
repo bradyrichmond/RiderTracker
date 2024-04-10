@@ -52,7 +52,7 @@ const getStopsForOrganization = async (token: string, organizationId: string) =>
 
 const updateStop = async (token: string, stop: StopType) => {
     try {
-        const stopsRaw = await fetch(`${API_BASE_NAME}/riders/${stop.id}`, {
+        const stopsRaw = await fetch(`${API_BASE_NAME}/stops/${stop.id}`, {
             method: 'PUT',
             body: JSON.stringify(stop),
             headers: {

@@ -22,14 +22,14 @@ const stop: StopType = {
     "id": "a5641694-b188-4ec2-be57-b11a6e9bd1b5",
     "organizationId": "123456",
     "riderIds": ["123456"],
-    "name": "Supportive Bear"
+    "stopName": "Supportive Bear"
 }
 
 const stopWithoutRiderIds = {
     "id": "a5641694-b188-4ec2-be57-b11a6e9bd1b5",
     "organizationId": "123456",
     "riderIds": [],
-    "name": "Supportive Bear"
+    "stopName": "Supportive Bear"
 }
 
 const getStopData = async () => {

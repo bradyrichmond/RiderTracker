@@ -47,6 +47,7 @@ const AssignRidersToStopDialog = ({
         const newStop = stopFactory([entity.id, entity.organizationId, stopName])
         newStop.riderIds = filteredLinkIds
         submitAction(newStop)
+        setDisabledButtons(false)
     }
 
     return (

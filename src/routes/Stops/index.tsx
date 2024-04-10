@@ -46,7 +46,7 @@ const Stops = () => {
     const generateGridColumns = (): GridColDef[] => {
         const initialGridColumns:GridColDef[] = [
             { field: 'id',  headerName: 'ID', flex: 1},
-            { field: 'name',  headerName: 'Stop Name', flex: 1},
+            { field: 'stopName',  headerName: 'Stop Name', flex: 1},
             { field: 'viewDetails', headerName: '', renderCell: (params) => {
                 return (
                     <Button

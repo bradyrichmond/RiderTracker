@@ -155,10 +155,10 @@ const StopsRiders = ({ stop, getStopData }: StopsRidersProps) => {
                 <AssignRidersToStopDialog 
                     cancelAction={toggleShowModal}
                     entity={stop}
-                    title={`Add Rider to ${stop.name}`}
+                    title={`Assign Rider to ${stop.stopName}`}
                     submitAction={submitAction}
                     submitButtonText="Submit"
-                    stopName={stop.name}
+                    stopName={stop.stopName}
                     formDefaultValues={{inputs: [
                         { name: "Rider", inputType: "select", options: allRiders}
                     ]}}
@@ -167,15 +167,15 @@ const StopsRiders = ({ stop, getStopData }: StopsRidersProps) => {
             :
                 null
             }
-            <Typography variant="h2">{stop.name} Riders</Typography>
+            <Typography variant="h2">{stop.stopName} Riders</Typography>
             <DataGrid hideFooterPagination autoHeight rows={riders} columns={generateGridColumns()} />
-            {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.ADD_RIDER_TO_STOP) ?
+            {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.ADD_RIDER_TO_STOP) && allRiders.length > 0 ?
                 <Box marginTop='2rem'>
                     <Button variant='contained' onClick={toggleShowModal}>
                         <Box display='flex' flexDirection='row' justifyContent=''>
                             <PersonAddIcon />
                             <Box flex='1' marginLeft='1rem'>
-                                <Typography>Assign a Rider to {stop.name}</Typography>
+                                <Typography>Assign a Rider to {stop.stopName}</Typography>
                             </Box>
                         </Box>
                     </Button>
