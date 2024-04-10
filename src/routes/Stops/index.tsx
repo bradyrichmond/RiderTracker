@@ -35,7 +35,7 @@ const Stops = () => {
     }
 
     const deleteStopAction = async (id: string) => {
-        await api.execute(api.stops.createStop, [id])
+        await api.execute(api.stops.deleteStop, [id])
         updateStops()
     }
 

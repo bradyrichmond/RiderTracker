@@ -5,7 +5,7 @@ const getStops = async (_token: string) => Promise.resolve([
        "id": "0c3dfca8-13eb-4df7-a194-883f0294d49b",
        "organizationId": "123",
        "riderIds": ["123456"],
-       "name": "Supportive Bear"
+       "stopName": "Supportive Bear"
     }
 ])
 
@@ -13,7 +13,7 @@ const getStopById = async (_token: string, id: string) => Promise.resolve({
     "id": id,
     "organizationId": "123456",
     "riderIds": ["123456"],
-    "name": "Supportive Bear"
+    "stopName": "Supportive Bear"
  })
 
 const getStopsForOrganization = async (_token: string, organizationId: string) => Promise.resolve([
@@ -21,7 +21,7 @@ const getStopsForOrganization = async (_token: string, organizationId: string) =
        "id": "0c3dfca8-13eb-4df7-a194-883f0294d49b",
        "organizationId": organizationId,
        "riderIds": ["123456"],
-       "name": "Supportive Bear"
+       "stopName": "Supportive Bear"
     }
 ])
 
@@ -32,7 +32,7 @@ const getBulkStopsById = async (_token: string, stopIds: string[]) => {
         "id": r,
         "organizationId": "123456",
         "riderIds": ["123456"],
-        "name": "Supportive Bear"
+        "stopName": "Supportive Bear"
      }))
 
     return stops

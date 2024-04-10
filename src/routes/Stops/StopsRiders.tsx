@@ -42,7 +42,10 @@ const StopsRiders = ({ stop, getStopData }: StopsRidersProps) => {
             if (filteredRiderIds.length > 0) {
                 const riderData = await api.execute(api.riders.getBulkRidersById, [filteredRiderIds])
                 setRiders(riderData)
+                return;
             }
+
+            setRiders([])
         }
     }
 
@@ -97,6 +100,7 @@ const StopsRiders = ({ stop, getStopData }: StopsRidersProps) => {
             const newLinks = newStop.riderIds.filter((r) => r !== riderId)
             newStop.riderIds = newLinks.length > 0 ? newLinks : [""]
             await api.execute(api.stops.updateStop, [newStop])
+            updateRiders()
         }
     }
 

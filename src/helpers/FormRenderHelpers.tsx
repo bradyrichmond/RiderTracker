@@ -6,13 +6,19 @@ import { useEffect } from "react"
 import ShuffleOnIcon from '@mui/icons-material/ShuffleOn';
 
 export const pickRenderElement = (field: FormInputType, index: number) => {
-    const { register, setValue } = useFormContext<FormDataType>()
+    const { register, setValue, resetField } = useFormContext<FormDataType>()
     const { randomName, generateRandomName } = useRandomNameGenerator()
 
     const updateRandomName = (fieldName: `inputs.${number}.name`) => {
         generateRandomName()
         setValue(fieldName, randomName)
     }
+
+    useEffect(() => {
+        if (field.options) {
+            resetField(`inputs.${index}.name`, { defaultValue: field.options[0].id })
+        }
+    }, [field.options])
 
     if (!register) {
         const error = 'This method needs to be wrapped in <FormProvider {...methods}>.'
@@ -22,12 +28,6 @@ export const pickRenderElement = (field: FormInputType, index: number) => {
 
     switch (field.inputType) {
         case "select":
-            let selectDefaultValue = ""
-            if (field.options) {
-                const top = field.options[0]
-                selectDefaultValue = top ? top.id : ""
-            }
-
             return (
                 <FormControl fullWidth>
                     <InputLabel id={`${field.name}Label`}>{field.name}</InputLabel>
@@ -36,7 +36,6 @@ export const pickRenderElement = (field: FormInputType, index: number) => {
                         id={`${field.name}SelectItem`}
                         label={field.name}
                         {...register(`inputs.${index}.name`)}
-                        defaultValue={selectDefaultValue}
                     >
                         {field.options ? field.options.map((f) => <MenuItem key={f.id} value={f.id}>{f.label}</MenuItem>) : null}
                     </Select>
