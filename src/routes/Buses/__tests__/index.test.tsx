@@ -18,10 +18,11 @@ describe('Buses Tests', () => {
   it('shows add bus button when authorized to add buses', async () => {
     render(<Buses />, { wrapper: ProviderWrapperAsRole })
 
-    await waitFor(() => {
-      expect(screen.getByRole('button', {
+    await waitFor(async () => {
+      const addBusButton = await screen.findByRole('button', {
         name: /add bus/i
-      })).toBeInTheDocument()
+      })
+      expect(addBusButton).toBeInTheDocument()
     })
   })
 

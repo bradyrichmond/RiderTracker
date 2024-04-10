@@ -3,8 +3,9 @@ import { StopType } from "@/types/StopType"
 const getStops = async (_token: string) => Promise.resolve([
     {
        "id": "0c3dfca8-13eb-4df7-a194-883f0294d49b",
-       "organizationId": "123456",
-       "riderIds": ["123456"]
+       "organizationId": "123",
+       "riderIds": ["123456"],
+       "name": "Supportive Bear"
     }
 ])
 
@@ -12,14 +13,15 @@ const getStopById = async (_token: string, id: string) => Promise.resolve({
     "id": id,
     "organizationId": "123456",
     "riderIds": ["123456"],
-    "driverId": "123456"
+    "name": "Supportive Bear"
  })
 
 const getStopsForOrganization = async (_token: string, organizationId: string) => Promise.resolve([
     {
        "id": "0c3dfca8-13eb-4df7-a194-883f0294d49b",
        "organizationId": organizationId,
-       "riderIds": ["123456"]
+       "riderIds": ["123456"],
+       "name": "Supportive Bear"
     }
 ])
 
@@ -29,7 +31,8 @@ const getBulkStopsById = async (_token: string, stopIds: string[]) => {
     stopIds.forEach((r) => stops.push({
         "id": r,
         "organizationId": "123456",
-        "riderIds": ["123456"]
+        "riderIds": ["123456"],
+        "name": "Supportive Bear"
      }))
 
     return stops

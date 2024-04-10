@@ -50,6 +50,25 @@ const getStopsForOrganization = async (token: string, organizationId: string) =>
     }
 }
 
+const updateStop = async (token: string, stop: StopType) => {
+    try {
+        const stopsRaw = await fetch(`${API_BASE_NAME}/riders/${stop.id}`, {
+            method: 'PUT',
+            body: JSON.stringify(stop),
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json'
+            }
+        })
+
+        const stops = await stopsRaw.json()
+
+        return stops
+    } catch (e) {
+        throw new Error(JSON.stringify(e))
+    }
+}
+
 const createStop = async (token: string, body: StopType) => {
     try {
         const stopsData = await fetch(`${API_BASE_NAME}/stops`, {
@@ -91,6 +110,7 @@ export interface StopApiFunctionTypes {
     getStops(token: string): Promise<StopType[]>,
     getStopById(token: string, id: string): Promise<StopType>,
     getStopsForOrganization(token: string, organizationId: string): Promise<StopType[]>,
+    updateStop(token: string, stop: StopType): Promise<StopType>,
     createStop(token: string, stop: StopType): Promise<StopType>,
     deleteStop(token: string, id: string): Promise<StopType>
 }
@@ -99,6 +119,7 @@ export default {
     getStops,
     getStopById,
     getStopsForOrganization,
+    updateStop,
     createStop,
     deleteStop
 }

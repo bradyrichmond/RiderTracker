@@ -22,7 +22,6 @@ export interface ModalProps<T> {
 
 interface EntityViewerProps<T> {
     createEntity?(_body: T): Promise<void>
-    fetchForOrg?: boolean
     entityFactory: (args: string[]) => T 
     getEntities(id?: string): void
     entities: T[]

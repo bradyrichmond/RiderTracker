@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
-import { render, screen, waitFor } from "@testing-library/react"
+import { render, screen, waitFor, waitForElementToBeRemoved } from "@testing-library/react"
 import { ProviderWrapperAsRole } from '@/helpers/ProviderWrapper'
+import userEvent from '@testing-library/user-event'
 import Stops from '..'
 // @ts-ignore
 import StopApis from '@/API/StopApis'
@@ -29,6 +30,36 @@ describe('Stops Tests', () => {
     await waitFor(async () => {
       const row = await screen.findByText(/0c3dfca8-13eb-4df7-a194-883f0294d49b/i)
       expect(row).toBeInTheDocument()
+    })
+  })
+
+  it('opens add stop modal when add stop button clicked, and closes on cancel click', async () => {
+    const user = userEvent.setup()
+    render(<Stops />, { wrapper: ProviderWrapperAsRole })
+
+    await waitFor(async () => {
+      const addStopButton = await screen.findByRole('button', {
+        name: /add stop/i
+      })
+
+      await user.click(addStopButton)
+      const createStopButton = await screen.findByRole('button', {
+        name: /create stop/i
+      })
+      expect(createStopButton).toBeInTheDocument()
+    })
+
+    await waitFor(async () => {
+      const cancelButton = await screen.findByRole('button', {
+        name: /cancel/i
+      })
+      expect(cancelButton).toBeInTheDocument()
+      await user.click(cancelButton)
+      await waitForElementToBeRemoved(cancelButton)
+      const noMoreCancelButton = screen.queryByRole('button', {
+        name: /cancel/i
+      })
+      expect(noMoreCancelButton).not.toBeInTheDocument()
     })
   })
 

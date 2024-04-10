@@ -39,7 +39,7 @@ const getRiderData = async () => {
 
 }
 
-describe('Guardians Tests', () => {
+describe('RidersGuardians Tests', () => {
     it('shows riders connected to this guardian', async () => {
         render(<RidersGuardians rider={rider} getRiderData={getRiderData} />, { wrapper: ProviderWrapperAsRole })
 

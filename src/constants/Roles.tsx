@@ -38,6 +38,10 @@ export type RiderTrackerAction =
     | "CREATE_STOP"
     | "UPDATE_STOP"
     | "DELETE_STOP"
+    | "ADD_RIDER_TO_STOP"
+    | "REMOVE_RIDER_FROM_STOP"
+    | "ADD_STOP_TO_RIDER"
+    | "REMOVE_STOP_FROM_RIDER"
     | "LINK_RIDER_TO_GUARDIAN"
     | "UNLINK_RIDER_FROM_GUARDIAN"
   
@@ -67,6 +71,10 @@ export const permissions: Record<RiderTrackerAction, RiderTrackerPermission> = {
     CREATE_STOP: { action: "CREATE_STOP", name: "Create Stop", resourceType: "stops" },
     UPDATE_STOP: { action: "UPDATE_STOP", name: "Update Stop", resourceType: "stops" },
     DELETE_STOP: { action: "DELETE_STOP", name: "Delete Stop", resourceType: "stops", requiresConfirmation: true },
+    ADD_RIDER_TO_STOP: { action: "ADD_RIDER_TO_STOP", name: "Add Rider to Stop", resourceType: "stops"},
+    REMOVE_RIDER_FROM_STOP: { action: "REMOVE_RIDER_FROM_STOP", name: "Remove Rider from Stop", resourceType: "stops", requiresConfirmation: true},
+    ADD_STOP_TO_RIDER: { action: "ADD_RIDER_TO_STOP", name: "Add Stop to Rider", resourceType: "stops"},
+    REMOVE_STOP_FROM_RIDER: { action: "REMOVE_STOP_FROM_RIDER", name: "Remove Stop from Rider", resourceType: "stops", requiresConfirmation: true},
     LINK_RIDER_TO_GUARDIAN: { action: "LINK_RIDER_TO_GUARDIAN", name: "Link Rider to Guardian", resourceType: "riders" },
     UNLINK_RIDER_FROM_GUARDIAN: { action: "UNLINK_RIDER_FROM_GUARDIAN", name: "Unlink Rider from Guardian", resourceType: "riders" },
 };
@@ -96,6 +104,10 @@ export const RIDERTRACKER_PERMISSIONS_BY_ROLE: Record<RiderTrackerRole, RiderTra
         permissions.CREATE_STOP,
         permissions.UPDATE_STOP,
         permissions.DELETE_STOP,
+        permissions.ADD_RIDER_TO_STOP,
+        permissions.REMOVE_RIDER_FROM_STOP,
+        permissions.ADD_STOP_TO_RIDER,
+        permissions.REMOVE_RIDER_FROM_STOP,
         permissions.LINK_RIDER_TO_GUARDIAN,
         permissions.UNLINK_RIDER_FROM_GUARDIAN
     ],

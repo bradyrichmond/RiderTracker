@@ -11,10 +11,6 @@ import { RoleContext } from "@/contexts/RoleContextProvider"
 import { StopType } from "@/types/StopType"
 import { ApiContext } from "@/contexts/ApiContextProvider"
 
-// interface EntityViewerProps<T> {
-//     modalFormInputs?: FormDataType
-// }
-
 const Stops = () => {
     const [stops, setStops] = useState<StopType[]>([])
     const { id: organizationId } = useParams()
@@ -32,7 +28,9 @@ const Stops = () => {
     }
 
     const createStopAction = async (newStop: StopType) => {
-        await api.execute(api.stops.createStop, [newStop])
+        const validStop = newStop
+        validStop.riderIds = [""]
+        await api.execute(api.stops.createStop, [validStop])
         updateStops()
     }
 
@@ -48,6 +46,7 @@ const Stops = () => {
     const generateGridColumns = (): GridColDef[] => {
         const initialGridColumns:GridColDef[] = [
             { field: 'id',  headerName: 'ID', flex: 1},
+            { field: 'name',  headerName: 'Stop Name', flex: 1},
             { field: 'viewDetails', headerName: '', renderCell: (params) => {
                 return (
                     <Button
@@ -88,10 +87,14 @@ const Stops = () => {
 
     return (
         <EntityViewer<StopType>
-            createEntity={createStopAction}
+            createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_STOP) ? createStopAction : undefined}
             entityFactory={stopFactory}
             entities={stops}
             getEntities={updateStops}
+            modalFormInputs={{inputs: [
+                { name: "Organization Id", inputType: "select" },
+                { name: "Stop Name", inputType: 'randomNameGenerator' }
+            ]}}
             gridColumns={generateGridColumns()}
             titleSingular="Stop"
             titlePlural="Stops"
