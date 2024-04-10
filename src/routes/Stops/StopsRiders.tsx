@@ -71,42 +71,48 @@ const StopsRiders = ({ stop, getStopData }: StopsRidersProps) => {
         toggleShowModal()
         await api.execute(api.stops.updateStop, [updatedStop])
         if (updatedStop.riderIds) {
-            const stopToBeUpdated = updatedStop.riderIds.pop()
-
-            if (stopToBeUpdated) {
-                const updatedStop = await generateUpdatedStop(stopToBeUpdated)
-                await api.execute(api.stops.updateStop, [updatedStop])
+            const riderToBeUpdated = updatedStop.riderIds.pop()
+            if (riderToBeUpdated) {
+                await addStopToRider(riderToBeUpdated)
             }
-
             updateRiders()
         }
     }
 
-    const generateUpdatedStop = async (riderId: string ) => {
-        const stopToBeUpdated = stop
-        let newRiderIds: string[] = []
-        if (stopToBeUpdated.riderIds) {
-            newRiderIds = stopToBeUpdated.riderIds.filter((g: string) => g !== "")
+    const addStopToRider = async (riderId: string) => {
+        const riderToUpdate = await api.execute(api.riders.getRiderById, [riderId])
+
+        if (riderToUpdate.stops) {
+            const stopsToUpdate = riderToUpdate.stops.filter((s: string) => s !== "")
+            stopsToUpdate.push(stop.id)
+            riderToUpdate.stops = stopsToUpdate
         }
 
-        newRiderIds.push(riderId)
-        stopToBeUpdated.riderIds = newRiderIds
-        return stopToBeUpdated
+        if (!riderToUpdate.stops) {
+            riderToUpdate.stops = [stop.id]
+        }
+
+        await api.execute(api.riders.updateRider, [riderToUpdate])
     }
 
     const removeRiderFromStop = async (riderId: string) => {
-        const newStop = stop;
-        if (newStop.riderIds) {
-            const newLinks = newStop.riderIds.filter((r) => r !== riderId)
-            newStop.riderIds = newLinks.length > 0 ? newLinks : [""]
-            await api.execute(api.stops.updateStop, [newStop])
+        const stopToUpdate = stop;
+        if (stopToUpdate.riderIds) {
+            const newLinks = stopToUpdate.riderIds.filter((r) => r !== riderId)
+            stopToUpdate.riderIds = newLinks.length > 0 ? newLinks : [""]
+            await api.execute(api.stops.updateStop, [stopToUpdate])
+            await removeStopFromRider(riderId)
             updateRiders()
         }
     }
 
-    // @ts-ignore
-    const removeStopFromRider = () => {
-        // will need to add logic to remove the stop from the rider, as well as update the api and db to handle those
+    const removeStopFromRider = async (riderId: string) => {
+        const riderToUpdate = await api.execute(api.riders.getRiderById, [riderId])
+        if (riderToUpdate.stops) {
+            const newLinks = riderToUpdate.stops.filter((s: string) => s !== stop.id)
+            riderToUpdate.riderIds = newLinks.length > 0 ? newLinks : [""]
+            await api.execute(api.riders.updateRider, [riderToUpdate])
+        }
     }
 
     const viewRiderDetails = (riderId: string) => {

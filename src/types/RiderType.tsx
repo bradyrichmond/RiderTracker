@@ -4,4 +4,5 @@ export interface RiderType {
     lastName: string
     organizationId: string
     guardianRiderLinks: string[]
+    stops?: string[]
 }
