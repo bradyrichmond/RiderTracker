@@ -1,5 +1,5 @@
-import { Box, Button, FormControl, InputLabel, MenuItem, Select, TextField, Tooltip } from "@mui/material"
-import { FormDataType, FormInputType } from "../types/FormTypes"
+import { Autocomplete, Box, Button, FormControl, TextField, Tooltip } from "@mui/material"
+import { FormDataType, FormInputType, OptionsType } from "../types/FormTypes"
 import { useFormContext } from "react-hook-form"
 import { useRandomNameGenerator } from "@/hooks/useRandomNameGenerator"
 import { useEffect } from "react"
@@ -29,17 +29,37 @@ export const pickRenderElement = (field: FormInputType, index: number) => {
     switch (field.inputType) {
         case "select":
             return (
-                <FormControl fullWidth>
-                    <InputLabel id={`${field.name}Label`}>{field.name}</InputLabel>
-                    <Select
-                        labelId={`${field.name}Label`}
-                        id={`${field.name}SelectItem`}
-                        label={field.name}
-                        {...register(`inputs.${index}.name`)}
-                    >
-                        {field.options ? field.options.map((f) => <MenuItem key={f.id} value={f.id}>{f.label}</MenuItem>) : null}
-                    </Select>
-                </FormControl>
+                <>
+                    {field.options ?
+                        <FormControl fullWidth>
+                            <Autocomplete
+                                multiple
+                                id={`${field.name}AutoComplete`}
+                                options={field.options ?? []}
+                                getOptionLabel={(option: OptionsType) => option.label}
+                                filterSelectedOptions
+                                renderInput={(params) => (
+                                    <TextField
+                                        {...params}
+                                        label={field.name}
+                                        id={`${field.name}Label`}
+                                    />
+                                )}
+                            />
+                            {/* <InputLabel id={`${field.name}Label`}>{field.name}</InputLabel>
+                            <Select
+                                labelId={`${field.name}Label`}
+                                id={`${field.name}SelectItem`}
+                                label={field.name}
+                                {...register(`inputs.${index}.name`)}
+                            >
+                                {field.options ? field.options.map((f) => <MenuItem key={f.id} value={f.id}>{f.label}</MenuItem>) : null}
+                            </Select> */}
+                        </FormControl>
+                        :
+                        null
+                    }
+                </>
             )
             break
         case "randomNameGenerator":

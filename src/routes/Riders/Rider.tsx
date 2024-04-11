@@ -48,7 +48,7 @@ const Rider = () => {
                 {
                     stops.map((s) => {
                         return (
-                            <Chip label={s.stopName} onClick={() => handleChipClick(s.id)} />
+                            <Chip key={s.id} label={s.stopName} onClick={() => handleChipClick(s.id)} />
                         )
                     })
                 }
