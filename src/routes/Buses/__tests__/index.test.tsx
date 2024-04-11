@@ -36,6 +36,9 @@ describe('Buses Tests', () => {
       })
 
       await user.click(addBusButton)
+    })
+
+    await waitFor(async () => {
       const createBusButton = await screen.findByRole('button', {
         name: /create bus/i
       })
