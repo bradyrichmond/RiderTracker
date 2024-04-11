@@ -34,6 +34,25 @@ const getStopById = async (token: string, id: string) => {
     }
 }
 
+const getBulkStopsById = async (token: string, stopIds: string[]) => {
+    try {
+        const stopsData = await fetch(`${API_BASE_NAME}/stops/batchGetById`, {
+            method: 'POST',
+            body: JSON.stringify(stopIds),
+            headers: {
+                'Authorization': token,
+                'Content-Type': 'application/json'
+            }
+        })
+
+        const stops = stopsData.json()
+
+        return stops
+    } catch (e) {
+        throw new Error(JSON.stringify(e))
+    }
+}
+
 const getStopsForOrganization = async (token: string, organizationId: string) => {
     try {
         const stopsData = await fetch(`${API_BASE_NAME}/organizations/${organizationId}/stops`, {
@@ -109,6 +128,7 @@ const deleteStop = async (token: string, id: string) => {
 export interface StopApiFunctionTypes {
     getStops(token: string): Promise<StopType[]>,
     getStopById(token: string, id: string): Promise<StopType>,
+    getBulkStopsById(token: string, riderIds: string[]): Promise<StopType[]>,
     getStopsForOrganization(token: string, organizationId: string): Promise<StopType[]>,
     updateStop(token: string, stop: StopType): Promise<StopType>,
     createStop(token: string, stop: StopType): Promise<StopType>,
@@ -118,6 +138,7 @@ export interface StopApiFunctionTypes {
 export default {
     getStops,
     getStopById,
+    getBulkStopsById,
     getStopsForOrganization,
     updateStop,
     createStop,
