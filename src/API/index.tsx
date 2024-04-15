@@ -1,9 +1,11 @@
+import AddressApis, { AddressApiFunctionTypes } from './AddressApis'
 import BusApis, { BusApiFunctionTypes } from './BusApis'
 import DriverApis, { DriverApiFunctionTypes } from './DriverApis'
 import GuardianApis, { GuardianApiFunctionTypes } from './GuardianApis'
 import OrganizationApis, { OrganizationApiFunctionTypes } from './OrganizationApis'
 import RiderApis, { RiderApiFunctionTypes } from './RiderApis'
 import ScanApis, { ScanApiFunctionTypes } from './ScanApis'
+import SchoolApis, { SchoolApiFunctionTypes } from './SchoolApis'
 import StopApis, { StopApiFunctionTypes } from './StopApis'
 
 export const API_BASE_NAME = 'https://gkupwyoi70.execute-api.us-west-2.amazonaws.com/dev' // this will need to change with environment
@@ -14,22 +16,26 @@ export interface ApiFunction {
 
 class RiderTrackerAPI {
     token: string
+    addresses: AddressApiFunctionTypes
     buses: BusApiFunctionTypes
     drivers: DriverApiFunctionTypes
     guardians: GuardianApiFunctionTypes
     organizations: OrganizationApiFunctionTypes
     riders: RiderApiFunctionTypes
     scans: ScanApiFunctionTypes
+    schools: SchoolApiFunctionTypes
     stops: StopApiFunctionTypes
 
     constructor(token: string) {
         this.token = token
+        this.addresses = AddressApis
         this.buses = BusApis
         this.drivers = DriverApis
         this.guardians = GuardianApis
         this.organizations = OrganizationApis
         this.riders = RiderApis
         this.scans = ScanApis
+        this.schools = SchoolApis
         this.stops = StopApis
     }
 

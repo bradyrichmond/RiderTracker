@@ -3,7 +3,7 @@ import { FormDataType, FormInputType, OptionsType } from "../types/FormTypes"
 import { useFormContext } from "react-hook-form"
 import { useRandomNameGenerator } from "@/hooks/useRandomNameGenerator"
 import { useEffect } from "react"
-import ShuffleOnIcon from '@mui/icons-material/ShuffleOn';
+import ShuffleOnIcon from '@mui/icons-material/ShuffleOn'
 
 export const pickRenderElement = (field: FormInputType, index: number) => {
     const { register, setValue, resetField } = useFormContext<FormDataType>()
@@ -33,7 +33,6 @@ export const pickRenderElement = (field: FormInputType, index: number) => {
                     {field.options ?
                         <FormControl fullWidth>
                             <Autocomplete
-                                multiple
                                 id={`${field.name}AutoComplete`}
                                 options={field.options ?? []}
                                 getOptionLabel={(option: OptionsType) => option.label}
@@ -46,22 +45,37 @@ export const pickRenderElement = (field: FormInputType, index: number) => {
                                     />
                                 )}
                             />
-                            {/* <InputLabel id={`${field.name}Label`}>{field.name}</InputLabel>
-                            <Select
-                                labelId={`${field.name}Label`}
-                                id={`${field.name}SelectItem`}
-                                label={field.name}
-                                {...register(`inputs.${index}.name`)}
-                            >
-                                {field.options ? field.options.map((f) => <MenuItem key={f.id} value={f.id}>{f.label}</MenuItem>) : null}
-                            </Select> */}
                         </FormControl>
                         :
                         null
                     }
                 </>
             )
-            break
+            case "selectMultiple":
+                return (
+                    <>
+                        {field.options ?
+                            <FormControl fullWidth>
+                                <Autocomplete
+                                    multiple
+                                    id={`${field.name}AutoComplete`}
+                                    options={field.options ?? []}
+                                    getOptionLabel={(option: OptionsType) => option.label}
+                                    filterSelectedOptions
+                                    renderInput={(params) => (
+                                        <TextField
+                                            {...params}
+                                            label={field.name}
+                                            id={`${field.name}Label`}
+                                        />
+                                    )}
+                                />
+                            </FormControl>
+                            :
+                            null
+                        }
+                    </>
+                )
         case "randomNameGenerator":
             const fieldName: `inputs.${number}.name` = `inputs.${index}.name`
             useEffect(() => {
@@ -83,8 +97,17 @@ export const pickRenderElement = (field: FormInputType, index: number) => {
                     </Box>
                 </Box>
             )
-            break
+        case "address":
+            return (
+                <>
+                    <TextField label={field.name} 
+                        fullWidth
+                        autoComplete='off'
+                        {...register(`inputs.${index}.name`)}
+                    />
+                </>
+            )
         default:
-            return <TextField label={field.name} fullWidth {...register(`inputs.${index}.name`)}/>
+            return <TextField label={field.name} autoComplete='off' fullWidth {...register(`inputs.${index}.name`)}/>
     }
 }

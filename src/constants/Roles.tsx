@@ -35,6 +35,9 @@ export type RiderTrackerAction =
     | "CREATE_SCAN"
     | "UPDATE_SCAN"
     | "DELETE_SCAN"
+    | "CREATE_SCHOOL"
+    | "UPDATE_SCHOOL"
+    | "DELETE_SCHOOL"
     | "CREATE_STOP"
     | "UPDATE_STOP"
     | "DELETE_STOP"
@@ -68,6 +71,9 @@ export const permissions: Record<RiderTrackerAction, RiderTrackerPermission> = {
     CREATE_SCAN: { action: "CREATE_SCAN", name: "Create Scan", resourceType: "scans" },
     UPDATE_SCAN: { action: "UPDATE_SCAN", name: "Update Scan", resourceType: "scans" },
     DELETE_SCAN: { action: "DELETE_SCAN", name: "Delete Scan", resourceType: "scans", requiresConfirmation: true },
+    CREATE_SCHOOL: { action: "CREATE_SCHOOL", name: "Create School", resourceType: "scans" },
+    UPDATE_SCHOOL: { action: "UPDATE_SCHOOL", name: "Update School", resourceType: "scans" },
+    DELETE_SCHOOL: { action: "DELETE_SCHOOL", name: "Delete School", resourceType: "scans", requiresConfirmation: true },
     CREATE_STOP: { action: "CREATE_STOP", name: "Create Stop", resourceType: "stops" },
     UPDATE_STOP: { action: "UPDATE_STOP", name: "Update Stop", resourceType: "stops" },
     DELETE_STOP: { action: "DELETE_STOP", name: "Delete Stop", resourceType: "stops", requiresConfirmation: true },
@@ -101,6 +107,9 @@ export const RIDERTRACKER_PERMISSIONS_BY_ROLE: Record<RiderTrackerRole, RiderTra
         permissions.CREATE_SCAN,
         permissions.UPDATE_SCAN,
         permissions.DELETE_SCAN,
+        permissions.CREATE_SCHOOL,
+        permissions.UPDATE_SCHOOL,
+        permissions.DELETE_SCHOOL,
         permissions.CREATE_STOP,
         permissions.UPDATE_STOP,
         permissions.DELETE_STOP,

@@ -19,6 +19,7 @@ import Unauthorized from '@/routes/Protected/Unauthorized'
 import Scan from "@/routes/Scans/Scan"
 import Stops from "@/routes/Stops"
 import Stop from "@/routes/Stops/Stop"
+import Schools from "@/routes/Schools"
 
 export const createRouterObject = () => {
     return createBrowserRouter([{
@@ -91,6 +92,16 @@ export const createRouterObject = () => {
             {
                 path: '/scans/:id',
                 element: <ProtectedRoute route='/scans/:id'><Scan /></ProtectedRoute>
+            
+            },
+            {
+                path: '/schools',
+                element: <ProtectedRoute route='/schools'><Schools /></ProtectedRoute>
+            
+            },
+            {
+                path: '/schools/:id',
+                element: <ProtectedRoute route='/schools/:id'>School</ProtectedRoute>
             
             },
             {

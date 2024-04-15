@@ -7,6 +7,7 @@ import CorporateFareIcon from '@mui/icons-material/CorporateFare'
 import PersonIcon from '@mui/icons-material/Person'
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew'
 import PlaceIcon from '@mui/icons-material/Place'
+import SchoolIcon from '@mui/icons-material/School';
 import { signOut } from "aws-amplify/auth"
 
 interface SettingsItemType extends NavItemType {
@@ -34,6 +35,8 @@ const ALL_ROUTES: string[] = [
     "/riders/:id/scans",
     "/scans",
     "/scans/:id",
+    "/schools",
+    "/schools/:id",
     "/stops",
     "/stops/:id"
 ];
@@ -53,7 +56,9 @@ const ORG_ADMIN_ROUTES: string[] = [
     "/riders/:id",
     "/riders/:id/scans",
     "/scans/:id",
-    "/stops/:id"
+    "/stops/:id",
+    "/schools",
+    "/schools/:id"
 ]
 
 const DRIVER_ROUTES: string[] = [
@@ -106,6 +111,11 @@ const WIZARD_NAV_ITEMS: NavItemType[] = [
         Icon: ArticleIcon
     },
     {
+        path: '/schools',
+        label: 'Schools',
+        Icon: SchoolIcon
+    },
+    {
         path: '/stops',
         label: 'Stops',
         Icon: PlaceIcon
@@ -137,6 +147,11 @@ const ORG_ADMIN_NAV_ITEMS: NavItemType[] = [
         path: '/organizations/:id/scans',
         label: 'Scans',
         Icon: ArticleIcon
+    },
+    {
+        path: '/schools',
+        label: 'Schools',
+        Icon: SchoolIcon
     },
     {
         path: '/organizations/:id/stops',
