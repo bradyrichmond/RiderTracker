@@ -20,6 +20,7 @@ import Scan from "@/routes/Scans/Scan"
 import Stops from "@/routes/Stops"
 import Stop from "@/routes/Stops/Stop"
 import Schools from "@/routes/Schools"
+import School from "@/routes/Schools/School"
 
 export const createRouterObject = () => {
     return createBrowserRouter([{
@@ -101,7 +102,7 @@ export const createRouterObject = () => {
             },
             {
                 path: '/schools/:id',
-                element: <ProtectedRoute route='/schools/:id'>School</ProtectedRoute>
+                element: <ProtectedRoute route='/schools/:id'><School /></ProtectedRoute>
             
             },
             {
