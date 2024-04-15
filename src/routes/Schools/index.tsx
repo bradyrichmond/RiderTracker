@@ -97,7 +97,7 @@ const Schools = () => {
 
     return (
         <EntityViewer<SchoolType>
-            createEntity={createSchoolAction}
+            createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_SCHOOL) ? createSchoolAction : undefined}
             entities={schools}
             entityFactory={schoolFactory}
             getEntities={updateSchools}
