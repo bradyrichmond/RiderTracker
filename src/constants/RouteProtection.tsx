@@ -9,9 +9,12 @@ import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew'
 import PlaceIcon from '@mui/icons-material/Place'
 import SchoolIcon from '@mui/icons-material/School';
 import { signOut } from "aws-amplify/auth"
+import { FC } from "react"
+import ToggleLightMode from "@/components/ToggleLightMode"
 
 interface SettingsItemType extends NavItemType {
     action?(): Promise<void>
+    Component?: FC
 }
 
 const ALL_ROUTES: string[] = [
@@ -187,6 +190,12 @@ const GUARDIAN_NAV_ITEMS: NavItemType[] = [
 ]
 
 const SETTINGS_NAV_ITEMS: SettingsItemType[] = [
+    {
+        Component: ToggleLightMode,
+        path: '',
+        label: '',
+        Icon: PowerSettingsNewIcon
+    },
     {
         action: signOut,
         path: '',

@@ -187,10 +187,16 @@ const ResponsiveAppBar = () => {
                                 open={Boolean(anchorElUser)}
                                 onClose={handleCloseUserMenu}
                             >
-                                {settings.map(({ label, action, path, Icon }) => (
-                                    <MenuItem key={label} onClick={action ? action : () => navigate(path)}>
-                                        <MenuItemWithIcon label={label} Icon={Icon} />
-                                    </MenuItem>
+                                {settings.map(({ label, action, Component, path, Icon }) => (
+                                    <>
+                                        {Component ? 
+                                            <Component />
+                                            :
+                                            <MenuItem key={label} onClick={action ? action : () => navigate(path)}>
+                                                <MenuItemWithIcon label={label} Icon={Icon} />
+                                            </MenuItem>
+                                        }
+                                    </>
                                 ))}
                             </Menu>
                         </Box>
