@@ -2,20 +2,17 @@ import { ThemeContext } from "@/contexts/ThemeContextProvider"
 import { useContext } from "react"
 import LightModeIcon from '@mui/icons-material/LightMode'
 import DarkModeIcon from '@mui/icons-material/DarkMode'
-import { Box, Typography } from "@mui/material"
+import { MenuItem, useTheme } from "@mui/material"
+import { MenuItemWithIcon } from "./ResponsiveAppBar"
 
 const ToggleLightMode = () => {
     const themeContext = useContext(ThemeContext)
+    const theme = useTheme()
 
     return (
-        <Box width='100%' display='flex' padding='1rem' onClick={themeContext.toggleColorMode} >
-            <Box marginRight='1rem' display='flex' justifyContent='center' alignItems='center'>
-                {themeContext.value === 'light' ? <DarkModeIcon /> : <LightModeIcon />}
-            </Box>
-            <Box flex='1' display='flex' justifyContent='flex-start' alignItems='center'>
-                <Typography textAlign="left">{themeContext.value === 'light' ? 'Switch to Dark Mode' : 'Switch to Light Mode'}</Typography>
-            </Box>
-        </Box>
+        <MenuItem onClick={themeContext.toggleColorMode}>
+            <MenuItemWithIcon Icon={themeContext.value === 'light' ? DarkModeIcon : LightModeIcon} label={themeContext.value === 'light' ? 'Enable Dark Mode' : 'Enable Light Mode'} color={theme.palette.text.primary} />
+        </MenuItem>
     )
 }
 

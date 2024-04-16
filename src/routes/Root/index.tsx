@@ -4,7 +4,7 @@ import NavigationContainer from "../../components/NavigationContainer"
 
 const Root = () => {
     return (
-        <Box display='flex' flexDirection='column' height='100%'>
+        <Box display='flex' flexDirection='column' height='100%' bgcolor='background.paper' color='text.primary'>
             <Box>
                 <NavigationContainer />
             </Box>

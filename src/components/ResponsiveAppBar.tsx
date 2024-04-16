@@ -15,15 +15,18 @@ import { ComponentType, MouseEvent, useContext, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { RoleContext } from '../contexts/RoleContextProvider'
 import { ROUTE_PROTECTION } from '../constants/RouteProtection'
+import { useTheme } from '@mui/material'
+
 
 interface MenuItemWithIconProps {
     Icon: ComponentType
     label: string
+    color: string
 }
 
-const MenuItemWithIcon = ({ Icon, label }: MenuItemWithIconProps) => {
+export const MenuItemWithIcon = ({ Icon, label, color }: MenuItemWithIconProps) => {
     return (
-        <Box width='100%' display='flex' padding='1rem' >
+        <Box width='100%' display='flex' padding='1rem' color={color}>
             <Box marginRight='1rem' display='flex' justifyContent='center' alignItems='center'>
                 <Icon />
             </Box>
@@ -35,6 +38,8 @@ const MenuItemWithIcon = ({ Icon, label }: MenuItemWithIconProps) => {
 }
 
 const ResponsiveAppBar = () => {
+    const theme = useTheme()
+
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null)
     const navigate = useNavigate()
@@ -84,7 +89,6 @@ const ResponsiveAppBar = () => {
                                 fontFamily: 'monospace',
                                 fontWeight: 700,
                                 letterSpacing: '.3rem',
-                                color: 'inherit',
                                 textDecoration: 'none'
                             }}
                             onClick={() => navigate('/')}
@@ -99,7 +103,7 @@ const ResponsiveAppBar = () => {
                                 aria-controls="menu-appbar"
                                 aria-haspopup="true"
                                 onClick={handleOpenNavMenu}
-                                color="inherit"
+                                
                             >
                                 <MenuIcon />
                             </IconButton>
@@ -126,7 +130,7 @@ const ResponsiveAppBar = () => {
                                         navigate(path)
                                         handleCloseNavMenu()
                                     }}>
-                                        <MenuItemWithIcon label={label} Icon={Icon} />
+                                        <MenuItemWithIcon label={label} Icon={Icon} color={theme.palette.primary.contrastText}/>
                                     </MenuItem>
                                 ))}
                             </Menu>
@@ -143,7 +147,6 @@ const ResponsiveAppBar = () => {
                                 fontFamily: 'monospace',
                                 fontWeight: 700,
                                 letterSpacing: '.3rem',
-                                color: 'inherit',
                                 textDecoration: 'none',
                             }}
                             onClick={() => navigate('/')}
@@ -158,9 +161,9 @@ const ResponsiveAppBar = () => {
                                         navigate(path)
                                         handleCloseNavMenu()
                                     }}
-                                    sx={{ my: 2, color: 'white', display: 'block' }}
+                                    sx={{ my: 2, display: 'block' }}
                                 >
-                                    <MenuItemWithIcon label={label} Icon={Icon} />
+                                    <MenuItemWithIcon label={label} Icon={Icon} color={theme.palette.primary.contrastText} />
                                 </Button>
                             ))}
                         </Box>
@@ -187,17 +190,15 @@ const ResponsiveAppBar = () => {
                                 open={Boolean(anchorElUser)}
                                 onClose={handleCloseUserMenu}
                             >
-                                {settings.map(({ label, action, Component, path, Icon }) => (
-                                    <>
-                                        {Component ? 
-                                            <Component />
-                                            :
-                                            <MenuItem key={label} onClick={action ? action : () => navigate(path)}>
-                                                <MenuItemWithIcon label={label} Icon={Icon} />
-                                            </MenuItem>
-                                        }
-                                    </>
-                                ))}
+                                {settings.map(({ label, action, Component, path, Icon }) => {
+                                    return Component ? 
+                                        <Component key={label} />
+                                        :
+                                        <MenuItem key={label} onClick={action ? action : () => navigate(path)}>
+                                            <MenuItemWithIcon label={label} Icon={Icon} color={theme.palette.text.primary} />
+                                        </MenuItem>
+                                    }
+                                )}
                             </Menu>
                         </Box>
                     </Toolbar>

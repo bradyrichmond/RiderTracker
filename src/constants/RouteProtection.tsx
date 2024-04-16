@@ -193,7 +193,7 @@ const SETTINGS_NAV_ITEMS: SettingsItemType[] = [
     {
         Component: ToggleLightMode,
         path: '',
-        label: '',
+        label: 'ToggleLightMode',
         Icon: PowerSettingsNewIcon
     },
     {
