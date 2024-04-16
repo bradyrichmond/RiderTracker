@@ -3,7 +3,8 @@ import { useState, useEffect } from "react"
 
 const getStorageValue = <T extends PaletteMode>(key: string, defaultValue: T): T => {
     const saved = localStorage.getItem(key)
-    const initial = saved ? JSON.parse(saved) : defaultValue
+    const initial = saved ?? defaultValue
+    // @ts-ignore
     return initial
 }
 
