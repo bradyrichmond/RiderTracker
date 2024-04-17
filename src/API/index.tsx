@@ -1,4 +1,5 @@
 import AddressApis, { AddressApiFunctionTypes } from './AddressApis'
+import AdminApis, { AdminApiFunctionTypes } from './AdminApis'
 import BusApis, { BusApiFunctionTypes } from './BusApis'
 import DriverApis, { DriverApiFunctionTypes } from './DriverApis'
 import GuardianApis, { GuardianApiFunctionTypes } from './GuardianApis'
@@ -17,6 +18,7 @@ export interface ApiFunction {
 class RiderTrackerAPI {
     token: string
     addresses: AddressApiFunctionTypes
+    admin: AdminApiFunctionTypes
     buses: BusApiFunctionTypes
     drivers: DriverApiFunctionTypes
     guardians: GuardianApiFunctionTypes
@@ -29,6 +31,7 @@ class RiderTrackerAPI {
     constructor(token: string) {
         this.token = token
         this.addresses = AddressApis
+        this.admin = AdminApis
         this.buses = BusApis
         this.drivers = DriverApis
         this.guardians = GuardianApis
