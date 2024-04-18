@@ -29,22 +29,23 @@ interface AWSUserType {
  }
 
 const createUser = async (token: string, body: CreateUserParams) => {
-    try {
-        const newlyCreatedUser = await fetch(`${API_BASE_NAME}/admin/createUser`, {
-            method: 'POST',
-            body: JSON.stringify(body),
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': token
-            }
-        })
+    const newlyCreatedUser = await fetch(`${API_BASE_NAME}/admin/createUser`, {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+        }
+    })
 
+    if (newlyCreatedUser.status === 200) {
         const user = await newlyCreatedUser.json()
 
         return user
-    } catch (e) {
-        //@ts-ignore
-        throw new Error(e)
+    } else {
+        const error = await newlyCreatedUser.json()
+
+        throw `${newlyCreatedUser.status}: ${error.message}`
     }
 }
 

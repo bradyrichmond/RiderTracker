@@ -3,7 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { DriverType } from "../../types/DriverType"
 import { driverFactory } from "./DriverFactory"
 import { useContext, useState } from "react"
-import { Button, Tooltip } from "@mui/material"
+import { Alert, Button, Snackbar, Tooltip } from "@mui/material"
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
 import { ApiContext } from "../../contexts/ApiContextProvider"
@@ -13,6 +13,8 @@ import { RoleContext } from "../../contexts/RoleContextProvider"
 
 const Drivers = () => {
     const [drivers, setDrivers] = useState<DriverType[]>([])
+    const [showErrorSnackbar, setShowErrorSnackBar] = useState(false)
+    const [snackbarMessage, setSnackbarMessage] = useState('')
     const { id } = useParams()
     const navigate = useNavigate()
     const { api } = useContext(ApiContext)
@@ -34,7 +36,14 @@ const Drivers = () => {
     }
 
     const createDriverAction = async (driver: DriverType) => {
-        return await api.execute(api.drivers.createDriver, [driver])
+        try {
+            const cognitoUser = await api.execute(api.admin.createUser, [{ given_name: driver.firstName, family_name: driver.lastName, email: driver.email }])
+            driver.id = cognitoUser.User.Attributes[0].Value
+            return await api.execute(api.drivers.createDriver, [driver])
+        } catch (e: any) {
+            setSnackbarMessage(e)
+            setShowErrorSnackBar(true)
+        }
     }
 
     const generateGridColumns = (): GridColDef[] => {
@@ -76,22 +85,37 @@ const Drivers = () => {
 
         return initialGridColumns
     }
+
+    const toggleShowSnackbar = () => setShowErrorSnackBar((cur: boolean) => !cur)
     
     return (
-        <EntityViewer<DriverType>
-            createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_DRIVER) ? createDriverAction : undefined}
-            entityFactory={driverFactory}
-            getEntities={updateDriversAction}
-            entities={drivers}
-            modalFormInputs={{inputs: [
-                { name: "Organization Id", inputType: "select" },
-                { name: "First Name" },
-                { name: "Last Name" }
-            ]}}
-            gridColumns={generateGridColumns()}
-            titleSingular='Driver'
-            titlePlural='Drivers'
-        />
+        <>
+            <Snackbar open={showErrorSnackbar} autoHideDuration={6000} onClose={toggleShowSnackbar} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+                <Alert
+                    onClose={toggleShowSnackbar}
+                    severity="error"
+                    variant="filled"
+                    sx={{ width: '100%' }}
+                >
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
+            <EntityViewer<DriverType>
+                createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_DRIVER) ? createDriverAction : undefined}
+                entityFactory={driverFactory}
+                getEntities={updateDriversAction}
+                entities={drivers}
+                modalFormInputs={{inputs: [
+                    { name: "Organization Id", inputType: "select" },
+                    { name: "First Name" },
+                    { name: "Last Name" },
+                    { name: "Email" }
+                ]}}
+                gridColumns={generateGridColumns()}
+                titleSingular='Driver'
+                titlePlural='Drivers'
+            />
+        </>
     )
 }
 
