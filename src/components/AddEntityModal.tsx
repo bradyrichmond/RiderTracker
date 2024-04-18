@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Slide } from '@mui/material'
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide } from '@mui/material'
 import { forwardRef, useContext, useEffect, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { useFieldArray, useForm, Controller, FormProvider } from "react-hook-form"
@@ -13,6 +13,7 @@ import { pickRenderElement } from '../helpers/FormRenderHelpers'
 import { ApiContext } from '../contexts/ApiContextProvider'
 import { SchoolType } from '@/types/SchoolType'
 import { TransitionProps } from '@mui/material/transitions'
+import { ErrorMessage } from "@hookform/error-message"
 
 const Transition = forwardRef(function Transition(
     props: TransitionProps & {
@@ -48,9 +49,6 @@ const AddEntityModal = <T extends
         control,
         name: "inputs"
     })
-
-    type Keys = keyof typeof errors;
-    type Values = typeof errors[Keys];
 
     useEffect(() => {
         getAvailableOrgIds()
@@ -117,12 +115,17 @@ const AddEntityModal = <T extends
                             </Box>
                         )
                     })}
+                    <ErrorMessage
+                        errors={errors}
+                        name="multipleErrorInput"
+                        render={({ messages }) =>
+                        messages &&
+                        Object.entries(messages).map(([type, message]) => (
+                            <p key={type}>{message}</p>
+                        ))
+                        }
+                    />
                 </FormProvider>
-                {errors ? 
-                    Object.values(errors).map((e: Values) => <DialogContentText color='error'>{e?.message}</DialogContentText>)
-                    :
-                    null
-                }
             </DialogContent>
             <DialogActions sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
                 <Button disabled={disableButtons} variant='contained' onClick={cancelAction}>Cancel</Button>

@@ -7,6 +7,7 @@ import { RoleContextProvider } from './contexts/RoleContextProvider'
 import RootRouter from './routes/Root/RootRouter'
 import { ApiContextProvider } from './contexts/ApiContextProvider'
 import ThemeContextProvider from './contexts/ThemeContextProvider'
+import { SnackbarContextProvider } from './contexts/SnackbarContextProvider'
 
 type AppProps = {
   user?: AuthUser
@@ -18,7 +19,9 @@ function App({ user }: AppProps) {
       <RoleContextProvider>
         <ApiContextProvider>
           <ThemeContextProvider>
-            {user ? <RootRouter user={user} /> : null}
+            <SnackbarContextProvider>
+              {user ? <RootRouter user={user} /> : null}
+            </SnackbarContextProvider>
           </ThemeContextProvider>
         </ApiContextProvider>
       </RoleContextProvider>

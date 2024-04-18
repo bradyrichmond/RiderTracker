@@ -109,7 +109,7 @@ const Drivers = () => {
                     { name: "Organization Id", inputType: "select" },
                     { name: "First Name" },
                     { name: "Last Name" },
-                    { name: "Email" }
+                    { name: "Email", inputType: 'email' }
                 ]}}
                 gridColumns={generateGridColumns()}
                 titleSingular='Driver'

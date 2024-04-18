@@ -2,12 +2,16 @@ import { Autocomplete, Box, Button, FormControl, TextField, Tooltip } from "@mui
 import { FormDataType, FormInputType, OptionsType } from "../types/FormTypes"
 import { useFormContext } from "react-hook-form"
 import { useRandomNameGenerator } from "@/hooks/useRandomNameGenerator"
-import { useEffect } from "react"
+import { useContext, useEffect } from "react"
 import ShuffleOnIcon from '@mui/icons-material/ShuffleOn'
+import DebouncedTextField from "@/components/DebouncedTextfield"
+import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
 
 export const pickRenderElement = (field: FormInputType, index: number) => {
     const { register, setValue, resetField } = useFormContext<FormDataType>()
     const { randomName, generateRandomName } = useRandomNameGenerator()
+    // @ts-ignore I want these to be used later
+    const { setSnackbarMessage, setSnackbarSeverity, setSnackbarVariant, setSnackbarVisibilityMs } = useContext(SnackbarContext)
 
     const updateRandomName = (fieldName: `inputs.${number}.name`) => {
         generateRandomName()
@@ -24,6 +28,18 @@ export const pickRenderElement = (field: FormInputType, index: number) => {
         const error = 'This method needs to be wrapped in <FormProvider {...methods}>.'
         console.error(error)
         throw error
+    }
+
+    const handleEmailValidation = (val: string) => {
+        const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
+
+        if (!val) {
+            setSnackbarMessage('Email address is required')
+        }
+        
+        if (!val.match(emailPattern)) {
+            setSnackbarMessage('Invalid email address')
+        }
     }
 
     switch (field.inputType) {
@@ -103,7 +119,19 @@ export const pickRenderElement = (field: FormInputType, index: number) => {
                     <TextField label={field.name} 
                         fullWidth
                         autoComplete='off'
-                        {...register(`inputs.${index}.name`)}
+                        {...register(`inputs.${index}.name` as const)}
+                    />
+                </>
+            )
+        case "email":
+            return (
+                <>
+                    <DebouncedTextField
+                        fullWidth
+                        autoComplete='off'
+                        {...register(`inputs.${index}.name` as const, { required: true })}
+                        onChange={handleEmailValidation}
+                        debounceMs={500}
                     />
                 </>
             )
