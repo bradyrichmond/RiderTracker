@@ -16,15 +16,15 @@ type AppProps = {
 function App({ user }: AppProps) {
   return (
     <Box width='100%' height='100%'>
-      <RoleContextProvider>
-        <ApiContextProvider>
+      <ApiContextProvider>
+        <RoleContextProvider>
           <ThemeContextProvider>
             <SnackbarContextProvider>
               {user ? <RootRouter user={user} /> : null}
             </SnackbarContextProvider>
           </ThemeContextProvider>
-        </ApiContextProvider>
-      </RoleContextProvider>
+        </RoleContextProvider>
+      </ApiContextProvider>
     </Box>
   )
 }

@@ -9,24 +9,28 @@ interface CreateUserParams {
 interface AWSUserType {
     User: { 
        Attributes: [ 
-          { 
-             Name: string,
-             Value: string
-          }
+            { 
+                Name: string,
+                Value: string
+            }
        ],
        Enabled: boolean,
        MFAOptions?: [ 
-          { 
-             AttributeName?: string,
-             DeliveryMedium?: string
-          }
+            { 
+                AttributeName?: string,
+                DeliveryMedium?: string
+            }
        ],
        UserCreateDate: number,
        UserLastModifiedDate: number,
        Username: string,
        UserStatus: string
     }
- }
+}
+
+interface AttributeType {
+    Name: string, Value: string
+}
 
 const createUser = async (token: string, body: CreateUserParams) => {
     const newlyCreatedUser = await fetch(`${API_BASE_NAME}/admin/createUser`, {
@@ -46,6 +50,27 @@ const createUser = async (token: string, body: CreateUserParams) => {
         const error = await newlyCreatedUser.json()
 
         throw `${newlyCreatedUser.status}: ${error.message}`
+    }
+}
+
+const updateUserAttributes = async (token: string, attributes: AttributeType[], username: string) => {
+    const updatedAttributes = await fetch(`${API_BASE_NAME}/admin/updateUserAttributes`, {
+        method: 'POST',
+        body: JSON.stringify({ attributes, username }),
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+        }
+    })
+
+    if (updatedAttributes.status === 200) {
+        const user = await updatedAttributes.json()
+
+        return user
+    } else {
+        const error = await updatedAttributes.json()
+
+        throw `${updatedAttributes.status}: ${error.message}`
     }
 }
 
@@ -72,9 +97,11 @@ const updateUserProfileImage = async (token: string, file: File, key: string) =>
 export interface AdminApiFunctionTypes {
     createUser(token: string, body: CreateUserParams): Promise<AWSUserType>
     updateUserProfileImage(token: string, body: File, key: string): Promise<boolean>
+    updateUserAttributes(token: string, body: AttributeType[], username: string): Promise<boolean>
 }
 
 export default {
     createUser,
-    updateUserProfileImage
+    updateUserProfileImage,
+    updateUserAttributes
 }

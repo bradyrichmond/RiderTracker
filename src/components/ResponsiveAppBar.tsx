@@ -43,20 +43,20 @@ const ResponsiveAppBar = () => {
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null)
     const navigate = useNavigate()
-    const roleContext = useContext(RoleContext)
-    const routeProtection = ROUTE_PROTECTION.find((r) => r.name === roleContext.heaviestRole)
+    const { userFullName, userId, heaviestRole } = useContext(RoleContext)
+    const routeProtection = ROUTE_PROTECTION.find((r) => r.name === heaviestRole)
     const pages = routeProtection?.navItems ?? []
     const settings = routeProtection?.settingsItems ?? []
     const nameAbbrev = useMemo(() => {
-        if (roleContext.userFullName) {
-            const split = roleContext.userFullName.split(' ')
+        if (userFullName) {
+            const split = userFullName.split(' ')
             const resultArr = []
             for (let splitItem of split) {
                 resultArr.push(splitItem[0])
             }
             return resultArr.join('')
         }
-    }, [roleContext.userFullName])
+    }, [userFullName])
 
     const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget)
@@ -171,7 +171,7 @@ const ResponsiveAppBar = () => {
                         <Box sx={{ flexGrow: 0 }}>
                             <Tooltip title="Open settings">
                                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                    <Avatar alt={roleContext.userFullName}>{nameAbbrev}</Avatar>
+                                    <Avatar alt={userFullName} src={`https://s3.us-west-2.amazonaws.com/ridertracker.profileimages/${userId}.jpg`}>{nameAbbrev}</Avatar>
                                 </IconButton>
                             </Tooltip>
                             <Menu

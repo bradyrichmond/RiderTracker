@@ -4,6 +4,7 @@ import FolderIcon from '@mui/icons-material/Folder'
 import { ChangeEvent, useContext, useEffect, useRef, useState } from "react"
 import { ApiContext } from "@/contexts/ApiContextProvider"
 import { RoleContext } from "@/contexts/RoleContextProvider"
+import UpdateProfileDataForm from "./UpdateProfileDataForm"
 
 const ProfileSettings = () => {
     const { api } = useContext(ApiContext)
@@ -12,7 +13,6 @@ const ProfileSettings = () => {
     const [file, setFile] = useState<File>()
     const [fileName, setFileName] = useState('')
     const [profileUrl, setProfileUrl] = useState('')
-
 
     useEffect(() => {
         checkImage()
@@ -54,6 +54,7 @@ const ProfileSettings = () => {
     const uploadFile = async () => {
         await api.execute(api.admin.updateUserProfileImage, [file, userId])
         checkImage()
+        setFile(undefined)
     }
 
     return (
@@ -65,11 +66,11 @@ const ProfileSettings = () => {
                 <Typography variant='subtitle1'>
                     These are your personal details. They are visible to organization administrators.
                 </Typography>
-                <Box display='flex' height='100%' flexDirection='row' sx={{pt: '2rem'}}>
-                    <Box sx={{ pr: '2rem' }}>
-                    <input type='file' id='file' accept="image/jpg" ref={inputFile} style={{display: 'none'}} onChange={handleFileChange} />
+                <Box display='flex' height='100%' flexDirection='column' sx={{pt: '2rem'}}>
+                    <Box sx={{ pb: '2rem' }} display='flex' justifyContent='center' alignItems='center' >
+                        <input type='file' id='file' accept="image/jpg" ref={inputFile} style={{display: 'none'}} onChange={handleFileChange} />
                         <Tooltip title='Change Profile Picture'>
-                            <Avatar sx={{height: 100, width: 100}} onClick={openFileDialog} src={profileUrl} alt={userFullName}>
+                            <Avatar sx={{height: 200, width: 200}} onClick={openFileDialog} src={profileUrl} alt={userFullName}>
                                 {profileUrl ?
                                     <img src={profileUrl} alt='your profile image' />
                                     :
@@ -80,15 +81,15 @@ const ProfileSettings = () => {
                     </Box>
                     <Box flex='1' display='flex'  flexDirection='column' justifyContent='center' alignItems='center'>
                         <Button variant='contained' sx={{ height: '100%' }} fullWidth disabled={!fileName} onClick={uploadFile}>
-                            <Typography variant='body1'>Upload Profile Image</Typography>
+                            <Typography variant='body1'>{fileName ? 'Upload Profile Image' : 'No File Selected'}</Typography>
                         </Button>
                     </Box>
                 </Box>
                 <Box paddingTop='.5rem' display='flex' justifyContent='center' alignItems='center'>
                     <Typography variant='caption'>{fileName ? `Selected file: ${fileName}` : 'Acceptable file type: *.jpg. Max file size: 10MB'}</Typography>
                 </Box>
-                <Box display='flex' height='100%' flexDirection='row' sx={{pt: '2rem'}}>
-
+                <Box sx={{pt: '1rem'}}>
+                    <UpdateProfileDataForm />
                 </Box>
             </Card>
         </Grid>

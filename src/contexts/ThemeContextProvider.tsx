@@ -22,6 +22,15 @@ export const generateThemeOptions = (mode: PaletteMode): ThemeOptions => {
         shape: {
            borderRadius: 4,
         },
+        components: {
+            MuiTextField: {
+                styleOverrides: {
+                    root: ({ theme }) => ({
+                        marginTop: theme.spacing(2)
+                    })
+                }
+            }
+        }
     }
 }
 

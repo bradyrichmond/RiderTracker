@@ -24,7 +24,7 @@ export const SnackbarContextProvider = ({ children }: PropsWithChildren<{}>) => 
     return (
         <SnackbarContext.Provider value={{ setSnackbarMessage, setSnackbarSeverity, setSnackbarVisibilityMs, setSnackbarVariant }}>
             {children}
-            <Snackbar open={!!snackbarMessage} autoHideDuration={snackbarVisibilityMs} onClose={onSnackbarClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+            <Snackbar open={!!snackbarMessage} autoHideDuration={snackbarVisibilityMs} onClose={onSnackbarClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
                 <Alert
                     onClose={onSnackbarClose}
                     severity={snackbarSeverity}
