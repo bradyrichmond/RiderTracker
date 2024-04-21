@@ -11,6 +11,7 @@ import SchoolIcon from '@mui/icons-material/School';
 import { signOut } from "aws-amplify/auth"
 import { FC } from "react"
 import ToggleLightMode from "@/components/ToggleLightMode"
+import AccountBoxIcon from '@mui/icons-material/AccountBox'
 
 interface SettingsItemType extends NavItemType {
     action?(): Promise<void>
@@ -33,6 +34,7 @@ const ALL_ROUTES: string[] = [
     "/organizations/:id/riders",
     "/organizations/:id/scans",
     "/organizations/:id/stops",
+    "/settings",
     "/riders",
     "/riders/:id",
     "/riders/:id/scans",
@@ -56,6 +58,7 @@ const ORG_ADMIN_ROUTES: string[] = [
     "/organizations/:id/riders",
     "/organizations/:id/scans",
     "/organizations/:id/stops",
+    "/settings",
     "/riders/:id",
     "/riders/:id/scans",
     "/scans/:id",
@@ -71,7 +74,8 @@ const DRIVER_ROUTES: string[] = [
     "/drivers/:id",
     "/riders/:id",
     "/organizations/:id/buses",
-    "/organizations/:id/drivers"
+    "/organizations/:id/drivers",
+    "/settings"
 ]
 
 const GUARDIAN_ROUTES: string[] = [
@@ -79,6 +83,7 @@ const GUARDIAN_ROUTES: string[] = [
     "/buses/:id",
     "/drivers/:id",
     "/my-riders",
+    "/settings",
     "/riders/:id"
 ]
 
@@ -195,6 +200,11 @@ const SETTINGS_NAV_ITEMS: SettingsItemType[] = [
         path: '',
         label: 'ToggleLightMode',
         Icon: PowerSettingsNewIcon
+    },
+    {
+        path: '/settings',
+        label: 'Settings',
+        Icon: AccountBoxIcon
     },
     {
         action: signOut,

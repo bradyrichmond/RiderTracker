@@ -21,6 +21,7 @@ import Stops from "@/routes/Stops"
 import Stop from "@/routes/Stops/Stop"
 import Schools from "@/routes/Schools"
 import School from "@/routes/Schools/School"
+import Settings from "@/routes/Settings"
 
 export const createRouterObject = () => {
     return createBrowserRouter([{
@@ -73,6 +74,11 @@ export const createRouterObject = () => {
             {
                 path: '/organizations/:id/buses',
                 element: <ProtectedRoute route='/organizations/:id/buses'><Buses /></ProtectedRoute>
+            
+            },
+            {
+                path: '/settings',
+                element: <ProtectedRoute route='/settings'><Settings /></ProtectedRoute>
             
             },
             {

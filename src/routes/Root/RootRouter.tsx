@@ -16,11 +16,12 @@ interface RootRouterProps {
 
 const RootRouter = ({ user }: RootRouterProps) => {
     const [isInitialized, setIsInitialized] = useState(false)
-    const { setUserFullName, heaviestRole, setHeaviestRole, setUserPictureUrl } = useContext(RoleContext)
+    const { setUserFullName, heaviestRole, setHeaviestRole, setUserPictureUrl, setUserId } = useContext(RoleContext)
     const { setApi } = useContext(ApiContext)
 
     const initialize = useCallback(async () => {
         const session = await fetchAuthSession()
+        setUserId(session.userSub ?? '')
         const idToken = session.tokens?.idToken
         const sessionGroups = idToken?.payload["cognito:roles"]
         const sessionGroupsArray = sessionGroups as Array<string>
@@ -28,6 +29,7 @@ const RootRouter = ({ user }: RootRouterProps) => {
 
         sessionGroupsArray.forEach((sg) => {
             const trimmed = sg.split('/')[1]
+
             if (isRiderTrackerRole(trimmed)) {
                 trimmedGroups.push(trimmed)
             }
