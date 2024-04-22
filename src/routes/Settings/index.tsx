@@ -1,6 +1,7 @@
 import { Box, Tab, Tabs } from "@mui/material"
 import { SyntheticEvent, useState } from "react"
 import Profile from "./Profile";
+import Organization from "./Organization";
 
 interface TabPanelProps {
     children?: React.ReactNode;
@@ -46,11 +47,13 @@ const Settings = () => {
         <Box height='100%' width='100%' display='flex' flexDirection='column'>
             <Tabs value={activeTab} onChange={handleChange} aria-label="basic tabs example">
                 <Tab label="Profile" {...a11yProps(0)} />
-                <Tab label="Item Two" {...a11yProps(1)} />
-                <Tab label="Item Three" {...a11yProps(2)} />
+                <Tab label="Organization Settings" {...a11yProps(1)} />
             </Tabs>
             <CustomTabPanel value={activeTab} index={0}>
                 <Profile />
+            </CustomTabPanel>
+            <CustomTabPanel value={activeTab} index={1}>
+                <Organization />
             </CustomTabPanel>
         </Box>
     )
