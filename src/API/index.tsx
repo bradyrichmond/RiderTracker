@@ -8,6 +8,7 @@ import RiderApis, { RiderApiFunctionTypes } from './RiderApis'
 import ScanApis, { ScanApiFunctionTypes } from './ScanApis'
 import SchoolApis, { SchoolApiFunctionTypes } from './SchoolApis'
 import StopApis, { StopApiFunctionTypes } from './StopApis'
+import UserApis, { UserApiFunctionTypes } from './UserApis'
 
 export const API_BASE_NAME = 'https://gkupwyoi70.execute-api.us-west-2.amazonaws.com/dev' // this will need to change with environment
 
@@ -27,6 +28,7 @@ class RiderTrackerAPI {
     scans: ScanApiFunctionTypes
     schools: SchoolApiFunctionTypes
     stops: StopApiFunctionTypes
+    users: UserApiFunctionTypes
 
     constructor(token: string) {
         this.token = token
@@ -40,6 +42,7 @@ class RiderTrackerAPI {
         this.scans = ScanApis
         this.schools = SchoolApis
         this.stops = StopApis
+        this.users = UserApis
     }
 
     getToken() {

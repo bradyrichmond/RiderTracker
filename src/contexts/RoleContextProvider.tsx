@@ -15,6 +15,8 @@ export const RoleContext = createContext({
     setUserEmail: (_userEmail: string) => {},
     userId: '',
     setUserId: (_userId: string) => {},
+    accessToken: '',
+    setAccessToken: (_accessToken: string) => {},
     userPictureUrl: '',
     setUserPictureUrl: (_pictureUrl: string) => {},
     updateUserData: async () => {}
@@ -26,12 +28,15 @@ export const RoleContextProvider = ({ children }: PropsWithChildren<{}>) => {
     const [userEmail, setUserEmail] = useState("")
     const [userId, setUserId] = useState("")
     const [userPictureUrl, setUserPictureUrl] = useState("")
+    const [accessToken, setAccessToken] = useState("")
     const { setApi } = useContext(ApiContext)
 
     const updateUserData = async () => {
         const session = await fetchAuthSession()
         setUserId(session.userSub ?? '')
         const idToken = session.tokens?.idToken
+        const userAccessToken = session.tokens?.accessToken
+        setAccessToken(userAccessToken?.toString() ?? '')
         const sessionGroups = idToken?.payload["cognito:roles"]
         const sessionGroupsArray = sessionGroups as Array<string>
         setUserEmail(idToken?.payload.email?.toString() ?? '')
@@ -77,6 +82,7 @@ export const RoleContextProvider = ({ children }: PropsWithChildren<{}>) => {
             userFullName, setUserFullName,
             userEmail, setUserEmail,
             userId, setUserId,
+            accessToken, setAccessToken,
             userPictureUrl, setUserPictureUrl,
             updateUserData
         }}>
