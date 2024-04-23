@@ -35,7 +35,7 @@ const getBusById = async (token: string, busId: string) => {
 
 const getBusesForOrganization = async (token: string, organizationId: string) => {
     try {
-        const busesData = await fetch(`${API_BASE_NAME}/organization/${organizationId}/buses`, {
+        const busesData = await fetch(`${API_BASE_NAME}/organizations/${organizationId}/buses`, {
             headers: {
                 'Authorization': token
             }

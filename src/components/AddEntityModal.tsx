@@ -1,5 +1,5 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide } from '@mui/material'
-import { forwardRef, useContext, useEffect, useState } from 'react'
+import { forwardRef, useContext, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { useFieldArray, useForm, Controller, FormProvider } from "react-hook-form"
 import { BusType } from '../types/BusType'
@@ -8,12 +8,13 @@ import { GuardianType } from "../types/GuardianType"
 import { OrganizationType } from "../types/OrganizationType"
 import { RiderType } from "../types/RiderType"
 import { ScanType } from "../types/ScanType"
-import { AddEntityModalProps, FormInputType, OptionsType, FormDataType } from '../types/FormTypes'
+import { AddEntityModalProps, FormDataType } from '../types/FormTypes'
 import { pickRenderElement } from '../helpers/FormRenderHelpers'
-import { ApiContext } from '../contexts/ApiContextProvider'
 import { SchoolType } from '@/types/SchoolType'
 import { TransitionProps } from '@mui/material/transitions'
 import { ErrorMessage } from "@hookform/error-message"
+import { RoleContext } from '@/contexts/RoleContextProvider'
+import { StopType } from '@/types/StopType'
 
 const Transition = forwardRef(function Transition(
     props: TransitionProps & {
@@ -26,15 +27,14 @@ const Transition = forwardRef(function Transition(
   
 
 const AddEntityModal = <T extends 
-        BusType  | DriverType | GuardianType | OrganizationType | RiderType | ScanType | SchoolType>({ 
-        cancelAction, entityFactory, formDefaultValues, organizationId, submitAction, titleSingular, open 
+        BusType  | DriverType | GuardianType | OrganizationType | RiderType | ScanType | SchoolType | StopType>({ 
+        cancelAction, entityFactory, formDefaultValues, submitAction, titleSingular, open 
     }: AddEntityModalProps<T>) => {
     const [disableButtons, setDisabledButtons] = useState(false)
-    const [availableOrgIds, setAvailableOrgIds] = useState<OptionsType[]>([])
     const formMethods = useForm<FormDataType>({
         defaultValues: formDefaultValues
     })
-    const { api } = useContext(ApiContext)
+    const { organizationId } = useContext(RoleContext)
 
     const {
         control,
@@ -50,36 +50,17 @@ const AddEntityModal = <T extends
         name: "inputs"
     })
 
-    useEffect(() => {
-        getAvailableOrgIds()
-    }, [])
-
     const values = watch("inputs")
-
-    const getAvailableOrgIds = async () => {
-        const response = await api.execute(api.organizations.getOrganizations, [])
-        const mappedOrgIds = response.map((o: OrganizationType) => {
-            return { label: o.id, id: o.id }
-        })
-        setAvailableOrgIds(mappedOrgIds)
-    }
 
     const handleCreateEntity = () => {
         setDisabledButtons(true)
         const entityId = uuidv4()
-        const updatedValues = organizationId ? replaceOrgIdInValues(values) : values
-        const args = updatedValues.map((v) => v.name)
+        const args = values.map((v) => v.name)
+        args.unshift(organizationId)
         args.unshift(entityId)
         const newEntity = entityFactory(args)
         submitAction(newEntity)
         setDisabledButtons(false)
-    }
-
-    const replaceOrgIdInValues = (rawValues: FormInputType[]): FormInputType[] => {
-        rawValues.shift()
-        const newOrgIdElement = { name: organizationId ?? '' }
-        rawValues.unshift(newOrgIdElement)
-        return rawValues
     }
 
     return (    
@@ -97,14 +78,6 @@ const AddEntityModal = <T extends
             <DialogContent>
                 <FormProvider {...formMethods} >
                     {fields.map((field, index) => {
-                        if (field.name === "Organization Id") {
-                            if (organizationId) {
-                                return;
-                            }
-
-                            field.options = availableOrgIds
-                        }
-
                         return (
                             <Box key={field.id} marginTop='2rem'>
                                 <Controller

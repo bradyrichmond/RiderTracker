@@ -29,6 +29,7 @@ const Scans = () => {
     useEffect(() => {
         updateAllRiders()
         updateAllDrivers()
+        getScansAction()
     }, [organizationId])
 
     const updateAllRiders = async () => {
@@ -59,10 +60,8 @@ const Scans = () => {
         }
     }
 
-    const getScansFunction = (organizationId) ? api.scans.getScansForOrganization : api.scans.getScans
-
-    const getScansAction = async (id?: string) => {
-        const scans = await api.execute(getScansFunction, [id ?? ''])
+    const getScansAction = async () => {
+        const scans = await api.execute(api.scans.getScansForOrganization, [organizationId ?? ''])
         setScans(scans)
     }
 
@@ -152,25 +151,21 @@ const Scans = () => {
 
     return (
         <>
-            {riders.length > 0 && drivers.length > 0 ?
-                <EntityViewer<ScanType>
-                    createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_SCAN) ? createScan : undefined}
-                    entityFactory={scanFactory}
-                    getEntities={getScansAction}
-                    modalFormInputs={{inputs: [
-                        { name: "Organization Id", inputType: "select" },
-                        { name: "Driver", inputType: "select", options: drivers },
-                        { name: "Rider", inputType: "select", options: riders },
-                        { name: "Stop Id" }
-                    ]}}
-                    entities={scans}
-                    gridColumns={generateGridColumns()}
-                    titleSingular='Scan'
-                    titlePlural='Scans'
-                />
-                :
-                null
-            }
+            <EntityViewer<ScanType>
+                createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_SCAN) ? createScan : undefined}
+                entityFactory={scanFactory}
+                getEntities={getScansAction}
+                modalFormInputs={{inputs: [
+                    { name: "Organization Id", inputType: "select" },
+                    { name: "Driver", inputType: "select", options: drivers },
+                    { name: "Rider", inputType: "select", options: riders },
+                    { name: "Stop Id" }
+                ]}}
+                entities={scans}
+                gridColumns={generateGridColumns()}
+                titleSingular='Scan'
+                titlePlural='Scans'
+            />
         </>
     )
 }

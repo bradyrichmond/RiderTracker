@@ -13,6 +13,7 @@ import AddEntityModal from "./AddEntityModal"
 import { FormDataType } from "../types/FormTypes"
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { SchoolType } from "@/types/SchoolType"
+import { StopType } from "@/types/StopType"
 
 export interface ModalProps<T> {
     cancelAction: () => void
@@ -34,7 +35,7 @@ interface EntityViewerProps<T> {
 
 
 const EntityViewer = <T extends 
-        BusType | DriverType | GuardianType | OrganizationType | RiderType | ScanType | SchoolType>(
+        BusType | DriverType | GuardianType | OrganizationType | RiderType | ScanType | SchoolType | StopType>(
     {
         createEntity, entityFactory, entities, getEntities, modalFormInputs, gridColumns, titleSingular, titlePlural
     }:EntityViewerProps<T>

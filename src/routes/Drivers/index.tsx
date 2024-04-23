@@ -47,9 +47,9 @@ const Drivers = () => {
 
     const generateGridColumns = (): GridColDef[] => {
         const initialGridColumns: GridColDef[] = [
-            { field: 'firstName',  headerName: 'First Name', flex: 1},
-            { field: 'lastName',  headerName: 'Last Name', flex: 1},
-            { field: 'viewDetails', headerName: '', flex: 1, renderCell: (params) => {
+            { field: 'firstName',  headerName: 'First Name', flex: 1, align: 'center', headerAlign: 'center' },
+            { field: 'lastName',  headerName: 'Last Name', flex: 1, align: 'center', headerAlign: 'center' },
+            { field: 'viewDetails', headerName: '', flex: 1, align: 'center', headerAlign: 'center', renderCell: (params) => {
                 return (
                     <Button
                         variant="contained"

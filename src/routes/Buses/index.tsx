@@ -38,8 +38,8 @@ const Buses = () => {
 
     const generateGridColumns = (): GridColDef[] => {
         const initialGridColumns:GridColDef[] = [
-            { field: 'id',  headerName: 'ID', flex: 1},
-            { field: 'viewDetails', headerName: '', renderCell: (params) => {
+            { field: 'id',  headerName: 'ID', flex: 1, align: 'center', headerAlign: 'center' },
+            { field: 'viewDetails', headerName: '', flex: 1, align: 'center', headerAlign: 'center', renderCell: (params) => {
                 return (
                     <Button
                         variant="contained"
@@ -58,6 +58,8 @@ const Buses = () => {
             initialGridColumns.push({ 
                 field: 'delete',
                 headerName: '',
+                align: 'center',
+                headerAlign: 'center',
                 renderCell: (params) => {
                     return (
                         <Button
