@@ -11,7 +11,8 @@ import Button from '@mui/material/Button'
 import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import AdbIcon from '@mui/icons-material/Adb'
-import { ComponentType, MouseEvent, useContext, useMemo, useState } from 'react'
+import PersonIcon from '@mui/icons-material/Person'
+import { ComponentType, MouseEvent, useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { RoleContext } from '../contexts/RoleContextProvider'
 import { ROUTE_PROTECTION } from '../constants/RouteProtection'
@@ -43,20 +44,10 @@ const ResponsiveAppBar = () => {
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null)
     const navigate = useNavigate()
-    const { userFullName, userId, heaviestRole } = useContext(RoleContext)
+    const { userFullName, userPictureUrl, heaviestRole } = useContext(RoleContext)
     const routeProtection = ROUTE_PROTECTION.find((r) => r.name === heaviestRole)
     const pages = routeProtection?.navItems ?? []
     const settings = routeProtection?.settingsItems ?? []
-    const nameAbbrev = useMemo(() => {
-        if (userFullName) {
-            const split = userFullName.split(' ')
-            const resultArr = []
-            for (let splitItem of split) {
-                resultArr.push(splitItem[0])
-            }
-            return resultArr.join('')
-        }
-    }, [userFullName])
 
     const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget)
@@ -171,7 +162,7 @@ const ResponsiveAppBar = () => {
                         <Box sx={{ flexGrow: 0 }}>
                             <Tooltip title="Open settings">
                                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                    <Avatar alt={userFullName} src={`https://s3.us-west-2.amazonaws.com/ridertracker.profileimages/${userId}.jpg`}>{nameAbbrev}</Avatar>
+                                    <Avatar alt={userFullName} src={userPictureUrl}><PersonIcon /></Avatar>
                                 </IconButton>
                             </Tooltip>
                             <Menu
