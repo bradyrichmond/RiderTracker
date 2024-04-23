@@ -7,6 +7,13 @@ interface RiderTrackerPermission {
     requiresConfirmation?: boolean; // Optional flag for confirmation requirement
 }
 
+export enum RIDER_TRACKER_ROLES {
+    RIDER_TRACKER_WIZARD = "RiderTracker_Wizard",
+    RIDER_TRACKER_ORGADMIN = "RiderTracker_OrgAdmin",
+    RIDER_TRACKER_DRIVER = "RiderTracker_Driver",
+    RIDER_TRACKER_GUARDIAN = "RiderTracker_Guardian"
+}
+
 const riderTrackerRole = ["RiderTracker_Wizard", "RiderTracker_OrgAdmin", "RiderTracker_Driver", "RiderTracker_Guardian"]
 export type RiderTrackerRole = (typeof riderTrackerRole)[number]
 

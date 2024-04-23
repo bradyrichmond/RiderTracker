@@ -8,7 +8,7 @@ import UpdateProfileDataForm from "./UpdateProfileDataForm"
 
 const ProfileSettings = () => {
     const { api } = useContext(ApiContext)
-    const { userId, userFullName } = useContext(RoleContext)
+    const { userId, userFullName, userPictureUrl } = useContext(RoleContext)
     const inputFile = useRef<HTMLInputElement>(null)
     const [file, setFile] = useState<File>()
     const [fileName, setFileName] = useState('')
@@ -19,7 +19,7 @@ const ProfileSettings = () => {
     }, [userId])
 
     const checkImage = () => {
-        const src = `https://s3.us-west-2.amazonaws.com/ridertracker.profileimages/${userId}.jpg`
+        const src = userPictureUrl
         let img = new Image()
         img.src = src
         
@@ -71,11 +71,7 @@ const ProfileSettings = () => {
                         <input type='file' id='file' accept="image/jpg" ref={inputFile} style={{display: 'none'}} onChange={handleFileChange} />
                         <Tooltip title='Change Profile Picture'>
                             <Avatar sx={{height: 200, width: 200}} onClick={openFileDialog} src={profileUrl} alt={userFullName}>
-                                {profileUrl ?
-                                    <img src={profileUrl} alt='your profile image' />
-                                    :
-                                    <FolderIcon fontSize='large' />
-                                }
+                                <FolderIcon fontSize='large' />
                             </Avatar>
                         </Tooltip>
                     </Box>
