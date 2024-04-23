@@ -72,6 +72,7 @@ export const RoleContextProvider = ({ children }: PropsWithChildren<{}>) => {
 
     useEffect(() => {
         selectOrganizationAction()
+        setUserPictureUrl(`https://s3.us-west-2.amazonaws.com/ridertracker.profileimages/${userId}.jpg`)
     }, [userId, heaviestRole, idToken])
 
     const selectOrganizationAction = async () =>{
@@ -97,7 +98,6 @@ export const RoleContextProvider = ({ children }: PropsWithChildren<{}>) => {
             const userAttributes = await fetchUserAttributes();
             const { given_name, family_name } = userAttributes
             setUserFullName(`${given_name} ${family_name}`)
-            setUserPictureUrl(`https://s3.us-west-2.amazonaws.com/ridertracker.profileimages/${userId}.jpg`)
         } catch (err) {
             console.log(err)
         }
