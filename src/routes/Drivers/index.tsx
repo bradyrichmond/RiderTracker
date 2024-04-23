@@ -1,5 +1,5 @@
 import EntityViewer from "../../components/EntityViewer"
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { DriverType } from "../../types/DriverType"
 import { driverFactory } from "./DriverFactory"
 import { useContext, useState } from "react"
@@ -15,14 +15,13 @@ const Drivers = () => {
     const [drivers, setDrivers] = useState<DriverType[]>([])
     const [showErrorSnackbar, setShowErrorSnackBar] = useState(false)
     const [snackbarMessage, setSnackbarMessage] = useState('')
-    const { id } = useParams()
     const navigate = useNavigate()
     const { api } = useContext(ApiContext)
-    const { heaviestRole } = useContext(RoleContext)
-    const getDriversFunction = id ? api.drivers.getDriversForOrganization : api.drivers.getDrivers
+    const { heaviestRole, organizationId } = useContext(RoleContext)
+    const getDriversFunction = organizationId ? api.drivers.getDriversForOrganization : api.drivers.getDrivers
 
     const updateDriversAction = async () => {
-        const drivers = await api.execute(getDriversFunction, [id ?? ''])
+        const drivers = await api.execute(getDriversFunction, [organizationId ?? ''])
         setDrivers(drivers)
     }
 

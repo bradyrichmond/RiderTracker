@@ -72,11 +72,6 @@ export const createRouterObject = () => {
             
             },
             {
-                path: '/organizations/:id/buses',
-                element: <ProtectedRoute route='/organizations/:id/buses'><Buses /></ProtectedRoute>
-            
-            },
-            {
                 path: '/settings',
                 element: <ProtectedRoute route='/settings'><Settings /></ProtectedRoute>
             

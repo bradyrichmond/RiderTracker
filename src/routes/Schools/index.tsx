@@ -9,15 +9,14 @@ import InfoIcon from '@mui/icons-material/Info'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "@/constants/Roles"
 import { RoleContext } from "@/contexts/RoleContextProvider"
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox'
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { v4 as uuidv4 } from "uuid"
 
 const Schools = () => {
     const [schools, setSchools] = useState<SchoolType[]>([])
     const { api } = useContext(ApiContext)
-    const { heaviestRole } = useContext(RoleContext)
+    const { heaviestRole, organizationId } = useContext(RoleContext)
     const navigate = useNavigate()
-    const { id: organizationId } = useParams()
 
     useEffect(() => {
         updateSchools()

@@ -4,7 +4,7 @@ import { ApiContext } from "@/contexts/ApiContextProvider"
 import { RoleContext } from "@/contexts/RoleContextProvider"
 import { ScanType } from "@/types/ScanType"
 import { useContext, useEffect, useState } from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { scanFactory } from './ScanFactory'
 import { GridColDef } from "@mui/x-data-grid"
 import { Box, Button, Tooltip } from "@mui/material"
@@ -22,8 +22,7 @@ const Scans = () => {
     const [riders, setRiders] = useState<OptionsType[]>([])
     const [drivers, setDrivers] = useState<OptionsType[]>([])
     const { api } = useContext(ApiContext)
-    const { heaviestRole } = useContext(RoleContext)
-    const { id: organizationId } = useParams()
+    const { heaviestRole, organizationId } = useContext(RoleContext)
     const navigate = useNavigate()
     const { getCurrentPosition } = useDeviceLocation()
 

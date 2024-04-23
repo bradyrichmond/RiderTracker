@@ -1,5 +1,5 @@
 import EntityViewer from "../../components/EntityViewer"
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { GuardianType } from "../../types/GuardianType"
 import { guardianFactory } from "./GuardianFactory"
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
@@ -12,15 +12,14 @@ import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "../../constants/R
 import { RoleContext } from "../../contexts/RoleContextProvider"
 
 const Guardians = () => {
-    const { id } = useParams()
     const [guardians, setGuardians] = useState<GuardianType[]>([])
     const { api } = useContext(ApiContext)
-    const { heaviestRole } = useContext(RoleContext)
-    const getGuardiansFunction = id ? api.guardians.getGuardiansForOrganization : api.guardians.getGuardians
+    const { heaviestRole, organizationId } = useContext(RoleContext)
+    const getGuardiansFunction = organizationId ? api.guardians.getGuardiansForOrganization : api.guardians.getGuardians
     const navigate = useNavigate()
 
     const updateGuardians = async () => {
-        const guardiansData = await api.execute(getGuardiansFunction, [id])
+        const guardiansData = await api.execute(getGuardiansFunction, [organizationId])
         setGuardians(guardiansData)
     }
 

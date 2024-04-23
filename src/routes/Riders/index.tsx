@@ -1,5 +1,5 @@
 import EntityViewer from "../../components/EntityViewer"
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { RiderType } from "../../types/RiderType"
 import { riderFactory } from "./RiderFactory"
 import { Button, Tooltip } from "@mui/material"
@@ -12,15 +12,14 @@ import { GridColDef } from "@mui/x-data-grid"
 import { RoleContext } from "../../contexts/RoleContextProvider"
 
 const Riders = () => {
-    const { id } = useParams()
     const [riders, setRiders] = useState<RiderType[]>([])
     const navigate = useNavigate()
     const { api } = useContext(ApiContext)
-    const { heaviestRole } = useContext(RoleContext)
-    const getRidersFunction = id ? api.riders.getRidersForOrganization : api.riders.getRiders
+    const { heaviestRole, organizationId } = useContext(RoleContext)
+    const getRidersFunction = organizationId ? api.riders.getRidersForOrganization : api.riders.getRiders
 
-    const getRidersAction = async (id?: string) => {
-        const riders = await api.execute(getRidersFunction, [id ?? ''])
+    const getRidersAction = async () => {
+        const riders = await api.execute(getRidersFunction, [organizationId ?? ''])
         setRiders(riders)
     }
 

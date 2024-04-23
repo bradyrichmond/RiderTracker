@@ -1,6 +1,6 @@
 import EntityViewer from "../../components/EntityViewer"
 import { BusType } from "../../types/BusType"
-import { useNavigate, useParams } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { busFactory } from "./BusFactory"
 import { useContext, useState } from "react"
 import { Button, Tooltip } from "@mui/material"
@@ -13,14 +13,13 @@ import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "../../constants/R
 
 const Buses = () => {
     const [buses, setBuses] = useState<BusType[]>([])
-    const { id } = useParams()
     const { api } = useContext(ApiContext)
-    const { heaviestRole } = useContext(RoleContext)
+    const { heaviestRole, organizationId } = useContext(RoleContext)
     const navigate = useNavigate()
-    const getBusesFunction = id ? api.buses.getBusesForOrganization : api.buses.getBuses
+    const getBusesFunction = organizationId ? api.buses.getBusesForOrganization : api.buses.getBuses
 
-    const updateBusesAction = async (id?: string) => {
-        const buses = await api.execute(getBusesFunction, [id])
+    const updateBusesAction = async () => {
+        const buses = await api.execute(getBusesFunction, [organizationId])
         setBuses(buses ?? [])
     }
 
