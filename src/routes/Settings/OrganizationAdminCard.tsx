@@ -2,7 +2,6 @@ import { AdminType } from "@/types/AdminType"
 import { Avatar, Box, Paper, Typography } from "@mui/material"
 import { useMemo } from "react"
 import PersonIcon from '@mui/icons-material/Person'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import EmailIcon from '@mui/icons-material/Email'
 
 interface OrganizationAdminCardProps extends AdminType {
@@ -30,7 +29,6 @@ const OrganizationAdminCard = ({ id, firstName, lastName, title, email, index }:
                         <Typography sx={{ display: 'flex', flexDirection: 'row' }}><EmailIcon sx={{ mr: '1rem' }} /> {email}</Typography>
                     </Box>
                 </Box>
-                <DeleteForeverIcon fontSize="large"/>
             </Box>
         </Paper>
     )
