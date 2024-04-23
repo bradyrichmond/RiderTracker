@@ -156,7 +156,6 @@ const Scans = () => {
                 entityFactory={scanFactory}
                 getEntities={getScansAction}
                 modalFormInputs={{inputs: [
-                    { name: "Organization Id", inputType: "select" },
                     { name: "Driver", inputType: "select", options: drivers },
                     { name: "Rider", inputType: "select", options: riders },
                     { name: "Stop Id" }

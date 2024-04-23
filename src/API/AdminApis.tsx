@@ -6,7 +6,7 @@ interface CreateUserParams {
     email: string
 }
 
-interface AWSUserType {
+export interface AWSUserType {
     User: { 
        Attributes: [ 
             { 
@@ -50,6 +50,27 @@ const createUser = async (token: string, body: CreateUserParams) => {
         const error = await newlyCreatedUser.json()
 
         throw `${newlyCreatedUser.status}: ${error.message}`
+    }
+}
+
+const addUserToGroup = async (token: string, username: string, groupname: string) => {
+    const addUserToGroupResponse = await fetch(`${API_BASE_NAME}/admin/addUserToGroup`, {
+        method: 'POST',
+        body: JSON.stringify({ username, groupname }),
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': token
+        }
+    })
+
+    if (addUserToGroupResponse.status === 200) {
+        const user = await addUserToGroupResponse.json()
+
+        return user
+    } else {
+        const error = await addUserToGroupResponse.json()
+
+        throw `${addUserToGroupResponse.status}: ${error.message}`
     }
 }
 
@@ -98,10 +119,12 @@ export interface AdminApiFunctionTypes {
     createUser(token: string, body: CreateUserParams): Promise<AWSUserType>
     updateUserProfileImage(token: string, body: File, key: string): Promise<boolean>
     updateUserAttributes(token: string, body: AttributeType[], username: string): Promise<boolean>
+    addUserToGroup(token: string, username: string, groupname: string): Promise<boolean>
 }
 
 export default {
     createUser,
     updateUserProfileImage,
-    updateUserAttributes
+    updateUserAttributes,
+    addUserToGroup
 }

@@ -82,7 +82,6 @@ const Riders = () => {
             getEntities={getRidersAction}
             entities={riders}
             modalFormInputs={{inputs: [
-                { name: "Organization Id", inputType: "select" },
                 { name: "First Name" },
                 { name: "Last Name" }
             ]}}

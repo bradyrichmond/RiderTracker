@@ -105,7 +105,6 @@ const Drivers = () => {
                 getEntities={updateDriversAction}
                 entities={drivers}
                 modalFormInputs={{inputs: [
-                    { name: "Organization Id", inputType: "select" },
                     { name: "First Name" },
                     { name: "Last Name" },
                     { name: "Email", inputType: 'email' }

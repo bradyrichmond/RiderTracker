@@ -83,7 +83,6 @@ const Guardians = () => {
             getEntities={updateGuardians}
             entities={guardians}
             modalFormInputs={{inputs: [
-                { name: "Organization Id", inputType: "select" },
                 { name: "First Name" },
                 { name: "Last Name" }
             ]}}

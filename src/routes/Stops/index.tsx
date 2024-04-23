@@ -45,9 +45,9 @@ const Stops = () => {
 
     const generateGridColumns = (): GridColDef[] => {
         const initialGridColumns:GridColDef[] = [
-            { field: 'id',  headerName: 'ID', flex: 1},
-            { field: 'stopName',  headerName: 'Stop Name', flex: 1},
-            { field: 'viewDetails', headerName: '', renderCell: (params) => {
+            { field: 'id',  headerName: 'ID', flex: 1, align: 'center', headerAlign: 'center' },
+            { field: 'stopName',  headerName: 'Stop Name', flex: 1, align: 'center', headerAlign: 'center' },
+            { field: 'viewDetails', headerName: '', flex: 1, align: 'center', headerAlign: 'center', renderCell: (params) => {
                 return (
                     <Button
                         variant="contained"
@@ -66,6 +66,9 @@ const Stops = () => {
             initialGridColumns.push({ 
                 field: 'delete',
                 headerName: '',
+                flex: 1,
+                align: 'center',
+                headerAlign: 'center',
                 renderCell: (params) => {
                     return (
                         <Button
@@ -92,7 +95,6 @@ const Stops = () => {
             entities={stops}
             getEntities={updateStops}
             modalFormInputs={{inputs: [
-                { name: "Organization Id", inputType: "select" },
                 { name: "Stop Name", inputType: 'randomNameGenerator' }
             ]}}
             gridColumns={generateGridColumns()}

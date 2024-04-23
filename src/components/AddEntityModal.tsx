@@ -52,14 +52,14 @@ const AddEntityModal = <T extends
 
     const values = watch("inputs")
 
-    const handleCreateEntity = () => {
+    const handleCreateEntity = async () => {
         setDisabledButtons(true)
         const entityId = uuidv4()
         const args = values.map((v) => v.name)
         args.unshift(organizationId)
         args.unshift(entityId)
         const newEntity = entityFactory(args)
-        submitAction(newEntity)
+        await submitAction(newEntity)
         setDisabledButtons(false)
     }
 

@@ -1,15 +1,24 @@
 import { ApiContext } from "@/contexts/ApiContextProvider"
 import { RoleContext } from "@/contexts/RoleContextProvider"
 import { AdminType } from "@/types/AdminType"
-import { Card, Typography } from "@mui/material"
+import { Box, Button, Card, Typography } from "@mui/material"
 import Grid from "@mui/material/Unstable_Grid2/Grid2"
 import { useContext, useEffect, useState } from "react"
 import OrganizationAdminCard from "./OrganizationAdminCard"
+import AddEntityModal from "@/components/AddEntityModal"
+import { adminFactory } from "./AdminFactory"
+import { FormDataType } from "@/types/FormTypes"
+import AddCircleIcon from '@mui/icons-material/AddCircle'
+import { AWSUserType } from "@/API/AdminApis"
+import { RIDER_TRACKER_ROLES } from "@/constants/Roles"
+import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
 
 const OrganizationAdminSettings = () => {
     const { organizationId } = useContext(RoleContext)
     const { api } = useContext(ApiContext)
+    const { setSnackbarSeverity, setSnackbarVisibilityMs, setSnackbarMessage } = useContext(SnackbarContext)
     const [ admins, setAdmins ] = useState<AdminType[]>([])
+    const [ showModal, setShowModal ] = useState(false)
 
     useEffect(() => {
         getAdmins()
@@ -20,15 +29,73 @@ const OrganizationAdminSettings = () => {
         setAdmins(fetchedAdmins)
     }
 
+    const toggleShowModal = () => {
+        setShowModal((cur) => !cur)
+    }
+
+    const modalFormInputs: FormDataType = {
+        inputs: [
+            { name: "First Name" },
+            { name: "Last Name" },
+            { name: "Email" },
+            { name: "Title" }
+        ]
+    }
+
+    const createNewAdmin = async (newAdmin: AdminType) => {
+        try {
+            // TODO: Needs finer error management
+            const cognitoUser: AWSUserType = await api.execute(api.admin.createUser, [{ given_name: newAdmin.firstName, family_name: newAdmin.lastName, email: newAdmin.email }])
+            const cognitoUsername = cognitoUser.User.Username
+            await api.execute(api.admin.addUserToGroup, [cognitoUsername, RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN])
+            newAdmin.id = cognitoUsername
+            await api.execute(api.organizations.createOrganizationAdmin, [newAdmin, organizationId])
+            getAdmins()
+            toggleShowModal()
+        } catch (e) {
+            console.error(e)
+            showCreateAdminErrorSnackbar()
+        }
+    }
+
+    const showCreateAdminErrorSnackbar = () => {
+        setSnackbarSeverity('error')
+        setSnackbarVisibilityMs(5000)
+        setSnackbarMessage('Error creating new admin.')
+    }
+
     return (
         <Grid xs={12}>
+            {modalFormInputs ?
+                <AddEntityModal<AdminType> 
+                    cancelAction={toggleShowModal} 
+                    entityFactory={adminFactory}
+                    submitAction={createNewAdmin}
+                    titleSingular={'Organization Admin'}
+                    formDefaultValues={modalFormInputs}
+                    open={showModal}
+                />
+                :
+                null
+            }
             <Card sx={{ p: '2rem' }}>
-                <Typography variant='h4' sx={{ pb: '.5rem' }}>
-                    Organization Admins
-                </Typography>
-                <Grid xs={12}>
+                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                    <Typography variant='h4' sx={{ pb: '.5rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        Organization Admins
+                    </Typography>
+                    <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
+                        <Button variant='contained' onClick={toggleShowModal}>
+                            <Box display='flex' flexDirection='row'>
+                                <AddCircleIcon />
+                                <Box flex='1' marginLeft='1rem'>
+                                    <Typography>Add Organization Admin</Typography>
+                                </Box>
+                            </Box>
+                        </Button>
+                    </Box>
+                </Box>
                     {admins.length > 0 ?
-                        admins.map((a) => <OrganizationAdminCard 
+                        admins.map((a, idx) => <OrganizationAdminCard 
                                 key={a.id}
                                 id={a.id}
                                 organizationId={a.organizationId}
@@ -36,11 +103,11 @@ const OrganizationAdminSettings = () => {
                                 lastName={a.lastName}
                                 email={a.email}
                                 title={a.title}
+                                index={idx}
                             />)
                         :
                         null
                     }
-                </Grid>
             </Card>
         </Grid>
     )

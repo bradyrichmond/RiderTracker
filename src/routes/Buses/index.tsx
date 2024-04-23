@@ -86,7 +86,6 @@ const Buses = () => {
             getEntities={updateBusesAction}
             entities={buses}
             modalFormInputs={{inputs: [
-                { name: "Organization Id", inputType: "select" },
                 { name: "Bus Number" }
             ]}}
             gridColumns={generateGridColumns()}
