@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { signIn, getCurrentUser } from '@aws-amplify/auth'
 import { AuthContext } from "@/contexts/AuthContextProvider"
+import { API_BASE_NAME } from "@/API"
 
 interface LoginFormInputs {
     username: string
@@ -12,7 +13,7 @@ interface LoginFormInputs {
 const LoginForm = () => {
     const { handleSubmit, register } = useForm<LoginFormInputs>()
     const [orgImage, setOrgImage] = useState('')
-    const [orgSlug, setOrgSlug] = useState('')
+    const [orgName, setOrgName] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
     const [loggingIn, setIsLoggingIn] = useState(false)
     const { setUser } = useContext(AuthContext)
@@ -20,9 +21,15 @@ const LoginForm = () => {
     useEffect(() => {
         const path = window.location.toString().split('//')[1]
         const pathOrgSlug = path.split('.')[0]
-        setOrgImage('')
-        setOrgSlug(pathOrgSlug)
+        getOrgData(pathOrgSlug)
     }, [])
+
+    const getOrgData = async (slug: string) => {
+        const orgSlugResponse = await fetch(`${API_BASE_NAME}/public/organizations/${slug}`)
+        const { orgName: fetchedOrgName } = await orgSlugResponse.json()
+        setOrgName(fetchedOrgName)
+        setOrgImage('')
+    }
 
     const login = async (data: LoginFormInputs) => {
         setIsLoggingIn(true)
@@ -55,10 +62,10 @@ const LoginForm = () => {
             <Box sx={{ pl: '2rem', pr: '2rem' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     {orgImage ? 
-                        <img src={orgImage} alt={`${orgSlug}`}/>
+                        <img src={orgImage} alt={`${orgName}`}/>
                         :
                         <Typography variant='h3'>
-                            {orgSlug}
+                            {orgName}
                         </Typography>
                     }
                 </Box>
