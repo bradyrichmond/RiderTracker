@@ -1,22 +1,36 @@
-import { AuthUser } from "aws-amplify/auth"
 import {
     RouterProvider
 } from "react-router-dom"
 import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 import { RoleContext } from "../../contexts/RoleContextProvider"
 import { createRouterObject } from "@/helpers/CreateRouterObject"
+import { AuthContext, nullUser } from "@/contexts/AuthContextProvider"
+import { getCurrentUser } from "aws-amplify/auth"
+import Auth from "../Auth"
 
-interface RootRouterProps {
-    user: AuthUser
-}
-
-const RootRouter = ({ user }: RootRouterProps) => {
+const RootRouter = () => {
     const [isInitialized, setIsInitialized] = useState(false)
     const { heaviestRole, updateUserData } = useContext(RoleContext)
+    const { user, setUser } = useContext(AuthContext)
+
+    useEffect(() => {
+        getUser()
+    }, [])
+  
+    const getUser = async () => {
+        try {
+            const currentUser = await getCurrentUser()
+            setUser(currentUser)
+        } catch (e) {
+            setUser(nullUser)
+        }
+    }
 
     const initialize = useCallback(async () => {
-        await updateUserData()
-        setIsInitialized(true)
+        if (user !== nullUser) {
+            await updateUserData()
+            setIsInitialized(true)
+        }
     }, [user])
 
     useEffect(() => {
@@ -27,7 +41,7 @@ const RootRouter = ({ user }: RootRouterProps) => {
 
     return (
         <>
-            {isInitialized ? <RouterProvider router={router} /> : null}
+            {isInitialized ? <RouterProvider router={router} /> : <Auth />}
         </>
     )
 }

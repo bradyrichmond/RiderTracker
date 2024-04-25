@@ -1,5 +1,3 @@
-import { withAuthenticator } from '@aws-amplify/ui-react'
-import { type AuthUser } from "aws-amplify/auth"
 import '@aws-amplify/ui-react/styles.css'
 import './index.css'
 import { Box } from '@mui/material'
@@ -8,19 +6,18 @@ import RootRouter from './routes/Root/RootRouter'
 import { ApiContextProvider } from './contexts/ApiContextProvider'
 import ThemeContextProvider from './contexts/ThemeContextProvider'
 import { SnackbarContextProvider } from './contexts/SnackbarContextProvider'
+import { AuthContextProvider } from './contexts/AuthContextProvider'
 
-type AppProps = {
-  user?: AuthUser
-}
-
-function App({ user }: AppProps) {
+function App() {
   return (
     <Box width='100%' height='100%'>
       <ApiContextProvider>
         <RoleContextProvider>
           <ThemeContextProvider>
             <SnackbarContextProvider>
-              {user ? <RootRouter user={user} /> : null}
+              <AuthContextProvider>
+                <RootRouter />
+              </AuthContextProvider>
             </SnackbarContextProvider>
           </ThemeContextProvider>
         </RoleContextProvider>
@@ -29,4 +26,4 @@ function App({ user }: AppProps) {
   )
 }
 
-export default withAuthenticator(App, { hideSignUp: true })
+export default App
