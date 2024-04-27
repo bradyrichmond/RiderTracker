@@ -1,8 +1,7 @@
 import { ApiContext } from "@/contexts/ApiContextProvider"
 import { RoleContext } from "@/contexts/RoleContextProvider"
 import { AdminType } from "@/types/AdminType"
-import { Box, Button, Card, Typography } from "@mui/material"
-import Grid from "@mui/material/Unstable_Grid2/Grid2"
+import { Box, Button, Card, Grid, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
 import OrganizationAdminCard from "./OrganizationAdminCard"
 import AddEntityModal from "@/components/AddEntityModal"
@@ -65,7 +64,7 @@ const OrganizationAdminSettings = () => {
     }
 
     return (
-        <Grid xs={12}>
+        <Grid xs={12} marginBottom='2rem'>
             {modalFormInputs ?
                 <AddEntityModal<AdminType> 
                     cancelAction={toggleShowModal} 

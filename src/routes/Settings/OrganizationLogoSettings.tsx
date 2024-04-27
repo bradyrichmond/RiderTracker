@@ -1,0 +1,48 @@
+import { Badge, Box, Card, Grid, Tooltip, Typography } from "@mui/material"
+import PriorityHighIcon from '@mui/icons-material/PriorityHigh'
+import FolderIcon from '@mui/icons-material/Folder'
+import useFileUpload from "@/hooks/useFileUpload"
+import { MB } from "@/constants/Numbers"
+import { useContext } from "react"
+import { ApiContext } from "@/contexts/ApiContextProvider"
+import { RoleContext } from "@/contexts/RoleContextProvider"
+
+const OrganizationLogoSettings = () => {
+    const { api } = useContext(ApiContext)
+    const { organizationId, updateUserData, organizationLoginImageUrl } = useContext(RoleContext)
+
+    const uploadAction = async (file: File) => {
+        await api.execute(api.organizations.updateOrganizationLoginImage, [file, organizationId])
+        await updateUserData()
+    }
+
+    const { openFileDialog, temporaryFileUrl, FileUpload } = useFileUpload({uploadAction, sizeLimitInBytes: 10 * MB})
+
+    return (
+        <Grid xs={12}>
+            <Card sx={{ p: '2rem' }}>
+                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                    <Typography variant='h4' sx={{ pb: '.5rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        Organization Logos
+                    </Typography>
+                </Box>
+                <Box>
+                    <Box display='flex' height='100%' flexDirection='column' sx={{ pt: '2rem' }}>
+                        <Box sx={{ pb: '2rem' }} display='flex' justifyContent='center' alignItems='center' onClick={openFileDialog} >
+                            <Tooltip title={temporaryFileUrl ? 'File has not been uploaded' : 'Change Profile Picture'}>
+                                <Badge badgeContent={<PriorityHighIcon fontSize='large' />} invisible={!temporaryFileUrl} color='error' sx={{ "& .MuiBadge-badge": { padding: '0.5rem', borderRadius: '2rem', height: 'fit-content', width: 'fit-content' } }}>
+                                    {!temporaryFileUrl && !organizationLoginImageUrl ? <FolderIcon fontSize='large' /> : null}
+                                    {temporaryFileUrl ? <img src={temporaryFileUrl} alt={temporaryFileUrl} /> : null}
+                                    {organizationLoginImageUrl && !temporaryFileUrl ? <img src={organizationLoginImageUrl} alt={organizationLoginImageUrl} /> : null}
+                                </Badge>
+                            </Tooltip>
+                        </Box>
+                    </Box>
+                    <FileUpload />
+                </Box>
+            </Card>
+        </Grid>
+    )
+}
+
+export default OrganizationLogoSettings

@@ -28,7 +28,7 @@ const LoginForm = () => {
         const orgSlugResponse = await fetch(`${API_BASE_NAME}/public/organizations/${slug}`)
         const { orgName: fetchedOrgName, loginImageKey } = await orgSlugResponse.json()
         setOrgName(fetchedOrgName)
-        setOrgImage(loginImageKey)
+        setOrgImage(`https://s3.us-west-2.amazonaws.com/${loginImageKey}`)
     }
 
     const login = async (data: LoginFormInputs) => {

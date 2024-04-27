@@ -142,6 +142,57 @@ const deleteOrganizationAdmin = async (token: string, adminId: string, organizat
     }
 }
 
+const updateOrganizationLoginImage = async (token: string, file: File, key: string) => {
+    const fileExtension = file.name.split('.').pop()
+    const bucket = 'ridertracker.organizationimages'
+    const fileName = `${key}.${fileExtension}`
+    const fullFileName = `${bucket}/${fileName}`
+
+    const newProfilePic = await fetch(`${API_BASE_NAME}/admin/s3/${fullFileName}`, {
+        method: 'PUT',
+        body: file,
+        headers: {
+            'Authorization': token
+        }
+    })
+
+    if (newProfilePic.status === 200) {
+        await _updateImagesTable(token, key, { loginImageKey: fullFileName })
+        return true
+    }
+    
+    const error = await newProfilePic.json()
+
+    throw `${newProfilePic.status}: ${error.message}`
+}
+
+const _updateImagesTable = async (token: string, organizationId: string, body: { loginImageKey: string }) => {
+    await fetch(`${API_BASE_NAME}/images/organizations/${organizationId}`, {
+        method: 'PUT',
+        body: JSON.stringify(body),
+        headers: {
+            'Authorization': token,
+            'Content-Type': 'application/json'
+        }
+    })
+}
+
+const getOrganizationImages = async(token: string, organizationId: string) => {
+    try {
+        const imagesData = await fetch(`${API_BASE_NAME}/images/organizations/${organizationId}`, {
+            headers: {
+                'Authorization': token
+            }
+        })
+
+        const images = await imagesData.json()
+
+        return images
+    } catch (e) {
+        throw new Error(JSON.stringify(e))
+    }
+}
+
 export interface OrganizationApiFunctionTypes {
     getOrganizations(token: string): Promise<OrganizationType[]>,
     getOrganizationById(token: string, id: string): Promise<OrganizationType>,
@@ -150,7 +201,9 @@ export interface OrganizationApiFunctionTypes {
     createOrganizationAdmin(token: string, body: AdminType, organizationId: string): Promise<AdminType>,
     createOrganization(token: string, organization: OrganizationType): Promise<OrganizationType>,
     deleteOrganization(token: string, id: string): Promise<OrganizationType>,
-    deleteOrganizationAdmin(token: string, id: string, organizationId: string): Promise<AdminType>
+    deleteOrganizationAdmin(token: string, id: string, organizationId: string): Promise<AdminType>,
+    updateOrganizationLoginImage(token: string, file: File, key: string): Promise<void>,
+    getOrganizationImages(token: string, organizationId: string): Promise<void>
 }
 
 export default {
@@ -161,5 +214,7 @@ export default {
     createOrganization,
     createOrganizationAdmin,
     deleteOrganization,
-    deleteOrganizationAdmin
+    deleteOrganizationAdmin,
+    updateOrganizationLoginImage,
+    getOrganizationImages
 }

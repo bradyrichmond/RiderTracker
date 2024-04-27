@@ -26,6 +26,8 @@ export const RoleContext = createContext({
     setOrganizationId: (_pictureUrl: string) => {},
     organizationOverride: false,
     setOrganizationOverride: (_bool: boolean) => {},
+    organizationLoginImageUrl: '',
+    setOrganizationLoginImageUrl: (_url: string) => {},
     updateUserData: async () => {}
 });
 
@@ -41,6 +43,7 @@ export const RoleContextProvider = ({ children }: PropsWithChildren<{}>) => {
     const [organizationOverride, setOrganizationOverride] = useState(false)
     const [showOrganizationSelector, setShowOrganizationSelector] = useState(false)
     const [organizationArray, setOrganizationArray] = useState<OrganizationType[]>([])
+    const [organizationLoginImageUrl, setOrganizationLoginImageUrl] = useState('')
     const { api, setApi } = useContext(ApiContext)
 
     const updateUserData = async () => {
@@ -75,15 +78,18 @@ export const RoleContextProvider = ({ children }: PropsWithChildren<{}>) => {
     }, [userId, heaviestRole, idToken])
 
     useEffect(() => {
-        if (api && userId) {
-            updateUserImages()
+        if (api && userId && organizationId) {
+            updateImages()
         }
-    }, [api, userId])
+    }, [api, userId, organizationId])
 
-    const updateUserImages = async () => {
+    const updateImages = async () => {
         const userImages = await api.execute(api.users.getUserImages, [userId])
+        const organizationImages = await api.execute(api.organizations.getOrganizationImages, [organizationId])
         const { profileImageKey } = userImages
+        const { loginImageKey } = organizationImages
         setUserPictureUrl(`https://s3.us-west-2.amazonaws.com/${profileImageKey}`)
+        setOrganizationLoginImageUrl(`https://s3.us-west-2.amazonaws.com/${loginImageKey}`)
     }
 
     const selectOrganizationAction = async () =>{
@@ -134,6 +140,7 @@ export const RoleContextProvider = ({ children }: PropsWithChildren<{}>) => {
             userPictureUrl, setUserPictureUrl,
             organizationId, setOrganizationId,
             organizationOverride, setOrganizationOverride,
+            organizationLoginImageUrl, setOrganizationLoginImageUrl,
             updateUserData
         }}>
             <>
