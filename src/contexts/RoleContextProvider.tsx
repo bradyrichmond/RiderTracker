@@ -41,7 +41,7 @@ export const RoleContextProvider = ({ children }: PropsWithChildren<{}>) => {
     const [organizationOverride, setOrganizationOverride] = useState(false)
     const [showOrganizationSelector, setShowOrganizationSelector] = useState(false)
     const [organizationArray, setOrganizationArray] = useState<OrganizationType[]>([])
-    const { setApi } = useContext(ApiContext)
+    const { api, setApi } = useContext(ApiContext)
 
     const updateUserData = async () => {
         const session = await fetchAuthSession()
@@ -72,8 +72,19 @@ export const RoleContextProvider = ({ children }: PropsWithChildren<{}>) => {
 
     useEffect(() => {
         selectOrganizationAction()
-        setUserPictureUrl(`https://s3.us-west-2.amazonaws.com/ridertracker.profileimages/${userId}.jpg`)
     }, [userId, heaviestRole, idToken])
+
+    useEffect(() => {
+        if (api && userId) {
+            updateUserImages()
+        }
+    }, [api, userId])
+
+    const updateUserImages = async () => {
+        const userImages = await api.execute(api.users.getUserImages, [userId])
+        const { profileImageKey } = userImages
+        setUserPictureUrl(`https://s3.us-west-2.amazonaws.com/${profileImageKey}`)
+    }
 
     const selectOrganizationAction = async () =>{
         if (userId && heaviestRole && idToken) {

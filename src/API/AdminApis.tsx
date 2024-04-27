@@ -97,8 +97,11 @@ const updateUserAttributes = async (token: string, attributes: AttributeType[], 
 
 const updateUserProfileImage = async (token: string, file: File, key: string) => {
     const fileExtension = file.name.split('.').pop()
+    const bucket = 'ridertracker.profileimages'
+    const fileName = `${key}.${fileExtension}`
+    const fullFileName = `${bucket}/${fileName}`
 
-    const newProfilePic = await fetch(`${API_BASE_NAME}/admin/s3/ridertracker.profileimages/${key}.${fileExtension}`, {
+    const newProfilePic = await fetch(`${API_BASE_NAME}/admin/s3/${fullFileName}`, {
         method: 'PUT',
         body: file,
         headers: {
@@ -107,12 +110,24 @@ const updateUserProfileImage = async (token: string, file: File, key: string) =>
     })
 
     if (newProfilePic.status === 200) {
+        await _updateImagesTable(token, key, { profileImageKey: fullFileName })
         return true
     }
     
     const error = await newProfilePic.json()
 
     throw `${newProfilePic.status}: ${error.message}`
+}
+
+const _updateImagesTable = async (token: string, userId: string, body: { profileImageKey: string }) => {
+    await fetch(`${API_BASE_NAME}/images/users/${userId}`, {
+        method: 'PUT',
+        body: JSON.stringify(body),
+        headers: {
+            'Authorization': token,
+            'Content-Type': 'application/json'
+        }
+    })
 }
 
 export interface AdminApiFunctionTypes {

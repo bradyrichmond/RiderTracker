@@ -26,9 +26,9 @@ const LoginForm = () => {
 
     const getOrgData = async (slug: string) => {
         const orgSlugResponse = await fetch(`${API_BASE_NAME}/public/organizations/${slug}`)
-        const { orgName: fetchedOrgName } = await orgSlugResponse.json()
+        const { orgName: fetchedOrgName, loginImageKey } = await orgSlugResponse.json()
         setOrgName(fetchedOrgName)
-        setOrgImage('')
+        setOrgImage(loginImageKey)
     }
 
     const login = async (data: LoginFormInputs) => {
