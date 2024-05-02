@@ -1,145 +1,63 @@
 import { RiderType } from "../types/RiderType"
-import { API_BASE_NAME } from "."
+import RiderTrackerAPI from "."
+import { handleApiResponse } from "@/helpers/ApiHelpers"
 
-const getRiders = async (token: string) => {
-    try {
-        const ridersData = await fetch(`${API_BASE_NAME}/riders`, {
-            headers: {
-                'Authorization': token
-            }
-        })
+const getRiders = async (orgId: string) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    const getRidersResponse = await client.organizationsOrgIdRidersGet({ orgId })
 
-        const riders = await ridersData.json()
-
-        return riders
-    } catch (e) {
-        throw new Error(JSON.stringify(e))
-    }
+    return handleApiResponse(getRidersResponse)
 }
 
-const getRiderById = async (token: string, id: string) => {
-    try {
-        const riderRaw = await fetch(`${API_BASE_NAME}/riders/${id}`, {
-            headers: {
-                'Authorization': token
-            }
-        })
+const getRiderById = async (orgId: string, id: string) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    const getRiderResponse = await client.organizationsOrgIdRidersIdGet({ orgId, id })
 
-        const rider = await riderRaw.json()
-
-        return rider
-    } catch (e) {
-        throw new Error(JSON.stringify(e))
-    }
+    return handleApiResponse(getRiderResponse)
 }
 
-const getRidersForOrganization = async (token: string, organizationId: string) => {
-    try {
-        const ridersData = await fetch(`${API_BASE_NAME}/organizations/${organizationId}/riders`, {
-            headers: {
-                'Authorization': token
-            }
-        })
+const getBulkRidersByIds = async (orgId: string, userIds: string[]) => {
+    const api = await RiderTrackerAPI.getClient()
+    const ridersResponse = await api.client.organizationsOrgIdRidersBatchByIdPost({ orgId }, userIds)
 
-        const riders = await ridersData.json()
-
-        return riders
-    } catch (e) {
-        throw new Error(JSON.stringify(e))
-    }
+    return handleApiResponse(ridersResponse)
 }
 
-const getBulkRidersById = async (token: string, riderIds: string[]) => {
-    try {
-        const ridersRaw = await fetch(`${API_BASE_NAME}/riders/batchGetById`, {
-            method: 'POST',
-            body: JSON.stringify(riderIds),
-            headers: {
-                'Authorization': token,
-                'Content-Type': 'application/json'
-            }
-        })
+const updateRider = async (orgId: string, id: string, rider: RiderType) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    const updateRiderResponse = await client.organizationsOrgIdRidersIdPut({ orgId, id }, rider)
 
-        const riders = ridersRaw.json()
-
-        return riders
-    } catch (e) {
-        throw new Error(JSON.stringify(e))
-    }
+    return handleApiResponse(updateRiderResponse)
 }
 
-const updateRider = async (token: string, rider: RiderType) => {
-    try {
-        const ridersRaw = await fetch(`${API_BASE_NAME}/riders/${rider.id}`, {
-            method: 'PUT',
-            body: JSON.stringify(rider),
-            headers: {
-                'Authorization': token,
-                'Content-Type': 'application/json'
-            }
-        })
+const createRider = async (orgId: string, body: RiderType) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    const createRiderResponse = await client.organizationsOrgIdRidersPost({ orgId }, body)
 
-        const riders = await ridersRaw.json()
-
-        return riders
-    } catch (e) {
-        throw new Error(JSON.stringify(e))
-    }
+    return handleApiResponse(createRiderResponse)
 }
 
-const createRider = async (token: string, body: RiderType) => {
-    try {
-        const ridersData = await fetch(`${API_BASE_NAME}/riders`, {
-            method: 'POST',
-            body: JSON.stringify(body),
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': token
-            }
-        })
+const deleteRider = async (orgId: string, id: string) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    const deleteRiderResponse = await client.organizationsOrgIdRidersIdDelete({ orgId, id })
 
-        const riders = await ridersData.json()
-
-        return riders
-    } catch (e) {
-        throw new Error(JSON.stringify(e))
-    }
-}
-
-const deleteRider = async (token: string, id: string) => {
-    try {
-        const ridersData = await fetch(`${API_BASE_NAME}/riders/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': token
-            }
-        })
-
-        const riders = await ridersData.json()
-
-        return riders
-    } catch (e) {
-        throw new Error(JSON.stringify(e))
-    }
+    return handleApiResponse(deleteRiderResponse)
 }
 
 export interface RiderApiFunctionTypes {
-    getRiders(token: string): Promise<RiderType[]>,
-    getRiderById(token: string, id: string): Promise<RiderType>,
-    getRidersForOrganization(token: string, organizationId: string): Promise<RiderType[]>,
-    getBulkRidersById(token: string, ids: string[]): Promise<RiderType[]>,
-    updateRider(token: string, rider: RiderType): Promise<RiderType>,
-    createRider(token: string, rider: RiderType): Promise<RiderType>,
-    deleteRider(token: string, id: string): Promise<RiderType>,
+    getRiders(orgId: string): Promise<RiderType[]>,
+    getRiderById(orgId: string, id: string): Promise<RiderType>,
+    updateRider(orgId: string, id: string, rider: RiderType): Promise<any>,
+    createRider(orgId: string, rider: RiderType): Promise<any>,
+    deleteRider(orgId: string, id: string): Promise<any>,
+    getBulkRidersByIds(orgId: string, userIds: string[]): Promise<RiderType[]>
 }
 
 export default {
     getRiders,
     getRiderById,
-    getRidersForOrganization,
-    getBulkRidersById,
     updateRider,
     createRider,
-    deleteRider
+    deleteRider,
+    getBulkRidersByIds
 }

@@ -1,104 +1,45 @@
 import { ScanType } from "../types/ScanType"
-import { API_BASE_NAME } from "."
+import RiderTrackerAPI from "."
+import { handleApiResponse } from "@/helpers/ApiHelpers"
 
-const getScans = async (token: string) => {
-    try {
-        const scansData = await fetch(`${API_BASE_NAME}/scans`, {
-            headers: {
-                'Authorization': token
-            }
-        })
+const getScans = async (orgId: string) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    const getScansResponse = await client.organizationsOrgIdRidersPost({ orgId })
 
-        const scansJson = await scansData.json()
-        const { scans } = scansJson
-
-        return scans
-    } catch (e) {
-        throw new Error(JSON.stringify(e))
-    }
+    return handleApiResponse(getScansResponse)
 }
 
-const getScanById = async (token: string, id: string) => {
-    try {
-        const scanData = await fetch(`${API_BASE_NAME}/scans/${id}`, {
-            headers: {
-                'Authorization': token
-            }
-        })
+const getScanById = async (orgId: string, id: string) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    const getScanResponse = await client.organizationsOrgIdScansIdGet({ orgId, id })
 
-        const scan = await scanData.json()
-
-        return scan
-    } catch (e) {
-        throw new Error(JSON.stringify(e))
-    }
+    return handleApiResponse(getScanResponse)
 }
 
-const getScansForOrganization = async (token: string, organizationId: string) => {
-    try {
-        const scansData = await fetch(`${API_BASE_NAME}/organizations/${organizationId}/scans`, {
-            headers: {
-                'Authorization': token
-            }
-        })
+const createScan = async (orgId: string, body: ScanType) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    const createScanResponse = await client.organizationsOrgIdScansPost({ orgId }, body)
 
-        const scans = await scansData.json()
-
-        return scans
-    } catch (e) {
-        throw new Error(JSON.stringify(e))
-    }
+    return handleApiResponse(createScanResponse)
 }
 
-const createScan = async (token: string, body: ScanType) => {
-    try {
-        const scansData = await fetch(`${API_BASE_NAME}/scans`, {
-            method: 'POST',
-            body: JSON.stringify(body),
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': token
-            }
-        })
+const deleteScan = async (orgId: string, id: string) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    const deleteScanResponse = await client.organizationsOrgIdScansIdDelete({ orgId, id })
 
-        const scans = await scansData.json()
-
-        return scans
-    } catch (e) {
-        throw new Error(JSON.stringify(e))
-    }
-}
-
-const deleteScan = async (token: string, id: string) => {
-    try {
-        const scansData = await fetch(`${API_BASE_NAME}/scans/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': token
-            }
-        })
-
-        const scans = await scansData.json()
-
-        return scans
-    } catch (e) {
-        throw new Error(JSON.stringify(e))
-    }
+    return handleApiResponse(deleteScanResponse)
 }
 
 export interface ScanApiFunctionTypes {
-    getScans(token: string): Promise<ScanType[]>,
-    getScanById(token: string, id: string): Promise<ScanType>,
-    getScansForOrganization(token: string, organizationId: string): Promise<ScanType[]>,
-    createScan(token: string, scan: ScanType): Promise<ScanType>,
-    deleteScan(token: string, id: string): Promise<ScanType>
+    getScans(orgId: string): Promise<ScanType[]>,
+    getScanById(orgId: string, id: string): Promise<ScanType>,
+    createScan(orgId: string, scan: ScanType): Promise<any>,
+    deleteScan(orgId: string, id: string): Promise<any>
 }
 
 export default {
     getScans,
     getScanById,
-    getScansForOrganization,
     createScan,
     deleteScan
 }

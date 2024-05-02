@@ -1,9 +1,14 @@
 import { Box, Button, TextField, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
-import { signIn, getCurrentUser } from '@aws-amplify/auth'
+import { signIn, signOut, getCurrentUser, fetchAuthSession } from '@aws-amplify/auth'
 import { AuthContext } from "@/contexts/AuthContextProvider"
 import { API_BASE_NAME } from "@/API"
+import { RoleContext } from "@/contexts/RoleContextProvider"
+import { getOrganizationIdForUser } from "@/helpers/GetOrganizationIdForUser"
+import { getHeaviestRole } from "@/helpers/GetHeaviestRole"
+import { RiderTrackerRole, isRiderTrackerRole } from "@/constants/Roles"
+import { OrganizationType } from "@/types/OrganizationType"
 
 interface LoginFormInputs {
     username: string
@@ -12,9 +17,10 @@ interface LoginFormInputs {
 
 const LoginForm = () => {
     const { handleSubmit, register } = useForm<LoginFormInputs>()
-    const [orgImage, setOrgImage] = useState('')
+    const { organizationLoginImageUrl, setOrganizationLoginImageUrl } = useContext(RoleContext)
     const [orgName, setOrgName] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
+    const [orgId, setOrgId] = useState('')
     const [loggingIn, setIsLoggingIn] = useState(false)
     const { setUser } = useContext(AuthContext)
 
@@ -26,9 +32,10 @@ const LoginForm = () => {
 
     const getOrgData = async (slug: string) => {
         const orgSlugResponse = await fetch(`${API_BASE_NAME}/public/organizations/${slug}`)
-        const { orgName: fetchedOrgName, loginImageKey } = await orgSlugResponse.json()
+        const { orgName: fetchedOrgName, loginImageKey, id } = await orgSlugResponse.json()
+        setOrgId(id)
         setOrgName(fetchedOrgName)
-        setOrgImage(`https://s3.us-west-2.amazonaws.com/${loginImageKey}`)
+        setOrganizationLoginImageUrl(`https://s3.us-west-2.amazonaws.com/${loginImageKey}`)
     }
 
     const login = async (data: LoginFormInputs) => {
@@ -48,10 +55,45 @@ const LoginForm = () => {
 
             if (signInStep === "DONE") {
                 const currentUser = await getCurrentUser()
-                setUser(currentUser)
+                const session = await fetchAuthSession()
+                const tokens = session.tokens
+                if (tokens) {
+                    const { idToken } = tokens
+                    const sessionGroups = idToken?.payload["cognito:roles"]
+                    const sessionGroupsArray = sessionGroups as Array<string>
+
+                    const trimmedGroups: RiderTrackerRole[] = []
+
+                    sessionGroupsArray.forEach((sg) => {
+                        const trimmed = sg.split('/')[1]
+
+                        if (isRiderTrackerRole(trimmed)) {
+                            trimmedGroups.push(trimmed)
+                        }
+                    })
+
+                    const heaviestRoleFromGroups: RiderTrackerRole = getHeaviestRole(trimmedGroups ?? [])
+                    const userOrgIds: string | OrganizationType[] = await getOrganizationIdForUser(currentUser.username, heaviestRoleFromGroups)
+
+                    if (Array.isArray(userOrgIds) && userOrgIds.some((o) => o.id === orgId)) {
+                        setUser(currentUser)
+                        console.log('login success')
+                        return
+                    }
+                    
+                    if (userOrgIds === orgId) {
+                        setUser(currentUser)
+                        console.log('login success')
+                        return
+                    }
+
+                    signOut()
+                    throw 'User does not have access to organization.'
+                }
             }
         } catch (e) {
             console.error(e)
+            signOut()
             setErrorMessage('Incorrect username or password.')
             setIsLoggingIn(false)
         }
@@ -61,8 +103,8 @@ const LoginForm = () => {
         <Box sx={{ flex: 1 }}>
             <Box sx={{ pl: '2rem', pr: '2rem' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    {orgImage ? 
-                        <img src={orgImage} alt={`${orgName}`}/>
+                    {organizationLoginImageUrl ? 
+                        <img src={organizationLoginImageUrl} alt={`${orgName}`}/>
                         :
                         <Typography variant='h3'>
                             {orgName}

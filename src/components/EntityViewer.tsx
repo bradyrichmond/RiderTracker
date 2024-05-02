@@ -4,8 +4,6 @@ import { useContext, useEffect, useState } from "react"
 import { RoleContext } from "../contexts/RoleContextProvider"
 import { useParams } from 'react-router-dom'
 import { BusType } from "../types/BusType"
-import { DriverType } from "../types/DriverType"
-import { GuardianType } from "../types/GuardianType"
 import { OrganizationType } from "../types/OrganizationType"
 import { RiderType } from "../types/RiderType"
 import { ScanType } from "../types/ScanType"
@@ -14,6 +12,7 @@ import { FormDataType } from "../types/FormTypes"
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { SchoolType } from "@/types/SchoolType"
 import { StopType } from "@/types/StopType"
+import { GuardianType, UserType } from "@/types/UserType"
 
 export interface ModalProps<T> {
     cancelAction: () => void
@@ -23,7 +22,7 @@ export interface ModalProps<T> {
 }
 
 interface EntityViewerProps<T> {
-    createEntity?(_body: T): Promise<void>
+    createEntity?(_body: T | string): Promise<void>
     entityFactory: (args: string[]) => T 
     getEntities(id?: string): void
     entities: T[]
@@ -35,7 +34,7 @@ interface EntityViewerProps<T> {
 
 
 const EntityViewer = <T extends 
-        BusType | DriverType | GuardianType | OrganizationType | RiderType | ScanType | SchoolType | StopType>(
+        BusType | GuardianType | OrganizationType | RiderType | ScanType | SchoolType | StopType | UserType>(
     {
         createEntity, entityFactory, entities, getEntities, modalFormInputs, gridColumns, titleSingular, titlePlural
     }:EntityViewerProps<T>
@@ -73,7 +72,6 @@ const EntityViewer = <T extends
                     submitAction={submitAction}
                     titleSingular={titleSingular ?? ''}
                     formDefaultValues={modalFormInputs}
-                    organizationId={id}
                     open={showModal}
                 />
                 :

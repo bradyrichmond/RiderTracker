@@ -1,9 +1,9 @@
-import { AdminType } from "@/types/AdminType";
+import { UserType } from "@/types/UserType";
 
-export function adminFactory(args: (string)[] = []): AdminType {
+export function userFactory(args: (string)[] = []): UserType {
     return {
         id: args[0],
-        organizationId: args[1],
+        orgId: args[1],
         firstName: args[2],
         lastName: args[3],
         email: args[4],

@@ -3,17 +3,16 @@ import { useContext, useEffect, useState } from "react"
 import { RoleContext } from "../../contexts/RoleContextProvider"
 import { RiderType } from "../../types/RiderType"
 import LinkIcon from '@mui/icons-material/Link'
-import { GuardianType } from "../../types/GuardianType"
 import LinkEntitiesModal from "../../components/LinkEntitiesModal"
 import { OptionsType } from "../../types/FormTypes"
 import { DataGrid } from '@mui/x-data-grid'
 import { useNavigate } from "react-router-dom"
 import LinkOffIcon from '@mui/icons-material/LinkOff'
 import InfoIcon from '@mui/icons-material/Info'
-import { guardianFactory } from "./GuardianFactory"
 import { ApiContext } from "../../contexts/ApiContextProvider"
 import { GridColDef } from "@mui/x-data-grid"
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "../../constants/Roles"
+import { GuardianType } from "@/types/UserType"
 
 interface RidersGuardiansProps {
     guardian: GuardianType
@@ -28,31 +27,31 @@ const GuardiansRiders = ({ guardian, getGuardianData }: RidersGuardiansProps) =>
     const roleContext = useContext(RoleContext)
     const { api } = useContext(ApiContext)
     const navigate = useNavigate()
-    const { heaviestRole } = useContext(RoleContext)
+    const { heaviestRole, organizationId } = useContext(RoleContext)
 
     useEffect(() => {
         updateRiders()
         updateAllRiders()
-    }, [roleContext, guardian.organizationId])
+    }, [roleContext, guardian.orgId])
 
     const updateRiders = async () => {
         await getGuardianData()
 
         if (guardian) {
-            const filteredGuardianRiderLinks = guardian.guardianRiderLinks.filter((g) => g !== "")
+            const filteredGuardianRiderLinks = guardian.riderIds.filter((g) => g !== "")
 
             if (filteredGuardianRiderLinks.length > 0) {
-                const riderData = await api.execute(api.riders.getBulkRidersById, [filteredGuardianRiderLinks])
+                const riderData = await api.riders.getBulkRidersByIds(organizationId, filteredGuardianRiderLinks)
                 setRiders(riderData)
             }
         }
     }
 
     const updateAllRiders = async () => {
-        const riderData = await api.execute(api.riders.getRidersForOrganization, [guardian.organizationId])
+        const riderData = await api.riders.getRiders(organizationId)
 
         try {
-            const mapped = riderData.map((r: GuardianType) => {
+            const mapped = riderData.map((r: RiderType) => {
                 return { label: `${r.firstName} ${r.lastName}`, id: r.id }
             })
             
@@ -66,45 +65,23 @@ const GuardiansRiders = ({ guardian, getGuardianData }: RidersGuardiansProps) =>
         setShowModal((c) => !c)
     }
 
-    const submitAction = async (updatedGuardian: GuardianType) => {
+    const submitAction = async (addedRiderId: string) => {
         toggleShowModal()
-        await api.execute(api.guardians.updateGuardian, [updatedGuardian])
-        const riderToBeUpdated = updatedGuardian.guardianRiderLinks.pop()
-
-        if (riderToBeUpdated) {
-            const updatedRider = await generateUpdatedRider(riderToBeUpdated)
-            await api.execute(api.riders.updateRider, [updatedRider])
-        }
+        await api.users.updateUser(organizationId, guardianId, { riderIds: [...guardian.riderIds, addedRiderId] })
 
         updateRiders()
     }
 
-    const generateUpdatedRider = async (riderId: string ) => {
-        const riderToBeUpdated: RiderType = await api.execute(api.riders.getRiderById, [riderId])
-        riderToBeUpdated.guardianRiderLinks.push(riderId)
-        const newGuardianRiderLinks = riderToBeUpdated.guardianRiderLinks.filter((g: string) => g !== "")
-        riderToBeUpdated.guardianRiderLinks = newGuardianRiderLinks
-        return riderToBeUpdated
-    }
-
     const deleteGuardianLink = async (riderId: string) => {
-        await removeGuardianFromRider(riderId)
         await removeRiderFromGuardian(riderId)
         updateRiders()
     }
 
     const removeRiderFromGuardian = async (riderId: string) => {
         const newGuardian = guardian;
-        const newLinks = newGuardian.guardianRiderLinks.filter((r) => r !== riderId)
-        newGuardian.guardianRiderLinks = newLinks.length > 0 ? newLinks : [""]
-        await api.execute(api.guardians.updateGuardian, [newGuardian])
-    }
-
-    const removeGuardianFromRider = async (riderId: string) => {
-        const riderToBeUpdated: RiderType = await api.execute(api.riders.getRiderById, [riderId])
-        const newLinks = riderToBeUpdated.guardianRiderLinks.filter((g) => g !== guardianId)
-        riderToBeUpdated.guardianRiderLinks = newLinks.length > 0 ? newLinks : [""]
-        await api.execute(api.riders.updateRider, [riderToBeUpdated])
+        const newLinks = newGuardian.riderIds.filter((r) => r !== riderId)
+        newGuardian.riderIds = newLinks.length > 0 ? newLinks : [""]
+        await api.users.updateUser(organizationId, guardianId, { riderIds: newGuardian.riderIds })
     }
 
     const viewRiderDetails = (riderId: string) => {
@@ -156,15 +133,12 @@ const GuardiansRiders = ({ guardian, getGuardianData }: RidersGuardiansProps) =>
             {allRiders.length > 0 ? 
                 <LinkEntitiesModal<RiderType> 
                     cancelAction={toggleShowModal}
-                    entity={guardian}
-                    entityFactory={guardianFactory} 
+                    entity={guardian} 
                     title='Link Guardian to a new Rider'
                     submitAction={submitAction}
                     submitButtonText="Create Link"
-                    formDefaultValues={{inputs: [
-                        { name: "Rider", inputType: "select", options: allRiders}
-                    ]}}
                     open={showModal}
+                    options={allRiders}
                 />
             :
                 null

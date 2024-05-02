@@ -1,48 +1,87 @@
-import { API_BASE_NAME } from "."
+import { RequestType } from "@/types/RequestType"
+import { updatePassword } from "@aws-amplify/auth"
+import RiderTrackerAPI from "."
+import { GuardianType, UserType } from "@/types/UserType"
+import { handleApiResponse } from "@/helpers/ApiHelpers"
 
-const changeUserPassword = async (token: string, accessToken: string, previousPassword: string, proposedPassword: string) => {
-    const changePasswordResponse = await fetch(`${API_BASE_NAME}/users/changeUserPassword`, {
-        method: 'POST',
-        body: JSON.stringify({ token: accessToken, previousPassword, proposedPassword }),
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': token
-        }
-    })
-
-    if (changePasswordResponse.status === 200) {
-        const user = await changePasswordResponse.json()
-
-        return user
-    } else {
-        const error = await changePasswordResponse.json()
-
-        throw `${changePasswordResponse.status}: ${error.message}`
+const changeUserPassword = async (oldPassword: string, newPassword: string) => {
+    try {
+        await updatePassword({ oldPassword, newPassword })
+    } catch (e: any) {
+        console.log(e)
     }
 }
 
-const getUserImages = async (token: string, userId: string) => {
-    try {
-        const imagesData = await fetch(`${API_BASE_NAME}/images/users/${userId}`, {
-            headers: {
-                'Authorization': token
-            }
-        })
+const getUsers = async (orgId: string) => {
+    const api = await RiderTrackerAPI.getClient()
+    const getUsersResponse = await api.client.organizationsOrgIdUsersGet({ orgId })
+    
+    return handleApiResponse(getUsersResponse)
+}
 
-        const images = await imagesData.json()
+const getUserById = async (orgId: string, id: string) => {
+    const api = await RiderTrackerAPI.getClient()
+    const getUserResponse = await api.client.organizationsOrgIdUsersIdGet({ orgId, id })
+    
+    return handleApiResponse(getUserResponse)
+}
 
-        return images
-    } catch (e) {
-        throw new Error(JSON.stringify(e))
-    }
+const getGuardianById = async (orgId: string, id: string) => {
+    const api = await RiderTrackerAPI.getClient()
+    const getGuardianResponse = await api.client.organizationsOrgIdUsersIdGet({ orgId, id })
+    
+    return handleApiResponse(getGuardianResponse)
+}
+
+const getUserProfileImage = async ({ params, body, options }: RequestType) => {
+    const api = await RiderTrackerAPI.getClient()
+    const profileImageResponse = await api.client.organizationsOrgIdUsersIdGet(params, body, options)
+
+    const response = handleApiResponse(profileImageResponse)
+
+    const { profileImageKey } = response
+    return profileImageKey
+}
+
+const getBulkUsersByIds = async (orgId: string, userIds: string[]) => {
+    const api = await RiderTrackerAPI.getClient()
+    const usersResponse = await api.client.organizationsOrgIdUsersBatchByIdPost({ orgId }, userIds)
+    
+    return handleApiResponse(usersResponse)
+}
+
+const deleteUser = async (orgId: string, id: string) => {
+    const api = await RiderTrackerAPI.getClient()
+    const deleteUserResponse = await api.client.organizationsOrgIdUsersIdDelete({ orgId, id })
+    
+    return handleApiResponse(deleteUserResponse)
+}
+
+const updateUser = async (orgId: string, id: string, body: Record<string, string | string[]>) => {
+    const api = await RiderTrackerAPI.getClient()
+    const updateUserResponse = await api.client.organizationsOrgIdUsersIdPut({ orgId, id }, body)
+    
+    return handleApiResponse(updateUserResponse)
 }
 
 export interface UserApiFunctionTypes {
-    changeUserPassword(token: string, accessToken: string, previousPassword: string, proposedPassword: string): Promise<void>
-    getUserImages(token: string, userId: string): Promise<void>
+    changeUserPassword(previousPassword: string, proposedPassword: string): Promise<void>
+    getUserProfileImage(args: RequestType): Promise<string>
+    getUsers(orgId: string): Promise<UserType[]>
+    getUserById(orgId: string, id: string): Promise<UserType>
+    getGuardianById(orgId: string, id: string): Promise<GuardianType>
+    getBulkUsersByIds(orgId: string, userIds: string[]): Promise<UserType[]>
+    deleteUser(orgId: string, id: string): Promise<any>
+    updateUser(orgId: string, id: string, body: Record<string, string[]>): Promise<any>
 }
 
 export default {
     changeUserPassword,
-    getUserImages
+    getUserProfileImage,
+    getUsers,
+    getUserById,
+    getBulkUsersByIds,
+    deleteUser,
+    updateUser,
+    getGuardianById
 }

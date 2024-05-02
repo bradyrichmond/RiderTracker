@@ -1,6 +1,6 @@
 {
-  "authSelections": "userPoolOnly",
-  "resourceName": "ridertrackerfrontend3ab46c03",
+  "authSelections": "identityPoolAndUserPool",
+  "resourceName": "ridertrackerfrontendb87a9a5b",
   "serviceType": "imported",
   "region": "us-west-2",
   "usernameAttributes": [

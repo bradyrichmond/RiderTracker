@@ -3,8 +3,6 @@ import { forwardRef, useContext, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { useFieldArray, useForm, Controller, FormProvider } from "react-hook-form"
 import { BusType } from '../types/BusType'
-import { DriverType } from "../types/DriverType"
-import { GuardianType } from "../types/GuardianType"
 import { OrganizationType } from "../types/OrganizationType"
 import { RiderType } from "../types/RiderType"
 import { ScanType } from "../types/ScanType"
@@ -15,6 +13,7 @@ import { TransitionProps } from '@mui/material/transitions'
 import { ErrorMessage } from "@hookform/error-message"
 import { RoleContext } from '@/contexts/RoleContextProvider'
 import { StopType } from '@/types/StopType'
+import { UserType } from '@/types/UserType'
 
 const Transition = forwardRef(function Transition(
     props: TransitionProps & {
@@ -27,7 +26,7 @@ const Transition = forwardRef(function Transition(
   
 
 const AddEntityModal = <T extends 
-        BusType  | DriverType | GuardianType | OrganizationType | RiderType | ScanType | SchoolType | StopType>({ 
+        BusType | OrganizationType | RiderType | ScanType | SchoolType | StopType | UserType>({ 
         cancelAction, entityFactory, formDefaultValues, submitAction, titleSingular, open 
     }: AddEntityModalProps<T>) => {
     const [disableButtons, setDisabledButtons] = useState(false)

@@ -5,7 +5,7 @@ import { useCallback, useContext, useEffect, useMemo, useState } from "react"
 import { RoleContext } from "../../contexts/RoleContextProvider"
 import { createRouterObject } from "@/helpers/CreateRouterObject"
 import { AuthContext, nullUser } from "@/contexts/AuthContextProvider"
-import { getCurrentUser } from "aws-amplify/auth"
+import { getCurrentUser } from "@aws-amplify/auth"
 import Auth from "../Auth"
 
 const RootRouter = () => {

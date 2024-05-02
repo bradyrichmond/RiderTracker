@@ -16,10 +16,9 @@ const Buses = () => {
     const { api } = useContext(ApiContext)
     const { heaviestRole, organizationId } = useContext(RoleContext)
     const navigate = useNavigate()
-    const getBusesFunction = organizationId ? api.buses.getBusesForOrganization : api.buses.getBuses
 
     const updateBusesAction = async () => {
-        const buses = await api.execute(getBusesFunction, [organizationId])
+        const buses = await api.buses.getBuses(organizationId)
         setBuses(buses ?? [])
     }
 
@@ -28,12 +27,12 @@ const Buses = () => {
     }
 
     const deleteBusAction = async (busId: string) => {
-        await api.execute(api.buses.deleteBus, [busId])
+        await api.buses.deleteBus(organizationId, busId)
         updateBusesAction()
     }
 
     const createBusAction = async (newBus: BusType) => {
-        return await api.execute(api.buses.createBus, [newBus])
+        return await api.buses.createBus(organizationId, newBus)
     }
 
     const generateGridColumns = (): GridColDef[] => {

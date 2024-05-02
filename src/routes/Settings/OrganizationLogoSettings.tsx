@@ -12,7 +12,7 @@ const OrganizationLogoSettings = () => {
     const { organizationId, updateUserData, organizationLoginImageUrl } = useContext(RoleContext)
 
     const uploadAction = async (file: File) => {
-        await api.execute(api.organizations.updateOrganizationLoginImage, [file, organizationId])
+        await api.organizations.updateOrganizationLoginImage(file, organizationId)
         await updateUserData()
     }
 

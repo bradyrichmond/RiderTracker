@@ -1,103 +1,45 @@
 import { BusType } from "../types/BusType"
-import { API_BASE_NAME } from "."
+import RiderTrackerAPI from "."
+import { handleApiResponse } from "@/helpers/ApiHelpers"
 
-const getBuses = async (token: string) => {
-    try {
-        const busesData = await fetch(`${API_BASE_NAME}/buses`, {
-            headers: {
-                'Authorization': token
-            }
-        })
+const getBuses = async (orgId: string) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    const getBusesResponse = await client.organizationsOrgIdBusesGet({ orgId })
 
-        const buses = await busesData.json()
-
-        return buses
-    } catch (e) {
-        throw new Error(e as string)
-    }
+    return handleApiResponse(getBusesResponse)
 }
 
-const getBusById = async (token: string, busId: string) => {
-    try {
-        const busData = await fetch(`${API_BASE_NAME}/buses/${busId}`, {
-            headers: {
-                'Authorization': token
-            }
-        })
+const getBusById = async (orgId: string, busId: string) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    const getBusResponse = await client.organizationsOrgIdBusesIdGet({ orgId, id: busId })
 
-        const bus = await busData.json()
-
-        return bus
-    } catch (e) {
-        throw new Error(e as string)
-    }
+    return handleApiResponse(getBusResponse)
 }
 
-const getBusesForOrganization = async (token: string, organizationId: string) => {
-    try {
-        const busesData = await fetch(`${API_BASE_NAME}/organizations/${organizationId}/buses`, {
-            headers: {
-                'Authorization': token
-            }
-        })
+const createBus = async (orgId: string, body: BusType) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    const createBusResponse = await client.organizationsOrgIdBusesPost({ orgId }, body)
 
-        const buses = await busesData.json()
-
-        return buses
-    } catch (e) {
-        throw new Error(e as string)
-    }
+    return handleApiResponse(createBusResponse)
 }
 
-const createBus = async (token: string, body: BusType) => {
-    try {
-        const busesData = await fetch(`${API_BASE_NAME}/buses`, {
-            method: 'POST',
-            body: JSON.stringify(body),
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': token
-            }
-        })
+const deleteBus = async (orgId: string, id: string) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    const deleteBusResponse = await client.organizationsOrgIdBusesIdDelete({ orgId, id })
 
-        const buses = await busesData.json()
-
-        return buses
-    } catch (e) {
-        throw new Error(e as string)
-    }
-}
-
-const deleteBus = async (token: string, id: string) => {
-    try {
-        const busesData = await fetch(`${API_BASE_NAME}/buses/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': token
-            }
-        })
-
-        const buses = await busesData.json()
-
-        return buses
-    } catch (e) {
-        throw new Error(e as string)
-    }
+    return handleApiResponse(deleteBusResponse)
 }
 
 export interface BusApiFunctionTypes {
-    getBuses(token: string): Promise<BusType[]>,
-    getBusById(token: string, id: string): Promise<BusType>,
-    getBusesForOrganization(token: string, organizationId: string): Promise<BusType[]>,
-    createBus(token: string, body: BusType): Promise<BusType>,
-    deleteBus(token: string, id: string): Promise<BusType>,
+    getBuses(orgId: string): Promise<BusType[]>,
+    getBusById(orgId: string, id: string): Promise<BusType>,
+    createBus(orgId: string, body: BusType): Promise<any>,
+    deleteBus(orgId: string, id: string): Promise<any>,
 }
 
 export default {
     getBuses,
     getBusById,
-    getBusesForOrganization,
     createBus,
     deleteBus
 }

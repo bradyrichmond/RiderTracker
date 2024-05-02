@@ -9,7 +9,7 @@ import bg5 from './images/bg5.jpg'
 import bg6 from './images/bg6.jpg'
 import LoginForm from "./LoginForm"
 import { AuthContext } from "@/contexts/AuthContextProvider"
-import { getCurrentUser } from "aws-amplify/auth"
+import { getCurrentUser } from "@aws-amplify/auth"
 
 const bgImages = [
     bg0,

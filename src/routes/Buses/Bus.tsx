@@ -10,6 +10,7 @@ const Bus = () => {
     const [bus, setBus] = useState<BusType>()
     const { id } = useParams()
     const { api } = useContext(ApiContext)
+    const { organizationId } = useContext(RoleContext)
 
     useEffect(() => {
         getBusData()
@@ -17,7 +18,7 @@ const Bus = () => {
 
     const getBusData = async () => {
         if (id) {
-            const busData = await api.execute(api.buses.getBusById, [id])
+            const busData = await api.buses.getBusById(organizationId, id)
             setBus(busData)
         }
     }
@@ -25,7 +26,7 @@ const Bus = () => {
     return (
         <Box height='100%'>
             <Typography>Bus Number: {bus?.busNumber}</Typography>
-            <Typography>Organization: {bus?.organizationId}</Typography>
+            <Typography>Organization: {bus?.orgId}</Typography>
         </Box>
     )
 }

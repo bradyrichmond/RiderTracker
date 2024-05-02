@@ -1,22 +1,22 @@
 import { ApiContext } from "@/contexts/ApiContextProvider"
 import { RoleContext } from "@/contexts/RoleContextProvider"
-import { AdminType } from "@/types/AdminType"
 import { Box, Button, Card, Grid, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
 import OrganizationAdminCard from "./OrganizationAdminCard"
 import AddEntityModal from "@/components/AddEntityModal"
-import { adminFactory } from "./AdminFactory"
+import { userFactory } from "./UserFactory"
 import { FormDataType } from "@/types/FormTypes"
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { AWSUserType } from "@/API/AdminApis"
 import { RIDER_TRACKER_ROLES } from "@/constants/Roles"
 import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
+import { UserType } from "@/types/UserType"
 
 const OrganizationAdminSettings = () => {
     const { organizationId } = useContext(RoleContext)
     const { api } = useContext(ApiContext)
     const { setSnackbarSeverity, setSnackbarVisibilityMs, setSnackbarMessage } = useContext(SnackbarContext)
-    const [ admins, setAdmins ] = useState<AdminType[]>([])
+    const [ admins, setAdmins ] = useState<UserType[]>([])
     const [ showModal, setShowModal ] = useState(false)
 
     useEffect(() => {
@@ -24,8 +24,12 @@ const OrganizationAdminSettings = () => {
     }, [])
 
     const getAdmins = async () => {
-        const fetchedAdmins = await api.execute(api.organizations.getOrganizationAdmins, [organizationId])
-        setAdmins(fetchedAdmins)
+        const { adminIds } = await api.organizations.getOrganizationById(organizationId)
+
+        if (adminIds){
+            const orgAdmins = await api.users.getBulkUsersByIds(organizationId, adminIds)
+            setAdmins(orgAdmins)
+        }
     }
 
     const toggleShowModal = () => {
@@ -41,14 +45,26 @@ const OrganizationAdminSettings = () => {
         ]
     }
 
-    const createNewAdmin = async (newAdmin: AdminType) => {
+    const createNewAdmin = async (newAdmin: UserType) => {
         try {
             // TODO: Needs finer error management
-            const cognitoUser: AWSUserType = await api.execute(api.admin.createUser, [{ given_name: newAdmin.firstName, family_name: newAdmin.lastName, email: newAdmin.email }])
+            const cognitoUser: AWSUserType = await api.admin.createUser(organizationId, { 
+                given_name: newAdmin.firstName,
+                family_name: newAdmin.lastName,
+                email: newAdmin.email
+            })
             const cognitoUsername = cognitoUser.User.Username
-            await api.execute(api.admin.addUserToGroup, [cognitoUsername, RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN])
+            await api.admin.addUserToGroup(cognitoUsername, RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN)
             newAdmin.id = cognitoUsername
-            await api.execute(api.organizations.createOrganizationAdmin, [newAdmin, organizationId])
+            const { adminIds } = await api.organizations.getOrganizationById(organizationId)
+
+            if (adminIds) {
+                adminIds.push(cognitoUsername)
+            }
+
+            const admins  = adminIds || [cognitoUsername]
+
+            await api.organizations.updateOrganization(organizationId, { adminIds: admins })
             getAdmins()
             toggleShowModal()
         } catch (e) {
@@ -66,9 +82,9 @@ const OrganizationAdminSettings = () => {
     return (
         <Grid xs={12} marginBottom='2rem'>
             {modalFormInputs ?
-                <AddEntityModal<AdminType> 
+                <AddEntityModal<UserType> 
                     cancelAction={toggleShowModal} 
-                    entityFactory={adminFactory}
+                    entityFactory={userFactory}
                     submitAction={createNewAdmin}
                     titleSingular={'Organization Admin'}
                     formDefaultValues={modalFormInputs}
@@ -97,7 +113,7 @@ const OrganizationAdminSettings = () => {
                         admins.map((a, idx) => <OrganizationAdminCard 
                                 key={a.id}
                                 id={a.id}
-                                organizationId={a.organizationId}
+                                orgId={a.orgId}
                                 firstName={a.firstName}
                                 lastName={a.lastName}
                                 email={a.email}

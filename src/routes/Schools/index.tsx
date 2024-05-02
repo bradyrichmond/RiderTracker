@@ -23,21 +23,20 @@ const Schools = () => {
     }, [])
 
     const updateSchools = async () => {
-        const fetchedSchools = await api.execute(api.schools.getSchoolsForOrganization, [organizationId])
+        const fetchedSchools = await api.schools.getSchools(organizationId)
         setSchools(fetchedSchools)
     }
 
     const createSchoolAction = async (newSchool: SchoolType) => {
-        const validatedAddress = await api.execute(api.addresses.validateAddress, [newSchool.address])
+        const validatedAddress = await api.addresses.validateAddress(newSchool.address)
         
         if (!!validatedAddress) {
             const newUuid = uuidv4()
             validatedAddress.id = newUuid;
-            await api.execute(api.addresses.createAddress, [validatedAddress])
+            await api.addresses.createAddress(organizationId, validatedAddress)
 
             newSchool.address = validatedAddress.id
-            newSchool.riders = [""]
-            await api.execute(api.schools.createSchool, [newSchool])
+            await api.schools.createSchool(organizationId, newSchool)
 
             updateSchools()
         } else {
@@ -50,7 +49,7 @@ const Schools = () => {
     }
 
     const deleteSchoolAction = async (schoolId: string) => {
-        await api.execute(api.schools.deleteSchool, [schoolId])
+        await api.schools.deleteSchool(organizationId, schoolId)
         updateSchools()
     }
 

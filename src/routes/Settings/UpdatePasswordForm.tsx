@@ -1,5 +1,4 @@
 import { ApiContext } from "@/contexts/ApiContextProvider"
-import { RoleContext } from "@/contexts/RoleContextProvider"
 import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
 import { Box, Button, TextField } from "@mui/material"
 import { useContext } from "react"
@@ -15,7 +14,6 @@ const UpdatePasswordForm = () => {
     const { handleSubmit, register } = useForm<PasswordFormInput>()
     const { setSnackbarMessage, setSnackbarSeverity, setSnackbarVisibilityMs } = useContext(SnackbarContext)
     const { api } = useContext(ApiContext)
-    const { accessToken } = useContext(RoleContext)
 
     const onSubmit = (data: PasswordFormInput) => {
         const { oldPassword, newPassword, verifyNewPassword } = data
@@ -31,7 +29,7 @@ const UpdatePasswordForm = () => {
 
     const submitPasswordChangeRequest = async (oldPassword: string, newPassword: string) => {
         try {
-            await api.execute(api.users.changeUserPassword, [accessToken, oldPassword, newPassword])
+            await api.users.changeUserPassword(oldPassword, newPassword)
         } catch {
             showPasswordSetFailureSnackbar()
         }

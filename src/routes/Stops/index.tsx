@@ -1,7 +1,7 @@
 import EntityViewer from "@/components/EntityViewer"
 import { stopFactory } from "./StopFactory"
 import { useContext, useEffect, useState } from "react"
-import { useNavigate, useParams } from "react-router-dom"
+import { useNavigate } from "react-router-dom"
 import { GridColDef } from "@mui/x-data-grid"
 import { Button, Tooltip } from "@mui/material"
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "@/constants/Roles"
@@ -13,29 +13,28 @@ import { ApiContext } from "@/contexts/ApiContextProvider"
 
 const Stops = () => {
     const [stops, setStops] = useState<StopType[]>([])
-    const { id: organizationId } = useParams()
     const navigate = useNavigate()
     const { api } = useContext(ApiContext)
-    const { heaviestRole } = useContext(RoleContext)
+    const { heaviestRole, organizationId } = useContext(RoleContext)
 
     useEffect(() => {
         updateStops()
     }, [organizationId])
 
     const updateStops = async () => {
-        const fetchedStops = await api.execute(organizationId ? api.stops.getStopsForOrganization : api.stops.getStops, [organizationId])
+        const fetchedStops = await api.stops.getStops(organizationId)
         setStops(fetchedStops)
     }
 
     const createStopAction = async (newStop: StopType) => {
         const validStop = newStop
         validStop.riderIds = [""]
-        await api.execute(api.stops.createStop, [validStop])
+        await api.stops.createStop(organizationId, validStop)
         updateStops()
     }
 
     const deleteStopAction = async (id: string) => {
-        await api.execute(api.stops.deleteStop, [id])
+        await api.stops.deleteStop(organizationId, id)
         updateStops()
     }
 

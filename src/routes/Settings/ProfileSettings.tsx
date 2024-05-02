@@ -11,10 +11,10 @@ import PriorityHighIcon from '@mui/icons-material/PriorityHigh'
 
 const ProfileSettings = () => {
     const { api } = useContext(ApiContext)
-    const { userId, userFullName, userPictureUrl, updateUserData } = useContext(RoleContext)
+    const { organizationId, userId, userFullName, userPictureUrl, updateUserData } = useContext(RoleContext)
 
     const uploadFile = async (file: File) => {
-        await api.execute(api.admin.updateUserProfileImage, [file, userId])
+        await api.admin.updateUserProfileImage(organizationId, userId, file, userId)
         await updateUserData()
     }
 

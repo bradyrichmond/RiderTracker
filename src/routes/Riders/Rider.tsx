@@ -3,12 +3,11 @@ import { useContext, useEffect, useState } from "react"
 import { RoleContext } from "../../contexts/RoleContextProvider"
 import { useNavigate, useParams } from 'react-router-dom'
 import { RiderType } from "../../types/RiderType"
-import RidersGuardians from "./RidersGuardians"
 import { ApiContext } from "../../contexts/ApiContextProvider"
 import { StopType } from "@/types/StopType"
 
 const Rider = () => {
-    const roleContext = useContext(RoleContext)
+    const { organizationId } = useContext(RoleContext)
     const { api } = useContext(ApiContext)
     const [rider, setRider] = useState<RiderType>()
     const [stops, setStops] = useState<StopType[]>([])
@@ -18,7 +17,7 @@ const Rider = () => {
 
     useEffect(() => {
         getRiderData()
-    }, [roleContext, id])
+    }, [id])
 
     useEffect(() => {
         getStopData()
@@ -30,20 +29,20 @@ const Rider = () => {
 
     const getRiderData = async () => {
         if (id) {
-            const riderData = await api.execute(api.riders.getRiderById, [id])
+            const riderData = await api.riders.getRiderById(organizationId, id)
             setRider(riderData)
         }
     }
 
     const getStopData = async () => {
-        const fetchedStops = await api.execute(api.stops.getBulkStopsById, [rider?.stops])
+        const fetchedStops = await api.stops.getBulkStopsByIds(organizationId, rider?.stopIds ?? [])
         setStops(fetchedStops)
     }
 
     return (
         <Box height='100%'>
             <Typography>Rider Name: {rider?.firstName} {rider?.lastName}</Typography>
-            <Typography>Organization: {rider?.organizationId}</Typography>
+            <Typography>Organization: {rider?.orgId}</Typography>
             <Box sx={{ mt: '1rem', mb: '1rem' }}>
                 {
                     stops.map((s) => {
@@ -53,7 +52,6 @@ const Rider = () => {
                     })
                 }
             </Box>
-            {rider ? <RidersGuardians rider={rider} getRiderData={getRiderData} /> : null}
         </Box>
     )
 }

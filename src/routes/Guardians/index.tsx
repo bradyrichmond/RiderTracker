@@ -1,6 +1,5 @@
 import EntityViewer from "../../components/EntityViewer"
 import { useNavigate } from 'react-router-dom'
-import { GuardianType } from "../../types/GuardianType"
 import { guardianFactory } from "./GuardianFactory"
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
@@ -8,23 +7,27 @@ import { useContext, useState } from "react"
 import { Button, Tooltip } from "@mui/material"
 import { ApiContext } from "../../contexts/ApiContextProvider"
 import { GridColDef } from "@mui/x-data-grid"
-import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "../../constants/Roles"
+import { RIDERTRACKER_PERMISSIONS_BY_ROLE, RIDER_TRACKER_ROLES, permissions } from "../../constants/Roles"
 import { RoleContext } from "../../contexts/RoleContextProvider"
+import { UserType } from "@/types/UserType"
+import { AWSUserType } from "@/API/AdminApis"
 
 const Guardians = () => {
-    const [guardians, setGuardians] = useState<GuardianType[]>([])
+    const [guardians, setGuardians] = useState<UserType[]>([])
     const { api } = useContext(ApiContext)
     const { heaviestRole, organizationId } = useContext(RoleContext)
-    const getGuardiansFunction = organizationId ? api.guardians.getGuardiansForOrganization : api.guardians.getGuardians
     const navigate = useNavigate()
 
     const updateGuardians = async () => {
-        const guardiansData = await api.execute(getGuardiansFunction, [organizationId])
-        setGuardians(guardiansData)
+        const { guardianIds } = await api.organizations.getOrganizationById(organizationId)
+        if (guardianIds) {
+            const orgGuardians = await api.users.getBulkUsersByIds(organizationId, guardianIds)
+            setGuardians(orgGuardians)
+        }
     }
 
     const deleteGuardianAction = async (guardianId: string) => {
-        await api.execute(api.guardians.deleteGuardian, [guardianId])
+        await api.users.deleteUser(organizationId, guardianId)
         updateGuardians()
     }
 
@@ -32,8 +35,30 @@ const Guardians = () => {
         navigate(`/guardians/${guardianId}`)
     }
 
-    const createGuardianAction = async (newGuardian: GuardianType) => {
-        return await api.execute(api.guardians.createGuardian, [newGuardian])
+    const createGuardianAction = async (newGuardian: UserType) => {
+        try {
+            // TODO: Needs finer error management
+            const cognitoUser: AWSUserType = await api.admin.createUser(organizationId, { 
+                given_name: newGuardian.firstName,
+                family_name: newGuardian.lastName,
+                email: newGuardian.email
+            })
+            const cognitoUsername = cognitoUser.User.Username
+            await api.admin.addUserToGroup(cognitoUsername, RIDER_TRACKER_ROLES.RIDER_TRACKER_GUARDIAN)
+            newGuardian.id = cognitoUsername
+            const { guardianIds } = await api.organizations.getOrganizationById(organizationId)
+
+            if (guardianIds) {
+                guardianIds.push(cognitoUsername)
+            }
+
+            const builtGuardians  = guardianIds || [cognitoUsername]
+
+            await api.organizations.updateOrganization(organizationId, { guardianIds: builtGuardians })
+            updateGuardians()
+        } catch (e) {
+            console.error
+        }
     }
 
     const generateGridColumns = (): GridColDef[] => {
@@ -77,7 +102,7 @@ const Guardians = () => {
     }
     
     return (
-        <EntityViewer<GuardianType>
+        <EntityViewer<UserType>
             createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_GUARDIAN) ? createGuardianAction : undefined}
             entityFactory={guardianFactory}
             getEntities={updateGuardians}

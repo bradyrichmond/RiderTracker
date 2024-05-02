@@ -1,146 +1,63 @@
 import { StopType } from "@/types/StopType"
-import { API_BASE_NAME } from "."
+import RiderTrackerAPI from "."
+import { handleApiResponse } from "@/helpers/ApiHelpers"
 
-const getStops = async (token: string) => {
-    try {
-        const stopsData = await fetch(`${API_BASE_NAME}/stops`, {
-            headers: {
-                'Authorization': token
-            }
-        })
+const getStops = async (orgId: string) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    const getStopsResponse = await client.organizationsOrgIdStopsGet({ orgId })
 
-        const stopsJson = await stopsData.json()
-        const { stops } = stopsJson
-
-        return stops
-    } catch (e) {
-        throw new Error(JSON.stringify(e))
-    }
+    return handleApiResponse(getStopsResponse)
 }
 
-const getStopById = async (token: string, id: string) => {
-    try {
-        const stopData = await fetch(`${API_BASE_NAME}/stops/${id}`, {
-            headers: {
-                'Authorization': token
-            }
-        })
+const getStopById = async (orgId: string, id: string) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    const getStopResponse = await client.organizationsOrgIdSchoolsIdGet({ orgId, id })
 
-        const stop = await stopData.json()
-
-        return stop
-    } catch (e) {
-        throw new Error(JSON.stringify(e))
-    }
+    return handleApiResponse(getStopResponse)
 }
 
-const getBulkStopsById = async (token: string, stopIds: string[]) => {
-    try {
-        const stopsData = await fetch(`${API_BASE_NAME}/stops/batchGetById`, {
-            method: 'POST',
-            body: JSON.stringify(stopIds),
-            headers: {
-                'Authorization': token,
-                'Content-Type': 'application/json'
-            }
-        })
+const updateStop = async (orgId: string, id: string, stop: StopType) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    const updateStopResponse = await client.organizationsOrgIdSchoolsGet({ orgId, id }, stop)
 
-        const stops = stopsData.json()
-
-        return stops
-    } catch (e) {
-        throw new Error(JSON.stringify(e))
-    }
+    return handleApiResponse(updateStopResponse)
 }
 
-const getStopsForOrganization = async (token: string, organizationId: string) => {
-    try {
-        const stopsData = await fetch(`${API_BASE_NAME}/organizations/${organizationId}/stops`, {
-            headers: {
-                'Authorization': token
-            }
-        })
+const createStop = async (orgId: string, body: StopType) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    const createStopResponse = await client.organizationsOrgIdSchoolsPost({ orgId }, body)
 
-        const stops = await stopsData.json()
-
-        return stops
-    } catch (e) {
-        throw new Error(JSON.stringify(e))
-    }
+    return handleApiResponse(createStopResponse)
 }
 
-const updateStop = async (token: string, stop: StopType) => {
-    try {
-        const stopsRaw = await fetch(`${API_BASE_NAME}/stops/${stop.id}`, {
-            method: 'PUT',
-            body: JSON.stringify(stop),
-            headers: {
-                'Authorization': token,
-                'Content-Type': 'application/json'
-            }
-        })
+const deleteStop = async (orgId: string, id: string) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    const deleteStopResponse = await client.organizationsOrgIdSchoolsIdDelete({ orgId, id })
 
-        const stops = await stopsRaw.json()
-
-        return stops
-    } catch (e) {
-        throw new Error(JSON.stringify(e))
-    }
+    return handleApiResponse(deleteStopResponse)
 }
 
-const createStop = async (token: string, body: StopType) => {
-    try {
-        const stopsData = await fetch(`${API_BASE_NAME}/stops`, {
-            method: 'POST',
-            body: JSON.stringify(body),
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': token
-            }
-        })
+const getBulkStopsByIds = async (orgId: string, stopIds: string[]) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    const stops = await client.organizationsOrgIdStopsBulkPost({ orgId }, stopIds)
 
-        const stops = await stopsData.json()
-
-        return stops
-    } catch (e) {
-        throw new Error(JSON.stringify(e))
-    }
-}
-
-const deleteStop = async (token: string, id: string) => {
-    try {
-        const stopsData = await fetch(`${API_BASE_NAME}/stops/${id}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': token
-            }
-        })
-
-        const stops = await stopsData.json()
-
-        return stops
-    } catch (e) {
-        throw new Error(JSON.stringify(e))
-    }
+    return handleApiResponse(stops)
 }
 
 export interface StopApiFunctionTypes {
-    getStops(token: string): Promise<StopType[]>,
-    getStopById(token: string, id: string): Promise<StopType>,
-    getBulkStopsById(token: string, riderIds: string[]): Promise<StopType[]>,
-    getStopsForOrganization(token: string, organizationId: string): Promise<StopType[]>,
-    updateStop(token: string, stop: StopType): Promise<StopType>,
-    createStop(token: string, stop: StopType): Promise<StopType>,
-    deleteStop(token: string, id: string): Promise<StopType>
+    getStops(orgId: string): Promise<StopType[]>,
+    getBulkStopsByIds(orgId: string, stopIds: string[]): Promise<StopType[]>,
+    getStopById(orgId: string, id: string): Promise<StopType>,
+    updateStop(orgId: string, id: string, stop: StopType): Promise<any>,
+    createStop(orgId: string, stop: StopType): Promise<any>,
+    deleteStop(orgId: string, id: string): Promise<any>
 }
 
 export default {
     getStops,
     getStopById,
-    getBulkStopsById,
-    getStopsForOrganization,
     updateStop,
     createStop,
-    deleteStop
+    deleteStop,
+    getBulkStopsByIds
 }

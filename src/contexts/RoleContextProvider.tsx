@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect } from "react"
 import { getHeaviestRole } from "@/helpers/GetHeaviestRole"
 import { RiderTrackerRole, isRiderTrackerRole } from "@/constants/Roles"
 import { PropsWithChildren, useState } from "react"
-import { fetchAuthSession, fetchUserAttributes } from "aws-amplify/auth"
+import { fetchAuthSession, fetchUserAttributes } from "@aws-amplify/auth"
 import { ApiContext } from "./ApiContextProvider"
 import RiderTrackerAPI from "@/API"
 import { getOrganizationIdForUser } from "@/helpers/GetOrganizationIdForUser"
@@ -69,7 +69,7 @@ export const RoleContextProvider = ({ children }: PropsWithChildren<{}>) => {
         const heaviestRoleFromGroups: RiderTrackerRole = getHeaviestRole(trimmedGroups ?? [])
         setHeaviestRole(heaviestRoleFromGroups)
 
-        initializeApi(idToken?.toString() ?? '')
+        initializeApi()
         await initializeUserData()
     }
 
@@ -84,17 +84,15 @@ export const RoleContextProvider = ({ children }: PropsWithChildren<{}>) => {
     }, [api, userId, organizationId])
 
     const updateImages = async () => {
-        const userImages = await api.execute(api.users.getUserImages, [userId])
-        const organizationImages = await api.execute(api.organizations.getOrganizationImages, [organizationId])
-        const { profileImageKey } = userImages
-        const { loginImageKey } = organizationImages
+        const profileImageKey = await api.users.getUserProfileImage({ params: { orgId: organizationId, id: userId } })
+        const { loginImageKey } = await api.organizations.getOrganizationById(organizationId)
         setUserPictureUrl(`https://s3.us-west-2.amazonaws.com/${profileImageKey}`)
         setOrganizationLoginImageUrl(`https://s3.us-west-2.amazonaws.com/${loginImageKey}`)
     }
 
     const selectOrganizationAction = async () =>{
-        if (userId && heaviestRole && idToken) {
-            const orgId = await getOrganizationIdForUser(idToken, userId, heaviestRole)
+        if (userId && heaviestRole) {
+            const orgId = await getOrganizationIdForUser(userId, heaviestRole)
             if (Array.isArray(orgId)) {
                 setOrganizationArray(orgId)
                 toggleShowOrganizationSelector()
@@ -105,8 +103,8 @@ export const RoleContextProvider = ({ children }: PropsWithChildren<{}>) => {
         }
     }
 
-    const initializeApi = (token: string) => {
-        const apiInstance = new RiderTrackerAPI(token)
+    const initializeApi = async () => {
+        const apiInstance = await RiderTrackerAPI.getClient()
         setApi(apiInstance)
     }
 

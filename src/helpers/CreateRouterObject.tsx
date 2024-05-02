@@ -9,8 +9,6 @@ import Guardians from '@/routes/Guardians'
 import Home from '@/routes/Root/Home'
 import Scans from '@/routes/Scans'
 import MyRiders from '@/routes/Riders/MyRiders'
-import Organization from '@/routes/Organizations/Organization'
-import Organizations from '@/routes/Organizations'
 import ProtectedRoute from '@/routes/Protected/ProtectedRoute'
 import Rider from '@/routes/Riders/Rider'
 import Riders from '@/routes/Riders'
@@ -60,16 +58,6 @@ export const createRouterObject = () => {
             {
                 path: '/my-riders',
                 element: <ProtectedRoute route='/my-riders'><MyRiders /></ProtectedRoute>
-            },
-            {
-                path: '/organizations',
-                element: <ProtectedRoute route='/organizations'><Organizations /></ProtectedRoute>
-            
-            },
-            {
-                path: '/organizations/:id',
-                element: <ProtectedRoute route='/organizations/:id'><Organization /></ProtectedRoute>
-            
             },
             {
                 path: '/settings',

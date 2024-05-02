@@ -2,7 +2,7 @@ import { LocationType } from "./LocationType"
 
 export interface ScanType {
     id: string
-    organizationId: string
+    orgId: string
     stopId: string
     riderIds: string[]
     driverId: string

@@ -1,4 +1,5 @@
-import { API_BASE_NAME } from "."
+import { handleApiResponse } from "@/helpers/ApiHelpers"
+import RiderTrackerAPI from "."
 
 interface CreateUserParams {
     given_name: string
@@ -7,24 +8,24 @@ interface CreateUserParams {
 }
 
 export interface AWSUserType {
-    User: { 
-       Attributes: [ 
-            { 
+    User: {
+        Attributes: [
+            {
                 Name: string,
                 Value: string
             }
-       ],
-       Enabled: boolean,
-       MFAOptions?: [ 
-            { 
+        ],
+        Enabled: boolean,
+        MFAOptions?: [
+            {
                 AttributeName?: string,
                 DeliveryMedium?: string
             }
-       ],
-       UserCreateDate: number,
-       UserLastModifiedDate: number,
-       Username: string,
-       UserStatus: string
+        ],
+        UserCreateDate: number,
+        UserLastModifiedDate: number,
+        Username: string,
+        UserStatus: string
     }
 }
 
@@ -32,109 +33,51 @@ interface AttributeType {
     Name: string, Value: string
 }
 
-const createUser = async (token: string, body: CreateUserParams) => {
-    const newlyCreatedUser = await fetch(`${API_BASE_NAME}/admin/createUser`, {
-        method: 'POST',
-        body: JSON.stringify(body),
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': token
-        }
-    })
+const createUser = async (orgId: string, body: CreateUserParams) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    const createUserResponse = client.organizationsOrgIdUsersPost({ orgId }, body)
 
-    if (newlyCreatedUser.status === 200) {
-        const user = await newlyCreatedUser.json()
-
-        return user
-    } else {
-        const error = await newlyCreatedUser.json()
-
-        throw `${newlyCreatedUser.status}: ${error.message}`
-    }
+    return handleApiResponse(createUserResponse)
 }
 
-const addUserToGroup = async (token: string, username: string, groupname: string) => {
-    const addUserToGroupResponse = await fetch(`${API_BASE_NAME}/admin/addUserToGroup`, {
-        method: 'POST',
-        body: JSON.stringify({ username, groupname }),
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': token
-        }
-    })
+const addUserToGroup = async (username: string, groupname: string) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    const addUserToGroupResponse = await client.adminProxyProxyOptions({ proxy: 'admin/addUserToGroup' }, { username, groupname })
 
-    if (addUserToGroupResponse.status === 200) {
-        const user = await addUserToGroupResponse.json()
-
-        return user
-    } else {
-        const error = await addUserToGroupResponse.json()
-
-        throw `${addUserToGroupResponse.status}: ${error.message}`
-    }
+    return handleApiResponse(addUserToGroupResponse)
 }
 
-const updateUserAttributes = async (token: string, attributes: AttributeType[], username: string) => {
-    const updatedAttributes = await fetch(`${API_BASE_NAME}/admin/updateUserAttributes`, {
-        method: 'POST',
-        body: JSON.stringify({ attributes, username }),
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': token
-        }
-    })
-
-    if (updatedAttributes.status === 200) {
-        const user = await updatedAttributes.json()
-
-        return user
-    } else {
-        const error = await updatedAttributes.json()
-
-        throw `${updatedAttributes.status}: ${error.message}`
-    }
+const updateUserAttributes = async (attributes: AttributeType[], username: string) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    const updateUserAttributesResponse = await client.adminProxyProxyOptions({ proxy: 'admin/updateUserAttributes' }, { username, attributes })
+    return handleApiResponse(updateUserAttributesResponse)
 }
 
-const updateUserProfileImage = async (token: string, file: File, key: string) => {
+const updateUserProfileImage = async (orgId: string, userId: string, file: File, key: string) => {
     const fileExtension = file.name.split('.').pop()
     const bucket = 'ridertracker.profileimages'
     const fileName = `${key}.${fileExtension}`
     const fullFileName = `${bucket}/${fileName}`
 
-    const newProfilePic = await fetch(`${API_BASE_NAME}/admin/s3/${fullFileName}`, {
-        method: 'PUT',
-        body: file,
-        headers: {
-            'Authorization': token
-        }
-    })
+    const { client } = await RiderTrackerAPI.getClient()
+    const updateUserProfileImageResponse = await client.adminProxyS3FolderObjectPut({ folder: bucket, object: fileName }, file)
 
-    if (newProfilePic.status === 200) {
-        await _updateImagesTable(token, key, { profileImageKey: fullFileName })
-        return true
-    }
-    
-    const error = await newProfilePic.json()
-
-    throw `${newProfilePic.status}: ${error.message}`
+    handleApiResponse(updateUserProfileImageResponse)
+    return updateUser(orgId, userId, { profileImageKey: fullFileName })
 }
 
-const _updateImagesTable = async (token: string, userId: string, body: { profileImageKey: string }) => {
-    await fetch(`${API_BASE_NAME}/images/users/${userId}`, {
-        method: 'PUT',
-        body: JSON.stringify(body),
-        headers: {
-            'Authorization': token,
-            'Content-Type': 'application/json'
-        }
-    })
+const updateUser = async (orgId: string, id: string, body: Record<string, string>) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    const updateUserResponse = await client.organizationsOrgIdUsersIdPut({ orgId, id }, body)
+
+    return handleApiResponse(updateUserResponse)
 }
 
 export interface AdminApiFunctionTypes {
-    createUser(token: string, body: CreateUserParams): Promise<AWSUserType>
-    updateUserProfileImage(token: string, body: File, key: string): Promise<boolean>
-    updateUserAttributes(token: string, body: AttributeType[], username: string): Promise<boolean>
-    addUserToGroup(token: string, username: string, groupname: string): Promise<boolean>
+    createUser(orgId: string, body: CreateUserParams): Promise<any>
+    updateUserProfileImage(orgId: string, userId: string, body: File, key: string): Promise<any>
+    updateUserAttributes(body: AttributeType[], username: string): Promise<any>
+    addUserToGroup(username: string, groupname: string): Promise<any>
 }
 
 export default {

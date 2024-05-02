@@ -1,28 +1,27 @@
 import AddressApis, { AddressApiFunctionTypes } from './AddressApis'
 import AdminApis, { AdminApiFunctionTypes } from './AdminApis'
 import BusApis, { BusApiFunctionTypes } from './BusApis'
-import DriverApis, { DriverApiFunctionTypes } from './DriverApis'
-import GuardianApis, { GuardianApiFunctionTypes } from './GuardianApis'
 import OrganizationApis, { OrganizationApiFunctionTypes } from './OrganizationApis'
 import RiderApis, { RiderApiFunctionTypes } from './RiderApis'
 import ScanApis, { ScanApiFunctionTypes } from './ScanApis'
 import SchoolApis, { SchoolApiFunctionTypes } from './SchoolApis'
 import StopApis, { StopApiFunctionTypes } from './StopApis'
 import UserApis, { UserApiFunctionTypes } from './UserApis'
+import { ApiGatewayClientType, generateApiGatewayClient } from '@/helpers/GenerateApiGatewayClient'
 
-export const API_BASE_NAME = 'https://gkupwyoi70.execute-api.us-west-2.amazonaws.com/dev' // this will need to change with environment
+export const API_BASE_NAME = 'https://uqz8uvqzcl.execute-api.us-west-2.amazonaws.com/DEV' // this will need to change with environment
 
 export interface ApiFunction {
     (...args: any[]): Promise<any>
 }
 
+let instance: RiderTrackerAPI;
+
 class RiderTrackerAPI {
-    token: string
+    client: ApiGatewayClientType
     addresses: AddressApiFunctionTypes
     admin: AdminApiFunctionTypes
     buses: BusApiFunctionTypes
-    drivers: DriverApiFunctionTypes
-    guardians: GuardianApiFunctionTypes
     organizations: OrganizationApiFunctionTypes
     riders: RiderApiFunctionTypes
     scans: ScanApiFunctionTypes
@@ -30,13 +29,11 @@ class RiderTrackerAPI {
     stops: StopApiFunctionTypes
     users: UserApiFunctionTypes
 
-    constructor(token: string) {
-        this.token = token
+    private constructor(newClient: ApiGatewayClientType) {
+        this.client = newClient
         this.addresses = AddressApis
         this.admin = AdminApis
         this.buses = BusApis
-        this.drivers = DriverApis
-        this.guardians = GuardianApis
         this.organizations = OrganizationApis
         this.riders = RiderApis
         this.scans = ScanApis
@@ -45,27 +42,14 @@ class RiderTrackerAPI {
         this.users = UserApis
     }
 
-    getToken() {
-        return this.token
-    }
-
-    async execute(apiFunction: ApiFunction, args: any[]) {
-        // Example use: api.execute(api.riders.getRidersForOrganization, [organizationId])
-        try {
-            if (!this.token) {
-                throw new SyntaxError('Missing Token! Is the API intialized?')
-            }
-            return await this.callApiFunction(apiFunction, args)
-        } catch (error) {
-            throw error
+    static async getClient() {
+        if (!instance) {
+            const newClient = await generateApiGatewayClient()
+            return new RiderTrackerAPI(newClient)
         }
-    }
 
-    private async callApiFunction(apiFunction: ApiFunction, args: any[]): Promise<any> {
-        const modifiedArgs = [this.token, ...args]
-        return await apiFunction(...modifiedArgs)
+        return instance
     }
-
 }
 
 export default RiderTrackerAPI

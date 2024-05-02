@@ -1,6 +1,7 @@
 export interface StopType {
     id: string
-    organizationId: string
+    orgId: string
     riderIds?: string[]
     stopName: string
+    address: string
 }

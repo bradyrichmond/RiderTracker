@@ -1,10 +1,10 @@
-import { AdminType } from "@/types/AdminType"
 import { Avatar, Box, Paper, Typography } from "@mui/material"
 import { useMemo } from "react"
 import PersonIcon from '@mui/icons-material/Person'
 import EmailIcon from '@mui/icons-material/Email'
+import { UserType } from "@/types/UserType"
 
-interface OrganizationAdminCardProps extends AdminType {
+interface OrganizationAdminCardProps extends UserType {
     index: number
 }
 

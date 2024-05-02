@@ -26,7 +26,7 @@ const StopsRiders = ({ stop, getStopData }: StopsRidersProps) => {
     const { id: stopId } = stop
     const { api } = useContext(ApiContext)
     const navigate = useNavigate()
-    const { heaviestRole } = useContext(RoleContext)
+    const { heaviestRole, organizationId } = useContext(RoleContext)
 
     useEffect(() => {
         updateRiders()
@@ -40,7 +40,7 @@ const StopsRiders = ({ stop, getStopData }: StopsRidersProps) => {
             const filteredRiderIds = stop.riderIds.filter((r) => r !== "")
 
             if (filteredRiderIds.length > 0) {
-                const riderData = await api.execute(api.riders.getBulkRidersById, [filteredRiderIds])
+                const riderData = await api.riders.getBulkRidersByIds(organizationId, filteredRiderIds)
                 setRiders(riderData)
                 return;
             }
@@ -50,7 +50,7 @@ const StopsRiders = ({ stop, getStopData }: StopsRidersProps) => {
     }
 
     const updateAllRiders = async () => {
-        const riderData = await api.execute(api.riders.getRidersForOrganization, [stop.organizationId])
+        const riderData = await api.riders.getRiders(organizationId)
 
         try {
             const mapped = riderData.map((r: RiderType) => {
@@ -69,30 +69,7 @@ const StopsRiders = ({ stop, getStopData }: StopsRidersProps) => {
 
     const submitAction = async (updatedStop: StopType) => {
         toggleShowModal()
-        await api.execute(api.stops.updateStop, [updatedStop])
-        if (updatedStop.riderIds) {
-            const riderToBeUpdated = updatedStop.riderIds.pop()
-            if (riderToBeUpdated) {
-                await addStopToRider(riderToBeUpdated)
-            }
-            updateRiders()
-        }
-    }
-
-    const addStopToRider = async (riderId: string) => {
-        const riderToUpdate = await api.execute(api.riders.getRiderById, [riderId])
-
-        if (riderToUpdate.stops) {
-            const stopsToUpdate = riderToUpdate.stops.filter((s: string) => s !== "")
-            stopsToUpdate.push(stop.id)
-            riderToUpdate.stops = stopsToUpdate
-        }
-
-        if (!riderToUpdate.stops) {
-            riderToUpdate.stops = [stop.id]
-        }
-
-        await api.execute(api.riders.updateRider, [riderToUpdate])
+        await api.stops.updateStop(organizationId, stopId, updatedStop)
     }
 
     const removeRiderFromStop = async (riderId: string) => {
@@ -100,18 +77,8 @@ const StopsRiders = ({ stop, getStopData }: StopsRidersProps) => {
         if (stopToUpdate.riderIds) {
             const newLinks = stopToUpdate.riderIds.filter((r) => r !== riderId)
             stopToUpdate.riderIds = newLinks.length > 0 ? newLinks : [""]
-            await api.execute(api.stops.updateStop, [stopToUpdate])
-            await removeStopFromRider(riderId)
+            await api.stops.updateStop(organizationId, stopId, stopToUpdate)
             updateRiders()
-        }
-    }
-
-    const removeStopFromRider = async (riderId: string) => {
-        const riderToUpdate = await api.execute(api.riders.getRiderById, [riderId])
-        if (riderToUpdate.stops) {
-            const newLinks = riderToUpdate.stops.filter((s: string) => s !== stop.id)
-            riderToUpdate.riderIds = newLinks.length > 0 ? newLinks : [""]
-            await api.execute(api.riders.updateRider, [riderToUpdate])
         }
     }
 

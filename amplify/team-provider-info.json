@@ -19,11 +19,18 @@
         }
       },
       "auth": {
-        "ridertrackerfrontend3ab46c03": {
+        "ridertrackerfrontendb87a9a5b": {
           "userPoolId": "us-west-2_ZUnF9FnC5",
           "userPoolName": "RiderTracker_DEV",
           "webClientId": "5s19cgoegpol3asnveoqbsgtjn",
-          "nativeClientId": "5s19cgoegpol3asnveoqbsgtjn"
+          "nativeClientId": "5s19cgoegpol3asnveoqbsgtjn",
+          "identityPoolId": "us-west-2:09d40f8d-3ba3-40f1-8859-75244478985b",
+          "identityPoolName": "RiderTracker_IdentityPool",
+          "allowUnauthenticatedIdentities": true,
+          "authRoleArn": "arn:aws:iam::459525634969:role/RiderTracker_Wizard",
+          "authRoleName": "RiderTracker_Wizard",
+          "unauthRoleArn": "arn:aws:iam::459525634969:role/service-role/RiderTracker_Unauthenticated",
+          "unauthRoleName": "RiderTracker_Unauthenticated"
         }
       }
     }

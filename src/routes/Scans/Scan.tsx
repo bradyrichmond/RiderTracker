@@ -6,18 +6,18 @@ import { useParams } from 'react-router-dom'
 import { ApiContext } from "@/contexts/ApiContextProvider"
 
 const Scan = () => {
-    const roleContext = useContext(RoleContext)
+    const { organizationId } = useContext(RoleContext)
     const [scan, setScan] = useState<ScanType>()
     const { id } = useParams()
     const { api } = useContext(ApiContext)
 
     useEffect(() => {
         getScanData()
-    }, [roleContext, id])
+    }, [id])
 
     const getScanData = async () => {
         if (id) {
-            const scanData = await api.execute(api.scans.getScanById, [id])
+            const scanData = await api.scans.getScanById(organizationId, id)
             setScan(scanData)
         }
     }
@@ -25,7 +25,7 @@ const Scan = () => {
     return (
         <Box height='100%'>
             <Typography>Scan Id: {scan?.id}</Typography>
-            <Typography>Organization: {scan?.organizationId}</Typography>
+            <Typography>Organization: {scan?.orgId}</Typography>
         </Box>
     )
 }

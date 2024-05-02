@@ -12,10 +12,10 @@ import InfoIcon from '@mui/icons-material/Info'
 import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove'
 import { OptionsType } from "@/types/FormTypes"
 import { RiderType } from "@/types/RiderType"
-import { DriverType } from "@/types/DriverType"
 import { useDeviceLocation } from "@/hooks/useDeviceLocation"
 import { locationFactory } from "./LocationFactory"
 import { AppShortcut } from "@mui/icons-material"
+import { UserType } from "@/types/UserType"
 
 const Scans = () => {
     const [scans, setScans] = useState<ScanType[]>([])
@@ -33,7 +33,7 @@ const Scans = () => {
     }, [organizationId])
 
     const updateAllRiders = async () => {
-        const riderData = await api.execute(organizationId ? api.riders.getRidersForOrganization : api.riders.getRiders, [organizationId])
+        const riderData = await api.riders.getRiders(organizationId)
 
         try {
             const mapped = riderData.map((r: RiderType) => {
@@ -47,21 +47,25 @@ const Scans = () => {
     }
 
     const updateAllDrivers = async () => {
-        const driverData = await api.execute(organizationId ? api.drivers.getDriversForOrganization : api.drivers.getDrivers, [organizationId])
+        const { driverIds } = await api.organizations.getOrganizationById(organizationId)
 
-        try {
-            const mapped = driverData.map((r: DriverType) => {
-                return { label: `${r.firstName} ${r.lastName}`, id: r.id }
-            })
-            
-            setDrivers(mapped)
-        } catch {
-            setDrivers([])
+        if (driverIds) {
+            const driverData = await api.users.getBulkUsersByIds(organizationId, driverIds)
+
+            try {
+                const mapped = driverData.map((r: UserType) => {
+                    return { label: `${r.firstName} ${r.lastName}`, id: r.id }
+                })
+                
+                setDrivers(mapped)
+            } catch {
+                setDrivers([])
+            }
         }
     }
 
     const getScansAction = async () => {
-        const scans = await api.execute(api.scans.getScansForOrganization, [organizationId ?? ''])
+        const scans = await api.scans.getScans(organizationId)
         setScans(scans)
     }
 
@@ -70,7 +74,7 @@ const Scans = () => {
     }
 
     const deleteScanAction = async (scanId: string) => {
-        await api.execute(api.scans.deleteScan, [scanId])
+        await api.scans.deleteScan(organizationId, scanId)
     }
 
     const createScan = async (newScan: ScanType) => {
@@ -78,7 +82,7 @@ const Scans = () => {
             const fetchedLocation = await getCurrentPosition()
             const generatedLocation = locationFactory(fetchedLocation)
             const scanWithLocation = { ...newScan, deviceLocationOnSubmit: generatedLocation, manualScan: true }
-            await api.execute(api.scans.createScan, [scanWithLocation])
+            await api.scans.createScan(organizationId, scanWithLocation)
         } catch (e) {
             console.log(e)
         }

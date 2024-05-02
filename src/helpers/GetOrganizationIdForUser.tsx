@@ -1,22 +1,22 @@
 import { RIDER_TRACKER_ROLES } from "@/constants/Roles"
 import * as orgApi from '@/API/OrganizationApis'
-import * as driverApi from '@/API/DriverApis'
-import * as guardianApi from '@/API/GuardianApis'
+import * as userApi from '@/API/UserApis'
 import { v4 as uuid } from 'uuid'
 import { OrganizationType } from "@/types/OrganizationType"
 
-export const getOrganizationIdForUser = async (token: string, userId: string, role: string): Promise<string | OrganizationType[]> => {
+export const getOrganizationIdForUser = async (userId: string, role: string): Promise<string | OrganizationType[]> => {
     switch (role) {
         case RIDER_TRACKER_ROLES.RIDER_TRACKER_WIZARD:
-            return await orgApi.default.getOrganizations(token)
+            const wizardData = await orgApi.default.getOrganizations()
+            return wizardData
         case RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN:
-            const adminData = await orgApi.default.getOrganizationAdminById(token, uuid(), userId)
+            const adminData = await userApi.default.getUserById(uuid(), userId)
             return adminData.organizationId
         case RIDER_TRACKER_ROLES.RIDER_TRACKER_DRIVER:
-            const driverData = await driverApi.default.getDriverById(token, userId)
+            const driverData = await userApi.default.getUserById(uuid(), userId)
             return driverData.organizationId
         case RIDER_TRACKER_ROLES.RIDER_TRACKER_DRIVER:
-            const guardianData = await guardianApi.default.getGuardianById(token, userId)
+            const guardianData = await userApi.default.getGuardianById(uuid(), userId)
             return guardianData.organizationId
         default:
             throw 'No org for this user'

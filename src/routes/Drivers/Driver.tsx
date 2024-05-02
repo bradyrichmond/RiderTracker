@@ -1,23 +1,23 @@
 import { Box, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
-import { RoleContext } from "../../contexts/RoleContextProvider"
 import { useParams } from 'react-router-dom'
-import { DriverType } from "../../types/DriverType"
 import { ApiContext } from "../../contexts/ApiContextProvider"
+import { UserType } from "@/types/UserType"
+import { RoleContext } from "@/contexts/RoleContextProvider"
 
 const Driver = () => {
-    const roleContext = useContext(RoleContext)
-    const [driver, setDriver] = useState<DriverType>()
+    const [driver, setDriver] = useState<UserType>()
     const { id } = useParams()
     const { api } = useContext(ApiContext)
+    const { organizationId } = useContext(RoleContext)
 
     useEffect(() => {
         getDriverData()
-    }, [roleContext, id])
+    }, [id])
 
     const getDriverData = async () => {
         if (id) {
-            const driverData = await api.execute(api.drivers.getDriverById, [id])
+            const driverData = await api.users.getUserById(organizationId, id)
             setDriver(driverData)
         }
     }
@@ -25,7 +25,7 @@ const Driver = () => {
     return (
         <Box height='100%'>
             <Typography>Driver Name: {driver?.firstName} {driver?.lastName}</Typography>
-            <Typography>Organization: {driver?.organizationId}</Typography>
+            <Typography>Organization: {driver?.orgId}</Typography>
         </Box>
     )
 }

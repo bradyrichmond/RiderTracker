@@ -16,10 +16,9 @@ const Riders = () => {
     const navigate = useNavigate()
     const { api } = useContext(ApiContext)
     const { heaviestRole, organizationId } = useContext(RoleContext)
-    const getRidersFunction = organizationId ? api.riders.getRidersForOrganization : api.riders.getRiders
 
     const getRidersAction = async () => {
-        const riders = await api.execute(getRidersFunction, [organizationId ?? ''])
+        const riders = await api.riders.getRiders(organizationId)
         setRiders(riders)
     }
 
@@ -28,11 +27,11 @@ const Riders = () => {
     }
 
     const deleteRiderAction = async (riderId: string) => {
-        await api.execute(api.riders.deleteRider, [riderId])
+        await api.riders.deleteRider(organizationId, riderId)
     }
 
     const createRider = async (newRider: RiderType) => {
-        await api.execute(api.riders.createRider, [newRider])
+        await api.riders.createRider(organizationId, newRider)
     }
 
     const generateGridColumns = (): GridColDef[] => {
@@ -80,7 +79,7 @@ const Riders = () => {
             createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_RIDER) ? createRider : undefined}
             entityFactory={riderFactory}
             getEntities={getRidersAction}
-            entities={riders}
+            entities={riders ?? []}
             modalFormInputs={{inputs: [
                 { name: "First Name" },
                 { name: "Last Name" }

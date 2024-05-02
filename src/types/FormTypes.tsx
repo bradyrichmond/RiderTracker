@@ -1,5 +1,5 @@
 export interface AddEntityModalProps<T> {
-    organizationId?: string
+    orgId?: string
     cancelAction: () => void
     entityFactory: (args: string[]) => T
     formDefaultValues: FormDataType

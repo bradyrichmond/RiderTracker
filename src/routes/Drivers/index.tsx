@@ -1,28 +1,30 @@
 import EntityViewer from "../../components/EntityViewer"
 import { useNavigate } from 'react-router-dom'
-import { DriverType } from "../../types/DriverType"
-import { driverFactory } from "./DriverFactory"
 import { useContext, useState } from "react"
 import { Alert, Button, Snackbar, Tooltip } from "@mui/material"
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
 import { ApiContext } from "../../contexts/ApiContextProvider"
 import { GridColDef } from '@mui/x-data-grid'
-import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "../../constants/Roles"
+import { RIDERTRACKER_PERMISSIONS_BY_ROLE, RIDER_TRACKER_ROLES, permissions } from "../../constants/Roles"
 import { RoleContext } from "../../contexts/RoleContextProvider"
+import { UserType } from "@/types/UserType"
+import { userFactory } from "../Settings/UserFactory"
 
 const Drivers = () => {
-    const [drivers, setDrivers] = useState<DriverType[]>([])
+    const [drivers, setDrivers] = useState<UserType[]>([])
     const [showErrorSnackbar, setShowErrorSnackBar] = useState(false)
     const [snackbarMessage, setSnackbarMessage] = useState('')
     const navigate = useNavigate()
     const { api } = useContext(ApiContext)
     const { heaviestRole, organizationId } = useContext(RoleContext)
-    const getDriversFunction = organizationId ? api.drivers.getDriversForOrganization : api.drivers.getDrivers
 
     const updateDriversAction = async () => {
-        const drivers = await api.execute(getDriversFunction, [organizationId ?? ''])
-        setDrivers(drivers)
+        const { driverIds } = await api.organizations.getOrganizationById(organizationId)
+        if (driverIds) {
+            const drivers = await api.users.getBulkUsersByIds(organizationId, driverIds)
+            setDrivers(drivers)
+        }
     }
 
     const viewDriverDetails = (driverId: string) => {
@@ -30,17 +32,28 @@ const Drivers = () => {
     }
 
     const deleteDriverAction = async (driverId: string) => {
-        await api.execute(api.drivers.deleteDriver, [driverId])
+        await api.users.deleteUser(organizationId, driverId)
         updateDriversAction()
     }
 
-    const createDriverAction = async (driver: DriverType) => {
+    const createDriverAction = async (driver: UserType) => {
         try {
-            const cognitoUser = await api.execute(api.admin.createUser, [{ given_name: driver.firstName, family_name: driver.lastName, email: driver.email }])
-            driver.id = cognitoUser.User.Attributes[0].Value
-            return await api.execute(api.drivers.createDriver, [driver])
-        } catch (e: any) {
-            setSnackbarMessage(e)
+            const cognitoUser = await api.admin.createUser(organizationId, { given_name: driver.firstName, family_name: driver.lastName, email: driver.email })
+            const cognitoUsername = cognitoUser.User.Username
+            await api.admin.addUserToGroup(cognitoUsername, RIDER_TRACKER_ROLES.RIDER_TRACKER_DRIVER)
+            driver.id = cognitoUsername
+
+            const { driverIds } = await api.organizations.getOrganizationById(organizationId)
+
+            if (driverIds) {
+                driverIds.push(cognitoUsername)
+            }
+
+            const drivers  = driverIds || [cognitoUsername]
+
+            await api.organizations.updateOrganization(organizationId, { driverIds: drivers })
+        } catch {
+            setSnackbarMessage('Failed to create driver')
             setShowErrorSnackBar(true)
         }
     }
@@ -99,9 +112,9 @@ const Drivers = () => {
                     {snackbarMessage}
                 </Alert>
             </Snackbar>
-            <EntityViewer<DriverType>
+            <EntityViewer<UserType>
                 createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_DRIVER) ? createDriverAction : undefined}
-                entityFactory={driverFactory}
+                entityFactory={userFactory}
                 getEntities={updateDriversAction}
                 entities={drivers}
                 modalFormInputs={{inputs: [

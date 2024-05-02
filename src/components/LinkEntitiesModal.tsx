@@ -1,53 +1,34 @@
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
-import { useState } from 'react'
-import { useFieldArray, useForm, Controller, FormProvider } from "react-hook-form"
-import { GuardianType } from "../types/GuardianType"
+import { Autocomplete, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, TextField } from '@mui/material'
+import { SyntheticEvent, useState } from 'react'
 import { RiderType } from "../types/RiderType"
-import { FormDataType } from '../types/FormTypes'
-import { pickRenderElement } from '../helpers/FormRenderHelpers'
+import { OptionsType } from '../types/FormTypes'
+import { GuardianType } from '@/types/UserType'
 
 interface LinkEntitiesModalProps<T> {
     cancelAction: () => void
     entity: T
-    entityFactory: (args: string[]) => T
-    formDefaultValues: FormDataType
-    submitAction: (newEntity: T) => Promise<void>
+    submitAction: (riderId: string) => Promise<void>
     title: string
     submitButtonText: string
     open: boolean
+    options: OptionsType[]
 }
 
 const LinkEntitiesModal = <T extends 
         GuardianType | RiderType>({ 
-        cancelAction, entity, entityFactory, formDefaultValues, submitAction, title, submitButtonText, open
+        cancelAction, submitAction, title, submitButtonText, open, options
     }: LinkEntitiesModalProps<T>) => {
     const [disableButtons, setDisabledButtons] = useState(false)
-    const formMethods = useForm<FormDataType>({
-        defaultValues: formDefaultValues
-    })
-
-    const {
-        control,
-        handleSubmit,
-        watch
-    } = formMethods
-
-    const { fields } = useFieldArray({
-        control,
-        name: "inputs"
-    })
-
-    const values = watch("inputs")
+    const [selectedRider, setSelectedRider] = useState('')
 
     const handleCreateEntity = () => {
         setDisabledButtons(true)
-        const newId = values[0].name
-        const oldLinkIds = entity.guardianRiderLinks
-        const newLinkIds = [...oldLinkIds, newId]
-        const filteredLinkIds = newLinkIds.filter((l) => l !== "")
-        const newEntity = entityFactory([entity.id, entity.organizationId, entity.firstName, entity.lastName])
-        newEntity.guardianRiderLinks = filteredLinkIds
-        submitAction(newEntity)   
+        submitAction(selectedRider)
+        setDisabledButtons(false)
+    }
+
+    const handleChange = (_e: SyntheticEvent, value: OptionsType | null) => {
+        setSelectedRider(value?.id ?? '')
     }
 
     return (
@@ -56,25 +37,30 @@ const LinkEntitiesModal = <T extends
             onClose={cancelAction}
             PaperProps={{
                 component: 'form',
-                onSubmit: handleSubmit(handleCreateEntity),
+                onSubmit: handleCreateEntity,
                 sx: { padding: '2rem', minWidth: '25%' }
             }}
         >
             <DialogTitle textAlign='center'>{title}</DialogTitle>
             <DialogContent>
-                <FormProvider {...formMethods} >
-                    {fields.map((field, index) => {
-                        return (
-                            <Box key={field.id} marginTop='2rem'>
-                                <Controller
-                                    render={() => pickRenderElement(field, index) }
-                                    name={`inputs.${index}.name`}
-                                    control={control}
-                                />
-                            </Box>
-                        )
-                    })}
-                </FormProvider>
+                <Box marginTop='2rem'>
+                <FormControl fullWidth>
+                    <Autocomplete
+                        id={`riderIdSelectAutoComplete`}
+                        options={options}
+                        getOptionLabel={(option: OptionsType) => option.label}
+                        filterSelectedOptions
+                        onChange={handleChange}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                label='riderIdSelect'
+                                id={`riderIdSelectLabel`}
+                            />
+                        )}
+                    />
+                </FormControl>
+                </Box>
             </DialogContent>
             <DialogActions sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
                 <Button disabled={disableButtons} variant='contained' onClick={cancelAction}>Cancel</Button>

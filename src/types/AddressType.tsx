@@ -2,7 +2,7 @@ import { LocationType } from "./LocationType"
 
 export interface AddressType {
     id: string
-    organizationId: string
+    orgId: string
     houseNumber: string
     street: string
     city: string

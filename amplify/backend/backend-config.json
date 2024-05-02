@@ -1,6 +1,6 @@
 {
   "auth": {
-    "ridertrackerfrontend3ab46c03": {
+    "ridertrackerfrontendb87a9a5b": {
       "customAuth": false,
       "dependsOn": [],
       "providerPlugin": "awscloudformation",
@@ -16,35 +16,91 @@
     }
   },
   "parameters": {
-    "AMPLIFY_auth_ridertrackerfrontend3ab46c03_nativeClientId": {
+    "AMPLIFY_auth_ridertrackerfrontendb87a9a5b_allowUnauthenticatedIdentities": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "ridertrackerfrontend3ab46c03"
+          "resourceName": "ridertrackerfrontendb87a9a5b"
         }
       ]
     },
-    "AMPLIFY_auth_ridertrackerfrontend3ab46c03_userPoolId": {
+    "AMPLIFY_auth_ridertrackerfrontendb87a9a5b_authRoleArn": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "ridertrackerfrontend3ab46c03"
+          "resourceName": "ridertrackerfrontendb87a9a5b"
         }
       ]
     },
-    "AMPLIFY_auth_ridertrackerfrontend3ab46c03_userPoolName": {
+    "AMPLIFY_auth_ridertrackerfrontendb87a9a5b_authRoleName": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "ridertrackerfrontend3ab46c03"
+          "resourceName": "ridertrackerfrontendb87a9a5b"
         }
       ]
     },
-    "AMPLIFY_auth_ridertrackerfrontend3ab46c03_webClientId": {
+    "AMPLIFY_auth_ridertrackerfrontendb87a9a5b_identityPoolId": {
       "usedBy": [
         {
           "category": "auth",
-          "resourceName": "ridertrackerfrontend3ab46c03"
+          "resourceName": "ridertrackerfrontendb87a9a5b"
+        }
+      ]
+    },
+    "AMPLIFY_auth_ridertrackerfrontendb87a9a5b_identityPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "ridertrackerfrontendb87a9a5b"
+        }
+      ]
+    },
+    "AMPLIFY_auth_ridertrackerfrontendb87a9a5b_nativeClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "ridertrackerfrontendb87a9a5b"
+        }
+      ]
+    },
+    "AMPLIFY_auth_ridertrackerfrontendb87a9a5b_unauthRoleArn": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "ridertrackerfrontendb87a9a5b"
+        }
+      ]
+    },
+    "AMPLIFY_auth_ridertrackerfrontendb87a9a5b_unauthRoleName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "ridertrackerfrontendb87a9a5b"
+        }
+      ]
+    },
+    "AMPLIFY_auth_ridertrackerfrontendb87a9a5b_userPoolId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "ridertrackerfrontendb87a9a5b"
+        }
+      ]
+    },
+    "AMPLIFY_auth_ridertrackerfrontendb87a9a5b_userPoolName": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "ridertrackerfrontendb87a9a5b"
+        }
+      ]
+    },
+    "AMPLIFY_auth_ridertrackerfrontendb87a9a5b_webClientId": {
+      "usedBy": [
+        {
+          "category": "auth",
+          "resourceName": "ridertrackerfrontendb87a9a5b"
         }
       ]
     },
