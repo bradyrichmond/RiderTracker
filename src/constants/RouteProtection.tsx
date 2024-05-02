@@ -3,7 +3,6 @@ import DirectionsBusIcon from '@mui/icons-material/DirectionsBus'
 import WorkIcon from '@mui/icons-material/Work'
 import ChildCareIcon from '@mui/icons-material/ChildCare'
 import ArticleIcon from '@mui/icons-material/Article'
-import CorporateFareIcon from '@mui/icons-material/CorporateFare'
 import PersonIcon from '@mui/icons-material/Person'
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew'
 import PlaceIcon from '@mui/icons-material/Place'
@@ -26,14 +25,6 @@ const ALL_ROUTES: string[] = [
     "/drivers/:id",
     "/guardians",
     "/guardians/:id",
-    "/organizations",
-    "/organizations/:id",
-    "/organizations/:id/buses",
-    "/organizations/:id/drivers",
-    "/organizations/:id/guardians",
-    "/organizations/:id/riders",
-    "/organizations/:id/scans",
-    "/organizations/:id/stops",
     "/settings",
     "/riders",
     "/riders/:id",
@@ -51,13 +42,6 @@ const ORG_ADMIN_ROUTES: string[] = [
     "/buses/:id",
     "/drivers/:id",
     "/guardians/:id",
-    "/organizations/:id",
-    "/organizations/:id/buses",
-    "/organizations/:id/drivers",
-    "/organizations/:id/guardians",
-    "/organizations/:id/riders",
-    "/organizations/:id/scans",
-    "/organizations/:id/stops",
     "/settings",
     "/riders/:id",
     "/riders/:id/scans",
@@ -73,8 +57,6 @@ const DRIVER_ROUTES: string[] = [
     "/buses/:id",
     "/drivers/:id",
     "/riders/:id",
-    "/organizations/:id/buses",
-    "/organizations/:id/drivers",
     "/settings"
 ]
 
@@ -82,7 +64,7 @@ const GUARDIAN_ROUTES: string[] = [
     "/",
     "/buses/:id",
     "/drivers/:id",
-    "/my-riders",
+    "/riders",
     "/settings",
     "/riders/:id"
 ]
@@ -102,11 +84,6 @@ const WIZARD_NAV_ITEMS: NavItemType[] = [
         path: '/guardians',
         label: 'Guardians',
         Icon: PersonIcon
-    },
-    {
-        path: '/organizations',
-        label: 'Organizations',
-        Icon: CorporateFareIcon
     },
     {
         path: '/riders',
