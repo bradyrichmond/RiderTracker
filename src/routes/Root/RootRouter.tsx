@@ -6,7 +6,7 @@ import { RoleContext } from "../../contexts/RoleContextProvider"
 import { createRouterObject } from "@/helpers/CreateRouterObject"
 import { AuthContext, nullUser } from "@/contexts/AuthContextProvider"
 import { getCurrentUser } from "@aws-amplify/auth"
-import Auth from "../Auth"
+import { createUnauthorizedRouterObject } from "@/helpers/CreateUnauthorizedRouterObject"
 
 const RootRouter = () => {
     const [isInitialized, setIsInitialized] = useState(false)
@@ -37,11 +37,11 @@ const RootRouter = () => {
         initialize()
     }, [initialize])
 
-    const router = useMemo(createRouterObject, [heaviestRole])
+    const router = useMemo(isInitialized ? createRouterObject : createUnauthorizedRouterObject, [heaviestRole])
 
     return (
         <>
-            {isInitialized ? <RouterProvider router={router} /> : <Auth />}
+            <RouterProvider router={router} />
         </>
     )
 }

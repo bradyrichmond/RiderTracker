@@ -17,6 +17,8 @@
     "@mui/icons-material": "^5.15.13",
     "@mui/material": "^5.15.14",
     "@mui/x-data-grid": "^7.0.0",
+    "@stripe/react-stripe-js": "^2.7.0",
+    "@stripe/stripe-js": "^3.3.0",
     "@types/react-router-dom": "^5.3.3",
     "aws-amplify": "^6.0.20",
     "haikunator": "^2.1.2",

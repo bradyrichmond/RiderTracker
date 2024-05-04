@@ -32,7 +32,7 @@ export const RoleContext = createContext({
 });
 
 export const RoleContextProvider = ({ children }: PropsWithChildren<{}>) => {
-    const [heaviestRole, setHeaviestRole] = useState("RiderTracker_Guardian")
+    const [heaviestRole, setHeaviestRole] = useState("RiderTracker_Unauthenticated")
     const [userFullName, setUserFullName] = useState("")
     const [userEmail, setUserEmail] = useState("")
     const [userId, setUserId] = useState("")
@@ -74,7 +74,9 @@ export const RoleContextProvider = ({ children }: PropsWithChildren<{}>) => {
     }
 
     useEffect(() => {
-        selectOrganizationAction()
+        if (userId) {
+            selectOrganizationAction()
+        }
     }, [userId, heaviestRole, idToken])
 
     useEffect(() => {

@@ -20,6 +20,7 @@ import Stop from "@/routes/Stops/Stop"
 import Schools from "@/routes/Schools"
 import School from "@/routes/Schools/School"
 import Settings from "@/routes/Settings"
+import Logout from "@/routes/Auth/Logout"
 
 export const createRouterObject = () => {
     return createBrowserRouter([{
@@ -54,6 +55,10 @@ export const createRouterObject = () => {
             {
                 path: '/guardians/:id',
                 element: <ProtectedRoute route='/guardians/:id'><Guardian /></ProtectedRoute>
+            },
+            {
+                path: '/logout',
+                element: <Logout />
             },
             {
                 path: '/my-riders',

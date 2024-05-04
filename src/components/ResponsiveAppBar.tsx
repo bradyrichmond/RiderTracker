@@ -44,7 +44,7 @@ const ResponsiveAppBar = () => {
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null)
     const navigate = useNavigate()
-    const { userFullName, userPictureUrl, heaviestRole } = useContext(RoleContext)
+    const { userFullName, userPictureUrl, heaviestRole, userId } = useContext(RoleContext)
     const routeProtection = ROUTE_PROTECTION.find((r) => r.name === heaviestRole)
     const pages = routeProtection?.navItems ?? []
     const settings = routeProtection?.settingsItems ?? []
@@ -159,39 +159,43 @@ const ResponsiveAppBar = () => {
                             ))}
                         </Box>
 
-                        <Box sx={{ flexGrow: 0 }}>
-                            <Tooltip title="Open settings">
-                                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                    <Avatar alt={userFullName} src={userPictureUrl}><PersonIcon /></Avatar>
-                                </IconButton>
-                            </Tooltip>
-                            <Menu
-                                sx={{ mt: '45px' }}
-                                id="menu-appbar"
-                                anchorEl={anchorElUser}
-                                anchorOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                keepMounted
-                                transformOrigin={{
-                                    vertical: 'top',
-                                    horizontal: 'right',
-                                }}
-                                open={Boolean(anchorElUser)}
-                                onClose={handleCloseUserMenu}
-                            >
-                                {settings.map(({ label, action, Component, path, Icon }) => {
-                                    return Component ? 
-                                        <Component key={label} />
-                                        :
-                                        <MenuItem key={label} onClick={action ? action : () => navigate(path)}>
-                                            <MenuItemWithIcon label={label} Icon={Icon} color={theme.palette.text.primary} />
-                                        </MenuItem>
-                                    }
-                                )}
-                            </Menu>
-                        </Box>
+                        {userId ?
+                            <Box sx={{ flexGrow: 0 }}>
+                                <Tooltip title="Open settings">
+                                    <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
+                                        <Avatar alt={userFullName} src={userPictureUrl}><PersonIcon /></Avatar>
+                                    </IconButton>
+                                </Tooltip>
+                                <Menu
+                                    sx={{ mt: '45px' }}
+                                    id="menu-appbar"
+                                    anchorEl={anchorElUser}
+                                    anchorOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    keepMounted
+                                    transformOrigin={{
+                                        vertical: 'top',
+                                        horizontal: 'right',
+                                    }}
+                                    open={Boolean(anchorElUser)}
+                                    onClose={handleCloseUserMenu}
+                                >
+                                    {settings.map(({ label, action, Component, path, Icon }) => {
+                                        return Component ? 
+                                            <Component key={label} />
+                                            :
+                                            <MenuItem key={label} onClick={action ? action : () => navigate(path)}>
+                                                <MenuItemWithIcon label={label} Icon={Icon} color={theme.palette.text.primary} />
+                                            </MenuItem>
+                                        }
+                                    )}
+                                </Menu>
+                            </Box>
+                            :
+                            null
+                        }
                     </Toolbar>
                 </Container>
             </AppBar>

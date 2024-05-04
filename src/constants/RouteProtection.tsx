@@ -7,7 +7,6 @@ import PersonIcon from '@mui/icons-material/Person'
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew'
 import PlaceIcon from '@mui/icons-material/Place'
 import SchoolIcon from '@mui/icons-material/School'
-import { signOut } from "@aws-amplify/auth"
 import { FC } from "react"
 import ToggleLightMode from "@/components/ToggleLightMode"
 import AccountBoxIcon from '@mui/icons-material/AccountBox'
@@ -184,8 +183,7 @@ const SETTINGS_NAV_ITEMS: SettingsItemType[] = [
         Icon: AccountBoxIcon
     },
     {
-        action: signOut,
-        path: '',
+        path: '/logout',
         label: 'Log Out',
         Icon: PowerSettingsNewIcon
     }
