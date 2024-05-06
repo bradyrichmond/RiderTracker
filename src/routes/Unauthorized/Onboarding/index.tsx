@@ -1,15 +1,13 @@
-import { Box, Button, Step, StepLabel, Stepper } from "@mui/material"
-import { useContext, useMemo, useState } from "react"
+import { Box, Button, Step, StepLabel, Stepper, Typography } from "@mui/material"
+import { useMemo, useState } from "react"
 import SetOrganizationName from "./SetOrganizationName"
 import { FormProvider, useForm } from "react-hook-form"
 import SetOrgSlug from "./SetOrgSlug"
-import { confirmSignUp, signUp } from "aws-amplify/auth"
+import { confirmSignUp, signIn, signUp } from "aws-amplify/auth"
 import CreateOrganizationAdmin from "./CreateOrganizationAdmin"
 import ConfirmOrganizationAdmin from "./ConfirmOrganizationAdmin"
 import { v4 as uuid } from 'uuid'
-import { RIDER_TRACKER_ROLES } from "@/constants/Roles"
 import RiderTrackerAPI from "@/API"
-import { RoleContext } from "@/contexts/RoleContextProvider"
 import OnboardingComplete from "./OnboardingComplete"
 
 interface StepType {
@@ -18,16 +16,16 @@ interface StepType {
 
 const steps: StepType[] = [
     {
-        label: 'Set Organization Name'
-    },
-    {
-        label: 'Set Organization Unique Identifier'
-    },
-    {
         label: 'Create an Organization Administrator'
     },
     {
         label: 'Confirm Administrator Account'
+    },
+    {
+        label: 'Set Organization Name'
+    },
+    {
+        label: 'Set Organization Unique Identifier'
     },
     {
         label: 'Onboarding Complete'
@@ -54,18 +52,10 @@ const Onboarding = () => {
     const [orgName, setOrgName] = useState('')
     const [isLoading, setIsLoading] = useState(false)
     const [tempOrgSlug, setTempOrgSlug] = useState('')
-    const [orgId, setOrgId] = useState('')
     const [newUserId, setNewUserId] = useState('')
     const [api, setApi] = useState<RiderTrackerAPI>()
-    const { updateUserData } = useContext(RoleContext)
 
-    const orgNameValue = watch("orgName")
-    const orgSlugValue = watch("orgSlug")
-    const adminFirstName = watch("adminFirstName")
-    const adminLastName = watch("adminLastName")
-    const adminEmail = watch("adminEmail")
-    const adminPassword = watch("adminPassword")
-    const confirmationCode = watch("confirmationCode")
+    const { orgName: orgNameValue, orgSlug: orgSlugValue, adminFirstName, adminLastName, adminEmail, adminPassword, confirmationCode } = watch()
 
     const getApi = async () => {
         const riderTrackerApi = await RiderTrackerAPI.getClient()
@@ -78,8 +68,25 @@ const Onboarding = () => {
 
     const handleNext = async () => {
         // TODO: Add form validation to rhf
-        
         if (activeStep === 0) {
+            setIsLoading(true)
+            await createNewAWSUser()
+            setIsLoading(false)
+            setActiveStep((current) => current + 1)
+
+            return
+        }
+
+        if (activeStep === 1) {
+            setIsLoading(true)
+            await confirmAwsUser()
+            setIsLoading(false)
+            setActiveStep((current) => current + 1)
+
+            return
+        }
+        
+        if (activeStep === 2) {
             if (orgNameValue.length > 3) {
                 setOrgName(orgNameValue)
                 generateOrgSlug(orgNameValue)
@@ -89,7 +96,7 @@ const Onboarding = () => {
             return
         }
         
-        if (activeStep === 1) {
+        if (activeStep === 3) {
             if (orgSlugValue.length > 3 && orgSlugValue.match(urlSafeMatch)) {
                 setIsLoading(true)
                 await createNewOrg(orgSlugValue)
@@ -100,28 +107,12 @@ const Onboarding = () => {
             return
         }
 
-        if (activeStep === 2) {
-            setIsLoading(true)
-            await createNewAWSUser()
-            setIsLoading(false)
-            setActiveStep((current) => current + 1)
-
-            return
-        }
-
-        if (activeStep === 3) {
-            setIsLoading(true)
-            await confirmAwsUser()
-            setIsLoading(false)
-            setActiveStep((current) => current + 1)
-
-            return
-        }
 
         if (activeStep === 4) {
-            setIsLoading(true)
-            await updateUserData()
-            setIsLoading(false)
+            const host = location.origin.split("//")[1]
+            const protocol = location.protocol
+            const newUrl = `${protocol}//${orgSlugValue}.${host}`
+            window.location.assign(newUrl)
 
             return
         }
@@ -134,7 +125,8 @@ const Onboarding = () => {
             options: {
                 userAttributes: {
                     given_name: adminFirstName,
-                    family_name: adminLastName
+                    family_name: adminLastName,
+                    email: adminEmail
                 },
                 autoSignIn: true
             }
@@ -145,32 +137,31 @@ const Onboarding = () => {
 
     const confirmAwsUser = async () => {
         await confirmSignUp({ username: newUserId, confirmationCode })
-        await createNewOrganizationUser()
+        await signIn({ username: newUserId, password: adminPassword })
     }
 
-    const createNewOrganizationUser = async () => {
+    const createNewOrganizationUser = async (orgId: string) => {
         await api?.admin.createUser(orgId, {
-            given_name: adminFirstName,
-            family_name: adminLastName,
+            id: newUserId,
+            orgId,
+            firstName: adminFirstName,
+            lastName: adminLastName,
             email: adminEmail
-        })
-
-        // authorization fails here,,,need to figure out making user org admin in order to update org
-        // modify lambda to allow if users is in adminIds?
-        await api?.admin.addUserToGroup(newUserId, RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN)
-        await api?.organizations.updateOrganization(orgId, { adminIds: [newUserId] })
+        }, { forceRefesh: true })
     }
 
     const createNewOrg = async (newOrgSlug: string) => {
         const newOrgId = uuid()
-        setOrgId(newOrgId)
 
         await api?.organizations.createOrganization({
             id: newOrgId,
             orgName,
             orgSlug: newOrgSlug,
-            loginImageKey: ""
+            loginImageKey: "",
+            adminIds: [newUserId]
         })
+
+        await createNewOrganizationUser(newOrgId)
     }
 
     const generateOrgSlug = (val: string) => {
@@ -198,10 +189,10 @@ const Onboarding = () => {
                             }
                         </Stepper>
                         <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            {activeStep === 0 ? <SetOrganizationName /> : null}
-                            {activeStep === 1 ? <SetOrgSlug slugSuggestion={tempOrgSlug} currentSlug={orgSlugValue} /> : null}
-                            {activeStep === 2 ? <CreateOrganizationAdmin /> : null}
-                            {activeStep === 3 ? <ConfirmOrganizationAdmin /> : null}
+                            {activeStep === 0 ? <CreateOrganizationAdmin /> : null}
+                            {activeStep === 1 ? <ConfirmOrganizationAdmin /> : null}
+                            {activeStep === 2 ? <SetOrganizationName /> : null}
+                            {activeStep === 3 ? <SetOrgSlug slugSuggestion={tempOrgSlug} currentSlug={orgSlugValue} /> : null}
                             {activeStep === 4 ? <OnboardingComplete /> : null }
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2, justifyContent: 'space-evenly' }}>
@@ -212,6 +203,7 @@ const Onboarding = () => {
                             >
                                 Back
                             </Button>
+                            <Typography>Step {activeStep + 1} of {steps.length}</Typography>
                             <Button onClick={handleNext} variant='contained' disabled={isLoading}>
                                 {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                             </Button>

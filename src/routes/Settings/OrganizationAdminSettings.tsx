@@ -7,8 +7,8 @@ import AddEntityModal from "@/components/AddEntityModal"
 import { userFactory } from "./UserFactory"
 import { FormDataType } from "@/types/FormTypes"
 import AddCircleIcon from '@mui/icons-material/AddCircle'
-import { AWSUserType } from "@/API/AdminApis"
-import { RIDER_TRACKER_ROLES } from "@/constants/Roles"
+// import { AWSUserType } from "@/API/AdminApis"
+// import { RIDER_TRACKER_ROLES } from "@/constants/Roles"
 import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
 import { UserType } from "@/types/UserType"
 
@@ -21,14 +21,18 @@ const OrganizationAdminSettings = () => {
 
     useEffect(() => {
         getAdmins()
-    }, [])
+    }, [organizationId])
 
     const getAdmins = async () => {
-        const { adminIds } = await api.organizations.getOrganizationById(organizationId)
+        try {
+            const { adminIds } = await api.organizations.getOrganizationById(organizationId)
 
-        if (adminIds){
-            const orgAdmins = await api.users.getBulkUsersByIds(organizationId, adminIds)
-            setAdmins(orgAdmins)
+            if (adminIds){
+                const orgAdmins = await api.users.getBulkUsersByIds(organizationId, adminIds)
+                setAdmins(orgAdmins)
+            }
+        } catch {
+            console.error('getadmins failed')
         }
     }
 
@@ -45,28 +49,29 @@ const OrganizationAdminSettings = () => {
         ]
     }
 
-    const createNewAdmin = async (newAdmin: UserType) => {
+    const createNewAdmin = async (_newAdmin: UserType) => {
         try {
             // TODO: Needs finer error management
-            const cognitoUser: AWSUserType = await api.admin.createUser(organizationId, { 
-                given_name: newAdmin.firstName,
-                family_name: newAdmin.lastName,
-                email: newAdmin.email
-            })
-            const cognitoUsername = cognitoUser.User.Username
-            await api.admin.addUserToGroup(cognitoUsername, RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN)
-            newAdmin.id = cognitoUsername
-            const { adminIds } = await api.organizations.getOrganizationById(organizationId)
+            // const cognitoUser: AWSUserType = await api.admin.createUser(organizationId, { 
+            //     given_name: newAdmin.firstName,
+            //     family_name: newAdmin.lastName,
+            //     email: newAdmin.email
+            // })
+            // const cognitoUsername = cognitoUser.User.Username
+            // await api.admin.addUserToGroup(cognitoUsername, RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN)
+            // newAdmin.id = cognitoUsername
+            // const { adminIds } = await api.organizations.getOrganizationById(organizationId)
 
-            if (adminIds) {
-                adminIds.push(cognitoUsername)
-            }
+            // if (adminIds) {
+            //     adminIds.push(cognitoUsername)
+            // }
 
-            const admins  = adminIds || [cognitoUsername]
+            // const admins  = adminIds || [cognitoUsername]
 
-            await api.organizations.updateOrganization(organizationId, { adminIds: admins })
-            getAdmins()
-            toggleShowModal()
+            // await api.organizations.updateOrganization(organizationId, { adminIds: admins })
+            // getAdmins()
+            // toggleShowModal()
+            throw 'Create user disabled'
         } catch (e) {
             console.error(e)
             showCreateAdminErrorSnackbar()

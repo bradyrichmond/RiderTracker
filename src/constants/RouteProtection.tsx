@@ -38,13 +38,18 @@ const ALL_ROUTES: string[] = [
 
 const ORG_ADMIN_ROUTES: string[] = [
     "/",
+    "/buses",
     "/buses/:id",
+    "/drivers",
     "/drivers/:id",
+    "/guardians",
     "/guardians/:id",
     "/settings",
+    "/riders",
     "/riders/:id",
-    "/riders/:id/scans",
+    "/scans",
     "/scans/:id",
+    "/stops",
     "/stops/:id",
     "/schools",
     "/schools/:id"
@@ -108,27 +113,27 @@ const WIZARD_NAV_ITEMS: NavItemType[] = [
 
 const ORG_ADMIN_NAV_ITEMS: NavItemType[] = [
     {
-        path: '/organizations/:id/buses',
+        path: '/buses',
         label: 'Buses',
         Icon: DirectionsBusIcon
     },
     {
-        path: '/organizations/:id/drivers',
+        path: '/drivers',
         label: 'Drivers',
         Icon: WorkIcon
     },
     {
-        path: '/organizations/:id/guardians',
+        path: '/guardians',
         label: 'Guardians',
         Icon: PersonIcon
     },
     {
-        path: '/organizations/:id/riders',
+        path: '/riders',
         label: 'Riders',
         Icon: ChildCareIcon
     },
     {
-        path: '/organizations/:id/scans',
+        path: '/scans',
         label: 'Scans',
         Icon: ArticleIcon
     },
@@ -138,7 +143,7 @@ const ORG_ADMIN_NAV_ITEMS: NavItemType[] = [
         Icon: SchoolIcon
     },
     {
-        path: '/organizations/:id/stops',
+        path: '/stops',
         label: 'Stops',
         Icon: PlaceIcon
     }
@@ -146,17 +151,17 @@ const ORG_ADMIN_NAV_ITEMS: NavItemType[] = [
 
 const DRIVER_NAV_ITEMS: NavItemType[] = [
     {
-        path: '/organizations/:id/buses',
+        path: '/buses',
         label: 'Buses',
         Icon: DirectionsBusIcon
     },
     {
-        path: '/organizations/:id/drivers',
+        path: '/drivers',
         label: 'Drivers',
         Icon: WorkIcon
     },
     {
-        path: '/organizations/:id/riders',
+        path: '/riders',
         label: 'Riders',
         Icon: ChildCareIcon
     }

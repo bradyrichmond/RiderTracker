@@ -2,9 +2,13 @@ import { handleApiResponse } from "@/helpers/ApiHelpers"
 import RiderTrackerAPI from "."
 
 interface CreateUserParams {
-    given_name: string
-    family_name: string
+    id: string
+    orgId: string
+    firstName: string
+    lastName: string
     email: string
+    stopIds?: string[]
+    address?: string
 }
 
 export interface AWSUserType {
@@ -33,9 +37,9 @@ interface AttributeType {
     Name: string, Value: string
 }
 
-const createUser = async (orgId: string, body: CreateUserParams) => {
-    const { client } = await RiderTrackerAPI.getClient()
-    const createUserResponse = client.organizationsOrgIdUsersPost({ orgId }, body)
+const createUser = async (orgId: string, body: CreateUserParams, options?: Record<string, boolean>) => {
+    const { client } = await RiderTrackerAPI.getClient(options?.forceRefresh)
+    const createUserResponse = await client.organizationsOrgIdUsersPost({ orgId }, { ...body, stopIds: [""] })
 
     return handleApiResponse(createUserResponse)
 }
@@ -74,7 +78,7 @@ const updateUser = async (orgId: string, id: string, body: Record<string, string
 }
 
 export interface AdminApiFunctionTypes {
-    createUser(orgId: string, body: CreateUserParams): Promise<any>
+    createUser(orgId: string, body: CreateUserParams, options?: Record<string, boolean>): Promise<any>
     updateUserProfileImage(orgId: string, userId: string, body: File, key: string): Promise<any>
     updateUserAttributes(body: AttributeType[], username: string): Promise<any>
     addUserToGroup(username: string, groupname: string): Promise<any>

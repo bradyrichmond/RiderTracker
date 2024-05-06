@@ -2,9 +2,9 @@ import { fetchAuthSession } from "@aws-amplify/auth"
 
 export type ApiGatewayClientType = ReturnType<typeof apigClientFactory.newClient>
 
-export const generateApiGatewayClient = async(): Promise<ApiGatewayClientType> => {
+export const generateApiGatewayClient = async(refreshUserCreds?: boolean): Promise<ApiGatewayClientType> => {
     try {
-        const session = await fetchAuthSession()
+        const session = await fetchAuthSession({ forceRefresh: refreshUserCreds })
 
         const { credentials } = session
         if (credentials) {

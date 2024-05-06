@@ -11,13 +11,13 @@ export const getOrganizationIdForUser = async (userId: string, role: string): Pr
             return wizardData
         case RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN:
             const adminData = await userApi.default.getUserById(uuid(), userId)
-            return adminData.organizationId
+            return adminData.orgId
         case RIDER_TRACKER_ROLES.RIDER_TRACKER_DRIVER:
             const driverData = await userApi.default.getUserById(uuid(), userId)
-            return driverData.organizationId
-        case RIDER_TRACKER_ROLES.RIDER_TRACKER_DRIVER:
+            return driverData.orgId
+        case RIDER_TRACKER_ROLES.RIDER_TRACKER_GUARDIAN:
             const guardianData = await userApi.default.getGuardianById(uuid(), userId)
-            return guardianData.organizationId
+            return guardianData.orgId
         default:
             throw 'No org for this user'
     }

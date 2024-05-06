@@ -33,9 +33,9 @@ const getGuardianById = async (orgId: string, id: string) => {
     return handleApiResponse(getGuardianResponse)
 }
 
-const getUserProfileImage = async ({ params, body, options }: RequestType) => {
+const getUserProfileImage = async (orgId: string, userId: string) => {
     const api = await RiderTrackerAPI.getClient()
-    const profileImageResponse = await api.client.organizationsOrgIdUsersIdGet(params, body, options)
+    const profileImageResponse = await api.client.organizationsOrgIdUsersIdGet({ orgId, id: userId })
 
     const response = handleApiResponse(profileImageResponse)
 

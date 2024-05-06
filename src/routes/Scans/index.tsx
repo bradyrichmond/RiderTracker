@@ -47,20 +47,24 @@ const Scans = () => {
     }
 
     const updateAllDrivers = async () => {
-        const { driverIds } = await api.organizations.getOrganizationById(organizationId)
+        try {
+            const { driverIds } = await api.organizations.getOrganizationById(organizationId)
 
-        if (driverIds) {
-            const driverData = await api.users.getBulkUsersByIds(organizationId, driverIds)
+            if (driverIds) {
+                const driverData = await api.users.getBulkUsersByIds(organizationId, driverIds)
 
-            try {
-                const mapped = driverData.map((r: UserType) => {
-                    return { label: `${r.firstName} ${r.lastName}`, id: r.id }
-                })
-                
-                setDrivers(mapped)
-            } catch {
-                setDrivers([])
+                try {
+                    const mapped = driverData.map((r: UserType) => {
+                        return { label: `${r.firstName} ${r.lastName}`, id: r.id }
+                    })
+                    
+                    setDrivers(mapped)
+                } catch {
+                    setDrivers([])
+                }
             }
+        } catch {
+            console.error('update all drivers failed')
         }
     }
 

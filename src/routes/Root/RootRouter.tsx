@@ -1,47 +1,58 @@
 import {
     RouterProvider
 } from "react-router-dom"
-import { useCallback, useContext, useEffect, useMemo, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { RoleContext } from "../../contexts/RoleContextProvider"
-import { createRouterObject } from "@/helpers/CreateRouterObject"
-import { AuthContext, nullUser } from "@/contexts/AuthContextProvider"
-import { getCurrentUser } from "@aws-amplify/auth"
 import { createUnauthorizedRouterObject } from "@/helpers/CreateUnauthorizedRouterObject"
+import { createRouterObject } from "@/helpers/CreateRouterObject"
+import { Hub } from "aws-amplify/utils"
+import { fetchAuthSession } from "aws-amplify/auth"
+
+const authRouter = createRouterObject()
+const unauthRouter = createUnauthorizedRouterObject()
 
 const RootRouter = () => {
-    const [isInitialized, setIsInitialized] = useState(false)
-    const { heaviestRole, updateUserData } = useContext(RoleContext)
-    const { user, setUser } = useContext(AuthContext)
+    const [router, setRouter] = useState<'auth' | 'unauth'>('unauth')
+    const { updateUserData } = useContext(RoleContext)
 
     useEffect(() => {
-        getUser()
+        // @ts-ignore
+        const cleanup = Hub.listen('auth', ({ payload: { event, data } }) => {
+            console.log(`Auth listener heard ${event}`)
+
+            switch (event) {
+                case "signedIn":
+                    updateUserData()
+                    setRouter('auth')
+                    break
+                case  "signedOut":
+                    setRouter('unauth')
+                    break
+                default:
+                    console.log(`Auth listener event complete`)
+            }
+        })
+
+        checkForLoggedInUser()
+        return () => {
+            cleanup()
+        }
     }, [])
-  
-    const getUser = async () => {
-        try {
-            const currentUser = await getCurrentUser()
-            setUser(currentUser)
-        } catch (e) {
-            setUser(nullUser)
+
+    const checkForLoggedInUser = async () => {
+        const session = await fetchAuthSession()
+        if (session.tokens) {
+            setRouter('auth')
         }
     }
 
-    const initialize = useCallback(async () => {
-        if (user !== nullUser) {
-            await updateUserData()
-            setIsInitialized(true)
-        }
-    }, [user])
-
-    useEffect(() => {
-        initialize()
-    }, [initialize])
-
-    const router = useMemo(isInitialized ? createRouterObject : createUnauthorizedRouterObject, [heaviestRole])
-
     return (
         <>
-            <RouterProvider router={router} />
+            {router === 'auth'?
+                <RouterProvider router={authRouter} />
+                :
+                <RouterProvider router={unauthRouter} />
+            }
         </>
     )
 }

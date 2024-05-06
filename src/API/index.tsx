@@ -42,9 +42,9 @@ class RiderTrackerAPI {
         this.users = UserApis
     }
 
-    static async getClient() {
+    static async getClient(refreshUserCreds?: boolean) {
         if (!instance) {
-            const newClient = await generateApiGatewayClient()
+            const newClient = await generateApiGatewayClient(refreshUserCreds)
             return new RiderTrackerAPI(newClient)
         }
 

@@ -8,7 +8,6 @@ import Guardian from '@/routes/Guardians/Guardian'
 import Guardians from '@/routes/Guardians'
 import Home from '@/routes/Root/Home'
 import Scans from '@/routes/Scans'
-import MyRiders from '@/routes/Riders/MyRiders'
 import ProtectedRoute from '@/routes/Protected/ProtectedRoute'
 import Rider from '@/routes/Riders/Rider'
 import Riders from '@/routes/Riders'
@@ -21,6 +20,7 @@ import Schools from "@/routes/Schools"
 import School from "@/routes/Schools/School"
 import Settings from "@/routes/Settings"
 import Logout from "@/routes/Auth/Logout"
+import Auth from "@/routes/Auth"
 
 export const createRouterObject = () => {
     return createBrowserRouter([{
@@ -57,12 +57,12 @@ export const createRouterObject = () => {
                 element: <ProtectedRoute route='/guardians/:id'><Guardian /></ProtectedRoute>
             },
             {
-                path: '/logout',
-                element: <Logout />
+                path: '/login',
+                element: <Auth />
             },
             {
-                path: '/my-riders',
-                element: <ProtectedRoute route='/my-riders'><MyRiders /></ProtectedRoute>
+                path: '/logout',
+                element: <Logout />
             },
             {
                 path: '/settings',

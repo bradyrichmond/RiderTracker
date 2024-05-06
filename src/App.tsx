@@ -6,7 +6,6 @@ import RootRouter from './routes/Root/RootRouter'
 import { ApiContextProvider } from './contexts/ApiContextProvider'
 import ThemeContextProvider from './contexts/ThemeContextProvider'
 import { SnackbarContextProvider } from './contexts/SnackbarContextProvider'
-import { AuthContextProvider } from './contexts/AuthContextProvider'
 
 function App() {
   return (
@@ -15,9 +14,7 @@ function App() {
         <RoleContextProvider>
           <ThemeContextProvider>
             <SnackbarContextProvider>
-              <AuthContextProvider>
-                <RootRouter />
-              </AuthContextProvider>
+              <RootRouter />
             </SnackbarContextProvider>
           </ThemeContextProvider>
         </RoleContextProvider>

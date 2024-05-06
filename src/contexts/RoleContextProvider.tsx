@@ -2,12 +2,13 @@ import { createContext, useContext, useEffect } from "react"
 import { getHeaviestRole } from "@/helpers/GetHeaviestRole"
 import { RiderTrackerRole, isRiderTrackerRole } from "@/constants/Roles"
 import { PropsWithChildren, useState } from "react"
-import { fetchAuthSession, fetchUserAttributes } from "@aws-amplify/auth"
+import { fetchAuthSession } from "@aws-amplify/auth"
 import { ApiContext } from "./ApiContextProvider"
 import RiderTrackerAPI from "@/API"
 import { getOrganizationIdForUser } from "@/helpers/GetOrganizationIdForUser"
 import OrganizationPickerDialog from "@/components/OrganizationPickerDialog"
 import { OrganizationType } from "@/types/OrganizationType"
+import { signOut } from "aws-amplify/auth"
 
 export const RoleContext = createContext({
     heaviestRole: 'RiderTracker_Guardian',
@@ -47,30 +48,27 @@ export const RoleContextProvider = ({ children }: PropsWithChildren<{}>) => {
     const { api, setApi } = useContext(ApiContext)
 
     const updateUserData = async () => {
-        const session = await fetchAuthSession()
-        setUserId(session.userSub ?? '')
-        const idToken = session.tokens?.idToken
-        setIdToken(idToken?.toString() ?? '')
-        const userAccessToken = session.tokens?.accessToken
-        setAccessToken(userAccessToken?.toString() ?? '')
-        const sessionGroups = idToken?.payload["cognito:roles"]
-        const sessionGroupsArray = sessionGroups as Array<string>
-        setUserEmail(idToken?.payload.email?.toString() ?? '')
-        const trimmedGroups: RiderTrackerRole[] = []
+        try {
+            const session = await fetchAuthSession()
+            setUserId(session.userSub ?? '')
+            const idToken = session.tokens?.idToken
+            setIdToken(idToken?.toString() ?? '')
+            const userAccessToken = session.tokens?.accessToken
+            setAccessToken(userAccessToken?.toString() ?? '')
+            const sessionGroups = idToken?.payload["cognito:groups"]
+            const sessionGroupsArray = (sessionGroups as Array<string>).filter((s) => isRiderTrackerRole(s))
+            setUserEmail(idToken?.payload.email?.toString() ?? '')
 
-        sessionGroupsArray.forEach((sg) => {
-            const trimmed = sg.split('/')[1]
+            const heaviestRoleFromGroups: RiderTrackerRole = getHeaviestRole(sessionGroupsArray ?? [])
+            setHeaviestRole(heaviestRoleFromGroups)
+            // @ts-ignore 
+            const { given_name, family_name } = session.tokens?.idToken?.payload
+            setUserFullName(`${given_name} ${family_name}`)
 
-            if (isRiderTrackerRole(trimmed)) {
-                trimmedGroups.push(trimmed)
-            }
-        })
-
-        const heaviestRoleFromGroups: RiderTrackerRole = getHeaviestRole(trimmedGroups ?? [])
-        setHeaviestRole(heaviestRoleFromGroups)
-
-        initializeApi()
-        await initializeUserData()
+            initializeApi()
+        } catch {
+            signOut()
+        }
     }
 
     useEffect(() => {
@@ -86,38 +84,38 @@ export const RoleContextProvider = ({ children }: PropsWithChildren<{}>) => {
     }, [api, userId, organizationId])
 
     const updateImages = async () => {
-        const profileImageKey = await api.users.getUserProfileImage({ params: { orgId: organizationId, id: userId } })
-        const { loginImageKey } = await api.organizations.getOrganizationById(organizationId)
-        setUserPictureUrl(`https://s3.us-west-2.amazonaws.com/${profileImageKey}`)
-        setOrganizationLoginImageUrl(`https://s3.us-west-2.amazonaws.com/${loginImageKey}`)
+        try {
+            const profileImageKey = await api.users.getUserProfileImage({ params: { orgId: organizationId, id: userId } })
+            setUserPictureUrl(`https://s3.us-west-2.amazonaws.com/${profileImageKey}`)
+            const { loginImageKey } = await api.organizations.getOrganizationById(organizationId)
+            if (loginImageKey) {
+                setOrganizationLoginImageUrl(`https://s3.us-west-2.amazonaws.com/${loginImageKey}`)
+            }
+        } catch {
+            console.error('unable to update images')
+        }
     }
 
     const selectOrganizationAction = async () =>{
-        if (userId && heaviestRole) {
-            const orgId = await getOrganizationIdForUser(userId, heaviestRole)
-            if (Array.isArray(orgId)) {
-                setOrganizationArray(orgId)
-                toggleShowOrganizationSelector()
-                return
-            }
+        try {
+            if (userId && heaviestRole) {
+                const orgId = await getOrganizationIdForUser(userId, heaviestRole)
+                if (Array.isArray(orgId)) {
+                    setOrganizationArray(orgId)
+                    toggleShowOrganizationSelector()
+                    return
+                }
 
-            setOrganizationId(orgId)
+                setOrganizationId(orgId)
+            }
+        } catch (e) {
+            console.error(e as string)
         }
     }
 
     const initializeApi = async () => {
         const apiInstance = await RiderTrackerAPI.getClient()
         setApi(apiInstance)
-    }
-
-    const initializeUserData = async () => {
-        try {
-            const userAttributes = await fetchUserAttributes();
-            const { given_name, family_name } = userAttributes
-            setUserFullName(`${given_name} ${family_name}`)
-        } catch (err) {
-            console.log(err)
-        }
     }
 
     const toggleShowOrganizationSelector = () => {

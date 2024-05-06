@@ -8,8 +8,9 @@ import bg4 from './images/bg4.jpg'
 import bg5 from './images/bg5.jpg'
 import bg6 from './images/bg6.jpg'
 import LoginForm from "./LoginForm"
-import { AuthContext } from "@/contexts/AuthContextProvider"
-import { getCurrentUser } from "@aws-amplify/auth"
+import { fetchAuthSession } from "aws-amplify/auth"
+import { RoleContext } from "@/contexts/RoleContextProvider"
+import { useNavigate } from "react-router-dom"
 
 const bgImages = [
     bg0,
@@ -24,31 +25,28 @@ const bgImages = [
 const Auth = () => {
     const [image, setImage] = useState('')
     const [isLoading, setIsLoading] = useState(true)
-    const { setUser } = useContext(AuthContext)
     const theme = useTheme()
+    const { setUserId } = useContext(RoleContext)
+    const navigate = useNavigate()
 
     useEffect(() => {
-        checkForLoggedInUser()
         const randomImageIndex = Math.floor(Math.random() * bgImages.length)
         setImage(bgImages[randomImageIndex])
+        checkForLoggedInUser()
         // magic number for preventing flash of login screen
         setTimeout(hideLoading, 2000)
     }, [])
 
-    const hideLoading = () => {
-        setIsLoading(false)
+    const checkForLoggedInUser = async () => {
+        const session = await fetchAuthSession()
+        if (session.userSub) {
+            setUserId(session.userSub)
+            navigate("/")
+        }
     }
 
-    const checkForLoggedInUser = async () => {
-        try {
-            const currentUser = await getCurrentUser()
-
-            if (currentUser.userId) {
-                setUser(currentUser)
-            }
-        } catch (e) {
-            console.error(e)
-        }
+    const hideLoading = () => {
+        setIsLoading(false)
     }
 
     return (
