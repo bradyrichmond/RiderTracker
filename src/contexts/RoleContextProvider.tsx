@@ -85,7 +85,7 @@ export const RoleContextProvider = ({ children }: PropsWithChildren<{}>) => {
 
     const updateImages = async () => {
         try {
-            const profileImageKey = await api.users.getUserProfileImage({ params: { orgId: organizationId, id: userId } })
+            const profileImageKey = await api.users.getUserProfileImage(organizationId, userId)
             setUserPictureUrl(`https://s3.us-west-2.amazonaws.com/${profileImageKey}`)
             const { loginImageKey } = await api.organizations.getOrganizationById(organizationId)
             if (loginImageKey) {

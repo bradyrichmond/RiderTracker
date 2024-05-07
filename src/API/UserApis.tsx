@@ -1,4 +1,3 @@
-import { RequestType } from "@/types/RequestType"
 import { updatePassword } from "@aws-amplify/auth"
 import RiderTrackerAPI from "."
 import { GuardianType, UserType } from "@/types/UserType"
@@ -66,7 +65,7 @@ const updateUser = async (orgId: string, id: string, body: Record<string, string
 
 export interface UserApiFunctionTypes {
     changeUserPassword(previousPassword: string, proposedPassword: string): Promise<void>
-    getUserProfileImage(args: RequestType): Promise<string>
+    getUserProfileImage(orgId: string, userId: string): Promise<string>
     getUsers(orgId: string): Promise<UserType[]>
     getUserById(orgId: string, id: string): Promise<UserType>
     getGuardianById(orgId: string, id: string): Promise<GuardianType>

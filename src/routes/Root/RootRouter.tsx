@@ -43,6 +43,7 @@ const RootRouter = () => {
         const session = await fetchAuthSession()
         if (session.tokens) {
             setRouter('auth')
+            updateUserData()
         }
     }
 
