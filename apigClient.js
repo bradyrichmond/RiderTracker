@@ -83,13 +83,13 @@ apigClientFactory.newClient = function (config) {
     
     
     
-    apigClient.adminProxyS3FolderObjectPut = function (params, body, additionalParams) {
+    apigClient.adminProxyS3FolderObjectGet = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
         apiGateway.core.utils.assertParametersDefined(params, ['object', 'folder'], ['body']);
         
-        var adminProxyS3FolderObjectPutRequest = {
-            verb: 'put'.toUpperCase(),
+        var adminProxyS3FolderObjectGetRequest = {
+            verb: 'get'.toUpperCase(),
             path: pathComponent + uritemplate('/admin-proxy/s3/{folder}/{object}').expand(apiGateway.core.utils.parseParametersToObject(params, ['object', 'folder'])),
             headers: apiGateway.core.utils.parseParametersToObject(params, []),
             queryParams: apiGateway.core.utils.parseParametersToObject(params, []),
@@ -97,7 +97,7 @@ apigClientFactory.newClient = function (config) {
         };
         
         
-        return apiGatewayClient.makeRequest(adminProxyS3FolderObjectPutRequest, authType, additionalParams, config.apiKey);
+        return apiGatewayClient.makeRequest(adminProxyS3FolderObjectGetRequest, authType, additionalParams, config.apiKey);
     };
     
     
@@ -1253,13 +1253,13 @@ apigClientFactory.newClient = function (config) {
     };
     
     
-    apigClient.publicOrganizationsOrgSlugPost = function (params, body, additionalParams) {
+    apigClient.publicOrganizationsOrgSlugGet = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
         apiGateway.core.utils.assertParametersDefined(params, ['orgSlug'], ['body']);
         
-        var publicOrganizationsOrgSlugPostRequest = {
-            verb: 'post'.toUpperCase(),
+        var publicOrganizationsOrgSlugGetRequest = {
+            verb: 'get'.toUpperCase(),
             path: pathComponent + uritemplate('/public/organizations/{orgSlug}').expand(apiGateway.core.utils.parseParametersToObject(params, ['orgSlug'])),
             headers: apiGateway.core.utils.parseParametersToObject(params, []),
             queryParams: apiGateway.core.utils.parseParametersToObject(params, []),
@@ -1267,7 +1267,7 @@ apigClientFactory.newClient = function (config) {
         };
         
         
-        return apiGatewayClient.makeRequest(publicOrganizationsOrgSlugPostRequest, authType, additionalParams, config.apiKey);
+        return apiGatewayClient.makeRequest(publicOrganizationsOrgSlugGetRequest, authType, additionalParams, config.apiKey);
     };
     
     

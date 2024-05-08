@@ -1,4 +1,3 @@
-import '@aws-amplify/ui-react/styles.css'
 import './index.css'
 import { Box } from '@mui/material'
 import { RoleContextProvider } from './contexts/RoleContextProvider'

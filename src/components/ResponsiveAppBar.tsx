@@ -11,7 +11,6 @@ import Button from '@mui/material/Button'
 import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import AdbIcon from '@mui/icons-material/Adb'
-import PersonIcon from '@mui/icons-material/Person'
 import { ComponentType, MouseEvent, useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { RoleContext } from '../contexts/RoleContextProvider'
@@ -161,9 +160,9 @@ const ResponsiveAppBar = () => {
 
                         {userId ?
                             <Box sx={{ flexGrow: 0 }}>
-                                <Tooltip title="Open settings">
+                                <Tooltip title={`Open settings`}>
                                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                        <Avatar alt={userFullName} src={userPictureUrl}><PersonIcon /></Avatar>
+                                        <Avatar alt={userFullName} src={userPictureUrl} />
                                     </IconButton>
                                 </Tooltip>
                                 <Menu

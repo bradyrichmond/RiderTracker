@@ -1,10 +1,28 @@
+import { RoleContext } from "@/contexts/RoleContextProvider"
 import { Box, CircularProgress, Typography } from "@mui/material"
 import { signOut } from "aws-amplify/auth"
-import { useEffect } from "react"
+import { Hub } from "aws-amplify/utils"
+import { useContext, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
 
 const Logout = () => {
+    const { setUserId } = useContext(RoleContext)
+    const navigate = useNavigate()
+
     useEffect(() => {
+        const cleanup = Hub.listen('auth', ({ payload: { event } }) => {
+            console.log(`root router heard ${event}`)
+            if (event === "signedOut") {
+                setUserId('')
+                navigate('/login')
+            }
+        })
+
         signOut()
+
+        return () => {
+            cleanup()
+        }
     }, [])
 
     return (

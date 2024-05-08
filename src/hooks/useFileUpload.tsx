@@ -52,7 +52,8 @@ const useFileUpload = ({ uploadAction, sizeLimitInBytes }: UseFileUploadArgs) =>
                 await uploadAction(file)
                 resetState()
             }
-        } catch {
+        } catch (e) {
+            console.log(e as string)
             fileUploadFailed()
         }
     }

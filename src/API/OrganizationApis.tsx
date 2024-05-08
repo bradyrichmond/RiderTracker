@@ -45,7 +45,7 @@ const updateOrganization = async (orgId: string, body: Record<string, string | s
 
 const getOrganizationLoginDataBySlug = async (orgSlug: string) => {
     const { client } = await RiderTrackerAPI.getClient()
-    const response = client.publicOrganizationsOrgSlugPost({ orgSlug })
+    const response = client.publicOrganizationsOrgSlugGet({ orgSlug })
     return handleApiResponse(response)
 }
 
