@@ -82,7 +82,7 @@ const ResponsiveAppBar = () => {
                                 letterSpacing: '.3rem',
                                 textDecoration: 'none'
                             }}
-                            onClick={() => navigate('/')}
+                            onClick={() => navigate('/app')}
                         >
                             RiderTracker
                         </Typography>
@@ -140,7 +140,7 @@ const ResponsiveAppBar = () => {
                                 letterSpacing: '.3rem',
                                 textDecoration: 'none',
                             }}
-                            onClick={() => navigate('/')}
+                            onClick={() => navigate('/app')}
                         >
                             RiderTracker
                         </Typography>

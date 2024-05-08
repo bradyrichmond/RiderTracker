@@ -1,9 +1,9 @@
 import { Box, Chip, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
-import { RoleContext } from "../../contexts/RoleContextProvider"
+import { RoleContext } from "@/contexts/RoleContextProvider"
 import { useNavigate, useParams } from 'react-router-dom'
-import { RiderType } from "../../types/RiderType"
-import { ApiContext } from "../../contexts/ApiContextProvider"
+import { RiderType } from "@/types/RiderType"
+import { ApiContext } from "@/contexts/ApiContextProvider"
 import { StopType } from "@/types/StopType"
 
 const Rider = () => {

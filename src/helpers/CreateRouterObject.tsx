@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom"
+import { createBrowserRouter, redirect } from "react-router-dom"
 
 import Bus from '@/routes/Buses/Bus'
 import Buses from '@/routes/Buses'
@@ -21,98 +21,120 @@ import School from "@/routes/Schools/School"
 import Settings from "@/routes/Settings"
 import Logout from "@/routes/Auth/Logout"
 import Auth from "@/routes/Auth"
+import Onboarding from "@/routes/Onboarding"
+import { fetchAuthSession } from "aws-amplify/auth"
 
 export const createRouterObject = () => {
     return createBrowserRouter([{
         path: '/',
         element: <Root />,
-        children: 
-        [
+        children: [
             {
-                path: '/',
-                element: <ProtectedRoute route='/'><Home /></ProtectedRoute>
+                path: '/app',
+                children: [
+                    {
+                        path: '/app',
+                        element: <ProtectedRoute route='/app'><Home /></ProtectedRoute>
+                    },
+                    {
+                        path: '/app/buses',
+                        element: <ProtectedRoute route='/app/buses'><Buses /></ProtectedRoute>
+                    },
+                    {
+                        path: '/app/buses/:id',
+                        element: <ProtectedRoute route='/app/buses/:id'><Bus /></ProtectedRoute>
+                    },
+                    {
+                        path: '/app/drivers',
+                        element: <ProtectedRoute route='/app/drivers'><Drivers /></ProtectedRoute>
+                    },
+                    {
+                        path: '/app/drivers/:id',
+                        element: <ProtectedRoute route='/app/drivers/:id'><Driver /></ProtectedRoute>
+                    },
+                    {
+                        path: '/app/guardians',
+                        element: <ProtectedRoute route='/app/guardians'><Guardians /></ProtectedRoute>
+                    },
+                    {
+                        path: '/app/guardians/:id',
+                        element: <ProtectedRoute route='/app/guardians/:id'><Guardian /></ProtectedRoute>
+                    },
+                    {
+                        path: '/app/settings',
+                        element: <ProtectedRoute route='/app/settings'><Settings /></ProtectedRoute>
+                    
+                    },
+                    {
+                        path: '/app/riders',
+                        element: <ProtectedRoute route='/app/riders'><Riders /></ProtectedRoute>
+                    
+                    },
+                    {
+                        path: '/app/riders/:id',
+                        element: <ProtectedRoute route='/app/riders/:id'><Rider /></ProtectedRoute>
+                    
+                    },
+                    {
+                        path: '/app/scans',
+                        element: <ProtectedRoute route='/app/scans'><Scans /></ProtectedRoute>
+                    
+                    },
+                    {
+                        path: '/app/scans/:id',
+                        element: <ProtectedRoute route='/app/scans/:id'><Scan /></ProtectedRoute>
+                    
+                    },
+                    {
+                        path: '/app/schools',
+                        element: <ProtectedRoute route='/app/schools'><Schools /></ProtectedRoute>
+                    
+                    },
+                    {
+                        path: '/app/schools/:id',
+                        element: <ProtectedRoute route='/app/schools/:id'><School /></ProtectedRoute>
+                    
+                    },
+                    {
+                        path: '/app/stops',
+                        element: <ProtectedRoute route='/app/stops'><Stops /></ProtectedRoute>
+                    
+                    },
+                    {
+                        path: '/app/stops/:id',
+                        element: <ProtectedRoute route='/app/stops/:id'><Stop /></ProtectedRoute>
+                    
+                    },
+                    {
+                        path: '/app/unauthorized',
+                        element: <Unauthorized />
+                    }
+                ]
             },
             {
-                path: '/buses',
-                element: <ProtectedRoute route='/buses'><Buses /></ProtectedRoute>
-            },
-            {
-                path: '/buses/:id',
-                element: <ProtectedRoute route='/buses/:id'><Bus /></ProtectedRoute>
-            },
-            {
-                path: '/drivers',
-                element: <ProtectedRoute route='/drivers'><Drivers /></ProtectedRoute>
-            },
-            {
-                path: '/drivers/:id',
-                element: <ProtectedRoute route='/drivers/:id'><Driver /></ProtectedRoute>
-            },
-            {
-                path: '/guardians',
-                element: <ProtectedRoute route='/guardians'><Guardians /></ProtectedRoute>
-            },
-            {
-                path: '/guardians/:id',
-                element: <ProtectedRoute route='/guardians/:id'><Guardian /></ProtectedRoute>
-            },
-            {
-                path: '/login',
-                element: <Auth />
-            },
-            {
-                path: '/logout',
-                element: <Logout />
-            },
-            {
-                path: '/settings',
-                element: <ProtectedRoute route='/settings'><Settings /></ProtectedRoute>
-            
-            },
-            {
-                path: '/riders',
-                element: <ProtectedRoute route='/riders'><Riders /></ProtectedRoute>
-            
-            },
-            {
-                path: '/riders/:id',
-                element: <ProtectedRoute route='/riders/:id'><Rider /></ProtectedRoute>
-            
-            },
-            {
-                path: '/scans',
-                element: <ProtectedRoute route='/scans'><Scans /></ProtectedRoute>
-            
-            },
-            {
-                path: '/scans/:id',
-                element: <ProtectedRoute route='/scans/:id'><Scan /></ProtectedRoute>
-            
-            },
-            {
-                path: '/schools',
-                element: <ProtectedRoute route='/schools'><Schools /></ProtectedRoute>
-            
-            },
-            {
-                path: '/schools/:id',
-                element: <ProtectedRoute route='/schools/:id'><School /></ProtectedRoute>
-            
-            },
-            {
-                path: '/stops',
-                element: <ProtectedRoute route='/stops'><Stops /></ProtectedRoute>
-            
-            },
-            {
-                path: '/stops/:id',
-                element: <ProtectedRoute route='/stops/:id'><Stop /></ProtectedRoute>
-            
-            },
-            {
-                path: '/unauthorized',
-                element: <Unauthorized />
+                path: '/onboarding',
+                element: <Onboarding />
             }
         ]
-    }])
-}
+    },
+    {
+        path: '/login',
+        element: <Auth />
+    },
+    {
+        path: '/logout',
+        element: <Logout />
+    },
+    {
+        path: '*',
+        loader: async () => {
+            const session = await fetchAuthSession()
+
+            if (session.userSub) {
+                return redirect('/')
+            } else {
+                return redirect('/login')
+            }
+        }
+    }
+])}

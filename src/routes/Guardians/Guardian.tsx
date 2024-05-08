@@ -1,9 +1,9 @@
 import { Box, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
-import { RoleContext } from "../../contexts/RoleContextProvider"
+import { RoleContext } from "@/contexts/RoleContextProvider"
 import { useParams } from 'react-router-dom'
 import GuardiansRiders from "./GuardiansRiders"
-import { ApiContext } from "../../contexts/ApiContextProvider"
+import { ApiContext } from "@/contexts/ApiContextProvider"
 import { GuardianType } from "@/types/UserType"
 
 const Guardian = () => {

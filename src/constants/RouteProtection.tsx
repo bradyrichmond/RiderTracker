@@ -17,95 +17,95 @@ interface SettingsItemType extends NavItemType {
 }
 
 const ALL_ROUTES: string[] = [
-    "/",
-    "/buses",
-    "/buses/:id",
-    "/drivers",
-    "/drivers/:id",
-    "/guardians",
-    "/guardians/:id",
-    "/settings",
-    "/riders",
-    "/riders/:id",
-    "/riders/:id/scans",
-    "/scans",
-    "/scans/:id",
-    "/schools",
-    "/schools/:id",
-    "/stops",
-    "/stops/:id"
+    "/app",
+    "/app/buses",
+    "/app/buses/:id",
+    "/app/drivers",
+    "/app/drivers/:id",
+    "/app/guardians",
+    "/app/guardians/:id",
+    "/app/settings",
+    "/app/riders",
+    "/app/riders/:id",
+    "/app/riders/:id/scans",
+    "/app/scans",
+    "/app/scans/:id",
+    "/app/schools",
+    "/app/schools/:id",
+    "/app/stops",
+    "/app/stops/:id"
 ];
 
 const ORG_ADMIN_ROUTES: string[] = [
-    "/",
-    "/buses",
-    "/buses/:id",
-    "/drivers",
-    "/drivers/:id",
-    "/guardians",
-    "/guardians/:id",
-    "/settings",
-    "/riders",
-    "/riders/:id",
-    "/scans",
-    "/scans/:id",
-    "/stops",
-    "/stops/:id",
-    "/schools",
-    "/schools/:id"
+    "/app",
+    "/app/buses",
+    "/app/buses/:id",
+    "/app/drivers",
+    "/app/drivers/:id",
+    "/app/guardians",
+    "/app/guardians/:id",
+    "/app/settings",
+    "/app/riders",
+    "/app/riders/:id",
+    "/app/scans",
+    "/app/scans/:id",
+    "/app/stops",
+    "/app/stops/:id",
+    "/app/schools",
+    "/app/schools/:id"
 ]
 
 const DRIVER_ROUTES: string[] = [
-    "/",
-    "/buses",
-    "/buses/:id",
-    "/drivers/:id",
-    "/riders/:id",
-    "/settings"
+    "/app",
+    "/app/buses",
+    "/app/buses/:id",
+    "/app/drivers/:id",
+    "/app/riders/:id",
+    "/app/settings"
 ]
 
 const GUARDIAN_ROUTES: string[] = [
-    "/",
-    "/buses/:id",
-    "/drivers/:id",
-    "/riders",
-    "/settings",
-    "/riders/:id"
+    "/app",
+    "/app/buses/:id",
+    "/app/drivers/:id",
+    "/app/riders",
+    "/app/settings",
+    "/app/riders/:id"
 ]
 
 const WIZARD_NAV_ITEMS: NavItemType[] = [
     {
-        path: '/buses',
+        path: '/app/buses',
         label: 'Buses',
         Icon: DirectionsBusIcon
     },
     {
-        path: '/drivers',
+        path: '/app/drivers',
         label: 'Drivers',
         Icon: WorkIcon
     },
     {
-        path: '/guardians',
+        path: '/app/guardians',
         label: 'Guardians',
         Icon: PersonIcon
     },
     {
-        path: '/riders',
+        path: '/app/riders',
         label: 'Riders',
         Icon: ChildCareIcon
     },
     {
-        path: '/scans',
+        path: '/app/scans',
         label: 'Scans',
         Icon: ArticleIcon
     },
     {
-        path: '/schools',
+        path: '/app/schools',
         label: 'Schools',
         Icon: SchoolIcon
     },
     {
-        path: '/stops',
+        path: '/app/stops',
         label: 'Stops',
         Icon: PlaceIcon
     }
@@ -113,37 +113,37 @@ const WIZARD_NAV_ITEMS: NavItemType[] = [
 
 const ORG_ADMIN_NAV_ITEMS: NavItemType[] = [
     {
-        path: '/buses',
+        path: '/app/buses',
         label: 'Buses',
         Icon: DirectionsBusIcon
     },
     {
-        path: '/drivers',
+        path: '/app/drivers',
         label: 'Drivers',
         Icon: WorkIcon
     },
     {
-        path: '/guardians',
+        path: '/app/guardians',
         label: 'Guardians',
         Icon: PersonIcon
     },
     {
-        path: '/riders',
+        path: '/app/riders',
         label: 'Riders',
         Icon: ChildCareIcon
     },
     {
-        path: '/scans',
+        path: '/app/scans',
         label: 'Scans',
         Icon: ArticleIcon
     },
     {
-        path: '/schools',
+        path: '/app/schools',
         label: 'Schools',
         Icon: SchoolIcon
     },
     {
-        path: '/stops',
+        path: '/app/stops',
         label: 'Stops',
         Icon: PlaceIcon
     }
@@ -151,17 +151,17 @@ const ORG_ADMIN_NAV_ITEMS: NavItemType[] = [
 
 const DRIVER_NAV_ITEMS: NavItemType[] = [
     {
-        path: '/buses',
+        path: '/app/buses',
         label: 'Buses',
         Icon: DirectionsBusIcon
     },
     {
-        path: '/drivers',
+        path: '/app/drivers',
         label: 'Drivers',
         Icon: WorkIcon
     },
     {
-        path: '/riders',
+        path: '/app/riders',
         label: 'Riders',
         Icon: ChildCareIcon
     }
@@ -169,7 +169,7 @@ const DRIVER_NAV_ITEMS: NavItemType[] = [
 
 const GUARDIAN_NAV_ITEMS: NavItemType[] = [
     {
-        path: '/my-riders',
+        path: '/app/riders',
         label: 'Riders',
         Icon: ChildCareIcon
     }
@@ -183,7 +183,7 @@ const SETTINGS_NAV_ITEMS: SettingsItemType[] = [
         Icon: PowerSettingsNewIcon
     },
     {
-        path: '/settings',
+        path: '/app/settings',
         label: 'Settings',
         Icon: AccountBoxIcon
     },

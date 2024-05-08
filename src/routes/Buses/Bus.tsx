@@ -1,9 +1,9 @@
 import { Box, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
-import { RoleContext } from "../../contexts/RoleContextProvider"
-import { BusType } from '../../types/BusType'
+import { RoleContext } from "@/contexts/RoleContextProvider"
+import { BusType } from '@/types/BusType'
 import { useParams } from 'react-router-dom'
-import { ApiContext } from "../../contexts/ApiContextProvider"
+import { ApiContext } from "@/contexts/ApiContextProvider"
 
 const Bus = () => {
     const roleContext = useContext(RoleContext)

@@ -1,7 +1,7 @@
 import { Box, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
 import { useParams } from 'react-router-dom'
-import { ApiContext } from "../../contexts/ApiContextProvider"
+import { ApiContext } from "@/contexts/ApiContextProvider"
 import { UserType } from "@/types/UserType"
 import { RoleContext } from "@/contexts/RoleContextProvider"
 

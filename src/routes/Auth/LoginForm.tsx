@@ -108,7 +108,7 @@ const LoginForm = () => {
                 }
 
                 setUserId(sessionUserId)
-                navigate('/')
+                navigate('/app')
             }
         }
     }

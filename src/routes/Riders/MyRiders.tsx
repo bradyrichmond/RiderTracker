@@ -1,11 +1,11 @@
-import EntityViewer from "../../components/EntityViewer"
+import EntityViewer from "@/components/EntityViewer"
 import { useNavigate } from 'react-router-dom'
-import { RiderType } from "../../types/RiderType"
+import { RiderType } from "@/types/RiderType"
 import { riderFactory } from "./RiderFactory"
 import { Box, Button, Tooltip } from "@mui/material"
 import InfoIcon from '@mui/icons-material/Info'
 import { useContext, useState } from "react"
-import { ApiContext } from "../../contexts/ApiContextProvider"
+import { ApiContext } from "@/contexts/ApiContextProvider"
 import { GuardianType } from "@/types/UserType"
 import { RoleContext } from "@/contexts/RoleContextProvider"
 

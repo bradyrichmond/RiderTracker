@@ -1,15 +1,15 @@
-import EntityViewer from "../../components/EntityViewer"
-import { BusType } from "../../types/BusType"
+import EntityViewer from "@/components/EntityViewer"
+import { BusType } from "@/types/BusType"
 import { useNavigate } from 'react-router-dom'
 import { busFactory } from "./BusFactory"
 import { useContext, useState } from "react"
 import { Button, Tooltip } from "@mui/material"
 import InfoIcon from '@mui/icons-material/Info'
 import NoTransferIcon from '@mui/icons-material/NoTransfer'
-import { ApiContext } from "../../contexts/ApiContextProvider"
+import { ApiContext } from "@/contexts/ApiContextProvider"
 import { GridColDef } from '@mui/x-data-grid'
-import { RoleContext } from "../../contexts/RoleContextProvider"
-import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "../../constants/Roles"
+import { RoleContext } from "@/contexts/RoleContextProvider"
+import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "@/constants/Roles"
 
 const Buses = () => {
     const [buses, setBuses] = useState<BusType[]>([])

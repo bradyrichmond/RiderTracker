@@ -26,7 +26,7 @@ const Auth = () => {
     const [image, setImage] = useState('')
     const [isLoading, setIsLoading] = useState(true)
     const theme = useTheme()
-    const { setUserId } = useContext(RoleContext)
+    const { setUserId, updateUserData } = useContext(RoleContext)
     const navigate = useNavigate()
 
     useEffect(() => {
@@ -41,7 +41,15 @@ const Auth = () => {
         const session = await fetchAuthSession()
         if (session.userSub) {
             setUserId(session.userSub)
-            navigate("/")
+            updateUserData()
+            const previousPath = history.state?.usr?.previousPath
+
+            if (previousPath) {
+                history.state.usr = ''
+                navigate(previousPath)
+            } else {
+                navigate('/app')
+            } 
         }
     }
 

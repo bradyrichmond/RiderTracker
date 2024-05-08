@@ -1,15 +1,15 @@
-import EntityViewer from "../../components/EntityViewer"
+import EntityViewer from "@/components/EntityViewer"
 import { useNavigate } from 'react-router-dom'
-import { RiderType } from "../../types/RiderType"
+import { RiderType } from "@/types/RiderType"
 import { riderFactory } from "./RiderFactory"
 import { Button, Tooltip } from "@mui/material"
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
 import { useContext, useState } from "react"
-import { ApiContext } from "../../contexts/ApiContextProvider"
-import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "../../constants/Roles"
+import { ApiContext } from "@/contexts/ApiContextProvider"
+import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "@/constants/Roles"
 import { GridColDef } from "@mui/x-data-grid"
-import { RoleContext } from "../../contexts/RoleContextProvider"
+import { RoleContext } from "@/contexts/RoleContextProvider"
 
 const Riders = () => {
     const [riders, setRiders] = useState<RiderType[]>([])

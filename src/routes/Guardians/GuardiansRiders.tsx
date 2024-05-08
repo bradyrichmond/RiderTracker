@@ -1,17 +1,17 @@
 import { Box, Button, Typography, Tooltip } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
-import { RoleContext } from "../../contexts/RoleContextProvider"
-import { RiderType } from "../../types/RiderType"
-import LinkIcon from '@mui/icons-material/Link'
-import LinkEntitiesModal from "../../components/LinkEntitiesModal"
-import { OptionsType } from "../../types/FormTypes"
+import { RoleContext } from "@/contexts/RoleContextProvider"
+import { RiderType } from "@/types/RiderType"
+// import LinkIcon from '@mui/icons-material/Link'
+// import LinkEntitiesModal from "@/components/LinkEntitiesModal"
+// import { OptionsType } from "@/types/FormTypes"
 import { DataGrid } from '@mui/x-data-grid'
 import { useNavigate } from "react-router-dom"
 import LinkOffIcon from '@mui/icons-material/LinkOff'
 import InfoIcon from '@mui/icons-material/Info'
-import { ApiContext } from "../../contexts/ApiContextProvider"
+import { ApiContext } from "@/contexts/ApiContextProvider"
 import { GridColDef } from "@mui/x-data-grid"
-import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "../../constants/Roles"
+import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "@/constants/Roles"
 import { GuardianType } from "@/types/UserType"
 
 interface RidersGuardiansProps {
@@ -21,8 +21,8 @@ interface RidersGuardiansProps {
 
 const GuardiansRiders = ({ guardian, getGuardianData }: RidersGuardiansProps) => {
     const [riders, setRiders] = useState<RiderType[]>([])
-    const [allRiders, setAllRiders] = useState<OptionsType[]>([])
-    const [showModal, setShowModal] = useState<boolean>(false)
+    // const [allRiders, setAllRiders] = useState<OptionsType[]>([])
+    // const [showModal, setShowModal] = useState<boolean>(false)
     const { id: guardianId } = guardian
     const roleContext = useContext(RoleContext)
     const { api } = useContext(ApiContext)
@@ -31,7 +31,7 @@ const GuardiansRiders = ({ guardian, getGuardianData }: RidersGuardiansProps) =>
 
     useEffect(() => {
         updateRiders()
-        updateAllRiders()
+        // updateAllRiders()
     }, [roleContext, guardian.orgId])
 
     const updateRiders = async () => {
@@ -47,30 +47,30 @@ const GuardiansRiders = ({ guardian, getGuardianData }: RidersGuardiansProps) =>
         }
     }
 
-    const updateAllRiders = async () => {
-        const riderData = await api.riders.getRiders(organizationId)
+    // const updateAllRiders = async () => {
+    //     const riderData = await api.riders.getRiders(organizationId)
 
-        try {
-            const mapped = riderData.map((r: RiderType) => {
-                return { label: `${r.firstName} ${r.lastName}`, id: r.id }
-            })
+    //     try {
+    //         const mapped = riderData.map((r: RiderType) => {
+    //             return { label: `${r.firstName} ${r.lastName}`, id: r.id }
+    //         })
             
-            setAllRiders(mapped)
-        } catch {
-            setAllRiders([])
-        }
-    }
+    //         setAllRiders(mapped)
+    //     } catch {
+    //         setAllRiders([])
+    //     }
+    // }
 
-    const toggleShowModal = () => {
-        setShowModal((c) => !c)
-    }
+    // const toggleShowModal = () => {
+    //     setShowModal((c) => !c)
+    // }
 
-    const submitAction = async (addedRiderId: string) => {
-        toggleShowModal()
-        await api.users.updateUser(organizationId, guardianId, { riderIds: [...guardian.riderIds, addedRiderId] })
+    // const submitAction = async (addedRiderId: string) => {
+    //     toggleShowModal()
+    //     await api.users.updateUser(organizationId, guardianId, { riderIds: [...guardian.riderIds, addedRiderId] })
 
-        updateRiders()
-    }
+    //     updateRiders()
+    // }
 
     const deleteGuardianLink = async (riderId: string) => {
         await removeRiderFromGuardian(riderId)
@@ -130,7 +130,7 @@ const GuardiansRiders = ({ guardian, getGuardianData }: RidersGuardiansProps) =>
 
     return (
         <Box>
-            {allRiders.length > 0 ? 
+            {/* {allRiders.length > 0 ? 
                 <LinkEntitiesModal<RiderType> 
                     cancelAction={toggleShowModal}
                     entity={guardian} 
@@ -142,10 +142,10 @@ const GuardiansRiders = ({ guardian, getGuardianData }: RidersGuardiansProps) =>
                 />
             :
                 null
-            }
+            } */}
             <Typography variant="h2">Riders</Typography>
             <DataGrid hideFooterPagination autoHeight rows={riders} columns={generateGridColumns()} />
-            {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.LINK_GUARDIAN_TO_RIDER) ?
+            {/* {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.LINK_GUARDIAN_TO_RIDER) ?
                 <Box marginTop='2rem'>
                     <Button variant='contained' onClick={toggleShowModal}>
                         <Box display='flex' flexDirection='row' justifyContent=''>
@@ -158,7 +158,7 @@ const GuardiansRiders = ({ guardian, getGuardianData }: RidersGuardiansProps) =>
                 </Box>
                 :
                 null
-            }
+            } */}
         </Box>
     )
 }

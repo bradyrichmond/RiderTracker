@@ -1,18 +1,14 @@
 import {
     RouterProvider
 } from "react-router-dom"
-import { useContext, useEffect, useState } from "react"
-import { RoleContext } from "../../contexts/RoleContextProvider"
-import { createUnauthorizedRouterObject } from "@/helpers/CreateUnauthorizedRouterObject"
+import { useContext, useEffect } from "react"
+import { RoleContext } from "@/contexts/RoleContextProvider"
 import { createRouterObject } from "@/helpers/CreateRouterObject"
 import { Hub } from "aws-amplify/utils"
-import { fetchAuthSession } from "aws-amplify/auth"
 
-const authRouter = createRouterObject()
-const unauthRouter = createUnauthorizedRouterObject()
+const router = createRouterObject()
 
 const RootRouter = () => {
-    const [router, setRouter] = useState<'auth' | 'unauth'>('unauth')
     const { updateUserData } = useContext(RoleContext)
 
     useEffect(() => {
@@ -23,37 +19,20 @@ const RootRouter = () => {
             switch (event) {
                 case "signedIn":
                     updateUserData()
-                    setRouter('auth')
-                    break
-                case  "signedOut":
-                    setRouter('unauth')
                     break
                 default:
                     console.log(`Auth listener event complete`)
             }
         })
 
-        checkForLoggedInUser()
         return () => {
             cleanup()
         }
     }, [])
 
-    const checkForLoggedInUser = async () => {
-        const session = await fetchAuthSession()
-        if (session.tokens) {
-            setRouter('auth')
-            updateUserData()
-        }
-    }
-
     return (
         <>
-            {router === 'auth'?
-                <RouterProvider router={authRouter} />
-                :
-                <RouterProvider router={unauthRouter} />
-            }
+            <RouterProvider router={router} />
         </>
     )
 }

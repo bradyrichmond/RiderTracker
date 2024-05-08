@@ -1,4 +1,4 @@
-import { RiderType } from "../../types/RiderType";
+import { RiderType } from "@/types/RiderType";
 
 export function riderFactory(args: (string)[] = []): RiderType {
     return {

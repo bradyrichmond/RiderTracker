@@ -1,14 +1,14 @@
-import EntityViewer from "../../components/EntityViewer"
+import EntityViewer from "@/components/EntityViewer"
 import { useNavigate } from 'react-router-dom'
 import { guardianFactory } from "./GuardianFactory"
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
 import { useContext, useState } from "react"
 import { Button, Tooltip } from "@mui/material"
-import { ApiContext } from "../../contexts/ApiContextProvider"
+import { ApiContext } from "@/contexts/ApiContextProvider"
 import { GridColDef } from "@mui/x-data-grid"
-import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "../../constants/Roles"
-import { RoleContext } from "../../contexts/RoleContextProvider"
+import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "@/constants/Roles"
+import { RoleContext } from "@/contexts/RoleContextProvider"
 import { UserType } from "@/types/UserType"
 // import { AWSUserType } from "@/API/AdminApis"
 

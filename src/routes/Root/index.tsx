@@ -1,6 +1,6 @@
 import { Box, Container, Typography } from "@mui/material"
 import { Outlet, useNavigate } from "react-router-dom"
-import NavigationContainer from "../../components/NavigationContainer"
+import NavigationContainer from "@/components/NavigationContainer"
 import { useContext, useEffect } from "react"
 import { RoleContext } from "@/contexts/RoleContextProvider"
 import { Hub } from "aws-amplify/utils"
