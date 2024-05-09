@@ -1,20 +1,17 @@
 import { ROLE_WEIGHTS } from "../constants/RoleWeights"
-import { RoleWithWeightType } from "../types/RoleWithWeightType"
 
 // this is a misnomer, the role with the most permissions has the smallest weight
 export const getHeaviestRole = (roles: string[]) => {
-    let availableRolesWithWeights:RoleWithWeightType[] = []
+    const filtered = roles.filter((r) => ROLE_WEIGHTS[r])
+    let heaviest = Number.MAX_SAFE_INTEGER
+    let heaviestRoleName = ''
 
-    ROLE_WEIGHTS.forEach((rw) => {
-        if (roles.includes(rw.name)) {
-            availableRolesWithWeights.push(rw)
+    filtered.forEach((r) => {
+        if (ROLE_WEIGHTS[r] < heaviest) {
+            heaviest = ROLE_WEIGHTS[r]
+            heaviestRoleName = r
         }
     })
 
-    const sortedUserRoles = availableRolesWithWeights.sort(roleSort)
-    return sortedUserRoles[0].name
-}
-
-const roleSort = (a:RoleWithWeightType, b: RoleWithWeightType) => {
-    return a.weight < b.weight ? -1 : 1;
+    return heaviestRoleName
 }

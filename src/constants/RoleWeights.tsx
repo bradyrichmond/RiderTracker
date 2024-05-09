@@ -1,22 +1,8 @@
-import { RoleWithWeightType } from "../types/RoleWithWeightType";
+import { RiderTrackerRole } from "./Roles";
 
-// Drivers should never be OrgAdmins, right?
-
-export const ROLE_WEIGHTS:RoleWithWeightType[] = [
-    {
-        name: "RiderTracker_Wizard",
-        weight: 1
-    },
-    {
-        name: "RiderTracker_OrgAdmin",
-        weight: 5
-    },
-    {
-        name: "RiderTracker_Driver",
-        weight: 5
-    },
-    {
-        name: "RiderTracker_Guardian",
-        weight: 10
-    }
-]
+export const ROLE_WEIGHTS: Record<RiderTrackerRole, number> = {
+    "RiderTracker_Wizard": 1,
+    "RiderTracker_OrgAdmin": 2,
+    "RiderTracker_Driver": 3,
+    "RiderTracker_Guardian": 4
+}
