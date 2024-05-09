@@ -14,8 +14,9 @@ import AdbIcon from '@mui/icons-material/Adb'
 import { ComponentType, MouseEvent, useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { RoleContext } from '../contexts/RoleContextProvider'
-import { ROUTE_PROTECTION } from '../constants/RouteProtection'
+import { ROUTE_PROTECTION, SettingsItemType } from '../constants/RouteProtection'
 import { useTheme } from '@mui/material'
+import { NavItemType } from './NavigationContainer'
 
 
 interface MenuItemWithIconProps {
@@ -45,8 +46,8 @@ const ResponsiveAppBar = () => {
     const navigate = useNavigate()
     const { userFullName, userPictureUrl, heaviestRole, userId } = useContext(RoleContext)
     const routeProtection = ROUTE_PROTECTION.find((r) => r.name === heaviestRole)
-    const pages = routeProtection?.navItems ?? []
-    const settings = routeProtection?.settingsItems ?? []
+    const pages: NavItemType[] = routeProtection?.navItems ?? []
+    const settings: SettingsItemType[] = routeProtection?.settingsItems ?? []
 
     const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget)

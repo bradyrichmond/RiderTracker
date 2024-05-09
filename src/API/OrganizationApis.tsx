@@ -30,7 +30,7 @@ const updateOrganizationLoginImage = async (file: File, orgId: string) => {
     const fullFileName = `${bucket}/${fileName}`
 
     const { client } = await RiderTrackerAPI.getClient()
-    const response = await client.adminProxyS3FolderObjectPut({ folder: bucket, key: fullFileName }, file)
+    const response = await client.adminProxyS3FolderObjectGet({ folder: bucket, key: fullFileName })
     handleApiResponse(response)
 
     return await updateOrganization(orgId, { loginImageKey: fullFileName })

@@ -10,8 +10,10 @@ import SchoolIcon from '@mui/icons-material/School'
 import { FC } from "react"
 import ToggleLightMode from "@/components/ToggleLightMode"
 import AccountBoxIcon from '@mui/icons-material/AccountBox'
+import LoginIcon from '@mui/icons-material/Login'
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
 
-interface SettingsItemType extends NavItemType {
+export interface SettingsItemType extends NavItemType {
     action?(): Promise<void>
     Component?: FC
 }
@@ -71,6 +73,12 @@ const GUARDIAN_ROUTES: string[] = [
     "/app/riders",
     "/app/settings",
     "/app/riders/:id"
+]
+
+const UNAUTH_ROUTES: string[] = [
+    "/login",
+    "/logout",
+    "/onboarding"
 ]
 
 const WIZARD_NAV_ITEMS: NavItemType[] = [
@@ -175,6 +183,19 @@ const GUARDIAN_NAV_ITEMS: NavItemType[] = [
     }
 ]
 
+const UNAUTH_NAV_ITEMS: NavItemType[] = [
+    {
+        path: '/onboarding',
+        label: 'Sign Up',
+        Icon: AddCircleOutlineIcon
+    },
+    {
+        path: '/login',
+        label: 'Log in',
+        Icon: LoginIcon
+    }
+]
+
 const SETTINGS_NAV_ITEMS: SettingsItemType[] = [
     {
         Component: ToggleLightMode,
@@ -194,7 +215,14 @@ const SETTINGS_NAV_ITEMS: SettingsItemType[] = [
     }
 ]
 
-export const ROUTE_PROTECTION = [
+interface RouteProtectionItem {
+    name: string,
+    routes: string[],
+    navItems: NavItemType[],
+    settingsItems: NavItemType[]
+}
+
+export const ROUTE_PROTECTION: RouteProtectionItem[] = [
     {
         name: "RiderTracker_Wizard",
         routes: ALL_ROUTES,
@@ -218,5 +246,11 @@ export const ROUTE_PROTECTION = [
         routes: GUARDIAN_ROUTES,
         navItems: GUARDIAN_NAV_ITEMS,
         settingsItems: SETTINGS_NAV_ITEMS
+    },
+    {
+        name: "RiderTracker_Unauthenticated",
+        routes: UNAUTH_ROUTES,
+        navItems: UNAUTH_NAV_ITEMS,
+        settingsItems: []
     }
 ]
