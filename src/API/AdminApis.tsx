@@ -11,6 +11,12 @@ interface CreateUserParams {
     address?: string
 }
 
+interface CreateCognitoUserParams {
+    given_name: string
+    family_name: string
+    email: string
+}
+
 export interface AWSUserType {
     User: {
         Attributes: [
@@ -37,6 +43,21 @@ interface AttributeType {
     Name: string, Value: string
 }
 
+export enum VERBS{
+    GET = "GET",
+    POST = "POST",
+    PUT = "PUT",
+    PATCH = "PATCH",
+    DELETE = "DELETE"
+}
+
+const createCognitoUser = async (body: CreateCognitoUserParams) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    const createCognitoUserResponse = await client.adminProxyProxyAny(VERBS.POST, { proxy: 'createUser' }, body, { ["Content-Type"]: "application/json" })
+
+    return handleApiResponse(createCognitoUserResponse)
+}
+
 const createUser = async (orgId: string, body: CreateUserParams, options?: Record<string, boolean>) => {
     const { client } = await RiderTrackerAPI.getClient(options?.forceRefresh)
     const createUserResponse = await client.organizationsOrgIdUsersPost({ orgId }, { ...body, stopIds: [""] })
@@ -46,14 +67,14 @@ const createUser = async (orgId: string, body: CreateUserParams, options?: Recor
 
 const addUserToGroup = async (username: string, groupname: string) => {
     const { client } = await RiderTrackerAPI.getClient()
-    const addUserToGroupResponse = await client.adminProxyProxyOptions({ proxy: 'admin/addUserToGroup' }, { username, groupname })
+    const addUserToGroupResponse = await client.adminProxyProxyAny(VERBS.POST, { proxy: 'addUserToGroup' }, { username, groupname })
 
     return handleApiResponse(addUserToGroupResponse)
 }
 
 const updateUserAttributes = async (attributes: AttributeType[], username: string) => {
     const { client } = await RiderTrackerAPI.getClient()
-    const updateUserAttributesResponse = await client.adminProxyProxyOptions({ proxy: 'admin/updateUserAttributes' }, { username, attributes })
+    const updateUserAttributesResponse = await client.adminProxyProxyAny(VERBS.POST, { proxy: 'updateUserAttributes' }, { username, attributes })
     return handleApiResponse(updateUserAttributesResponse)
 }
 
@@ -84,6 +105,7 @@ const updateUser = async (orgId: string, id: string, body: Record<string, string
 }
 
 export interface AdminApiFunctionTypes {
+    createCognitoUser(body: CreateCognitoUserParams): Promise<AWSUserType>
     createUser(orgId: string, body: CreateUserParams, options?: Record<string, boolean>): Promise<any>
     updateUserProfileImage(orgId: string, userId: string, body: File, key: string): Promise<any>
     updateUserAttributes(body: AttributeType[], username: string): Promise<any>
@@ -91,6 +113,7 @@ export interface AdminApiFunctionTypes {
 }
 
 export default {
+    createCognitoUser,
     createUser,
     updateUserProfileImage,
     updateUserAttributes,

@@ -131,8 +131,10 @@ export const createRouterObject = () => {
             const session = await fetchAuthSession()
 
             if (session.userSub) {
+                console.log(`redirecting from ${location.pathname} to /`)
                 return redirect('/')
             } else {
+                console.log(`redirecting from ${location.pathname} to /login`)
                 return redirect('/login')
             }
         }

@@ -49,6 +49,12 @@ const getOrganizationLoginDataBySlug = async (orgSlug: string) => {
     return handleApiResponse(response)
 }
 
+const addAdminToOrganization = async (orgId: string, userId: string) => {
+    const { adminIds } = await getOrganizationById(orgId)
+    adminIds.push(userId)
+    return await updateOrganization(orgId, { adminIds })
+}
+
 export interface OrganizationApiFunctionTypes {
     getOrganizations(): Promise<OrganizationType[]>,
     getOrganizationById(orgId: string): Promise<OrganizationType>,
@@ -56,6 +62,7 @@ export interface OrganizationApiFunctionTypes {
     updateOrganizationLoginImage(file: File, orgId: string): Promise<void>,
     getOrganizationLoginDataBySlug(orgslug: string): Promise<Record<string, string>>
     updateOrganization(orgId: string, body: Record<string, string | string[]>): Promise<any>
+    addAdminToOrganization(orgId: string, userId: string): Promise<any>
 }
 
 export default {
@@ -64,5 +71,6 @@ export default {
     createOrganization,
     updateOrganizationLoginImage,
     getOrganizationLoginDataBySlug,
-    updateOrganization
+    updateOrganization,
+    addAdminToOrganization
 }

@@ -45,11 +45,11 @@ const Auth = () => {
             const previousPath = history.state?.usr?.previousPath
 
             if (previousPath) {
-                history.state.usr = ''
-                navigate(previousPath)
-            } else {
-                navigate('/app')
-            } 
+                if (previousPath !== location.pathname) {
+                    console.log(`redirecting from ${location.pathname} to ${previousPath}`)
+                    navigate(previousPath)
+                }
+            }
         }
     }
 

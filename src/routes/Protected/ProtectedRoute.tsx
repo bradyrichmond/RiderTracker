@@ -11,12 +11,7 @@ const ProtectedRoute = ({ route, children }: PropsWithChildren<ProtectedRoutePro
     const { heaviestRole, userId } = useContext(RoleContext)
     const routePermissions = ROUTE_PROTECTION.find((rp) => rp.name === heaviestRole)
 
-    const path = location.pathname
-    let previousPath = ''
-
-    if (path != '/login') {
-        previousPath = path
-    }
+    const previousPath = location.pathname
 
     if (!userId) {
         return <Navigate to='/login' replace state={{ previousPath }} />

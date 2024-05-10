@@ -90,6 +90,7 @@ const LoginForm = () => {
         const pathOrgSlug = path.split('.')[0]
         const orgSlugResponse = await fetch(`${API_BASE_NAME}/public/organizations/${pathOrgSlug}`)
         const { id } = await orgSlugResponse.json()
+        const previousPath = history.state?.usr?.previousPath
 
         if (tokens) {
             const { idToken } = tokens
@@ -108,7 +109,7 @@ const LoginForm = () => {
                 }
 
                 setUserId(sessionUserId)
-                navigate('/app')
+                navigate(previousPath ?? '/app')
             }
         }
     }
