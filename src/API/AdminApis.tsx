@@ -72,6 +72,13 @@ const addUserToGroup = async (username: string, groupname: string) => {
     return handleApiResponse(addUserToGroupResponse)
 }
 
+const removeUserFromGroup = async (username: string, groupname: string) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    const removeUserFromGroupResponse = await client.adminProxyProxyAny(VERBS.POST, { proxy: 'removeUserFromGroup' }, { username, groupname })
+
+    return handleApiResponse(removeUserFromGroupResponse)
+}
+
 const updateUserAttributes = async (attributes: AttributeType[], username: string) => {
     const { client } = await RiderTrackerAPI.getClient()
     const updateUserAttributesResponse = await client.adminProxyProxyAny(VERBS.POST, { proxy: 'updateUserAttributes' }, { username, attributes })
@@ -110,6 +117,7 @@ export interface AdminApiFunctionTypes {
     updateUserProfileImage(orgId: string, userId: string, body: File, key: string): Promise<any>
     updateUserAttributes(body: AttributeType[], username: string): Promise<any>
     addUserToGroup(username: string, groupname: string): Promise<any>
+    removeUserFromGroup(username: string, groupname: string): Promise<any>
 }
 
 export default {
@@ -117,5 +125,6 @@ export default {
     createUser,
     updateUserProfileImage,
     updateUserAttributes,
-    addUserToGroup
+    addUserToGroup,
+    removeUserFromGroup
 }

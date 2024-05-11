@@ -128,6 +128,7 @@ const OrganizationAdminSettings = () => {
                                 email={a.email}
                                 title={a.title}
                                 index={idx}
+                                refreshAdmins={getAdmins}
                             />)
                         :
                         null

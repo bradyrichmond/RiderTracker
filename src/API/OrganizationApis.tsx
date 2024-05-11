@@ -61,6 +61,12 @@ const addAdminToOrganization = async (orgId: string, userId: string) => {
     return await updateOrganization(orgId, { adminIds })
 }
 
+const removeAdminFromOrganization = async (orgId: string, userId: string) => {
+    const { adminIds } = await getOrganizationById(orgId)
+    const newAdmins = adminIds.filter((a: string) => a !== userId)
+    return await updateOrganization(orgId, { adminIds: newAdmins })
+}
+
 export interface OrganizationApiFunctionTypes {
     getOrganizations(): Promise<OrganizationType[]>,
     getOrganizationById(orgId: string): Promise<OrganizationType>,
@@ -69,6 +75,7 @@ export interface OrganizationApiFunctionTypes {
     getOrganizationLoginDataBySlug(orgslug: string): Promise<Record<string, string>>
     updateOrganization(orgId: string, body: Record<string, string | string[]>): Promise<any>
     addAdminToOrganization(orgId: string, userId: string): Promise<any>
+    removeAdminFromOrganization(orgId: string, userId: string): Promise<any>
 }
 
 export default {
@@ -78,5 +85,6 @@ export default {
     updateOrganizationLoginImage,
     getOrganizationLoginDataBySlug,
     updateOrganization,
-    addAdminToOrganization
+    addAdminToOrganization,
+    removeAdminFromOrganization
 }
