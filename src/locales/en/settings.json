@@ -1,0 +1,11 @@
+{
+    "addOrgAdmin": "Add Organization Admin",
+    "createAdminError": "Error creating new admin.",
+    "deleteAdminTooltip": "Delete this admin?",
+    "orgAdmins": "Organization Admins",
+    "orgLogos": "Organization Logos",
+    "orgSettings": "Organization Settings",
+    "personalDetails": "These are your personal details. They are visible to organization administrators.",
+    "profileSettings": "Profile Settings",
+    "updatePassword": "Update Password"
+}

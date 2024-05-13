@@ -4,6 +4,7 @@ import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
 import { Box, Button, TextField } from "@mui/material"
 import { useMemo, useContext } from "react"
 import { useForm } from "react-hook-form"
+import { useTranslation } from 'react-i18next'
 
 interface ProfileFormInputs {
     firstName: string
@@ -15,6 +16,8 @@ const UpdateProfileDataForm = () => {
     const { userFullName, userEmail, userId, updateUserData } = useContext(RoleContext)
     const { setSnackbarMessage, setSnackbarSeverity, setSnackbarVisibilityMs } = useContext(SnackbarContext)
     const { api } = useContext(ApiContext)
+    const { t } = useTranslation('common')
+
     const { firstName, lastName } = useMemo(() => {
         const splitFullName = userFullName.split(' ')
         const lastName = splitFullName.pop()
@@ -44,7 +47,7 @@ const UpdateProfileDataForm = () => {
     const showDataChangeSnackbar = () => {
         setSnackbarSeverity('info')
         setSnackbarVisibilityMs(10000)
-        setSnackbarMessage('Your change request has been received. You may need to verify the change from your old email address to complete.')
+        setSnackbarMessage(t('dataChangeComplete'))
     }
 
     const mapFormDataToCognito = (data: ProfileFormInputs) => {
@@ -58,10 +61,10 @@ const UpdateProfileDataForm = () => {
     return (
         <Box>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <TextField fullWidth label='First Name' disabled {...register('firstName')} />
-                <TextField fullWidth label='Last Name' disabled {...register('lastName')} />
-                <TextField fullWidth label='Email' {...register('email', { required: true})} />
-                <Button type='submit' variant='contained' disabled={!isDirty} fullWidth sx={{mt: '1rem'}}>Submit Changes</Button>
+                <TextField fullWidth label={t('firstName')} disabled {...register('firstName')} />
+                <TextField fullWidth label={t('lastName')} disabled {...register('lastName')} />
+                <TextField fullWidth label={t('email')} {...register('email', { required: true})} />
+                <Button type='submit' variant='contained' disabled={!isDirty} fullWidth sx={{mt: '1rem'}}>{t('submitChanges')}</Button>
             </form>
         </Box>
     )

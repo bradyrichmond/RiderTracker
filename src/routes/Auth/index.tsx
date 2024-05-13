@@ -11,6 +11,7 @@ import LoginForm from "./LoginForm"
 import { fetchAuthSession } from "aws-amplify/auth"
 import { RoleContext } from "@/contexts/RoleContextProvider"
 import { useNavigate } from "react-router-dom"
+import { useTranslation } from 'react-i18next'
 
 const bgImages = [
     bg0,
@@ -28,6 +29,7 @@ const Auth = () => {
     const theme = useTheme()
     const { setUserId, updateUserData } = useContext(RoleContext)
     const navigate = useNavigate()
+    const { t } = useTranslation('auth')
 
     useEffect(() => {
         const randomImageIndex = Math.floor(Math.random() * bgImages.length)
@@ -62,7 +64,7 @@ const Auth = () => {
             {isLoading ?
                 <>
                     <Box sx={{ ml: '5rem', mr: '5rem', mt: '2rem', mb: '3rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <Typography variant='h4'>Gathering local data</Typography>
+                        <Typography variant='h4'>{t('gatheringLocalData')}</Typography>
                     </Box>
                     <LinearProgress sx={{ height: '1rem', ml: '5rem', mr: '5rem', borderRadius: '1rem' }} />
                 </>

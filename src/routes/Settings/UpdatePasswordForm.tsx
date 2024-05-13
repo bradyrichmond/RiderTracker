@@ -3,6 +3,7 @@ import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
 import { Box, Button, TextField } from "@mui/material"
 import { useContext } from "react"
 import { useForm } from "react-hook-form"
+import { useTranslation } from 'react-i18next'
 
 interface PasswordFormInput {
     oldPassword: string
@@ -14,6 +15,7 @@ const UpdatePasswordForm = () => {
     const { handleSubmit, register } = useForm<PasswordFormInput>()
     const { setSnackbarMessage, setSnackbarSeverity, setSnackbarVisibilityMs } = useContext(SnackbarContext)
     const { api } = useContext(ApiContext)
+    const { t } = useTranslation(['settings', 'common'])
 
     const onSubmit = (data: PasswordFormInput) => {
         const { oldPassword, newPassword, verifyNewPassword } = data
@@ -38,13 +40,13 @@ const UpdatePasswordForm = () => {
     const showPasswordSetFailureSnackbar = () => {
         setSnackbarSeverity('error')
         setSnackbarVisibilityMs(5000)
-        setSnackbarMessage('Password change failed')
+        setSnackbarMessage(t('passwordChangeFailed', { ns: 'common' }))
     }
 
     const showPasswordMismatchSnackbar = () => {
         setSnackbarSeverity('error')
         setSnackbarVisibilityMs(5000)
-        setSnackbarMessage('New password fields do not match!')
+        setSnackbarMessage(t('passwordNoMatchError', { ns: 'common' }))
     }
 
     const verifyNewPasswordMatch = (pw1: string, pw2: string) => {
@@ -54,15 +56,15 @@ const UpdatePasswordForm = () => {
     return (
         <Box>
             <form onSubmit={handleSubmit(onSubmit)}>
-                <TextField type='password' fullWidth label='Current Password' {...register('oldPassword')} />
-                <TextField type='password' fullWidth label='New Password' {...register('newPassword')} />
+                <TextField type='password' fullWidth label={t('currentPassword', { ns: 'common' })} {...register('oldPassword')} />
+                <TextField type='password' fullWidth label={t('newPassword', { ns: 'common' })} {...register('newPassword')} />
                 <TextField 
                     type='password'
                     fullWidth 
-                    label='Retype New Password'
+                    label={t('retypePassword', { ns: 'common' })}
                     {...register('verifyNewPassword')} 
                 />
-                <Button type='submit' variant='contained' fullWidth sx={{mt: '1rem'}}>Change Password</Button>
+                <Button type='submit' variant='contained' fullWidth sx={{mt: '1rem'}}>{t('changePassword', { ns: 'common' })}</Button>
             </form>
         </Box>
     )

@@ -4,10 +4,12 @@ import { signOut } from "aws-amplify/auth"
 import { Hub } from "aws-amplify/utils"
 import { useContext, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
+import { useTranslation } from 'react-i18next'
 
 const Logout = () => {
     const { setUserId } = useContext(RoleContext)
     const navigate = useNavigate()
+    const { t } = useTranslation('common')
 
     useEffect(() => {
         const cleanup = Hub.listen('auth', ({ payload: { event } }) => {
@@ -28,7 +30,7 @@ const Logout = () => {
     return (
         <Box sx={{height: '100%', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
             <CircularProgress />
-            <Typography variant='h4'>Logging out...</Typography>
+            <Typography variant='h4'>{t('loggingOut')}</Typography>
         </Box>
     )
 }

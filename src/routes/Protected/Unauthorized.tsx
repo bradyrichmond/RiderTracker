@@ -1,8 +1,11 @@
 import { Box } from "@mui/material"
+import { useTranslation } from 'react-i18next'
 
 const Unauthorized = () => {
+    const { t } = useTranslation('common')
+
     return (
-        <Box>You are not authorized to view this page</Box>
+        <Box>{t('unauthorized')}</Box>
     )
 }
 

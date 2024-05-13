@@ -5,6 +5,7 @@ import RootRouter from './routes/Root/RootRouter'
 import { ApiContextProvider } from './contexts/ApiContextProvider'
 import ThemeContextProvider from './contexts/ThemeContextProvider'
 import { SnackbarContextProvider } from './contexts/SnackbarContextProvider'
+import './helpers/I18n'
 
 function App() {
   return (

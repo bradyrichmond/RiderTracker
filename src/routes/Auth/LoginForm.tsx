@@ -10,6 +10,7 @@ import { RiderTrackerRole, isRiderTrackerRole } from "@/constants/Roles"
 import { OrganizationType } from "@/types/OrganizationType"
 import { useNavigate } from "react-router-dom"
 import { Hub } from "aws-amplify/utils"
+import { useTranslation } from 'react-i18next'
 
 interface LoginFormInputs {
     username: string
@@ -24,6 +25,7 @@ const LoginForm = () => {
     const [orgId, setOrgId] = useState('')
     const [disableButtons, setDisabledButtons] = useState(false)
     const navigate = useNavigate()
+    const { t } = useTranslation(['auth', 'common'])
 
     useEffect(() => {
         const path = window.location.toString().split('//')[1]
@@ -69,7 +71,7 @@ const LoginForm = () => {
         setErrorMessage('')
 
         if (!username || !password) {
-            setErrorMessage('Username and password are required.')
+            setErrorMessage(t('usernamePasswordRequired'))
             return
         }
 
@@ -78,7 +80,7 @@ const LoginForm = () => {
         } catch (e) {
             console.error(e)
             signOut()
-            setErrorMessage('Incorrect username or password.')
+            setErrorMessage(t('authFailed'))
             setDisabledButtons(false)
         }
     }
@@ -129,11 +131,11 @@ const LoginForm = () => {
                 <Box sx={{ mt: '2rem' }}>
                     <form onSubmit={handleSubmit(login)}>
                         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                            <TextField label='Email' {...register('username')} />
-                            <TextField type='password' label='Password' {...register('password')} />
+                            <TextField label={t('email')} {...register('username')} />
+                            <TextField type='password' label={t('password')} {...register('password')} />
                         </Box>
                         <Typography sx={{ color: 'red' }}>{errorMessage ?? ' '}</Typography>
-                        <Button type='submit' variant='contained' disabled={disableButtons} sx={{ mt: '2rem' }} fullWidth>Sign In</Button>
+                        <Button type='submit' variant='contained' disabled={disableButtons} sx={{ mt: '2rem' }} fullWidth>{t('signIn')}</Button>
                     </form>
                 </Box>
             </Box>

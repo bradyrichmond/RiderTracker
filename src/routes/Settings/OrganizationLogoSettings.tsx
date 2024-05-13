@@ -6,10 +6,12 @@ import { MB } from "@/constants/Numbers"
 import { useContext } from "react"
 import { ApiContext } from "@/contexts/ApiContextProvider"
 import { RoleContext } from "@/contexts/RoleContextProvider"
+import { useTranslation } from 'react-i18next'
 
 const OrganizationLogoSettings = () => {
     const { api } = useContext(ApiContext)
     const { organizationId, updateUserData, organizationLoginImageUrl } = useContext(RoleContext)
+    const { t } = useTranslation(['settings', 'common'])
 
     const uploadAction = async (file: File) => {
         await api.organizations.updateOrganizationLoginImage(file, organizationId)
@@ -23,13 +25,13 @@ const OrganizationLogoSettings = () => {
             <Card sx={{ p: '2rem' }}>
                 <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                     <Typography variant='h4' sx={{ pb: '.5rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        Organization Logos
+                        {t('orgLogos', { ns: 'settings' })}
                     </Typography>
                 </Box>
                 <Box>
                     <Box display='flex' height='100%' flexDirection='column' sx={{ pt: '2rem' }}>
                         <Box sx={{ pb: '2rem' }} display='flex' justifyContent='center' alignItems='center' onClick={openFileDialog} >
-                            <Tooltip title={temporaryFileUrl ? 'File has not been uploaded' : 'Change Profile Picture'}>
+                            <Tooltip title={temporaryFileUrl ? t('fileNotUploaded', { ns: 'common' }) : t('changeProfilePicture', { ns: 'common' })}>
                                 <Badge badgeContent={<PriorityHighIcon fontSize='large' />} invisible={!temporaryFileUrl} color='error' sx={{ "& .MuiBadge-badge": { padding: '0.5rem', borderRadius: '2rem', height: 'fit-content', width: 'fit-content' } }}>
                                     {!temporaryFileUrl && !organizationLoginImageUrl ? <FolderIcon fontSize='large' /> : null}
                                     {temporaryFileUrl ? <img src={temporaryFileUrl} alt={temporaryFileUrl} /> : null}

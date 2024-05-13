@@ -5,6 +5,7 @@ import Organization from "./Organization"
 import { RoleContext } from "@/contexts/RoleContextProvider"
 import { ROLE_WEIGHTS } from "@/constants/RoleWeights"
 import { RIDER_TRACKER_ROLES } from "@/constants/Roles"
+import { useTranslation } from 'react-i18next'
 
 interface TabPanelProps {
     children?: React.ReactNode
@@ -42,6 +43,7 @@ function a11yProps(index: number) {
 const Settings = () => {
     const [activeTab, setActiveTab] = useState<number>(0)
     const { heaviestRole } = useContext(RoleContext)
+    const { t } = useTranslation('settings')
     const roleWeight = useMemo(() => {
         return ROLE_WEIGHTS[heaviestRole]
     }, [heaviestRole])
@@ -55,7 +57,7 @@ const Settings = () => {
             <Tabs value={activeTab} onChange={handleChange} aria-label="basic tabs example">
                 <Tab label="Profile" {...a11yProps(0)} />
                 {roleWeight <= ROLE_WEIGHTS[RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN] ?
-                    <Tab label="Organization Settings" {...a11yProps(1)} />
+                    <Tab label={t('orgSettings')} {...a11yProps(1)} />
                     :
                     null
                 }

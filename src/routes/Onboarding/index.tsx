@@ -9,28 +9,11 @@ import ConfirmOrganizationAdmin from "./ConfirmOrganizationAdmin"
 import { v4 as uuid } from 'uuid'
 import RiderTrackerAPI from "@/API"
 import OnboardingComplete from "./OnboardingComplete"
+import { useTranslation } from 'react-i18next'
 
 interface StepType {
     label: string
 }
-
-const steps: StepType[] = [
-    {
-        label: 'Create an Organization Administrator'
-    },
-    {
-        label: 'Confirm Administrator Account'
-    },
-    {
-        label: 'Set Organization Name'
-    },
-    {
-        label: 'Set Organization Unique Identifier'
-    },
-    {
-        label: 'Onboarding Complete'
-    }
-]
 
 interface CreateOrganizationInputs {
     orgName: string
@@ -54,6 +37,25 @@ const Onboarding = () => {
     const [tempOrgSlug, setTempOrgSlug] = useState('')
     const [newUserId, setNewUserId] = useState('')
     const [api, setApi] = useState<RiderTrackerAPI>()
+    const { t } = useTranslation(['onboarding', 'common'])
+
+    const steps: StepType[] = [
+        {
+            label: t('createOrgAdmin')
+        },
+        {
+            label: t('confirmAdmin')
+        },
+        {
+            label: t('setOrgName')
+        },
+        {
+            label: t('setOrgSlug')
+        },
+        {
+            label: t('onboardingComplete')
+        }
+    ]
 
     const { orgName: orgNameValue, orgSlug: orgSlugValue, adminFirstName, adminLastName, adminEmail, adminPassword, confirmationCode } = watch()
 
@@ -201,11 +203,11 @@ const Onboarding = () => {
                                 onClick={handleBack}
                                 variant='contained'
                             >
-                                Back
+                                {t('back', { ns: "common" })}
                             </Button>
                             <Typography>Step {activeStep + 1} of {steps.length}</Typography>
                             <Button onClick={handleNext} variant='contained' disabled={isLoading}>
-                                {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                                {activeStep === steps.length - 1 ? t('finish', { ns: "common" }) : t('next', { ns: "common" })}
                             </Button>
                         </Box>
                     </Box>

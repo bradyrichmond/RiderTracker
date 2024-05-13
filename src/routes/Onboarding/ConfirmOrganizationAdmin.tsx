@@ -1,15 +1,17 @@
 import { Box, TextField, Typography } from "@mui/material"
 import { useFormContext } from "react-hook-form"
+import { useTranslation } from 'react-i18next'
 
 const ConfirmOrganizationAdmin = () => {
     const { register } = useFormContext()
+    const { t } = useTranslation('onboarding')
 
     return (
         <Box>
             <Typography variant='h5'>
-                The Organization Admin will receive an email shortly with a confirmation code. Please enter it in the field below.
+                {t('emailConfirmationCode')}
             </Typography>
-            <TextField label="Confirmation Code" {...register('confirmationCode')} fullWidth/>
+            <TextField label={t('confirmationCode')} {...register('confirmationCode')} fullWidth/>
         </Box>
     )
 }

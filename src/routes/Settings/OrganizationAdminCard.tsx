@@ -8,6 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import { RoleContext } from "@/contexts/RoleContextProvider"
 import { ApiContext } from "@/contexts/ApiContextProvider"
 import { RIDER_TRACKER_ROLES } from "@/constants/Roles"
+import { useTranslation } from 'react-i18next'
 
 interface OrganizationAdminCardProps extends UserType {
     index: number
@@ -22,6 +23,7 @@ const OrganizationAdminCard = ({ id, firstName, lastName, title, email, index, r
     const hovering = useHover<HTMLDivElement>(ref)
     const { userId, organizationId: orgId } = useContext(RoleContext)
     const { api } = useContext(ApiContext)
+    const { t } = useTranslation('settings')
 
     useEffect(() => {
         buildActions()
@@ -33,7 +35,7 @@ const OrganizationAdminCard = ({ id, firstName, lastName, title, email, index, r
         if (id !== userId) {
             actionsList.push({
                 id,
-                tooltipString: 'Delete this admin?',
+                tooltipString: t('deleteAdminTooltip'),
                 Icon: DeleteIcon,
                 action: deleteAdminAction
             })

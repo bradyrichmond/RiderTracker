@@ -10,12 +10,14 @@ import { ApiContext } from "@/contexts/ApiContextProvider"
 import { GridColDef } from '@mui/x-data-grid'
 import { RoleContext } from "@/contexts/RoleContextProvider"
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "@/constants/Roles"
+import { useTranslation } from 'react-i18next'
 
 const Buses = () => {
     const [buses, setBuses] = useState<BusType[]>([])
     const { api } = useContext(ApiContext)
     const { heaviestRole, organizationId } = useContext(RoleContext)
     const navigate = useNavigate()
+    const { t } = useTranslation(['buses', 'common'])
 
     const updateBusesAction = async () => {
         const buses = await api.buses.getBuses(organizationId)
@@ -45,7 +47,7 @@ const Buses = () => {
                         size="small"
                         onClick={() => viewBusDetails(params.row.id)}
                     >
-                        <Tooltip title='View details'>
+                        <Tooltip title={t('viewDetails', { ns: 'common' })}>
                             <InfoIcon />
                         </Tooltip>
                     </Button>
@@ -89,7 +91,7 @@ const Buses = () => {
             ]}}
             gridColumns={generateGridColumns()}
             titleSingular='Bus'
-            titlePlural='Buses'
+            titlePlural={t('buses')}
         />
     )
 }

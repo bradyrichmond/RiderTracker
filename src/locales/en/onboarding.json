@@ -1,0 +1,13 @@
+{
+    "emailConfirmationCode": "The Organization Admin will receive an email shortly with a confirmation code. Please enter it in the field below.",
+    "createFirstAdmin": "Create your first Administrator.",
+    "createOrgAdmin": "Create an Organization Administrator",
+    "confirmationCode": "Confirmation Code",
+    "confirmOrgAdmin": "Confirm Administrator Account",
+    "finishOnboarding": "Click the Finish button to proceed to the application.",
+    "setOrgName": "Set Organization Name",
+    "setOrgNameDescription": "Set your organization name. You can change this later.",
+    "setOrgSlug": "Set Organization Unique Identifier",
+    "setOrgSlugDescription": "Set a unique identifier for your organization. This will be used for your application URL.",
+    "onboardingComplete": "Onboarding Complete"
+}

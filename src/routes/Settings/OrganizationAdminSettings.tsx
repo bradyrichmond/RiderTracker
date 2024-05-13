@@ -11,6 +11,7 @@ import { RIDER_TRACKER_ROLES } from "@/constants/Roles"
 import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
 import { UserType } from "@/types/UserType"
 import { AWSUserType } from "@/API/AdminApis"
+import { useTranslation } from 'react-i18next'
 
 const OrganizationAdminSettings = () => {
     const { organizationId } = useContext(RoleContext)
@@ -18,6 +19,7 @@ const OrganizationAdminSettings = () => {
     const { setSnackbarSeverity, setSnackbarVisibilityMs, setSnackbarMessage } = useContext(SnackbarContext)
     const [ admins, setAdmins ] = useState<UserType[]>([])
     const [ showModal, setShowModal ] = useState(false)
+    const { t } = useTranslation('settings')
 
     useEffect(() => {
         getAdmins()
@@ -85,7 +87,7 @@ const OrganizationAdminSettings = () => {
     const showCreateAdminErrorSnackbar = () => {
         setSnackbarSeverity('error')
         setSnackbarVisibilityMs(5000)
-        setSnackbarMessage('Error creating new admin.')
+        setSnackbarMessage(t('createAdminError'))
     }
 
     return (
@@ -105,14 +107,14 @@ const OrganizationAdminSettings = () => {
             <Card sx={{ p: '2rem' }}>
                 <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                     <Typography variant='h4' sx={{ pb: '.5rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        Organization Admins
+                        {t('orgAdmins')}
                     </Typography>
                     <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
                         <Button variant='contained' onClick={toggleShowModal}>
                             <Box display='flex' flexDirection='row'>
                                 <AddCircleIcon />
                                 <Box flex='1' marginLeft='1rem'>
-                                    <Typography>Add Organization Admin</Typography>
+                                    <Typography>{t('addOrgAdmin')}</Typography>
                                 </Box>
                             </Box>
                         </Button>

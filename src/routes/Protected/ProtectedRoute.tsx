@@ -2,6 +2,7 @@ import { PropsWithChildren, useContext } from "react"
 import { Navigate } from "react-router-dom"
 import { ROUTE_PROTECTION } from "@/constants/RouteProtection"
 import { RoleContext } from "@/contexts/RoleContextProvider"
+import Unauthorized from "./Unauthorized"
 
 interface ProtectedRouteProps {
     route: string
@@ -18,7 +19,7 @@ const ProtectedRoute = ({ route, children }: PropsWithChildren<ProtectedRoutePro
     }
 
     if (routePermissions && !routePermissions.routes.includes(route)) {
-        return <Navigate to="/app/unauthorized" replace />
+        return <Unauthorized />
     }
 
     return children
