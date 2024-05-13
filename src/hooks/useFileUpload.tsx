@@ -1,6 +1,7 @@
 import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
 import { Box, Button, Typography } from "@mui/material"
 import { ChangeEvent, useContext, useRef, useState } from "react"
+import { useTranslation } from 'react-i18next'
 
 interface UseFileUploadArgs {
     uploadAction(file: File): Promise<void>
@@ -13,6 +14,7 @@ const useFileUpload = ({ uploadAction, sizeLimitInBytes }: UseFileUploadArgs) =>
     const [temporaryFileUrl, setTemporaryFileUrl] = useState('')
     const inputFile = useRef<HTMLInputElement>(null)
     const { setSnackbarMessage, setSnackbarSeverity, setSnackbarVisibilityMs } = useContext(SnackbarContext)
+    const { t } = useTranslation('common')
 
     const openFileDialog = () => {
         inputFile?.current?.click()
@@ -37,13 +39,13 @@ const useFileUpload = ({ uploadAction, sizeLimitInBytes }: UseFileUploadArgs) =>
     const showFileTooLargeSnackbar = () => {
         setSnackbarSeverity('error')
         setSnackbarVisibilityMs(5000)
-        setSnackbarMessage('File is too large.')
+        setSnackbarMessage(t('fileTooLarge'))
     }
 
     const fileUploadFailed = () => {
         setSnackbarSeverity('error')
         setSnackbarVisibilityMs(5000)
-        setSnackbarMessage('File upload failed.')
+        setSnackbarMessage(t('fileUploadFailed'))
     }
 
     const uploadFile = async () => {
@@ -77,13 +79,13 @@ const useFileUpload = ({ uploadAction, sizeLimitInBytes }: UseFileUploadArgs) =>
                         style={{display: 'none'}}
                     />
                         <Button variant='contained' sx={{ height: '100%' }} fullWidth disabled={!fileName} onClick={uploadFile}>
-                            <Typography variant='body1'>{fileName ? 'Upload Profile Image' : 'No File Selected'}</Typography>
+                            <Typography variant='body1'>{fileName ? t('uploadProfileImage') : t('noFileSelected')}</Typography>
                         </Button>
                     </Box>
                 </Box>
                 <Box paddingTop='.5rem' display='flex' justifyContent='center' alignItems='center'>
                     <Typography variant='caption'>
-                        {fileName ? `Selected file: ${fileName}` : 'Acceptable file type: jpg, jpeg, png, and svg. Max file size: 10MB'}
+                        {fileName ? t('selectedFileName', { fileName }) : t('acceptableFileTypes')}
                     </Typography>
                 </Box>
             </>

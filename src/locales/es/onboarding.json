@@ -1,0 +1,13 @@
+{
+    "emailConfirmationCode": "El administrador de la organización recibirá un correo electrónico en breve con un código de confirmación. ",
+    "createFirstAdmin": "Crea tu primer administrador.",
+    "createOrgAdmin": "Crear un administrador de organización",
+    "confirmationCode": "Código de confirmación",
+    "confirmOrgAdmin": "Confirmar cuenta de administrador",
+    "finishOnboarding": "Haga clic en el botón Finalizar para continuar con la aplicación.",
+    "setOrgName": "Establecer nombre de organización",
+    "setOrgNameDescription": "Establezca el nombre de su organización. ",
+    "setOrgSlug": "Establecer identificador único de organización",
+    "setOrgSlugDescription": "Establezca un identificador único para su organización. ",
+    "onboardingComplete": "Incorporación completa"
+}

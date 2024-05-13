@@ -6,6 +6,7 @@ import { ApiContextProvider } from './contexts/ApiContextProvider'
 import ThemeContextProvider from './contexts/ThemeContextProvider'
 import { SnackbarContextProvider } from './contexts/SnackbarContextProvider'
 import './helpers/I18n'
+import { I18nContextProvider } from './contexts/I18nContextProvider'
 
 function App() {
   return (
@@ -14,7 +15,9 @@ function App() {
         <RoleContextProvider>
           <ThemeContextProvider>
             <SnackbarContextProvider>
-              <RootRouter />
+              <I18nContextProvider>
+                <RootRouter />
+              </I18nContextProvider>
             </SnackbarContextProvider>
           </ThemeContextProvider>
         </RoleContextProvider>

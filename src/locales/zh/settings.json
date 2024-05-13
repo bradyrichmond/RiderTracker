@@ -1,0 +1,11 @@
+{
+    "addOrgAdmin": "添加组织管理员",
+    "createAdminError": "创建新管理员时出错。",
+    "deleteAdminTooltip": "删除该管理员？",
+    "orgAdmins": "组织管理员",
+    "orgLogos": "组织标志",
+    "orgSettings": "组织设置",
+    "personalDetails": "这些是您的个人详细信息。",
+    "profileSettings": "配置文件设置",
+    "updatePassword": "更新密码"
+  }

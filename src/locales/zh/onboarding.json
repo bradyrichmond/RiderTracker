@@ -1,0 +1,13 @@
+{
+    "emailConfirmationCode": "组织管理员很快就会收到一封包含确认码的电子邮件。",
+    "createFirstAdmin": "创建您的第一个管理员。",
+    "createOrgAdmin": "创建组织管理员",
+    "confirmationCode": "验证码",
+    "confirmOrgAdmin": "确认管理员帐户",
+    "finishOnboarding": "单击“完成”按钮继续应用程序。",
+    "setOrgName": "设置组织名称",
+    "setOrgNameDescription": "设置您的组织名称。",
+    "setOrgSlug": "设置组织唯一标识符",
+    "setOrgSlugDescription": "为您的组织设置唯一标识符。",
+    "onboardingComplete": "入职完成"
+  }

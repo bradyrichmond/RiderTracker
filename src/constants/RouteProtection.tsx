@@ -12,6 +12,7 @@ import ToggleLightMode from "@/components/ToggleLightMode"
 import AccountBoxIcon from '@mui/icons-material/AccountBox'
 import LoginIcon from '@mui/icons-material/Login'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
+import ChangeLanguage from "@/components/ChangeLanguage"
 
 export interface SettingsItemType extends NavItemType {
     action?(): Promise<void>
@@ -200,8 +201,12 @@ const SETTINGS_NAV_ITEMS: SettingsItemType[] = [
     {
         Component: ToggleLightMode,
         path: '',
-        label: 'ToggleLightMode',
-        Icon: PowerSettingsNewIcon
+        label: 'ToggleLightMode'
+    },
+    {
+        Component: ChangeLanguage,
+        path: '',
+        label: 'Change Language'
     },
     {
         path: '/app/settings',

@@ -17,7 +17,7 @@ interface NavigationDrawerProps {
 export interface NavItemType {
     label: string
     path: string
-    Icon: ComponentType
+    Icon?: ComponentType
 }
 
 const NavigationDrawer = ({ toggleDrawer, open, navItems }: NavigationDrawerProps) => {
@@ -34,9 +34,13 @@ const NavigationDrawer = ({ toggleDrawer, open, navItems }: NavigationDrawerProp
                     {navItems.map(({ label, Icon, path }) => (
                         <ListItem key={label} disablePadding>
                             <ListItemButton onClick={() => navigate(path)}>
-                                <ListItemIcon>
-                                    <Icon />
-                                </ListItemIcon>
+                                {Icon ? 
+                                    <ListItemIcon>
+                                        <Icon />
+                                    </ListItemIcon>
+                                    :
+                                    null
+                                }
                                 <ListItemText primary={label} />
                             </ListItemButton>
                         </ListItem>

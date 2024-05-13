@@ -15,7 +15,7 @@ import { RoleContext } from '@/contexts/RoleContextProvider'
 import { StopType } from '@/types/StopType'
 import { UserType } from '@/types/UserType'
 
-const Transition = forwardRef(function Transition(
+export const Transition = forwardRef(function Transition(
     props: TransitionProps & {
       children: React.ReactElement<any, any>;
     },

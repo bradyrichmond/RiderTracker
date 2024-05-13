@@ -1,0 +1,11 @@
+{
+    "addOrgAdmin": "Ajouter un administrateur d'organisation",
+    "createAdminError": "Erreur lors de la création d'un nouvel administrateur.",
+    "deleteAdminTooltip": "Supprimer cet administrateur ?",
+    "orgAdmins": "Administrateurs de l'organisation",
+    "orgLogos": "Logos d'organisation",
+    "orgSettings": "Paramètres de l'organisation",
+    "personalDetails": "Ce sont vos données personnelles. ",
+    "profileSettings": "Paramètres de profil",
+    "updatePassword": "Mettre à jour le mot de passe"
+}

@@ -1,0 +1,13 @@
+{
+    "emailConfirmationCode": "L'administrateur de l'organisation recevra sous peu un e-mail avec un code de confirmation. ",
+    "createFirstAdmin": "Créez votre premier administrateur.",
+    "createOrgAdmin": "Créer un administrateur d'organisation",
+    "confirmationCode": "Code de confirmation",
+    "confirmOrgAdmin": "Confirmer le compte administrateur",
+    "finishOnboarding": "Cliquez sur le bouton Terminer pour procéder à l'application.",
+    "setOrgName": "Définir le nom de l'organisation",
+    "setOrgNameDescription": "Définissez le nom de votre organisation. ",
+    "setOrgSlug": "Définir l'identifiant unique de l'organisation",
+    "setOrgSlugDescription": "Définissez un identifiant unique pour votre organisation. ",
+    "onboardingComplete": "Intégration terminée"
+}
