@@ -3,6 +3,16 @@ import RiderTrackerAPI from "."
 import { GuardianType, UserType } from "@/types/UserType"
 import { handleApiResponse } from "@/helpers/ApiHelpers"
 
+interface PaginationArgs {
+    pageSize: number
+    lastKey: string
+}
+
+interface GetUsersArgs {
+    orgId: string
+    pagination: PaginationArgs
+}
+
 const changeUserPassword = async (oldPassword: string, newPassword: string) => {
     try {
         await updatePassword({ oldPassword, newPassword })
@@ -11,9 +21,9 @@ const changeUserPassword = async (oldPassword: string, newPassword: string) => {
     }
 }
 
-const getUsers = async (orgId: string) => {
+const getUsers = async ({ orgId, pagination }: GetUsersArgs) => {
     const api = await RiderTrackerAPI.getClient()
-    const getUsersResponse = await api.client.organizationsOrgIdUsersGet({ orgId })
+    const getUsersResponse = await api.client.organizationsOrgIdUsersGet({ orgId }, {}, { queryParams: pagination })
     
     return handleApiResponse(getUsersResponse)
 }
@@ -66,7 +76,7 @@ const updateUser = async (orgId: string, id: string, body: Record<string, string
 export interface UserApiFunctionTypes {
     changeUserPassword(previousPassword: string, proposedPassword: string): Promise<void>
     getUserProfileImage(orgId: string, userId: string): Promise<string>
-    getUsers(orgId: string): Promise<UserType[]>
+    getUsers(args: GetUsersArgs): Promise<{items: UserType[], count: number}>
     getUserById(orgId: string, id: string): Promise<UserType>
     getGuardianById(orgId: string, id: string): Promise<GuardianType>
     getBulkUsersByIds(orgId: string, userIds: string[]): Promise<UserType[]>

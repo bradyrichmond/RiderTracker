@@ -138,11 +138,11 @@ apigClientFactory.newClient = function (config) {
     apigClient.adminProxyProxyOptions = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
-        apiGateway.core.utils.assertParametersDefined(params, ['proxy'], ['body']);
+        apiGateway.core.utils.assertParametersDefined(params, [], ['body']);
         
         var adminProxyProxyOptionsRequest = {
             verb: 'options'.toUpperCase(),
-            path: pathComponent + uritemplate('/admin-proxy/{proxy}').expand(apiGateway.core.utils.parseParametersToObject(params, ['proxy'])),
+            path: pathComponent + uritemplate('/admin-proxy/{proxy+}').expand(apiGateway.core.utils.parseParametersToObject(params, [])),
             headers: apiGateway.core.utils.parseParametersToObject(params, []),
             queryParams: apiGateway.core.utils.parseParametersToObject(params, []),
             body: body

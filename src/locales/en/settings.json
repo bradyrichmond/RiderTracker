@@ -6,6 +6,8 @@
     "orgLogos": "Organization Logos",
     "orgSettings": "Organization Settings",
     "personalDetails": "These are your personal details. They are visible to organization administrators.",
+    "profile": "Profile",
     "profileSettings": "Profile Settings",
-    "updatePassword": "Update Password"
+    "updatePassword": "Update Password",
+    "userManagement": "User Management"
 }

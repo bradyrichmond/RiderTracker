@@ -6,6 +6,8 @@
     "orgLogos": "Logos d'organisation",
     "orgSettings": "Paramètres de l'organisation",
     "personalDetails": "Ce sont vos données personnelles. ",
+    "profile": "Profil",
     "profileSettings": "Paramètres de profil",
-    "updatePassword": "Mettre à jour le mot de passe"
-}
+    "updatePassword": "Mettre à jour le mot de passe",
+    "userManagement": "Gestion des utilisateurs"
+  }

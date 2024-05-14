@@ -6,6 +6,8 @@
     "orgLogos": "Logotipos de organizaciones",
     "orgSettings": "Configuración de la organización",
     "personalDetails": "Estos son tus datos personales. ",
+    "profile": "Perfil",
     "profileSettings": "Configuración de perfil",
-    "updatePassword": "Actualiza contraseña"
-}
+    "updatePassword": "Actualiza contraseña",
+    "userManagement": "Gestión de usuarios"
+  }

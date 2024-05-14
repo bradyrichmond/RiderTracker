@@ -1,7 +1,8 @@
 import { Box, Tab, Tabs } from "@mui/material"
 import { SyntheticEvent, useContext, useMemo, useState } from "react"
-import Profile from "./Profile"
-import Organization from "./Organization"
+import Profile from "./UserSettings/Profile"
+import Organization from "./OrganizationSettings/Organization"
+import UserManagement from "./UserManagement"
 import { RoleContext } from "@/contexts/RoleContextProvider"
 import { ROLE_WEIGHTS } from "@/constants/RoleWeights"
 import { RIDER_TRACKER_ROLES } from "@/constants/Roles"
@@ -55,22 +56,30 @@ const Settings = () => {
     return (
         <Box height='100%' width='100%' display='flex' flexDirection='column'>
             <Tabs value={activeTab} onChange={handleChange} aria-label="basic tabs example">
-                <Tab label="Profile" {...a11yProps(0)} />
                 {roleWeight <= ROLE_WEIGHTS[RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN] ?
-                    <Tab label={t('orgSettings')} {...a11yProps(1)} />
+                    [
+                        <Tab label={t('profile')} {...a11yProps(0)} />,
+                        <Tab label={t('orgSettings')} {...a11yProps(1)} />,
+                        <Tab label={t('userManagement')} {...a11yProps(2)} />
+                    ]
                     :
                     null
                 }
             </Tabs>
-            <CustomTabPanel value={activeTab} index={0}>
-                <Profile />
-            </CustomTabPanel>
             {roleWeight <= ROLE_WEIGHTS[RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN] ?
-                <CustomTabPanel value={activeTab} index={1}>
-                    <Organization />
-                </CustomTabPanel>
+                [
+                    <CustomTabPanel value={activeTab} index={0}>
+                        <Profile />
+                    </CustomTabPanel>,
+                    <CustomTabPanel value={activeTab} index={1}>
+                        <Organization />
+                    </CustomTabPanel>,
+                    <CustomTabPanel value={activeTab} index={2}>
+                        <UserManagement />
+                    </CustomTabPanel>
+                ]
                 :
-                null
+                <Profile />
             }
         </Box>
     )

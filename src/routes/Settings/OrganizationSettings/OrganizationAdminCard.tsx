@@ -94,7 +94,7 @@ interface OrganizationAdminActionProps {
     action(id: string): Promise<void>
 }
 
-const OrganizationAdminAction = ({ id, action, tooltipString, Icon }: OrganizationAdminActionProps) => {
+export const OrganizationAdminAction = ({ id, action, tooltipString, Icon }: OrganizationAdminActionProps) => {
     const handleClick = () => {
         action(id)
     }

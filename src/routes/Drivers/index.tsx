@@ -9,7 +9,7 @@ import { GridColDef } from '@mui/x-data-grid'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "@/constants/Roles"
 import { RoleContext } from "@/contexts/RoleContextProvider"
 import { UserType } from "@/types/UserType"
-import { userFactory } from "../Settings/UserFactory"
+import { userFactory } from "../Settings/UserSettings/UserFactory"
 
 const Drivers = () => {
     const [drivers, setDrivers] = useState<UserType[]>([])

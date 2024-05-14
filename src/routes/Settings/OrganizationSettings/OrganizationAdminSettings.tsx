@@ -4,7 +4,7 @@ import { Box, Button, Card, Grid, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
 import OrganizationAdminCard from "./OrganizationAdminCard"
 import AddEntityModal from "@/components/AddEntityModal"
-import { userFactory } from "./UserFactory"
+import { userFactory } from "../UserSettings/UserFactory"
 import { FormDataType } from "@/types/FormTypes"
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { RIDER_TRACKER_ROLES } from "@/constants/Roles"
