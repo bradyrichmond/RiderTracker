@@ -30,13 +30,14 @@ interface EntityViewerProps<T> {
     gridColumns: GridColDef[]
     titleSingular?: string
     titlePlural?: string
+    processRowUpdate(updatedRow: T, originalRow: T): Promise<T>
 }
 
 
 const EntityViewer = <T extends 
         BusType | GuardianType | OrganizationType | RiderType | ScanType | SchoolType | StopType | UserType>(
     {
-        createEntity, entityFactory, entities, getEntities, modalFormInputs, gridColumns, titleSingular, titlePlural
+        createEntity, entityFactory, entities, getEntities, modalFormInputs, gridColumns, titleSingular, titlePlural, processRowUpdate
     }:EntityViewerProps<T>
 ) => {
     const [showModal, setShowModal] = useState(false)
@@ -99,7 +100,7 @@ const EntityViewer = <T extends
                 }
             </Box>
             <Box flex='1'>
-                <DataGrid rows={entities} columns={gridColumns} />
+                <DataGrid rows={entities} columns={gridColumns} rowHeight={100} processRowUpdate={processRowUpdate}/>
             </Box>
         </Box>
     )

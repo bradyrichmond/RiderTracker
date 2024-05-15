@@ -11,15 +11,24 @@ import { RoleContext } from "@/contexts/RoleContextProvider"
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox'
 import { useNavigate } from "react-router-dom"
 import { v4 as uuidv4 } from "uuid"
+import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
+import { useTranslation } from 'react-i18next'
 
 const Schools = () => {
     const [schools, setSchools] = useState<SchoolType[]>([])
     const { api } = useContext(ApiContext)
     const { heaviestRole, organizationId } = useContext(RoleContext)
+    const { setSnackbarSeverity, setSnackbarVisibilityMs, setSnackbarMessage } = useContext(SnackbarContext)
+    const canEditSchool = RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.UPDATE_SCHOOL)
     const navigate = useNavigate()
+    const { t } = useTranslation('schools')
 
     useEffect(() => {
         updateSchools()
+
+        return () => {
+            setSchools([])
+        }
     }, [])
 
     const updateSchools = async () => {
@@ -55,7 +64,14 @@ const Schools = () => {
 
     const generateGridColumns = (): GridColDef[] => {
         const initialGridColumns: GridColDef[] = [
-            { field: 'schoolName',  headerName: 'School Name', flex: 1, align: 'center', headerAlign: 'center' },
+            { 
+                field: 'schoolName',
+                headerName: 'School Name', 
+                flex: 1, 
+                align: 'center',
+                headerAlign: 'center',
+                editable: canEditSchool
+            },
             { field: 'address',  headerName: 'Address', flex: 1, align: 'center', headerAlign: 'center' },
             { field: 'viewDetails', headerName: '', flex: 1, align: 'center', headerAlign: 'center', renderCell: (params) => {
                 return (
@@ -93,6 +109,26 @@ const Schools = () => {
         return initialGridColumns
     }
 
+    const processRowUpdate = async (updatedRow: SchoolType, originalRow: SchoolType) => {
+        try {
+            if (updatedRow !== originalRow) {
+                await api.schools.updateSchool(organizationId, originalRow.id, updatedRow)
+                await updateSchools()
+            }
+
+            return updatedRow
+        } catch {
+            showUpdateError()
+            return originalRow
+        }
+    }
+
+    const showUpdateError = () => {
+        setSnackbarSeverity('error')
+        setSnackbarVisibilityMs(5000)
+        setSnackbarMessage(t('schoolUpdateError'))
+    }
+
     return (
         <EntityViewer<SchoolType>
             createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_SCHOOL) ? createSchoolAction : undefined}
@@ -100,12 +136,9 @@ const Schools = () => {
             entityFactory={schoolFactory}
             getEntities={updateSchools}
             gridColumns={generateGridColumns()}
+            processRowUpdate={processRowUpdate}
             modalFormInputs={{
                 inputs: [
-                    { 
-                        name: "Organization Id",
-                        inputType: "select" 
-                    },
                     {
                         name: 'School Name'
                     },

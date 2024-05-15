@@ -18,7 +18,11 @@ const getSchoolById = async (orgId: string, id: string) => {
 
 const updateSchool = async (orgId: string, id: string, school: SchoolType) => {
     const { client } = await RiderTrackerAPI.getClient()
-    const updateSchoolResponse = await client.organizationsOrgIdSchoolsIdPut({ orgId, id }, school)
+    const updatedSchool = {
+        schoolName: school.schoolName,
+        address: school.address
+    }
+    const updateSchoolResponse = await client.organizationsOrgIdSchoolsIdPut({ orgId, id }, updatedSchool)
 
     return handleApiResponse(updateSchoolResponse)
 }

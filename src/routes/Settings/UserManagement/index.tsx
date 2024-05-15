@@ -19,6 +19,10 @@ const UserManagement = () => {
     
     useEffect(() => {
         fetchUsers()
+
+        return () => {
+            setUsers([])
+        }
     }, [searchArg])
 
     const fetchUsers = async () => {
