@@ -23,7 +23,7 @@ const ProfileSettings = () => {
     const { openFileDialog, FileUpload, temporaryFileUrl } = useFileUpload({uploadAction: uploadFile, sizeLimitInBytes: 10 * MB})
 
     return (
-        <Grid sm={12} md={6}>
+        <Grid xs={12} md={6}>
             <Card sx={{ p: '2rem' }}>
                 <Typography variant='h4' sx={{ pb: '.5rem' }}>
                     {t('profileSettings')}

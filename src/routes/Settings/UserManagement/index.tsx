@@ -1,37 +1,42 @@
 import { ApiContext } from "@/contexts/ApiContextProvider"
 import { RoleContext } from "@/contexts/RoleContextProvider"
 import { UserType } from "@/types/UserType"
-import { Box, Button, Paper, Typography } from "@mui/material"
-import { useContext, useEffect, useRef, useState } from "react"
-import { useHover } from "usehooks-ts"
-import { OrganizationAdminAction } from "../OrganizationSettings/OrganizationAdminCard"
+import { Box, Button } from "@mui/material"
+import { CSSProperties, useContext, useEffect, useState } from "react"
+import { VariableSizeList as List } from 'react-window'
+import AutoSizer from "react-virtualized-auto-sizer"
+import UserCard from "./UserCard"
 import { useTranslation } from 'react-i18next'
-import DeleteIcon from '@mui/icons-material/Delete'
+import SearchBar from "@/components/SearchBar"
 
 const UserManagement = () => {
     const [users, setUsers] = useState<UserType[]>([])
     const [outOfItems, setOutOfItems] = useState(false)
+    const [searchArg, setSearchArg] = useState('')
     const { api } = useContext(ApiContext)
     const { organizationId } = useContext(RoleContext)
+    const { t } = useTranslation('common')
     
     useEffect(() => {
         fetchUsers()
-    }, [])
+    }, [searchArg])
 
     const fetchUsers = async () => {
-        const fetchedUsers = await api.users.getUsers({ orgId: organizationId, pagination: { pageSize: 11, lastKey: '' }})
+        const fetchedUsers = await api.users.getUsers({ orgId: organizationId, pagination: { pageSize: 11, lastKey: '', searchArg }})
 
         if (fetchedUsers.items.length < 1) {
             setOutOfItems(true)
+            setUsers([])
             return
         }
 
         setUsers(fetchedUsers.items)
+        setOutOfItems(false)
     }
 
     const loadMore = async () => {
         const lastKey = users[users.length - 1].id
-        const fetchedUsers = await api.users.getUsers({ orgId: organizationId, pagination: { pageSize: 11, lastKey }})
+        const fetchedUsers = await api.users.getUsers({ orgId: organizationId, pagination: { pageSize: 11, lastKey, searchArg }})
 
         if (fetchedUsers.items.length < 1) {
             setOutOfItems(true)
@@ -41,66 +46,53 @@ const UserManagement = () => {
         setUsers((u) => [...u, ...fetchedUsers.items])
     }
 
+    const updateListAfterDelete = (userId: string) => {
+        const updatedUserList = users.filter((u) => u.id !== userId)
+        setUsers(updatedUserList)
+    }
+
+    const row = ({ index, style }: { index: number, style: CSSProperties }) => {
+        const user = users[index]
+        return <UserCard user={user} updateUsers={updateListAfterDelete} style={style} />
+    }
+
+    const getItemSize = (_index: number) => {
+        return 150
+    }
+
+    const handleSearchChange = (val: string) => {
+        setSearchArg(val)
+    }
+
     return (
-        <>
-            {users ?
-                users.map((u: UserType) => <UserCard user={u} />)
-                :
-                null
-            }
+        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
+            <Box sx={{ mb: '2rem' }}>
+                <SearchBar onChange={handleSearchChange} fullWidth />
+            </Box>
+            <Box sx={{ flex: 1 }}>
+                <AutoSizer>
+                    {({ height, width }) => (
+                        <List 
+                            itemCount={users.length}
+                            width={width}
+                            height={height}
+                            itemSize={getItemSize}
+                        >
+                            {row}
+                        </List>
+                    )}
+                </AutoSizer>
+            </Box>
             {!outOfItems ? 
-                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: '2rem' }}>
                     <Button variant='contained' onClick={loadMore}>
-                        Load More
+                        {t('loadMore')}
                     </Button>
                 </Box>
                 :
                 null
             }
-        </>
-    )
-}
-
-const UserCard = ({ user }: { user: UserType }) => {
-    const ref = useRef(null)
-    const hovering = useHover(ref)
-    const { t } = useTranslation()
-
-    const deleteUserAction = async () => {
-
-    }
-
-    const actions = [
-        {
-            id: 'deleteUserAction',
-            tooltipString: t('deleteUserTooltip'),
-            Icon: DeleteIcon,
-            action: deleteUserAction
-        }
-    ]
-
-    return (
-        <Paper sx={{ mb: '2rem', padding: '2rem' }} ref={ref}>
-            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                <Box sx={{ flex: 1 }}>
-                    <Typography variant='h5'>{user.firstName} {user.lastName}</Typography>
-                    <Typography variant='body1'>{user.email}</Typography>
-                </Box>
-                {hovering ? 
-                    <Box sx={{ width: '3rem', display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
-                        {actions.map((a) => <OrganizationAdminAction 
-                            id={a.id}
-                            key={a.id}
-                            tooltipString={a.tooltipString}
-                            Icon={a.Icon}
-                            action={a.action}
-                        />)}
-                    </Box>
-                    :
-                    null
-                }
-            </Box>
-        </Paper>
+        </Box>
     )
 }
 

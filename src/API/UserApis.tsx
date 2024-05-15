@@ -6,6 +6,7 @@ import { handleApiResponse } from "@/helpers/ApiHelpers"
 interface PaginationArgs {
     pageSize: number
     lastKey: string
+    searchArg: string
 }
 
 interface GetUsersArgs {

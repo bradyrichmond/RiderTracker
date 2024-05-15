@@ -1,4 +1,4 @@
-import { Badge, Box, Card, Grid, Tooltip, Typography } from "@mui/material"
+import { Badge, Box, Card, Tooltip, Typography } from "@mui/material"
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh'
 import FolderIcon from '@mui/icons-material/Folder'
 import useFileUpload from "@/hooks/useFileUpload"
@@ -7,6 +7,7 @@ import { useContext } from "react"
 import { ApiContext } from "@/contexts/ApiContextProvider"
 import { RoleContext } from "@/contexts/RoleContextProvider"
 import { useTranslation } from 'react-i18next'
+import Grid from '@mui/material/Unstable_Grid2'
 
 const OrganizationLogoSettings = () => {
     const { api } = useContext(ApiContext)

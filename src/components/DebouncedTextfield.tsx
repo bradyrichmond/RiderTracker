@@ -3,7 +3,7 @@ import { debounce } from "./debounce"
 import { ChangeEvent } from "react"
 import { StandardTextFieldProps, TextField } from "@mui/material"
 
-interface DebouncedTextfieldProps extends Omit<StandardTextFieldProps, 'onChange'> {
+export interface DebouncedTextfieldProps extends Omit<StandardTextFieldProps, 'onChange'> {
     debounceMs?: number
     onChange: (val: string) => void
 }

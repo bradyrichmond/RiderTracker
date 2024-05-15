@@ -1,6 +1,7 @@
 import { ApiContext } from "@/contexts/ApiContextProvider"
 import { RoleContext } from "@/contexts/RoleContextProvider"
-import { Box, Button, Card, Grid, Typography } from "@mui/material"
+import { Box, Button, Card, Typography } from "@mui/material"
+import Grid from '@mui/material/Unstable_Grid2'
 import { useContext, useEffect, useState } from "react"
 import OrganizationAdminCard from "./OrganizationAdminCard"
 import AddEntityModal from "@/components/AddEntityModal"
