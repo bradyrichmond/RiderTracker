@@ -107,6 +107,10 @@ const Drivers = () => {
         return initialGridColumns
     }
 
+    const processRowUpdate = async (updatedRow: UserType, _originalRow: UserType) => {
+        return updatedRow
+    }
+
     const toggleShowSnackbar = () => setShowErrorSnackBar((cur: boolean) => !cur)
     
     return (
@@ -134,6 +138,7 @@ const Drivers = () => {
                 gridColumns={generateGridColumns()}
                 titleSingular='Driver'
                 titlePlural='Drivers'
+                processRowUpdate={processRowUpdate}
             />
         </>
     )

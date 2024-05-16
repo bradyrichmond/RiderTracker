@@ -39,6 +39,13 @@ const validateAddress = async (address: string) => {
     return evaluated
 }
 
+const getBulkAddressesByIds = async (orgId: string, addressIds: string[]) => {
+    const api = await RiderTrackerAPI.getClient()
+    const usersResponse = await api.client.organizationsOrgIdAddressesBatchByIdPost({ orgId }, addressIds)
+    
+    return handleApiResponse(usersResponse)
+}
+
 const evaluateAddressData = (result: any) => {
     const ACCEPT_LEVEL = 0.75;
 
@@ -50,12 +57,12 @@ const evaluateAddressData = (result: any) => {
         const place = body.features[0].properties
 
         if (place.rank.confidence > ACCEPT_LEVEL) {
-            const { housenumber, street, city, state, postcode, county, country, lat, lon, formatted } = place
+            const { housenumber, street, suburb, state, postcode, county, country, lat, lon, formatted } = place
 
             return {
                 houseNumber: housenumber,
                 street,
-                city,
+                city: suburb,
                 state,
                 postcode,
                 county,
@@ -75,7 +82,8 @@ export interface AddressApiFunctionTypes {
     getAddressById(id: string): Promise<AddressType>,
     createAddress(orgId: string, address: AddressType): Promise<any>,
     validateAddress(address: string): Promise<any>,
-    deleteAddress(orgId: string, id: string): Promise<void>
+    deleteAddress(orgId: string, id: string): Promise<void>,
+    getBulkAddressesByIds(orgId: string, addressIds: string[]): Promise<AddressType[]>
 }
 
 export default {
@@ -83,5 +91,6 @@ export default {
     getAddressById,
     createAddress,
     validateAddress,
-    deleteAddress
+    deleteAddress,
+    getBulkAddressesByIds
 }

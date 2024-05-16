@@ -73,6 +73,10 @@ const Riders = () => {
 
         return initialGridColumns
     }
+
+    const processRowUpdate = async (updatedRow: RiderType, _originalRow: RiderType) => {
+        return updatedRow
+    }
     
     return (
         <EntityViewer<RiderType>
@@ -87,6 +91,7 @@ const Riders = () => {
             gridColumns={generateGridColumns()}
             titleSingular='Rider'
             titlePlural='Riders'
+            processRowUpdate={processRowUpdate}
         />
     )
 }

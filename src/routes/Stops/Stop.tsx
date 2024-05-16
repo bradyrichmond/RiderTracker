@@ -3,7 +3,6 @@ import { useContext, useEffect, useState } from "react"
 import { StopType } from '@/types/StopType'
 import { useParams } from 'react-router-dom'
 import { ApiContext } from "@/contexts/ApiContextProvider"
-import StopsRiders from "./StopsRiders"
 import { RoleContext } from "@/contexts/RoleContextProvider"
 
 const Stop = () => {
@@ -27,7 +26,6 @@ const Stop = () => {
         <Box height='100%'>
             <Typography>Stop Name: {stop?.stopName}</Typography>
             <Typography>Organization: {stop?.orgId}</Typography>
-            {stop ? <StopsRiders stop={stop} getStopData={getStopData}/> : null}
         </Box>
     )
 }

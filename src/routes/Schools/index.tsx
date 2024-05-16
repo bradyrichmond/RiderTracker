@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom"
 import { v4 as uuidv4 } from "uuid"
 import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
 import { useTranslation } from 'react-i18next'
+import { AddressType } from "@/types/AddressType"
 
 const Schools = () => {
     const [schools, setSchools] = useState<SchoolType[]>([])
@@ -32,8 +33,23 @@ const Schools = () => {
     }, [])
 
     const updateSchools = async () => {
-        const fetchedSchools = await api.schools.getSchools(organizationId)
-        setSchools(fetchedSchools)
+        if (organizationId) {
+            const fetchedSchools = await api.schools.getSchools(organizationId)
+            const addressIds = fetchedSchools.map((s: SchoolType) => s.address)
+            const fetchedAddresses = await api.addresses.getBulkAddressesByIds(organizationId, addressIds)
+            const mappedAddresses = fetchedAddresses.reduce((acc: Record<string, string>, address: AddressType) => {
+                acc[address.id] = address.formatted
+                return acc
+            }, {} )
+
+            if (fetchedAddresses && mappedAddresses) {
+                const mergedData = fetchedSchools.map((s: SchoolType) => ({
+                    ...s,
+                    address: mappedAddresses[s.address] ?? 'Missing address'
+                }))
+                setSchools(mergedData)
+            }
+        }
     }
 
     const createSchoolAction = async (newSchool: SchoolType) => {
@@ -41,7 +57,7 @@ const Schools = () => {
         
         if (!!validatedAddress) {
             const newUuid = uuidv4()
-            validatedAddress.id = newUuid;
+            validatedAddress.id = newUuid
             await api.addresses.createAddress(organizationId, validatedAddress)
 
             newSchool.address = validatedAddress.id
@@ -72,7 +88,7 @@ const Schools = () => {
                 headerAlign: 'center',
                 editable: canEditSchool
             },
-            { field: 'address',  headerName: 'Address', flex: 1, align: 'center', headerAlign: 'center' },
+            { field: 'address',  headerName: 'Address', flex: 1, align: 'center', headerAlign: 'center'},
             { field: 'viewDetails', headerName: '', flex: 1, align: 'center', headerAlign: 'center', renderCell: (params) => {
                 return (
                     <Button

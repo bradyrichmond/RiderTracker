@@ -157,6 +157,10 @@ const Scans = () => {
         return initialGridColumns
     }
 
+    const processRowUpdate = async (updatedRow: ScanType, _originalRow: ScanType) => {
+        return updatedRow
+    }
+
     return (
         <>
             <EntityViewer<ScanType>
@@ -172,6 +176,7 @@ const Scans = () => {
                 gridColumns={generateGridColumns()}
                 titleSingular='Scan'
                 titlePlural='Scans'
+                processRowUpdate={processRowUpdate}
             />
         </>
     )

@@ -118,6 +118,7 @@ apigClientFactory.newClient = function (config) {
         return apiGatewayClient.makeRequest(adminProxyS3FolderObjectOptionsRequest, authType, additionalParams, config.apiKey);
     };
     
+
     apigClient.adminProxyProxyAny = function (method, params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
@@ -134,6 +135,7 @@ apigClientFactory.newClient = function (config) {
         
         return apiGatewayClient.makeRequest(adminProxyProxyOptionsRequest, authType, additionalParams, config.apiKey);
     };
+
     
     apigClient.adminProxyProxyOptions = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
@@ -330,6 +332,42 @@ apigClientFactory.newClient = function (config) {
         
         
         return apiGatewayClient.makeRequest(organizationsOrgIdAddressesOptionsRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdAddressesBatchByIdPost = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        apiGateway.core.utils.assertParametersDefined(params, ['orgId'], ['body']);
+        
+        var organizationsOrgIdAddressesBatchByIdPostRequest = {
+            verb: 'post'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/addresses/batchById').expand(apiGateway.core.utils.parseParametersToObject(params, ['orgId'])),
+            headers: apiGateway.core.utils.parseParametersToObject(params, []),
+            queryParams: apiGateway.core.utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdAddressesBatchByIdPostRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdAddressesBatchByIdOptions = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        apiGateway.core.utils.assertParametersDefined(params, [], ['body']);
+        
+        var organizationsOrgIdAddressesBatchByIdOptionsRequest = {
+            verb: 'options'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/addresses/batchById').expand(apiGateway.core.utils.parseParametersToObject(params, [])),
+            headers: apiGateway.core.utils.parseParametersToObject(params, []),
+            queryParams: apiGateway.core.utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdAddressesBatchByIdOptionsRequest, authType, additionalParams, config.apiKey);
     };
     
     

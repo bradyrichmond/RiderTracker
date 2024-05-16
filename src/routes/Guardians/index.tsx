@@ -105,6 +105,10 @@ const Guardians = () => {
 
         return initialGridColumns
     }
+
+    const processRowUpdate = async (updatedRow: UserType, _originalRow: UserType) => {
+        return updatedRow
+    }
     
     return (
         <EntityViewer<UserType>
@@ -119,6 +123,7 @@ const Guardians = () => {
             gridColumns={generateGridColumns()}
             titleSingular='Guardian'
             titlePlural='Guardians'
+            processRowUpdate={processRowUpdate}
         />
     )
 }

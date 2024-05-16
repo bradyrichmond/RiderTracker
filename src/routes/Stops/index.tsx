@@ -87,6 +87,10 @@ const Stops = () => {
         return initialGridColumns
     }
 
+    const processRowUpdate = async (updatedRow: StopType, _originalRow: StopType) => {
+        return updatedRow
+    }
+
     return (
         <EntityViewer<StopType>
             createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_STOP) ? createStopAction : undefined}
@@ -99,6 +103,7 @@ const Stops = () => {
             gridColumns={generateGridColumns()}
             titleSingular="Stop"
             titlePlural="Stops"
+            processRowUpdate={processRowUpdate}
         />
     )
 }
