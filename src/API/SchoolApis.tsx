@@ -36,7 +36,7 @@ const createSchool = async (orgId: string, body: SchoolType) => {
 
 const deleteSchool = async (orgId: string, id: string) => {
     const { client } = await RiderTrackerAPI.getClient()
-    const deleteSchoolsResponse = await client.organizationsOrgIdSchoolsIdDelete({ orgId, id })
+    const deleteSchoolsResponse = await client.organizationsOrgIdSchoolsIdDelete({ orgId, id }, {})
     
     return handleApiResponse(deleteSchoolsResponse)
 }

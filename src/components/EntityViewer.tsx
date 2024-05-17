@@ -58,9 +58,9 @@ const EntityViewer = <T extends
 
     const submitAction = async (newEntity: T) => {
         if (modalFormInputs && createEntity) {
-            modalFormInputs && toggleShowModal()
             await createEntity(newEntity)
             updateEntities()
+            modalFormInputs && toggleShowModal()
         }
     }
 

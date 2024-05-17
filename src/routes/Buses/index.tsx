@@ -79,6 +79,10 @@ const Buses = () => {
 
         return initialGridColumns
     }
+
+    const processRowUpdate = async (updatedRow: BusType, _originalRow: BusType) => {
+        return updatedRow
+    }
     
     return (
         <EntityViewer<BusType>
@@ -92,6 +96,7 @@ const Buses = () => {
             gridColumns={generateGridColumns()}
             titleSingular='Bus'
             titlePlural={t('buses')}
+            processRowUpdate={processRowUpdate}
         />
     )
 }

@@ -135,7 +135,6 @@ apigClientFactory.newClient = function (config) {
         
         return apiGatewayClient.makeRequest(adminProxyProxyOptionsRequest, authType, additionalParams, config.apiKey);
     };
-
     
     apigClient.adminProxyProxyOptions = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }

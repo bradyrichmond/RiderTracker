@@ -11,28 +11,28 @@ const getStops = async (orgId: string) => {
 
 const getStopById = async (orgId: string, id: string) => {
     const { client } = await RiderTrackerAPI.getClient()
-    const getStopResponse = await client.organizationsOrgIdSchoolsIdGet({ orgId, id })
+    const getStopResponse = await client.organizationsOrgIdStopsIdGet({ orgId, id })
 
     return handleApiResponse(getStopResponse)
 }
 
 const updateStop = async (orgId: string, id: string, stop: StopType) => {
     const { client } = await RiderTrackerAPI.getClient()
-    const updateStopResponse = await client.organizationsOrgIdSchoolsGet({ orgId, id }, stop)
+    const updateStopResponse = await client.organizationsOrgIdStopsGet({ orgId, id }, stop)
 
     return handleApiResponse(updateStopResponse)
 }
 
 const createStop = async (orgId: string, body: StopType) => {
     const { client } = await RiderTrackerAPI.getClient()
-    const createStopResponse = await client.organizationsOrgIdSchoolsPost({ orgId }, body)
+    const createStopResponse = await client.organizationsOrgIdStopsPost({ orgId }, body)
 
     return handleApiResponse(createStopResponse)
 }
 
 const deleteStop = async (orgId: string, id: string) => {
     const { client } = await RiderTrackerAPI.getClient()
-    const deleteStopResponse = await client.organizationsOrgIdSchoolsIdDelete({ orgId, id })
+    const deleteStopResponse = await client.organizationsOrgIdStopsIdDelete({ orgId, id })
 
     return handleApiResponse(deleteStopResponse)
 }
