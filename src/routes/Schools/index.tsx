@@ -17,6 +17,7 @@ import { AddressType } from "@/types/AddressType"
 
 const Schools = () => {
     const [schools, setSchools] = useState<SchoolType[]>([])
+    const [addresses, setAddresses] = useState<AddressType[]>([])
     const { api } = useContext(ApiContext)
     const { heaviestRole, organizationId } = useContext(RoleContext)
     const { setSnackbarSeverity, setSnackbarVisibilityMs, setSnackbarMessage } = useContext(SnackbarContext)
@@ -37,18 +38,8 @@ const Schools = () => {
             const fetchedSchools = await api.schools.getSchools(organizationId)
             const addressIds = fetchedSchools.map((s: SchoolType) => s.address)
             const fetchedAddresses = await api.addresses.getBulkAddressesByIds(organizationId, addressIds)
-            const mappedAddresses = fetchedAddresses.reduce((acc: Record<string, string>, address: AddressType) => {
-                acc[address.id] = address.formatted
-                return acc
-            }, {} )
-
-            if (fetchedAddresses && mappedAddresses) {
-                const mergedData = fetchedSchools.map((s: SchoolType) => ({
-                    ...s,
-                    address: mappedAddresses[s.address] ?? 'Missing address'
-                }))
-                setSchools(mergedData)
-            }
+            setAddresses(fetchedAddresses)
+            setSchools(fetchedSchools)
         }
     }
 
@@ -67,6 +58,10 @@ const Schools = () => {
         } else {
             console.error('Failed to create school due to bad address.')
         }
+    }
+
+    const getFormattedAddressById = (addressId: string) => {
+        return addresses.find((a) => a.id === addressId)?.formatted
     }
 
     const viewSchoolDetails = (schoolId: string) => {
@@ -88,7 +83,12 @@ const Schools = () => {
                 headerAlign: 'center',
                 editable: canEditSchool
             },
-            { field: 'address',  headerName: 'Address', flex: 1, align: 'center', headerAlign: 'center'},
+            { 
+                field: 'address',
+                headerName: 'Address',
+                flex: 1, align: 'center',
+                headerAlign: 'center',
+                valueGetter: (value: string) => getFormattedAddressById(value)},
             { field: 'viewDetails', headerName: '', flex: 1, align: 'center', headerAlign: 'center', renderCell: (params) => {
                 return (
                     <Button
