@@ -1,9 +1,9 @@
-import { RoleContext } from "@/contexts/RoleContextProvider"
-import { Box, CircularProgress, Typography } from "@mui/material"
-import { signOut } from "aws-amplify/auth"
-import { Hub } from "aws-amplify/utils"
-import { useContext, useEffect } from "react"
-import { useNavigate } from "react-router-dom"
+import { RoleContext } from '@/contexts/RoleContextProvider'
+import { Box, CircularProgress, Typography } from '@mui/material'
+import { signOut } from 'aws-amplify/auth'
+import { Hub } from 'aws-amplify/utils'
+import { useContext, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 const Logout = () => {
@@ -14,7 +14,7 @@ const Logout = () => {
     useEffect(() => {
         const cleanup = Hub.listen('auth', ({ payload: { event } }) => {
             console.log(`root router heard ${event}`)
-            if (event === "signedOut") {
+            if (event === 'signedOut') {
                 setUserId('')
                 navigate('/login')
             }
@@ -28,7 +28,7 @@ const Logout = () => {
     }, [])
 
     return (
-        <Box sx={{height: '100%', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center'}}>
+        <Box sx={{ height: '100%', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <CircularProgress />
             <Typography variant='h4'>{t('loggingOut')}</Typography>
         </Box>

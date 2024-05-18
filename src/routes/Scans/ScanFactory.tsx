@@ -1,4 +1,4 @@
-import { ScanType } from "@/types/ScanType";
+import { ScanType } from '@/types/ScanType';
 
 export function scanFactory(args: (string)[] = []): ScanType {
     return {

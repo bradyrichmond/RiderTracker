@@ -1,13 +1,13 @@
-import { Dispatch, SetStateAction, createContext, useContext, useEffect } from "react"
-import { getHeaviestRole } from "@/helpers/GetHeaviestRole"
-import { RiderTrackerRole, isRiderTrackerRole } from "@/constants/Roles"
-import { PropsWithChildren, useState } from "react"
-import { fetchAuthSession } from "@aws-amplify/auth"
-import { ApiContext } from "./ApiContextProvider"
-import RiderTrackerAPI from "@/API"
-import { getOrgIdForUser } from "@/helpers/GetOrganizationIdForUser"
-import { signOut } from "aws-amplify/auth"
-import { OrgDataContext } from "./OrgDataContext"
+import { Dispatch, SetStateAction, createContext, useContext, useEffect } from 'react'
+import { getHeaviestRole } from '@/helpers/GetHeaviestRole'
+import { RiderTrackerRole, isRiderTrackerRole } from '@/constants/Roles'
+import { PropsWithChildren, useState } from 'react'
+import { fetchAuthSession } from '@aws-amplify/auth'
+import { ApiContext } from './ApiContextProvider'
+import RiderTrackerAPI from '@/API'
+import { getOrgIdForUser } from '@/helpers/GetOrganizationIdForUser'
+import { signOut } from 'aws-amplify/auth'
+import { OrgDataContext } from './OrgDataContext'
 
 interface RoleContextProps {
     heaviestRole: string
@@ -42,13 +42,13 @@ export const RoleContext = createContext<RoleContextProps>({
 });
 
 export const RoleContextProvider = ({ children }: PropsWithChildren) => {
-    const [heaviestRole, setHeaviestRole] = useState("RiderTracker_Unauthenticated")
-    const [userFullName, setUserFullName] = useState("")
-    const [userEmail, setUserEmail] = useState("")
-    const [userId, setUserId] = useState("")
-    const [userPictureUrl, setUserPictureUrl] = useState("")
-    const [accessToken, setAccessToken] = useState("")
-    const [idToken, setIdToken] = useState("")
+    const [heaviestRole, setHeaviestRole] = useState('RiderTracker_Unauthenticated')
+    const [userFullName, setUserFullName] = useState('')
+    const [userEmail, setUserEmail] = useState('')
+    const [userId, setUserId] = useState('')
+    const [userPictureUrl, setUserPictureUrl] = useState('')
+    const [accessToken, setAccessToken] = useState('')
+    const [idToken, setIdToken] = useState('')
     const { api, setApi } = useContext(ApiContext)
     const { orgId, setOrganizationLoginImageUrl, setOrganizationArray, setOrgId, toggleShowOrganizationSelector } = useContext(OrgDataContext)
 
@@ -62,7 +62,7 @@ export const RoleContextProvider = ({ children }: PropsWithChildren) => {
             setAccessToken(userAccessToken?.toString() ?? '')
             const payload = idToken?.payload
             if (payload) {
-                const sessionGroups = payload["cognito:groups"]
+                const sessionGroups = payload['cognito:groups']
                 const sessionGroupsArray = (sessionGroups as Array<string>).filter((s) => isRiderTrackerRole(s))
                 setUserEmail(payload.email?.toString() ?? '')
 
@@ -104,7 +104,7 @@ export const RoleContextProvider = ({ children }: PropsWithChildren) => {
         }
     }
 
-    const selectOrganizationAction = async () =>{
+    const selectOrganizationAction = async () => {
         try {
             if (userId && heaviestRole) {
                 const orgId = await getOrgIdForUser(userId, heaviestRole)

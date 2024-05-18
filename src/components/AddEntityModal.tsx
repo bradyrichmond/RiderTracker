@@ -1,15 +1,15 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide } from '@mui/material'
 import { ReactElement, forwardRef, useContext, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { Controller, FormProvider, useFieldArray, useForm } from "react-hook-form"
+import { Controller, FormProvider, useFieldArray, useForm } from 'react-hook-form'
 import { BusType } from '../types/BusType'
-import { OrganizationType } from "../types/OrganizationType"
-import { RiderType } from "../types/RiderType"
-import { ScanType } from "../types/ScanType"
+import { OrganizationType } from '../types/OrganizationType'
+import { RiderType } from '../types/RiderType'
+import { ScanType } from '../types/ScanType'
 import { AddEntityModalProps, FormDataType } from '../types/FormTypes'
 import { pickRenderElement } from '../helpers/FormRenderHelpers'
 import { SchoolType } from '@/types/SchoolType'
-import { ErrorMessage } from "@hookform/error-message"
+import { ErrorMessage } from '@hookform/error-message'
 import { StopType } from '@/types/StopType'
 import { UserType } from '@/types/UserType'
 import { OrgDataContext } from '@/contexts/OrgDataContext'
@@ -20,11 +20,11 @@ export const Transition = forwardRef<HTMLDivElement, { children: ReactElement }>
 ) {
     return <Slide direction="up" ref={ref} {...props} />;
 });
-  
 
-const AddEntityModal = <T extends 
-        BusType | OrganizationType | RiderType | ScanType | SchoolType | StopType | UserType>({ 
-        cancelAction, entityFactory, formDefaultValues, submitAction, titleSingular, open 
+
+const AddEntityModal = <T extends
+        BusType | OrganizationType | RiderType | ScanType | SchoolType | StopType | UserType>({
+        cancelAction, entityFactory, formDefaultValues, submitAction, titleSingular, open
     }: AddEntityModalProps<T>) => {
     const [disableButtons, setDisabledButtons] = useState(false)
     const formMethods = useForm<FormDataType>({
@@ -44,10 +44,10 @@ const AddEntityModal = <T extends
 
     const { fields } = useFieldArray({
         control,
-        name: "inputs"
+        name: 'inputs'
     })
 
-    const values = watch("inputs")
+    const values = watch('inputs')
 
     const handleCreateEntity = async () => {
         setDisabledButtons(true)
@@ -61,7 +61,7 @@ const AddEntityModal = <T extends
         setDisabledButtons(false)
     }
 
-    return (    
+    return (
         <Dialog
             open={open}
             onClose={cancelAction}
@@ -79,7 +79,7 @@ const AddEntityModal = <T extends
                         return (
                             <Box key={field.id}>
                                 <Controller
-                                    render={() => pickRenderElement(field, index) }
+                                    render={() => pickRenderElement(field, index)}
                                     name={`inputs.${index}.name`}
                                     control={control}
                                 />

@@ -1,14 +1,14 @@
-import { UserType } from "@/types/UserType"
-import { CSSProperties, useContext, useRef } from "react"
+import { UserType } from '@/types/UserType'
+import { CSSProperties, useContext, useRef } from 'react'
 import { useHover } from 'usehooks-ts'
 import { useTranslation } from 'react-i18next'
-import { ApiContext } from "@/contexts/ApiContextProvider"
-import { RoleContext } from "@/contexts/RoleContextProvider"
-import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
-import { Box, Paper, Typography } from "@mui/material"
-import { OrganizationAdminAction } from "../OrganizationSettings/OrganizationAdminCard"
+import { ApiContext } from '@/contexts/ApiContextProvider'
+import { RoleContext } from '@/contexts/RoleContextProvider'
+import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
+import { Box, Paper, Typography } from '@mui/material'
+import { OrganizationAdminAction } from '../OrganizationSettings/OrganizationAdminCard'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { OrgDataContext } from "@/contexts/OrgDataContext"
+import { OrgDataContext } from '@/contexts/OrgDataContext'
 
 const UserCard = ({ user, updateUsers, style }: { user: UserType, updateUsers: (_id: string) => void, style: CSSProperties }) => {
     const ref = useRef(null)
@@ -26,7 +26,7 @@ const UserCard = ({ user, updateUsers, style }: { user: UserType, updateUsers: (
         } else {
             setSnackbarSeverity('error')
             setSnackbarVisibilityMs(5000)
-            setSnackbarMessage(`Can't delete yourself`)
+            setSnackbarMessage('Can\'t delete yourself')
         }
     }
 
@@ -40,15 +40,15 @@ const UserCard = ({ user, updateUsers, style }: { user: UserType, updateUsers: (
     ]
 
     return (
-        <Paper style={{...style, height: 'auto' }} ref={ref}>
+        <Paper style={{ ...style, height: 'auto' }} ref={ref}>
             <Box sx={{ display: 'flex', flexDirection: 'row', margin: '2rem' }}>
                 <Box sx={{ flex: 1 }}>
                     <Typography variant='h5'>{user.firstName} {user.lastName}</Typography>
                     <Typography variant='body1'>{user.email}</Typography>
                 </Box>
-                {hovering ? 
-                    <Box sx={{ width: '3rem', display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
-                        {actions.map((a) => <OrganizationAdminAction 
+                {hovering ?
+                    <Box sx={{ width: '3rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                        {actions.map((a) => <OrganizationAdminAction
                             id={a.id}
                             key={a.id}
                             tooltipString={a.tooltipString}

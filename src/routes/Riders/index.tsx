@@ -1,16 +1,16 @@
 import { useNavigate } from 'react-router-dom'
-import { RiderType } from "@/types/RiderType"
-import { Autocomplete, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, TextField, Tooltip, Typography } from "@mui/material"
+import { RiderType } from '@/types/RiderType'
+import { Autocomplete, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, TextField, Tooltip, Typography } from '@mui/material'
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
-import { useContext, useEffect, useState } from "react"
-import { ApiContext } from "@/contexts/ApiContextProvider"
-import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "@/constants/Roles"
-import { DataGrid, GridColDef } from "@mui/x-data-grid"
-import { RoleContext } from "@/contexts/RoleContextProvider"
-import { OptionsType } from "@/types/FormTypes"
-import { Transition } from "@/components/AddEntityModal"
-import { useForm } from "react-hook-form"
+import { useContext, useEffect, useState } from 'react'
+import { ApiContext } from '@/contexts/ApiContextProvider'
+import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
+import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import { RoleContext } from '@/contexts/RoleContextProvider'
+import { OptionsType } from '@/types/FormTypes'
+import { Transition } from '@/components/AddEntityModal'
+import { useForm } from 'react-hook-form'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { useTranslation } from 'react-i18next'
 import { GuardianType } from '@/types/UserType'
@@ -114,7 +114,7 @@ const Riders = () => {
                         </Tooltip>
                     </Button>
                 )
-            }}
+            } }
         ]
 
         if (RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.DELETE_RIDER)) {
@@ -166,12 +166,12 @@ const Riders = () => {
             >
                 <DialogTitle textAlign='center'>{t('addRider')}</DialogTitle>
                 <DialogContent>
-                    <TextField 
+                    <TextField
                         label='First Name'
                         autoComplete='off'
                         fullWidth {...register('firstName')}
                     />
-                    <TextField 
+                    <TextField
                         label='Last Name'
                         autoComplete='off'
                         fullWidth {...register('lastName')}
@@ -235,7 +235,7 @@ const Riders = () => {
                     </Box>
                 </DialogContent>
                 <DialogActions sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                    <Button disabled={disableButtons} variant='contained' onClick={cancelAction}>{t('cancel', { ns: 'settings'})}</Button>
+                    <Button disabled={disableButtons} variant='contained' onClick={cancelAction}>{t('cancel', { ns: 'settings' })}</Button>
                     <Button disabled={disableButtons} variant='contained' type="submit">{t('createRider')}</Button>
                 </DialogActions>
             </Dialog>
@@ -244,7 +244,7 @@ const Riders = () => {
                     <Typography variant='h2'>
                         {t('riders')}
                     </Typography>
-                </Box> 
+                </Box>
                 <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
                     <Button variant='contained' onClick={startAddingRider}>
                         <Box display='flex' flexDirection='row'>
@@ -257,7 +257,7 @@ const Riders = () => {
                 </Box>
             </Box>
             <Box flex='1'>
-                <DataGrid rows={riders} columns={generateGridColumns()} rowHeight={100} processRowUpdate={processRowUpdate}/>
+                <DataGrid rows={riders} columns={generateGridColumns()} rowHeight={100} processRowUpdate={processRowUpdate} />
             </Box>
         </Box>
     )

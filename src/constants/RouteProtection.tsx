@@ -1,4 +1,4 @@
-import { NavItemType } from "../components/NavigationDrawer"
+import { NavItemType } from '../components/NavigationDrawer'
 import DirectionsBusIcon from '@mui/icons-material/DirectionsBus'
 import WorkIcon from '@mui/icons-material/Work'
 import ChildCareIcon from '@mui/icons-material/ChildCare'
@@ -7,12 +7,12 @@ import PersonIcon from '@mui/icons-material/Person'
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew'
 import PlaceIcon from '@mui/icons-material/Place'
 import SchoolIcon from '@mui/icons-material/School'
-import { FC } from "react"
-import ToggleLightMode from "@/components/ToggleLightMode"
+import { FC } from 'react'
+import ToggleLightMode from '@/components/ToggleLightMode'
 import AccountBoxIcon from '@mui/icons-material/AccountBox'
 import LoginIcon from '@mui/icons-material/Login'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
-import ChangeLanguage from "@/components/ChangeLanguage"
+import ChangeLanguage from '@/components/ChangeLanguage'
 
 export interface SettingsItemType extends NavItemType {
     action?(): Promise<void>
@@ -20,66 +20,66 @@ export interface SettingsItemType extends NavItemType {
 }
 
 const ALL_ROUTES: string[] = [
-    "/app",
-    "/app/buses",
-    "/app/buses/:id",
-    "/app/drivers",
-    "/app/drivers/:id",
-    "/app/guardians",
-    "/app/guardians/:id",
-    "/app/settings",
-    "/app/riders",
-    "/app/riders/:id",
-    "/app/riders/:id/scans",
-    "/app/scans",
-    "/app/scans/:id",
-    "/app/schools",
-    "/app/schools/:id",
-    "/app/stops",
-    "/app/stops/:id"
+    '/app',
+    '/app/buses',
+    '/app/buses/:id',
+    '/app/drivers',
+    '/app/drivers/:id',
+    '/app/guardians',
+    '/app/guardians/:id',
+    '/app/settings',
+    '/app/riders',
+    '/app/riders/:id',
+    '/app/riders/:id/scans',
+    '/app/scans',
+    '/app/scans/:id',
+    '/app/schools',
+    '/app/schools/:id',
+    '/app/stops',
+    '/app/stops/:id'
 ];
 
 const ORG_ADMIN_ROUTES: string[] = [
-    "/app",
-    "/app/buses",
-    "/app/buses/:id",
-    "/app/drivers",
-    "/app/drivers/:id",
-    "/app/guardians",
-    "/app/guardians/:id",
-    "/app/settings",
-    "/app/riders",
-    "/app/riders/:id",
-    "/app/scans",
-    "/app/scans/:id",
-    "/app/stops",
-    "/app/stops/:id",
-    "/app/schools",
-    "/app/schools/:id"
+    '/app',
+    '/app/buses',
+    '/app/buses/:id',
+    '/app/drivers',
+    '/app/drivers/:id',
+    '/app/guardians',
+    '/app/guardians/:id',
+    '/app/settings',
+    '/app/riders',
+    '/app/riders/:id',
+    '/app/scans',
+    '/app/scans/:id',
+    '/app/stops',
+    '/app/stops/:id',
+    '/app/schools',
+    '/app/schools/:id'
 ]
 
 const DRIVER_ROUTES: string[] = [
-    "/app",
-    "/app/buses",
-    "/app/buses/:id",
-    "/app/drivers/:id",
-    "/app/riders/:id",
-    "/app/settings"
+    '/app',
+    '/app/buses',
+    '/app/buses/:id',
+    '/app/drivers/:id',
+    '/app/riders/:id',
+    '/app/settings'
 ]
 
 const GUARDIAN_ROUTES: string[] = [
-    "/app",
-    "/app/buses/:id",
-    "/app/drivers/:id",
-    "/app/riders",
-    "/app/settings",
-    "/app/riders/:id"
+    '/app',
+    '/app/buses/:id',
+    '/app/drivers/:id',
+    '/app/riders',
+    '/app/settings',
+    '/app/riders/:id'
 ]
 
 const UNAUTH_ROUTES: string[] = [
-    "/login",
-    "/logout",
-    "/onboarding"
+    '/login',
+    '/logout',
+    '/onboarding'
 ]
 
 const WIZARD_NAV_ITEMS: NavItemType[] = [
@@ -229,31 +229,31 @@ interface RouteProtectionItem {
 
 export const ROUTE_PROTECTION: RouteProtectionItem[] = [
     {
-        name: "RiderTracker_Wizard",
+        name: 'RiderTracker_Wizard',
         routes: ALL_ROUTES,
         navItems: WIZARD_NAV_ITEMS,
         settingsItems: SETTINGS_NAV_ITEMS
     },
     {
-        name: "RiderTracker_OrgAdmin",
+        name: 'RiderTracker_OrgAdmin',
         routes: ORG_ADMIN_ROUTES,
         navItems: ORG_ADMIN_NAV_ITEMS,
         settingsItems: SETTINGS_NAV_ITEMS
     },
     {
-        name: "RiderTracker_Driver",
+        name: 'RiderTracker_Driver',
         routes: DRIVER_ROUTES,
         navItems: DRIVER_NAV_ITEMS,
         settingsItems: SETTINGS_NAV_ITEMS
     },
     {
-        name: "RiderTracker_Guardian",
+        name: 'RiderTracker_Guardian',
         routes: GUARDIAN_ROUTES,
         navItems: GUARDIAN_NAV_ITEMS,
         settingsItems: SETTINGS_NAV_ITEMS
     },
     {
-        name: "RiderTracker_Unauthenticated",
+        name: 'RiderTracker_Unauthenticated',
         routes: UNAUTH_ROUTES,
         navItems: UNAUTH_NAV_ITEMS,
         settingsItems: []

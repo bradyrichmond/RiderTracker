@@ -1,6 +1,6 @@
-import { OrganizationType } from "@/types/OrganizationType"
-import RiderTrackerAPI from "."
-import { handleApiResponse } from "@/helpers/ApiHelpers"
+import { OrganizationType } from '@/types/OrganizationType'
+import RiderTrackerAPI from '.'
+import { handleApiResponse } from '@/helpers/ApiHelpers'
 
 const getOrganizations = async () => {
     const { client } = await RiderTrackerAPI.getClient()
@@ -63,7 +63,7 @@ const addAdminToOrganization = async (orgId: string, userId: string) => {
         adminIds.push(userId)
         newAdminIds = adminIds
     } else {
-        newAdminIds = [""]
+        newAdminIds = ['']
     }
 
     return await updateOrganization(orgId, { adminIds: newAdminIds })
@@ -76,7 +76,7 @@ const removeAdminFromOrganization = async (orgId: string, userId: string) => {
     if (adminIds) {
         newAdminIds = adminIds.filter((a: string) => a !== userId)
     } else {
-        newAdminIds = [""]
+        newAdminIds = ['']
     }
 
     return await updateOrganization(orgId, { adminIds: newAdminIds })

@@ -1,10 +1,10 @@
-import { Box, Chip, Typography } from "@mui/material"
-import { useContext, useEffect, useState } from "react"
+import { Box, Chip, Typography } from '@mui/material'
+import { useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { RiderType } from "@/types/RiderType"
-import { ApiContext } from "@/contexts/ApiContextProvider"
-import { StopType } from "@/types/StopType"
-import { OrgDataContext } from "@/contexts/OrgDataContext"
+import { RiderType } from '@/types/RiderType'
+import { ApiContext } from '@/contexts/ApiContextProvider'
+import { StopType } from '@/types/StopType'
+import { OrgDataContext } from '@/contexts/OrgDataContext'
 
 const Rider = () => {
     const { orgId } = useContext(OrgDataContext)

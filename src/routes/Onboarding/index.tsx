@@ -1,14 +1,14 @@
-import { Box, Button, Step, StepLabel, Stepper, Typography } from "@mui/material"
-import { useMemo, useState } from "react"
-import SetOrganizationName from "./SetOrganizationName"
-import { FormProvider, useForm } from "react-hook-form"
-import SetOrgSlug from "./SetOrgSlug"
-import { confirmSignUp, signIn, signUp } from "aws-amplify/auth"
-import CreateOrganizationAdmin from "./CreateOrganizationAdmin"
-import ConfirmOrganizationAdmin from "./ConfirmOrganizationAdmin"
+import { Box, Button, Step, StepLabel, Stepper, Typography } from '@mui/material'
+import { useMemo, useState } from 'react'
+import SetOrganizationName from './SetOrganizationName'
+import { FormProvider, useForm } from 'react-hook-form'
+import SetOrgSlug from './SetOrgSlug'
+import { confirmSignUp, signIn, signUp } from 'aws-amplify/auth'
+import CreateOrganizationAdmin from './CreateOrganizationAdmin'
+import ConfirmOrganizationAdmin from './ConfirmOrganizationAdmin'
 import { v4 as uuid } from 'uuid'
-import RiderTrackerAPI from "@/API"
-import OnboardingComplete from "./OnboardingComplete"
+import RiderTrackerAPI from '@/API'
+import OnboardingComplete from './OnboardingComplete'
 import { useTranslation } from 'react-i18next'
 
 interface StepType {
@@ -63,7 +63,7 @@ const Onboarding = () => {
         const riderTrackerApi = await RiderTrackerAPI.getClient()
         setApi(riderTrackerApi)
     }
-    
+
     useMemo(() => {
         getApi()
     }, [])
@@ -87,17 +87,17 @@ const Onboarding = () => {
 
             return
         }
-        
+
         if (activeStep === 2) {
             if (orgNameValue.length > 3) {
                 setOrgName(orgNameValue)
                 generateOrgSlug(orgNameValue)
                 setActiveStep((current) => current + 1)
             }
-            
+
             return
         }
-        
+
         if (activeStep === 3) {
             if (orgSlugValue.length > 3 && orgSlugValue.match(urlSafeMatch)) {
                 setIsLoading(true)
@@ -105,13 +105,13 @@ const Onboarding = () => {
                 setIsLoading(false)
                 setActiveStep((current) => current + 1)
             }
-            
+
             return
         }
 
 
         if (activeStep === 4) {
-            const host = location.origin.split("//")[1]
+            const host = location.origin.split('//')[1]
             const protocol = location.protocol
             const newUrl = `${protocol}//${orgSlugValue}.${host}`
             window.location.assign(newUrl)
@@ -159,7 +159,7 @@ const Onboarding = () => {
             id: newOrgId,
             orgName,
             orgSlug: newOrgSlug,
-            loginImageKey: "",
+            loginImageKey: '',
             adminIds: [newUserId]
         })
 
@@ -195,7 +195,7 @@ const Onboarding = () => {
                             {activeStep === 1 ? <ConfirmOrganizationAdmin /> : null}
                             {activeStep === 2 ? <SetOrganizationName /> : null}
                             {activeStep === 3 ? <SetOrgSlug slugSuggestion={tempOrgSlug} currentSlug={orgSlugValue} /> : null}
-                            {activeStep === 4 ? <OnboardingComplete /> : null }
+                            {activeStep === 4 ? <OnboardingComplete /> : null}
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2, justifyContent: 'space-evenly' }}>
                             <Button
@@ -203,11 +203,11 @@ const Onboarding = () => {
                                 onClick={handleBack}
                                 variant='contained'
                             >
-                                {t('back', { ns: "common" })}
+                                {t('back', { ns: 'common' })}
                             </Button>
                             <Typography>Step {activeStep + 1} of {steps.length}</Typography>
                             <Button onClick={handleNext} variant='contained' disabled={isLoading}>
-                                {activeStep === steps.length - 1 ? t('finish', { ns: "common" }) : t('next', { ns: "common" })}
+                                {activeStep === steps.length - 1 ? t('finish', { ns: 'common' }) : t('next', { ns: 'common' })}
                             </Button>
                         </Box>
                     </Box>

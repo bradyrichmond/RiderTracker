@@ -1,4 +1,4 @@
-import { LocationType } from "./LocationType"
+import { LocationType } from './LocationType'
 
 export interface ScanType {
     id: string

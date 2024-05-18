@@ -1,20 +1,20 @@
-import { SchoolType } from "@/types/SchoolType"
+import { SchoolType } from '@/types/SchoolType'
 
 const getSchoolById = async (id: string) => Promise.resolve({
-    "id": id,
-    "orgId": "123456",
-    "schoolName": "Sunnyside Elementary",
-    "riders": ["123456"],
-    "address": "123456"
+    id: id,
+    orgId: '123456',
+    schoolName: 'Sunnyside Elementary',
+    riders: ['123456'],
+    address: '123456'
  })
 
 const getSchools = async (orgId: string) => Promise.resolve([
     {
-        "id": "123456",
-        "orgId": orgId,
-        "schoolName": "Sunnyside Elementary",
-        "riders": ["123456"],
-        "address": "123456"
+        id: '123456',
+        orgId: orgId,
+        schoolName: 'Sunnyside Elementary',
+        riders: ['123456'],
+        address: '123456'
      }
 ])
 
@@ -22,10 +22,10 @@ const getBulkSchoolsById = async (schoolIds: string[]) => {
     const schools: SchoolType[] = []
 
     schoolIds.forEach((s) => schools.push({
-        "id": s,
-        "orgId": "123456",
-        "schoolName": "Sunnyside Elementary",
-        "address": "123456"
+        id: s,
+        orgId: '123456',
+        schoolName: 'Sunnyside Elementary',
+        address: '123456'
      }))
 
     return schools

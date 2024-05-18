@@ -1,7 +1,7 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle } from '@mui/material'
 import { useState } from 'react'
-import { useFieldArray, useForm, Controller, FormProvider } from "react-hook-form"
-import { StopType } from "@/types/StopType"
+import { useFieldArray, useForm, Controller, FormProvider } from 'react-hook-form'
+import { StopType } from '@/types/StopType'
 import { FormDataType } from '@/types/FormTypes'
 import { pickRenderElement } from '@/helpers/FormRenderHelpers'
 import { stopFactory } from './StopFactory'
@@ -17,7 +17,7 @@ interface AssignRidersToStopDialogProps {
     open: boolean
 }
 
-const AssignRidersToStopDialog = ({ 
+const AssignRidersToStopDialog = ({
         cancelAction, entity, formDefaultValues, submitAction, title, submitButtonText, stopName, open
     }: AssignRidersToStopDialogProps) => {
     const [disableButtons, setDisabledButtons] = useState(false)
@@ -33,17 +33,17 @@ const AssignRidersToStopDialog = ({
 
     const { fields } = useFieldArray({
         control,
-        name: "inputs"
+        name: 'inputs'
     })
 
-    const values = watch("inputs")
+    const values = watch('inputs')
 
     const handleCreateEntity = () => {
         setDisabledButtons(true)
         const newId = values[0].name
         const oldRiderIds = entity.riderIds ?? []
         const newRiderIds = [...oldRiderIds, newId]
-        const filteredLinkIds = newRiderIds.filter((l) => l !== "")
+        const filteredLinkIds = newRiderIds.filter((l) => l !== '')
         const newStop = stopFactory([entity.id, entity.orgId, stopName])
         newStop.riderIds = filteredLinkIds
         submitAction(newStop)
@@ -67,7 +67,7 @@ const AssignRidersToStopDialog = ({
                         return (
                             <Box key={field.id} marginTop='2rem'>
                                 <Controller
-                                    render={() => pickRenderElement(field, index) }
+                                    render={() => pickRenderElement(field, index)}
                                     name={`inputs.${index}.name`}
                                     control={control}
                                 />

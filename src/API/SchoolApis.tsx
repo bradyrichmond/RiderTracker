@@ -1,6 +1,6 @@
-import { SchoolType } from "@/types/SchoolType"
-import RiderTrackerAPI from "."
-import { handleApiResponse } from "@/helpers/ApiHelpers"
+import { SchoolType } from '@/types/SchoolType'
+import RiderTrackerAPI from '.'
+import { handleApiResponse } from '@/helpers/ApiHelpers'
 
 const getSchools = async (orgId: string) => {
     const { client } = await RiderTrackerAPI.getClient()
@@ -37,7 +37,7 @@ const createSchool = async (orgId: string, body: SchoolType) => {
 const deleteSchool = async (orgId: string, id: string) => {
     const { client } = await RiderTrackerAPI.getClient()
     const deleteSchoolsResponse = await client.organizationsOrgIdSchoolsIdDelete({ orgId, id }, {})
-    
+
     return handleApiResponse<object>(deleteSchoolsResponse)
 }
 

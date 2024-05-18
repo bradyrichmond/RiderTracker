@@ -1,4 +1,4 @@
-import { StopType } from "@/types/StopType";
+import { StopType } from '@/types/StopType';
 
 export function stopFactory(args: (string)[] = []): StopType {
     return {

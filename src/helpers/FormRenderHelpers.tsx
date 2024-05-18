@@ -1,11 +1,11 @@
-import { Autocomplete, Box, Button, FormControl, TextField, Tooltip } from "@mui/material"
-import { FormDataType, FormInputType, OptionsType } from "../types/FormTypes"
-import { useFormContext } from "react-hook-form"
-import { useRandomNameGenerator } from "@/hooks/useRandomNameGenerator"
-import { useContext, useEffect } from "react"
+import { Autocomplete, Box, Button, FormControl, TextField, Tooltip } from '@mui/material'
+import { FormDataType, FormInputType, OptionsType } from '../types/FormTypes'
+import { useFormContext } from 'react-hook-form'
+import { useRandomNameGenerator } from '@/hooks/useRandomNameGenerator'
+import { useContext, useEffect } from 'react'
 import ShuffleOnIcon from '@mui/icons-material/ShuffleOn'
-import DebouncedTextField from "@/components/DebouncedTextfield"
-import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
+import DebouncedTextField from '@/components/DebouncedTextfield'
+import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 
 export const pickRenderElement = (field: FormInputType, index: number) => {
     const { register, setValue, resetField } = useFormContext<FormDataType>()
@@ -36,7 +36,7 @@ export const pickRenderElement = (field: FormInputType, index: number) => {
         if (!val) {
             showErrorSnackbar('Email address is required')
         }
-        
+
         if (!val.match(emailPattern)) {
             showErrorSnackbar('Invalid email address')
         }
@@ -49,7 +49,7 @@ export const pickRenderElement = (field: FormInputType, index: number) => {
     }, [fieldName])
 
     switch (field.inputType) {
-        case "select":
+        case 'select':
             return (
                 <>
                     {field.options ?
@@ -73,7 +73,7 @@ export const pickRenderElement = (field: FormInputType, index: number) => {
                     }
                 </>
             )
-            case "selectMultiple":
+            case 'selectMultiple':
                 return (
                     <>
                         {field.options ?
@@ -98,16 +98,16 @@ export const pickRenderElement = (field: FormInputType, index: number) => {
                         }
                     </>
                 )
-        case "randomNameGenerator":
+        case 'randomNameGenerator':
             return (
                 <Box display='flex' flexDirection='row' alignItems='center'>
-                   <TextField fullWidth label='Random Name' 
-                        sx={{"& .MuiInputBase-input.Mui-disabled": { WebkitTextFillColor: "#000000" },}} 
+                   <TextField fullWidth label='Random Name'
+                        sx={{ '& .MuiInputBase-input.Mui-disabled': { WebkitTextFillColor: '#000000' }, }}
                         inputProps={
                             { readOnly: true }
                         }
                         {...register(fieldName)}
-                    /> 
+                    />
                     <Box paddingLeft='1rem' paddingTop='1rem'>
                         <Button variant='contained' sx={{ padding: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }} onClick={() => updateRandomName(fieldName)}>
                             <Tooltip title='Generate a new random name'>
@@ -117,10 +117,10 @@ export const pickRenderElement = (field: FormInputType, index: number) => {
                     </Box>
                 </Box>
             )
-        case "address":
+        case 'address':
             return (
                 <>
-                    <TextField 
+                    <TextField
                         fullWidth
                         autoComplete='off'
                         label={field.name}
@@ -129,7 +129,7 @@ export const pickRenderElement = (field: FormInputType, index: number) => {
                     />
                 </>
             )
-        case "email":
+        case 'email':
             return (
                 <>
                     <DebouncedTextField
@@ -142,10 +142,10 @@ export const pickRenderElement = (field: FormInputType, index: number) => {
                     />
                 </>
             )
-        case "hiddenTextfield":
+        case 'hiddenTextfield':
             return (
                 <Box sx={{ height: 0, overflow: 'hidden', padding: 0, mt: 0 }}>
-                     <TextField 
+                     <TextField
                         fullWidth
                         inputProps={
                             { readOnly: true }
@@ -158,7 +158,7 @@ export const pickRenderElement = (field: FormInputType, index: number) => {
             )
         default:
             return (
-                <TextField 
+                <TextField
                     label={field.name}
                     autoComplete='off'
                     fullWidth {...register(`inputs.${index}.name` as const)}

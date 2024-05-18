@@ -1,6 +1,6 @@
-import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
-import { Box, Button, Typography } from "@mui/material"
-import { ChangeEvent, useContext, useRef, useState } from "react"
+import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
+import { Box, Button, Typography } from '@mui/material'
+import { ChangeEvent, useContext, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 
 interface UseFileUploadArgs {
@@ -69,14 +69,14 @@ const useFileUpload = ({ uploadAction, sizeLimitInBytes }: UseFileUploadArgs) =>
     const FileUpload = () => {
         return (
             <>
-                <Box display='flex' height='100%' flexDirection='column' sx={{pt: '2rem'}}>
+                <Box display='flex' height='100%' flexDirection='column' sx={{ pt: '2rem' }}>
                     <Box flex='1' display='flex'  flexDirection='column' justifyContent='center' alignItems='center'>
                     <input
                         type="file"
                         onChange={handleFileChange}
                         ref={inputFile}
                         accept="image/png, image/jpeg, image/svg+xml, image/jpg"
-                        style={{display: 'none'}}
+                        style={{ display: 'none' }}
                     />
                         <Button variant='contained' sx={{ height: '100%' }} fullWidth disabled={!fileName} onClick={uploadFile}>
                             <Typography variant='body1'>{fileName ? t('uploadProfileImage') : t('noFileSelected')}</Typography>

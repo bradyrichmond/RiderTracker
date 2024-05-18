@@ -1,11 +1,11 @@
-import { Alert, AlertColor, Snackbar } from "@mui/material";
-import { createContext } from "react"
-import { PropsWithChildren, useState } from "react"
+import { Alert, AlertColor, Snackbar } from '@mui/material';
+import { createContext } from 'react'
+import { PropsWithChildren, useState } from 'react'
 
 interface SnackbarContextProps {
     showErrorSnackbar: (message: string, visibilityMs?: number) => void
 }
- 
+
 export const SnackbarContext = createContext<SnackbarContextProps>({
     showErrorSnackbar: () => {}
 })

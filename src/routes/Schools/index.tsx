@@ -1,20 +1,20 @@
-import EntityViewer from "@/components/EntityViewer"
-import { ApiContext } from "@/contexts/ApiContextProvider"
-import { SchoolType } from "@/types/SchoolType"
-import { useContext, useEffect, useState } from "react"
-import { schoolFactory } from "./SchoolFactory"
-import { GridColDef } from "@mui/x-data-grid"
-import { Button, Tooltip } from "@mui/material"
+import EntityViewer from '@/components/EntityViewer'
+import { ApiContext } from '@/contexts/ApiContextProvider'
+import { SchoolType } from '@/types/SchoolType'
+import { useContext, useEffect, useState } from 'react'
+import { schoolFactory } from './SchoolFactory'
+import { GridColDef } from '@mui/x-data-grid'
+import { Button, Tooltip } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info'
-import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "@/constants/Roles"
-import { RoleContext } from "@/contexts/RoleContextProvider"
+import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
+import { RoleContext } from '@/contexts/RoleContextProvider'
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox'
-import { useNavigate } from "react-router-dom"
-import { v4 as uuidv4 } from "uuid"
-import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
+import { useNavigate } from 'react-router-dom'
+import { v4 as uuidv4 } from 'uuid'
+import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 import { useTranslation } from 'react-i18next'
-import { AddressType } from "@/types/AddressType"
-import { OrgDataContext } from "@/contexts/OrgDataContext"
+import { AddressType } from '@/types/AddressType'
+import { OrgDataContext } from '@/contexts/OrgDataContext'
 
 const Schools = () => {
     const [schools, setSchools] = useState<SchoolType[]>([])
@@ -47,7 +47,7 @@ const Schools = () => {
 
     const createSchoolAction = async (newSchool: SchoolType) => {
         const validatedAddress = await api.addresses.validateAddress(newSchool.address)
-        
+
         if (validatedAddress) {
             const newUuid = uuidv4()
             validatedAddress.id = newUuid
@@ -77,20 +77,20 @@ const Schools = () => {
 
     const generateGridColumns = (): GridColDef[] => {
         const initialGridColumns: GridColDef[] = [
-            { 
+            {
                 field: 'schoolName',
-                headerName: 'School Name', 
-                flex: 1, 
+                headerName: 'School Name',
+                flex: 1,
                 align: 'center',
                 headerAlign: 'center',
                 editable: canEditSchool
             },
-            { 
+            {
                 field: 'address',
                 headerName: 'Address',
                 flex: 1, align: 'center',
                 headerAlign: 'center',
-                valueGetter: (value: string) => getFormattedAddressById(value)},
+                valueGetter: (value: string) => getFormattedAddressById(value) },
             { field: 'viewDetails', headerName: '', flex: 1, align: 'center', headerAlign: 'center', renderCell: (params) => {
                 return (
                     <Button
@@ -103,7 +103,7 @@ const Schools = () => {
                         </Tooltip>
                     </Button>
                 )
-            }}
+            } }
         ]
 
         if (RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.DELETE_SCHOOL)) {

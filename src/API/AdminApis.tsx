@@ -1,5 +1,5 @@
-import { handleApiResponse } from "@/helpers/ApiHelpers"
-import RiderTrackerAPI from "."
+import { handleApiResponse } from '@/helpers/ApiHelpers'
+import RiderTrackerAPI from '.'
 
 interface CreateUserParams {
     id: string
@@ -44,23 +44,23 @@ interface AttributeType {
 }
 
 export enum VERBS{
-    GET = "GET",
-    POST = "POST",
-    PUT = "PUT",
-    PATCH = "PATCH",
-    DELETE = "DELETE"
+    GET = 'GET',
+    POST = 'POST',
+    PUT = 'PUT',
+    PATCH = 'PATCH',
+    DELETE = 'DELETE'
 }
 
 const createCognitoUser = async (body: CreateCognitoUserParams) => {
     const { client } = await RiderTrackerAPI.getClient()
-    const createCognitoUserResponse = await client.adminProxyProxyAny(VERBS.POST, { proxy: 'createUser' }, body, { ["Content-Type"]: "application/json" })
+    const createCognitoUserResponse = await client.adminProxyProxyAny(VERBS.POST, { proxy: 'createUser' }, body, { ['Content-Type']: 'application/json' })
 
     return handleApiResponse<AWSUserType>(createCognitoUserResponse)
 }
 
 const createUser = async (orgId: string, body: CreateUserParams, options?: Record<string, boolean>) => {
     const { client } = await RiderTrackerAPI.getClient(options?.forceRefresh)
-    const createUserResponse = await client.organizationsOrgIdUsersPost({ orgId }, { ...body, stopIds: [""] })
+    const createUserResponse = await client.organizationsOrgIdUsersPost({ orgId }, { ...body, stopIds: [''] })
 
     return handleApiResponse<object>(createUserResponse)
 }

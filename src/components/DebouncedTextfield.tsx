@@ -1,7 +1,7 @@
-import { useCallback } from "react"
-import { debounce } from "./debounce"
-import { ChangeEvent } from "react"
-import { StandardTextFieldProps, TextField } from "@mui/material"
+import { useCallback } from 'react'
+import { debounce } from './debounce'
+import { ChangeEvent } from 'react'
+import { StandardTextFieldProps, TextField } from '@mui/material'
 
 export interface DebouncedTextfieldProps extends Omit<StandardTextFieldProps, 'onChange'> {
     debounceMs?: number

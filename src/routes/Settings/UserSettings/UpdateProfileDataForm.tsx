@@ -1,9 +1,9 @@
-import { ApiContext } from "@/contexts/ApiContextProvider"
-import { RoleContext } from "@/contexts/RoleContextProvider"
-import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
-import { Box, Button, TextField } from "@mui/material"
-import { useMemo, useContext } from "react"
-import { useForm } from "react-hook-form"
+import { ApiContext } from '@/contexts/ApiContextProvider'
+import { RoleContext } from '@/contexts/RoleContextProvider'
+import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
+import { Box, Button, TextField } from '@mui/material'
+import { useMemo, useContext } from 'react'
+import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 interface ProfileFormInputs {
@@ -14,7 +14,7 @@ interface ProfileFormInputs {
 
 const UpdateProfileDataForm = () => {
     const { userFullName, userEmail, userId, updateUserData } = useContext(RoleContext)
-    const { setSnackbarMessage, setSnackbarSeverity, setSnackbarVisibilityMs } = useContext(SnackbarContext)
+    const { showErrorSnackbar } = useContext(SnackbarContext)
     const { api } = useContext(ApiContext)
     const { t } = useTranslation('common')
 
@@ -45,9 +45,7 @@ const UpdateProfileDataForm = () => {
     }
 
     const showDataChangeSnackbar = () => {
-        setSnackbarSeverity('info')
-        setSnackbarVisibilityMs(10000)
-        setSnackbarMessage(t('dataChangeComplete'))
+        showErrorSnackbar(t('dataChangeComplete'))
     }
 
     const mapFormDataToCognito = (data: ProfileFormInputs) => {
@@ -63,8 +61,8 @@ const UpdateProfileDataForm = () => {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <TextField fullWidth label={t('firstName')} disabled {...register('firstName')} />
                 <TextField fullWidth label={t('lastName')} disabled {...register('lastName')} />
-                <TextField fullWidth label={t('email')} {...register('email', { required: true})} />
-                <Button type='submit' variant='contained' disabled={!isDirty} fullWidth sx={{mt: '1rem'}}>{t('submitChanges')}</Button>
+                <TextField fullWidth label={t('email')} {...register('email', { required: true })} />
+                <Button type='submit' variant='contained' disabled={!isDirty} fullWidth sx={{ mt: '1rem' }}>{t('submitChanges')}</Button>
             </form>
         </Box>
     )

@@ -1,5 +1,5 @@
-import { Box, TextField, Typography } from "@mui/material"
-import { useFormContext } from "react-hook-form"
+import { Box, TextField, Typography } from '@mui/material'
+import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 interface SetOrgSlugProps {
@@ -17,7 +17,7 @@ const SetOrgSlug = ({ slugSuggestion, currentSlug }: SetOrgSlugProps) => {
             <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', pt: '.5rem', pb: '.5rem' }}>
                 <Typography>{currentSlug ?? slugSuggestion}.ridertracker.com</Typography>
             </Box>
-            <TextField label={t('orgSlug', { ns: 'common' })} {...register('orgSlug')} fullWidth/>
+            <TextField label={t('orgSlug', { ns: 'common' })} {...register('orgSlug')} fullWidth />
         </Box>
     )
 }

@@ -1,19 +1,19 @@
-import { Avatar, Box, Paper, SvgIconProps, Tooltip, Typography } from "@mui/material"
-import { ComponentType, useContext, useEffect, useMemo, useRef, useState } from "react"
+import { Avatar, Box, Paper, SvgIconProps, Tooltip, Typography } from '@mui/material'
+import { ComponentType, useContext, useEffect, useMemo, useRef, useState } from 'react'
 import PersonIcon from '@mui/icons-material/Person'
 import EmailIcon from '@mui/icons-material/Email'
-import { UserType } from "@/types/UserType"
-import { useHover } from "usehooks-ts"
+import { UserType } from '@/types/UserType'
+import { useHover } from 'usehooks-ts'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { RoleContext } from "@/contexts/RoleContextProvider"
-import { ApiContext } from "@/contexts/ApiContextProvider"
-import { RIDER_TRACKER_ROLES } from "@/constants/Roles"
+import { RoleContext } from '@/contexts/RoleContextProvider'
+import { ApiContext } from '@/contexts/ApiContextProvider'
+import { RIDER_TRACKER_ROLES } from '@/constants/Roles'
 import { useTranslation } from 'react-i18next'
-import { OrgDataContext } from "@/contexts/OrgDataContext"
+import { OrgDataContext } from '@/contexts/OrgDataContext'
 
 interface OrganizationAdminCardProps extends UserType {
     index: number
-    refreshAdmins(): Promise<void> 
+    refreshAdmins(): Promise<void>
 }
 
 const OrganizationAdminCard = ({ id, firstName, lastName, title, email, index, refreshAdmins }: OrganizationAdminCardProps) => {
@@ -53,7 +53,7 @@ const OrganizationAdminCard = ({ id, firstName, lastName, title, email, index, r
     }
 
     return (
-        <Paper elevation={4} sx={ index > 0 ? { mt: '1rem'} : {} } ref={ref}>
+        <Paper elevation={4} sx={index > 0 ? { mt: '1rem' } : {}} ref={ref}>
             <Box sx={{ p: '2rem', display: 'flex', flexDirection: 'row' }}>
                 <Box sx={{ mr: '2rem' }}>
                     <Avatar sx={{ height: 150, width: 150, fontSize: '3rem' }} src={profileUrl} alt={userFullName}>
@@ -70,9 +70,9 @@ const OrganizationAdminCard = ({ id, firstName, lastName, title, email, index, r
                     </Box>
                 </Box>
                 <Box sx={{ width: '3rem' }}>
-                    {hovering ? 
-                        <Box sx={{ width: '3rem', display: 'flex', flexDirection: 'column', justifyContent: 'center'}}>
-                            {actions.map((a) => <OrganizationAdminAction 
+                    {hovering ?
+                        <Box sx={{ width: '3rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                            {actions.map((a) => <OrganizationAdminAction
                                 id={a.id}
                                 key={a.id}
                                 tooltipString={a.tooltipString}

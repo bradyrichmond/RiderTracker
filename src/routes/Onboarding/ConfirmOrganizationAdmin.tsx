@@ -1,5 +1,5 @@
-import { Box, TextField, Typography } from "@mui/material"
-import { useFormContext } from "react-hook-form"
+import { Box, TextField, Typography } from '@mui/material'
+import { useFormContext } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 const ConfirmOrganizationAdmin = () => {
@@ -11,7 +11,7 @@ const ConfirmOrganizationAdmin = () => {
             <Typography variant='h5'>
                 {t('emailConfirmationCode')}
             </Typography>
-            <TextField label={t('confirmationCode')} {...register('confirmationCode')} fullWidth/>
+            <TextField label={t('confirmationCode')} {...register('confirmationCode')} fullWidth />
         </Box>
     )
 }

@@ -1,41 +1,41 @@
-import { RiderType } from "@/types/RiderType"
+import { RiderType } from '@/types/RiderType'
 
 const getRiderById = async (id: string) => Promise.resolve({
-    "id": id,
-    "firstName": "Johnny",
-    "lastName": "Tester",
-    "orgId": "00492e30-ab34-44f6-9843-44f47f2cdf27",
-    "guardianRiderLinks": [
-        "123456"
+    id: id,
+    firstName: 'Johnny',
+    lastName: 'Tester',
+    orgId: '00492e30-ab34-44f6-9843-44f47f2cdf27',
+    guardianRiderLinks: [
+        '123456'
     ]
 })
 
 const getRiders = async (orgId: string) => Promise.resolve([
     {
-        "id": "123456",
-        "firstName": "Hallie",
-        "lastName": "James",
-        "orgId": orgId,
-        "guardianRiderLinks": [
-            "123456"
+        id: '123456',
+        firstName: 'Hallie',
+        lastName: 'James',
+        orgId: orgId,
+        guardianRiderLinks: [
+            '123456'
         ]
     },
     {
-        "id": "70d242f6-6d30-4421-8511-7aad767a8776",
-        "firstName": "Ashleigh",
-        "lastName": "Ashley",
-        "orgId": orgId,
-        "guardianRiderLinks": [
-            "123456"
+        id: '70d242f6-6d30-4421-8511-7aad767a8776',
+        firstName: 'Ashleigh',
+        lastName: 'Ashley',
+        orgId: orgId,
+        guardianRiderLinks: [
+            '123456'
         ]
     },
     {
-        "id": "123",
-        "firstName": "Johnny",
-        "lastName": "Tester",
-        "orgId": orgId,
-        "guardianRiderLinks": [
-            "123456"
+        id: '123',
+        firstName: 'Johnny',
+        lastName: 'Tester',
+        orgId: orgId,
+        guardianRiderLinks: [
+            '123456'
         ]
     }
 ])
@@ -44,10 +44,10 @@ const getBulkRidersById = async (riderIds: string[]) => {
     const riders: RiderType[] = []
 
     riderIds.forEach((r) => riders.push({
-        "id": r,
-        "firstName": "Johnny",
-        "lastName": "Tester",
-        "orgId": "00492e30-ab34-44f6-9843-44f47f2cdf27"
+        id: r,
+        firstName: 'Johnny',
+        lastName: 'Tester',
+        orgId: '00492e30-ab34-44f6-9843-44f47f2cdf27'
     }))
 
     return riders

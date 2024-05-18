@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
-import { render, screen, waitFor, waitForElementToBeRemoved } from "@testing-library/react"
+import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
 import { AsRole, ProviderWrapperAsRole } from '@/helpers/ProviderWrapper'
 import Schools from '..'
 import { PropsWithChildren } from 'react'
@@ -54,7 +54,7 @@ describe('Schools Tests', () => {
   })
 
   it('hides add school button when not authorized to add schools', async () => {
-    render(<Schools />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" />})
+    render(<Schools />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" /> })
 
     await waitFor(() => {
       expect(screen.queryByText(/add school/i)).not.toBeInTheDocument()
@@ -75,23 +75,23 @@ describe('Schools Tests', () => {
     render(<Schools />, { wrapper: ProviderWrapperAsRole })
 
     await waitFor(async () => {
-      const viewDetailButtons = await screen.findAllByTestId("InfoIcon")
+      const viewDetailButtons = await screen.findAllByTestId('InfoIcon')
       expect(viewDetailButtons.length).toBeGreaterThan(0)
-      const deleteSchoolButtons = await screen.findAllByTestId("IndeterminateCheckBoxIcon")
+      const deleteSchoolButtons = await screen.findAllByTestId('IndeterminateCheckBoxIcon')
       expect(deleteSchoolButtons.length).toBeGreaterThan(0)
     })
   })
 
   it('hides the delete action buttons in the rows for unauthorized users', async () => {
-    render(<Schools />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" />})
+    render(<Schools />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" /> })
 
     await waitFor(async () => {
-      const viewDetailButtons = await screen.findAllByTestId("InfoIcon")
+      const viewDetailButtons = await screen.findAllByTestId('InfoIcon')
       expect(viewDetailButtons.length).toBeGreaterThan(0)
     })
 
     await waitFor(async () => {
-      const deleteSchoolButtons = screen.queryByTestId("IndeterminateCheckBoxIcon")
+      const deleteSchoolButtons = screen.queryByTestId('IndeterminateCheckBoxIcon')
       expect(deleteSchoolButtons).not.toBeInTheDocument()
     })
   })

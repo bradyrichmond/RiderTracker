@@ -1,4 +1,4 @@
-import { GuardianType } from "@/types/UserType";
+import { GuardianType } from '@/types/UserType';
 
 export function guardianFactory(args: string[]): GuardianType {
     return {
@@ -7,6 +7,6 @@ export function guardianFactory(args: string[]): GuardianType {
         firstName: args[2],
         lastName: args[3],
         email: args[4],
-        riderIds: [""]
+        riderIds: ['']
     };
 }

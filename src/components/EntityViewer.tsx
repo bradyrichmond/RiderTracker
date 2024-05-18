@@ -1,18 +1,18 @@
-import { Box, Button, Typography } from "@mui/material"
+import { Box, Button, Typography } from '@mui/material'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
-import { useContext, useEffect, useState } from "react"
-import { RoleContext } from "../contexts/RoleContextProvider"
+import { useContext, useEffect, useState } from 'react'
+import { RoleContext } from '../contexts/RoleContextProvider'
 import { useParams } from 'react-router-dom'
-import { BusType } from "../types/BusType"
-import { OrganizationType } from "../types/OrganizationType"
-import { RiderType } from "../types/RiderType"
-import { ScanType } from "../types/ScanType"
-import AddEntityModal from "./AddEntityModal"
-import { FormDataType } from "../types/FormTypes"
+import { BusType } from '../types/BusType'
+import { OrganizationType } from '../types/OrganizationType'
+import { RiderType } from '../types/RiderType'
+import { ScanType } from '../types/ScanType'
+import AddEntityModal from './AddEntityModal'
+import { FormDataType } from '../types/FormTypes'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import { SchoolType } from "@/types/SchoolType"
-import { StopType } from "@/types/StopType"
-import { GuardianType, UserType } from "@/types/UserType"
+import { SchoolType } from '@/types/SchoolType'
+import { StopType } from '@/types/StopType'
+import { GuardianType, UserType } from '@/types/UserType'
 
 export interface ModalProps<T> {
     cancelAction: () => void
@@ -23,7 +23,7 @@ export interface ModalProps<T> {
 
 interface EntityViewerProps<T> {
     createEntity?(_body: T | string): Promise<object>
-    entityFactory: (args: string[]) => T 
+    entityFactory: (args: string[]) => T
     getEntities(id?: string): void
     entities: T[]
     modalFormInputs?: FormDataType
@@ -34,7 +34,7 @@ interface EntityViewerProps<T> {
 }
 
 
-const EntityViewer = <T extends 
+const EntityViewer = <T extends
         BusType | GuardianType | OrganizationType | RiderType | ScanType | SchoolType | StopType | UserType>(
     {
         createEntity, entityFactory, entities, getEntities, modalFormInputs, gridColumns, titleSingular, titlePlural, processRowUpdate
@@ -67,8 +67,8 @@ const EntityViewer = <T extends
     return (
         <Box height='100%' width='100%' display='flex' flexDirection='column'>
             {modalFormInputs ?
-                <AddEntityModal<T> 
-                    cancelAction={toggleShowModal} 
+                <AddEntityModal<T>
+                    cancelAction={toggleShowModal}
                     entityFactory={entityFactory}
                     submitAction={submitAction}
                     titleSingular={titleSingular ?? ''}
@@ -84,7 +84,7 @@ const EntityViewer = <T extends
                         {titlePlural}
                     </Typography>
                 </Box>
-                {modalFormInputs && createEntity ? 
+                {modalFormInputs && createEntity ?
                     <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
                         <Button variant='contained' onClick={toggleShowModal}>
                             <Box display='flex' flexDirection='row'>
@@ -100,7 +100,7 @@ const EntityViewer = <T extends
                 }
             </Box>
             <Box flex='1'>
-                <DataGrid rows={entities} columns={gridColumns} rowHeight={100} processRowUpdate={processRowUpdate}/>
+                <DataGrid rows={entities} columns={gridColumns} rowHeight={100} processRowUpdate={processRowUpdate} />
             </Box>
         </Box>
     )

@@ -1,9 +1,9 @@
-import { ApiContext } from "@/contexts/ApiContextProvider"
-import { OrgDataContext } from "@/contexts/OrgDataContext"
-import { SchoolType } from "@/types/SchoolType"
-import { Box, Typography } from "@mui/material"
-import { useContext, useEffect, useState } from "react"
-import { useParams } from "react-router-dom"
+import { ApiContext } from '@/contexts/ApiContextProvider'
+import { OrgDataContext } from '@/contexts/OrgDataContext'
+import { SchoolType } from '@/types/SchoolType'
+import { Box, Typography } from '@mui/material'
+import { useContext, useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 
 const School = () => {
     const [school, setSchool] = useState<SchoolType>()

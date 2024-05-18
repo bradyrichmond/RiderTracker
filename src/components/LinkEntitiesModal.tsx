@@ -1,6 +1,6 @@
 import { Autocomplete, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, TextField } from '@mui/material'
 import { SyntheticEvent, useState } from 'react'
-import { RiderType } from "../types/RiderType"
+import { RiderType } from '../types/RiderType'
 import { OptionsType } from '../types/FormTypes'
 import { GuardianType } from '@/types/UserType'
 
@@ -14,8 +14,8 @@ interface LinkEntitiesModalProps<T> {
     options: OptionsType[]
 }
 
-const LinkEntitiesModal = <T extends 
-        GuardianType | RiderType>({ 
+const LinkEntitiesModal = <T extends
+        GuardianType | RiderType>({
         cancelAction, submitAction, title, submitButtonText, open, options
     }: LinkEntitiesModalProps<T>) => {
     const [disableButtons, setDisabledButtons] = useState(false)
@@ -46,7 +46,7 @@ const LinkEntitiesModal = <T extends
                 <Box marginTop='2rem'>
                 <FormControl fullWidth>
                     <Autocomplete
-                        id={`riderIdSelectAutoComplete`}
+                        id={'riderIdSelectAutoComplete'}
                         options={options}
                         getOptionLabel={(option: OptionsType) => option.label}
                         filterSelectedOptions
@@ -55,7 +55,7 @@ const LinkEntitiesModal = <T extends
                             <TextField
                                 {...params}
                                 label='riderIdSelect'
-                                id={`riderIdSelectLabel`}
+                                id={'riderIdSelectLabel'}
                             />
                         )}
                     />

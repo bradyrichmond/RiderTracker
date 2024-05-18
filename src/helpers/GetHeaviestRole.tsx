@@ -1,4 +1,4 @@
-import { ROLE_WEIGHTS } from "../constants/RoleWeights"
+import { ROLE_WEIGHTS } from '../constants/RoleWeights'
 
 // this is a misnomer, the role with the most permissions has the smallest weight
 export const getHeaviestRole = (roles: string[]) => {

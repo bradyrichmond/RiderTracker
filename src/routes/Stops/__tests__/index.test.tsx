@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { render, screen, waitFor, waitForElementToBeRemoved } from "@testing-library/react"
+import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
 import { AsRole, ProviderWrapperAsRole } from '@/helpers/ProviderWrapper'
 import userEvent from '@testing-library/user-event'
 import Stops from '..'
@@ -64,23 +64,23 @@ describe('Stops Tests', () => {
     render(<Stops />, { wrapper: ProviderWrapperAsRole })
 
     await waitFor(async () => {
-      const viewDetailButtons = await screen.findAllByTestId("InfoIcon")
+      const viewDetailButtons = await screen.findAllByTestId('InfoIcon')
       expect(viewDetailButtons.length).toBeGreaterThan(0)
-      const deleteScanButtons = await screen.findAllByTestId("WrongLocationIcon")
+      const deleteScanButtons = await screen.findAllByTestId('WrongLocationIcon')
       expect(deleteScanButtons.length).toBeGreaterThan(0)
     })
   })
 
   it('hides the delete action buttons in the rows for unauthorized users', async () => {
-    render(<Stops />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" />})
+    render(<Stops />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" /> })
 
     await waitFor(async () => {
-      const viewDetailButtons = await screen.findAllByTestId("InfoIcon")
+      const viewDetailButtons = await screen.findAllByTestId('InfoIcon')
       expect(viewDetailButtons.length).toBeGreaterThan(0)
     })
 
     await waitFor(async () => {
-      const deleteScanButtons = screen.queryByTestId("WrongLocationIcon")
+      const deleteScanButtons = screen.queryByTestId('WrongLocationIcon')
       expect(deleteScanButtons).not.toBeInTheDocument()
     })
   })

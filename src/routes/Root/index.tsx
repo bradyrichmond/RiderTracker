@@ -1,8 +1,8 @@
-import { Box, Container, Typography } from "@mui/material"
-import { Outlet } from "react-router-dom"
-import NavigationContainer from "@/components/NavigationContainer"
-import { useContext } from "react"
-import { RoleContext } from "@/contexts/RoleContextProvider"
+import { Box, Container, Typography } from '@mui/material'
+import { Outlet } from 'react-router-dom'
+import NavigationContainer from '@/components/NavigationContainer'
+import { useContext } from 'react'
+import { RoleContext } from '@/contexts/RoleContextProvider'
 
 const Root = () => {
     const { organizationOverride } = useContext(RoleContext)
@@ -13,7 +13,7 @@ const Root = () => {
                 <NavigationContainer />
             </Box>
             {organizationOverride ?
-                <Box sx={{ 
+                <Box sx={{
                     width: '100%',
                     padding: '2rem',
                     background: '#ff0000',
@@ -29,7 +29,7 @@ const Root = () => {
                 :
                 null
             }
-            <Container sx={{mb: '2rem', flex: 1}}>
+            <Container sx={{ mb: '2rem', flex: 1 }}>
                 <Outlet />
             </Container>
         </Box>

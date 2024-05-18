@@ -1,4 +1,4 @@
-import { LocationType } from "@/types/LocationType";
+import { LocationType } from '@/types/LocationType';
 
 export function locationFactory(args: (number)[] = []): LocationType {
     return {

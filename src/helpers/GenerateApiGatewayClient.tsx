@@ -1,4 +1,4 @@
-import { fetchAuthSession } from "@aws-amplify/auth"
+import { fetchAuthSession } from '@aws-amplify/auth'
 
 export type ApiGatewayClientType = ReturnType<typeof apigClientFactory.newClient>
 

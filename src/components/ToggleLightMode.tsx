@@ -1,9 +1,9 @@
-import { ThemeContext } from "@/contexts/ThemeContextProvider"
-import { useContext } from "react"
+import { ThemeContext } from '@/contexts/ThemeContextProvider'
+import { useContext } from 'react'
 import LightModeIcon from '@mui/icons-material/LightMode'
 import DarkModeIcon from '@mui/icons-material/DarkMode'
-import { MenuItem, useTheme } from "@mui/material"
-import { MenuItemWithIcon } from "./ResponsiveAppBar"
+import { MenuItem, useTheme } from '@mui/material'
+import { MenuItemWithIcon } from './ResponsiveAppBar'
 
 const ToggleLightMode = () => {
     const themeContext = useContext(ThemeContext)

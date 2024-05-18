@@ -34,7 +34,7 @@ const NavigationDrawer = ({ toggleDrawer, open, navItems }: NavigationDrawerProp
                     {navItems.map(({ label, Icon, path }) => (
                         <ListItem key={label} disablePadding>
                             <ListItemButton onClick={() => navigate(path)}>
-                                {Icon ? 
+                                {Icon ?
                                     <ListItemIcon>
                                         <Icon />
                                     </ListItemIcon>

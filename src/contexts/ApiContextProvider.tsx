@@ -1,16 +1,16 @@
-import { Dispatch, SetStateAction, createContext } from "react";
-import { PropsWithChildren, useState } from "react"
-import RiderTrackerAPI from "../API"
-import { ApiGatewayClientType } from "@/helpers/GenerateApiGatewayClient";
-import AddressApis, { AddressApiFunctionTypes } from "@/API/AddressApis";
-import AdminApis, { AdminApiFunctionTypes } from "@/API/AdminApis";
-import BusApis, { BusApiFunctionTypes } from "@/API/BusApis";
-import OrganizationApis, { OrganizationApiFunctionTypes } from "@/API/OrganizationApis";
-import RiderApis, { RiderApiFunctionTypes } from "@/API/RiderApis";
-import ScanApis, { ScanApiFunctionTypes } from "@/API/ScanApis";
-import SchoolApis, { SchoolApiFunctionTypes } from "@/API/SchoolApis";
-import StopApis, { StopApiFunctionTypes } from "@/API/StopApis";
-import UserApis, { UserApiFunctionTypes } from "@/API/UserApis";
+import { Dispatch, SetStateAction, createContext } from 'react';
+import { PropsWithChildren, useState } from 'react'
+import RiderTrackerAPI from '../API'
+import { ApiGatewayClientType } from '@/helpers/GenerateApiGatewayClient';
+import AddressApis, { AddressApiFunctionTypes } from '@/API/AddressApis';
+import AdminApis, { AdminApiFunctionTypes } from '@/API/AdminApis';
+import BusApis, { BusApiFunctionTypes } from '@/API/BusApis';
+import OrganizationApis, { OrganizationApiFunctionTypes } from '@/API/OrganizationApis';
+import RiderApis, { RiderApiFunctionTypes } from '@/API/RiderApis';
+import ScanApis, { ScanApiFunctionTypes } from '@/API/ScanApis';
+import SchoolApis, { SchoolApiFunctionTypes } from '@/API/SchoolApis';
+import StopApis, { StopApiFunctionTypes } from '@/API/StopApis';
+import UserApis, { UserApiFunctionTypes } from '@/API/UserApis';
 
 class DefaultRiderTrackerApi implements RiderTrackerAPI {
     client: ApiGatewayClientType
@@ -47,7 +47,7 @@ interface ApiContextProps {
     api: RiderTrackerAPI
     setApi: Dispatch<SetStateAction<RiderTrackerAPI>>
 }
- 
+
 export const ApiContext = createContext<ApiContextProps>({
     api: DefaultRiderTrackerApi.getClient(),
     setApi: () => {}

@@ -1,10 +1,10 @@
-import { Box, Typography } from "@mui/material"
-import { useContext, useEffect, useState } from "react"
+import { Box, Typography } from '@mui/material'
+import { useContext, useEffect, useState } from 'react'
 import { BusType } from '@/types/BusType'
 import { useParams } from 'react-router-dom'
-import { ApiContext } from "@/contexts/ApiContextProvider"
+import { ApiContext } from '@/contexts/ApiContextProvider'
 import { Trans, useTranslation } from 'react-i18next'
-import { OrgDataContext } from "@/contexts/OrgDataContext"
+import { OrgDataContext } from '@/contexts/OrgDataContext'
 
 const Bus = () => {
     const [bus, setBus] = useState<BusType>()

@@ -26,7 +26,7 @@ export const ProviderWrapperAsRole = ({ children, role, routes }: PropsWithChild
             <RoleContextProvider>
                 <ApiContextProvider>
                     <AsRole role={role}>
-                        { children }
+                        {children}
                     </AsRole>
                 </ApiContextProvider>
             </RoleContextProvider>
@@ -39,7 +39,7 @@ export const AsRole = ({ children, role }: PropsWithChildren<AsRole>) => {
     const { setHeaviestRole } = useContext(RoleContext)
 
     useEffect(() => {
-        setHeaviestRole(role ?? "RiderTracker_Wizard")
+        setHeaviestRole(role ?? 'RiderTracker_Wizard')
     }, [])
 
     return (

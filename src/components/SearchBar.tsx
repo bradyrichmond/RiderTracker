@@ -1,6 +1,6 @@
-import { InputAdornment } from "@mui/material"
+import { InputAdornment } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
-import DebouncedTextField, { DebouncedTextfieldProps } from "./DebouncedTextfield"
+import DebouncedTextField, { DebouncedTextfieldProps } from './DebouncedTextfield'
 
 const SearchBar = (props: DebouncedTextfieldProps) => {
     return (

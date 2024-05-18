@@ -94,7 +94,7 @@ const ResponsiveAppBar = () => {
                                 aria-controls="menu-appbar"
                                 aria-haspopup="true"
                                 onClick={handleOpenNavMenu}
-                                
+
                             >
                                 <MenuIcon />
                             </IconButton>
@@ -116,12 +116,12 @@ const ResponsiveAppBar = () => {
                                     display: { xs: 'block', md: 'none' },
                                 }}
                             >
-                                {pages.map(({label, path, Icon}) => (
+                                {pages.map(({ label, path, Icon }) => (
                                     <MenuItem key={label} onClick={() => {
                                         navigate(path)
                                         handleCloseNavMenu()
                                     }}>
-                                        <MenuItemWithIcon label={label} Icon={Icon} color={theme.palette.primary.contrastText}/>
+                                        <MenuItemWithIcon label={label} Icon={Icon} color={theme.palette.primary.contrastText} />
                                     </MenuItem>
                                 ))}
                             </Menu>
@@ -145,7 +145,7 @@ const ResponsiveAppBar = () => {
                             RiderTracker
                         </Typography>
                         <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                            {pages.map(({label, path, Icon}) => (
+                            {pages.map(({ label, path, Icon }) => (
                                 <Button
                                     key={label}
                                     onClick={() => {
@@ -161,7 +161,7 @@ const ResponsiveAppBar = () => {
 
                         {userId ?
                             <Box sx={{ flexGrow: 0 }}>
-                                <Tooltip title={`Open settings`}>
+                                <Tooltip title={'Open settings'}>
                                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                                         <Avatar alt={userFullName} src={userPictureUrl} />
                                     </IconButton>
@@ -183,7 +183,7 @@ const ResponsiveAppBar = () => {
                                     onClose={handleCloseUserMenu}
                                 >
                                     {settings.map(({ label, action, Component, path, Icon }) => {
-                                        return Component ? 
+                                        return Component ?
                                             <Component key={label} />
                                             :
                                             <MenuItem key={label} onClick={action ? action : () => navigate(path)}>
@@ -200,7 +200,7 @@ const ResponsiveAppBar = () => {
                 </Container>
             </AppBar>
             {/* vvvvv MUI recommended hack for fixed position appbars vvvvv */}
-            <Box sx={{ padding: { s: '0', md: '2rem'} }}>
+            <Box sx={{ padding: { s: '0', md: '2rem' } }}>
                 <Toolbar />
             </Box>
         </>

@@ -1,8 +1,8 @@
-import { useLocalStorage } from "@/hooks/useLocalStorage"
-import { Dispatch, SetStateAction, createContext, useEffect } from "react"
-import { PropsWithChildren, useState } from "react"
+import { useLocalStorage } from '@/hooks/useLocalStorage'
+import { Dispatch, SetStateAction, createContext, useEffect } from 'react'
+import { PropsWithChildren, useState } from 'react'
 import { changeLanguage } from 'i18next'
-import { SupportedLangs } from "@/constants/SupportedLangs"
+import { SupportedLangs } from '@/constants/SupportedLangs'
 
 interface I18nContextProps {
     language: SupportedLangs

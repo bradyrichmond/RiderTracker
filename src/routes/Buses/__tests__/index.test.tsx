@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import Buses from '..'
-import { render, screen, waitFor, waitForElementToBeRemoved } from "@testing-library/react"
+import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
 import { AsRole, ProviderWrapperAsRole } from '@/helpers/ProviderWrapper'
 import { PropsWithChildren } from 'react'
 jest.mock('@/API/BusApis')
@@ -57,7 +57,7 @@ describe('Buses Tests', () => {
   })
 
   it('hides add bus button when not authorized to add buses', async () => {
-    render(<Buses />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" />})
+    render(<Buses />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" /> })
 
     await waitFor(() => {
       expect(screen.queryByText(/add bus/i)).not.toBeInTheDocument()
@@ -78,23 +78,23 @@ describe('Buses Tests', () => {
     render(<Buses />, { wrapper: ProviderWrapperAsRole })
 
     await waitFor(async () => {
-      const viewDetailButtons = await screen.findAllByTestId("InfoIcon")
+      const viewDetailButtons = await screen.findAllByTestId('InfoIcon')
       expect(viewDetailButtons.length).toBeGreaterThan(0)
-      const deleteBusButtons = await screen.findAllByTestId("NoTransferIcon")
+      const deleteBusButtons = await screen.findAllByTestId('NoTransferIcon')
       expect(deleteBusButtons.length).toBeGreaterThan(0)
     })
   })
 
   it('hides the delete action buttons in the rows for unauthorized users', async () => {
-    render(<Buses />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" />})
+    render(<Buses />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" /> })
 
     await waitFor(async () => {
-      const viewDetailButtons = await screen.findAllByTestId("InfoIcon")
+      const viewDetailButtons = await screen.findAllByTestId('InfoIcon')
       expect(viewDetailButtons.length).toBeGreaterThan(0)
     })
 
     await waitFor(async () => {
-      const deleteBusButtons = screen.queryByTestId("NoTransferIcon")
+      const deleteBusButtons = screen.queryByTestId('NoTransferIcon')
       expect(deleteBusButtons).not.toBeInTheDocument()
     })
   })

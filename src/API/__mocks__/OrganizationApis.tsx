@@ -1,11 +1,11 @@
-import { OrganizationType } from "@/types/OrganizationType"
+import { OrganizationType } from '@/types/OrganizationType'
 
 const getOrganizations = async () => Promise.resolve([
     {
-        "id": "123"
+        id: '123'
     },
     {
-        "id": "00492e30-ab34-44f6-9843-44f47f2cdf27"
+        id: '00492e30-ab34-44f6-9843-44f47f2cdf27'
     }
 ])
 

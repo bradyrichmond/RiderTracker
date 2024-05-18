@@ -1,16 +1,16 @@
-import EntityViewer from "@/components/EntityViewer"
+import EntityViewer from '@/components/EntityViewer'
 import { useNavigate } from 'react-router-dom'
-import { useContext, useState } from "react"
-import { Button, Tooltip } from "@mui/material"
+import { useContext, useState } from 'react'
+import { Button, Tooltip } from '@mui/material'
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
-import { ApiContext } from "@/contexts/ApiContextProvider"
+import { ApiContext } from '@/contexts/ApiContextProvider'
 import { GridColDef } from '@mui/x-data-grid'
-import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "@/constants/Roles"
-import { RoleContext } from "@/contexts/RoleContextProvider"
-import { UserType } from "@/types/UserType"
-import { userFactory } from "../Settings/UserSettings/UserFactory"
-import { OrgDataContext } from "@/contexts/OrgDataContext"
+import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
+import { RoleContext } from '@/contexts/RoleContextProvider'
+import { UserType } from '@/types/UserType'
+import { userFactory } from '../Settings/UserSettings/UserFactory'
+import { OrgDataContext } from '@/contexts/OrgDataContext'
 
 const Drivers = () => {
     const [drivers, setDrivers] = useState<UserType[]>([])
@@ -64,7 +64,7 @@ const Drivers = () => {
                         </Tooltip>
                     </Button>
                 )
-            }}
+            } }
         ]
 
         if (RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.DELETE_DRIVER)) {
@@ -91,18 +91,18 @@ const Drivers = () => {
     const processRowUpdate = async (updatedRow: UserType) => {
         return updatedRow
     }
-    
+
     return (
         <EntityViewer<UserType>
             createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_DRIVER) ? createDriverAction : undefined}
             entityFactory={userFactory}
             getEntities={updateDriversAction}
             entities={drivers}
-            modalFormInputs={{inputs: [
-                { name: "First Name" },
-                { name: "Last Name" },
-                { name: "Email", inputType: 'email' }
-            ]}}
+            modalFormInputs={{ inputs: [
+                { name: 'First Name' },
+                { name: 'Last Name' },
+                { name: 'Email', inputType: 'email' }
+            ] }}
             gridColumns={generateGridColumns()}
             titleSingular='Driver'
             titlePlural='Drivers'

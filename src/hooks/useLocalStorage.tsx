@@ -1,6 +1,6 @@
-import { SupportedLangs } from "@/constants/SupportedLangs"
-import { PaletteMode } from "@mui/material"
-import { useState, useEffect } from "react"
+import { SupportedLangs } from '@/constants/SupportedLangs'
+import { PaletteMode } from '@mui/material'
+import { useState, useEffect } from 'react'
 
 const getStorageValue = <T extends PaletteMode | SupportedLangs>(key: string, defaultValue: T): T => {
     const saved = localStorage.getItem(key)

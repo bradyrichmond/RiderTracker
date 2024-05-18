@@ -1,14 +1,14 @@
-import { Badge, Box, Card, Tooltip, Typography } from "@mui/material"
+import { Badge, Box, Card, Tooltip, Typography } from '@mui/material'
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh'
 import FolderIcon from '@mui/icons-material/Folder'
-import useFileUpload from "@/hooks/useFileUpload"
-import { MB } from "@/constants/Numbers"
-import { useContext } from "react"
-import { ApiContext } from "@/contexts/ApiContextProvider"
-import { RoleContext } from "@/contexts/RoleContextProvider"
+import useFileUpload from '@/hooks/useFileUpload'
+import { MB } from '@/constants/Numbers'
+import { useContext } from 'react'
+import { ApiContext } from '@/contexts/ApiContextProvider'
+import { RoleContext } from '@/contexts/RoleContextProvider'
 import { useTranslation } from 'react-i18next'
 import Grid from '@mui/material/Unstable_Grid2'
-import { OrgDataContext } from "@/contexts/OrgDataContext"
+import { OrgDataContext } from '@/contexts/OrgDataContext'
 
 const OrganizationLogoSettings = () => {
     const { api } = useContext(ApiContext)
@@ -21,7 +21,7 @@ const OrganizationLogoSettings = () => {
         await updateUserData()
     }
 
-    const { openFileDialog, temporaryFileUrl, FileUpload } = useFileUpload({uploadAction, sizeLimitInBytes: 10 * MB})
+    const { openFileDialog, temporaryFileUrl, FileUpload } = useFileUpload({ uploadAction, sizeLimitInBytes: 10 * MB })
 
     return (
         <Grid xs={12}>
@@ -35,7 +35,7 @@ const OrganizationLogoSettings = () => {
                     <Box display='flex' height='100%' flexDirection='column' sx={{ pt: '2rem' }}>
                         <Box sx={{ pb: '2rem' }} display='flex' justifyContent='center' alignItems='center' onClick={openFileDialog} >
                             <Tooltip title={temporaryFileUrl ? t('fileNotUploaded', { ns: 'common' }) : t('changeProfilePicture', { ns: 'common' })}>
-                                <Badge badgeContent={<PriorityHighIcon fontSize='large' />} invisible={!temporaryFileUrl} color='error' sx={{ "& .MuiBadge-badge": { padding: '0.5rem', borderRadius: '2rem', height: 'fit-content', width: 'fit-content' } }}>
+                                <Badge badgeContent={<PriorityHighIcon fontSize='large' />} invisible={!temporaryFileUrl} color='error' sx={{ '& .MuiBadge-badge': { padding: '0.5rem', borderRadius: '2rem', height: 'fit-content', width: 'fit-content' } }}>
                                     {!temporaryFileUrl && !organizationLoginImageUrl ? <FolderIcon fontSize='large' /> : null}
                                     {temporaryFileUrl ? <img src={temporaryFileUrl} alt={temporaryFileUrl} /> : null}
                                     {organizationLoginImageUrl && !temporaryFileUrl ? <img src={organizationLoginImageUrl} alt={organizationLoginImageUrl} /> : null}

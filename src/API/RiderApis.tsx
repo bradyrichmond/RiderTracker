@@ -1,6 +1,6 @@
-import { RiderType } from "../types/RiderType"
-import RiderTrackerAPI from "."
-import { handleApiResponse } from "@/helpers/ApiHelpers"
+import { RiderType } from '../types/RiderType'
+import RiderTrackerAPI from '.'
+import { handleApiResponse } from '@/helpers/ApiHelpers'
 
 const getRiders = async (orgId: string) => {
     const { client } = await RiderTrackerAPI.getClient()

@@ -1,13 +1,13 @@
-import { ApiContext } from "@/contexts/ApiContextProvider"
-import { UserType } from "@/types/UserType"
-import { Box, Button } from "@mui/material"
-import { CSSProperties, useContext, useEffect, useState } from "react"
+import { ApiContext } from '@/contexts/ApiContextProvider'
+import { UserType } from '@/types/UserType'
+import { Box, Button } from '@mui/material'
+import { CSSProperties, useContext, useEffect, useState } from 'react'
 import { VariableSizeList as List } from 'react-window'
-import AutoSizer from "react-virtualized-auto-sizer"
-import UserCard from "./UserCard"
+import AutoSizer from 'react-virtualized-auto-sizer'
+import UserCard from './UserCard'
 import { useTranslation } from 'react-i18next'
-import SearchBar from "@/components/SearchBar"
-import { OrgDataContext } from "@/contexts/OrgDataContext"
+import SearchBar from '@/components/SearchBar'
+import { OrgDataContext } from '@/contexts/OrgDataContext'
 
 const UserManagement = () => {
     const [users, setUsers] = useState<UserType[]>([])
@@ -16,7 +16,7 @@ const UserManagement = () => {
     const { api } = useContext(ApiContext)
     const { orgId } = useContext(OrgDataContext)
     const { t } = useTranslation('common')
-    
+
     useEffect(() => {
         fetchUsers()
 
@@ -26,7 +26,7 @@ const UserManagement = () => {
     }, [searchArg])
 
     const fetchUsers = async () => {
-        const fetchedUsers = await api.users.getUsers({ orgId, pagination: { pageSize: 11, lastKey: '', searchArg }})
+        const fetchedUsers = await api.users.getUsers({ orgId, pagination: { pageSize: 11, lastKey: '', searchArg } })
 
         if (fetchedUsers.items.length < 1) {
             setOutOfItems(true)
@@ -40,7 +40,7 @@ const UserManagement = () => {
 
     const loadMore = async () => {
         const lastKey = users[users.length - 1].id
-        const fetchedUsers = await api.users.getUsers({ orgId, pagination: { pageSize: 11, lastKey, searchArg }})
+        const fetchedUsers = await api.users.getUsers({ orgId, pagination: { pageSize: 11, lastKey, searchArg } })
 
         if (fetchedUsers.items.length < 1) {
             setOutOfItems(true)
@@ -76,7 +76,7 @@ const UserManagement = () => {
             <Box sx={{ flex: 1 }}>
                 <AutoSizer>
                     {({ height, width }) => (
-                        <List 
+                        <List
                             itemCount={users.length}
                             width={width}
                             height={height}
@@ -87,7 +87,7 @@ const UserManagement = () => {
                     )}
                 </AutoSizer>
             </Box>
-            {!outOfItems ? 
+            {!outOfItems ?
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: '2rem' }}>
                     <Button variant='contained' onClick={loadMore}>
                         {t('loadMore')}

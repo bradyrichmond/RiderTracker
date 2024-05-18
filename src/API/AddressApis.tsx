@@ -1,6 +1,6 @@
-import { AddressType, GeoapifyValidateResponse } from "../types/AddressType"
-import RiderTrackerAPI from "."
-import { handleApiResponse } from "@/helpers/ApiHelpers"
+import { AddressType, GeoapifyValidateResponse } from '../types/AddressType'
+import RiderTrackerAPI from '.'
+import { handleApiResponse } from '@/helpers/ApiHelpers'
 
 const getAddresses = async (orgId: string) => {
     const { client } = await RiderTrackerAPI.getClient()
@@ -42,7 +42,7 @@ const validateAddress = async (address: string) => {
 const getBulkAddressesByIds = async (orgId: string, addressIds: string[]) => {
     const api = await RiderTrackerAPI.getClient()
     const addressesResponse = await api.client.organizationsOrgIdAddressesBatchByIdPost({ orgId }, addressIds)
-    
+
     return handleApiResponse<AddressType[]>(addressesResponse)
 }
 
@@ -73,7 +73,7 @@ const evaluateAddressData = (result: GeoapifyValidateResponse): AddressType => {
                 location: {
                     lat,
                     lon
-                },
+                }
             }
         } else {
             throw 'Address confidence is too low'

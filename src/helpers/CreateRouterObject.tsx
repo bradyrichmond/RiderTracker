@@ -1,4 +1,4 @@
-import { createBrowserRouter, redirect } from "react-router-dom"
+import { createBrowserRouter, redirect } from 'react-router-dom'
 
 import Bus from '@/routes/Buses/Bus'
 import Buses from '@/routes/Buses'
@@ -13,16 +13,16 @@ import Rider from '@/routes/Riders/Rider'
 import Riders from '@/routes/Riders'
 import Root from '@/routes/Root'
 import Unauthorized from '@/routes/Protected/Unauthorized'
-import Scan from "@/routes/Scans/Scan"
-import Stops from "@/routes/Stops"
-import Stop from "@/routes/Stops/Stop"
-import Schools from "@/routes/Schools"
-import School from "@/routes/Schools/School"
-import Settings from "@/routes/Settings"
-import Logout from "@/routes/Auth/Logout"
-import Auth from "@/routes/Auth"
-import Onboarding from "@/routes/Onboarding"
-import { fetchAuthSession } from "aws-amplify/auth"
+import Scan from '@/routes/Scans/Scan'
+import Stops from '@/routes/Stops'
+import Stop from '@/routes/Stops/Stop'
+import Schools from '@/routes/Schools'
+import School from '@/routes/Schools/School'
+import Settings from '@/routes/Settings'
+import Logout from '@/routes/Auth/Logout'
+import Auth from '@/routes/Auth'
+import Onboarding from '@/routes/Onboarding'
+import { fetchAuthSession } from 'aws-amplify/auth'
 
 export const createRouterObject = () => {
     return createBrowserRouter([{
@@ -63,47 +63,38 @@ export const createRouterObject = () => {
                     {
                         path: '/app/settings',
                         element: <ProtectedRoute route='/app/settings'><Settings /></ProtectedRoute>
-                    
                     },
                     {
                         path: '/app/riders',
                         element: <ProtectedRoute route='/app/riders'><Riders /></ProtectedRoute>
-                    
                     },
                     {
                         path: '/app/riders/:id',
                         element: <ProtectedRoute route='/app/riders/:id'><Rider /></ProtectedRoute>
-                    
                     },
                     {
                         path: '/app/scans',
                         element: <ProtectedRoute route='/app/scans'><Scans /></ProtectedRoute>
-                    
                     },
                     {
                         path: '/app/scans/:id',
                         element: <ProtectedRoute route='/app/scans/:id'><Scan /></ProtectedRoute>
-                    
                     },
                     {
                         path: '/app/schools',
                         element: <ProtectedRoute route='/app/schools'><Schools /></ProtectedRoute>
-                    
                     },
                     {
                         path: '/app/schools/:id',
                         element: <ProtectedRoute route='/app/schools/:id'><School /></ProtectedRoute>
-                    
                     },
                     {
                         path: '/app/stops',
                         element: <ProtectedRoute route='/app/stops'><Stops /></ProtectedRoute>
-                    
                     },
                     {
                         path: '/app/stops/:id',
                         element: <ProtectedRoute route='/app/stops/:id'><Stop /></ProtectedRoute>
-                    
                     },
                     {
                         path: '/app/unauthorized',
@@ -139,4 +130,5 @@ export const createRouterObject = () => {
             }
         }
     }
-])}
+    ])
+}

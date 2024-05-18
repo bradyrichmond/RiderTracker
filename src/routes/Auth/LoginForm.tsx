@@ -1,16 +1,16 @@
-import { Box, Button, TextField, Typography } from "@mui/material"
-import { useContext, useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
+import { Box, Button, TextField, Typography } from '@mui/material'
+import { useContext, useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { signIn, signOut, fetchAuthSession } from '@aws-amplify/auth'
-import { API_BASE_NAME } from "@/API"
-import { RoleContext } from "@/contexts/RoleContextProvider"
-import { getOrgIdForUser } from "@/helpers/GetOrganizationIdForUser"
-import { getHeaviestRole } from "@/helpers/GetHeaviestRole"
-import { RiderTrackerRole, isRiderTrackerRole } from "@/constants/Roles"
-import { useNavigate } from "react-router-dom"
-import { Hub } from "aws-amplify/utils"
+import { API_BASE_NAME } from '@/API'
+import { RoleContext } from '@/contexts/RoleContextProvider'
+import { getOrgIdForUser } from '@/helpers/GetOrganizationIdForUser'
+import { getHeaviestRole } from '@/helpers/GetHeaviestRole'
+import { RiderTrackerRole, isRiderTrackerRole } from '@/constants/Roles'
+import { useNavigate } from 'react-router-dom'
+import { Hub } from 'aws-amplify/utils'
 import { useTranslation } from 'react-i18next'
-import { OrgDataContext } from "@/contexts/OrgDataContext"
+import { OrgDataContext } from '@/contexts/OrgDataContext'
 
 interface LoginFormInputs {
     username: string
@@ -34,7 +34,7 @@ const LoginForm = () => {
         getOrgData(pathOrgSlug)
 
         const cleanup = Hub.listen('auth', async ({ payload: { event } }) => {
-            if (event === "signedIn") {
+            if (event === 'signedIn') {
                 try {
                     await postLoginChecks()
                 } catch (e) {
@@ -48,7 +48,7 @@ const LoginForm = () => {
         }
     }, [])
 
-    useEffect(()=> {
+    useEffect(() => {
         setDisabledButtons(true)
         if (orgId) {
             setDisabledButtons(false)
@@ -96,7 +96,7 @@ const LoginForm = () => {
 
         if (tokens) {
             const { idToken } = tokens
-            const sessionGroups = idToken?.payload["cognito:groups"]
+            const sessionGroups = idToken?.payload['cognito:groups']
             const sessionGroupsArray = (sessionGroups as Array<string>).filter((s) => isRiderTrackerRole(s))
 
             const heaviestRoleFromGroups: RiderTrackerRole = getHeaviestRole(sessionGroupsArray ?? [])
@@ -120,8 +120,8 @@ const LoginForm = () => {
         <Box sx={{ flex: 1 }}>
             <Box sx={{ pl: '2rem', pr: '2rem' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    {organizationLoginImageUrl ? 
-                        <img src={organizationLoginImageUrl} alt={`${orgName}`}/>
+                    {organizationLoginImageUrl ?
+                        <img src={organizationLoginImageUrl} alt={`${orgName}`} />
                         :
                         <Typography variant='h3'>
                             {orgName}

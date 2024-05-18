@@ -1,5 +1,5 @@
-import { Box, LinearProgress, Grid, useTheme, Typography } from "@mui/material"
-import { useContext, useEffect, useState } from "react"
+import { Box, LinearProgress, Grid, useTheme, Typography } from '@mui/material'
+import { useContext, useEffect, useState } from 'react'
 import bg0 from './images/bg0.jpg'
 import bg1 from './images/bg1.jpg'
 import bg2 from './images/bg2.jpg'
@@ -7,10 +7,10 @@ import bg3 from './images/bg3.jpg'
 import bg4 from './images/bg4.jpg'
 import bg5 from './images/bg5.jpg'
 import bg6 from './images/bg6.jpg'
-import LoginForm from "./LoginForm"
-import { fetchAuthSession } from "aws-amplify/auth"
-import { RoleContext } from "@/contexts/RoleContextProvider"
-import { useNavigate } from "react-router-dom"
+import LoginForm from './LoginForm'
+import { fetchAuthSession } from 'aws-amplify/auth'
+import { RoleContext } from '@/contexts/RoleContextProvider'
+import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 
 const bgImages = [

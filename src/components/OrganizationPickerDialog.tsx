@@ -1,7 +1,7 @@
-import { OptionsType } from "@/types/FormTypes"
-import { OrganizationType } from "@/types/OrganizationType"
-import { Alert, Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Snackbar, TextField } from "@mui/material"
-import { SyntheticEvent, useMemo, useState } from "react"
+import { OptionsType } from '@/types/FormTypes'
+import { OrganizationType } from '@/types/OrganizationType'
+import { Alert, Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, Snackbar, TextField } from '@mui/material'
+import { SyntheticEvent, useMemo, useState } from 'react'
 
 interface OrganizationPickerDialogProps {
     open: boolean
@@ -13,7 +13,7 @@ const OrganizationPickerDialog = ({ open, handleSelectOrganization, organization
     const [snackbarMessage, setSnackbarMessage] = useState('')
     const [selectedOrganizationId, setSelectedOrganizationId] = useState('')
 
-    const mappedOrganizations: OptionsType[] = useMemo(() => 
+    const mappedOrganizations: OptionsType[] = useMemo(() =>
         organizations.map((o) => ({
             label: o.orgName ?? o.id,
             value: o.id,

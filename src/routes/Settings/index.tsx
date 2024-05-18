@@ -1,11 +1,11 @@
-import { Box, Tab, Tabs } from "@mui/material"
-import { SyntheticEvent, useContext, useMemo, useState } from "react"
-import Profile from "./UserSettings/Profile"
-import Organization from "./OrganizationSettings/Organization"
-import UserManagement from "./UserManagement"
-import { RoleContext } from "@/contexts/RoleContextProvider"
-import { ROLE_WEIGHTS } from "@/constants/RoleWeights"
-import { RIDER_TRACKER_ROLES } from "@/constants/Roles"
+import { Box, Tab, Tabs } from '@mui/material'
+import { SyntheticEvent, useContext, useMemo, useState } from 'react'
+import Profile from './UserSettings/Profile'
+import Organization from './OrganizationSettings/Organization'
+import UserManagement from './UserManagement'
+import { RoleContext } from '@/contexts/RoleContextProvider'
+import { ROLE_WEIGHTS } from '@/constants/RoleWeights'
+import { RIDER_TRACKER_ROLES } from '@/constants/Roles'
 import { useTranslation } from 'react-i18next'
 
 interface TabPanelProps {

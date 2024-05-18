@@ -1,4 +1,4 @@
-import { LocationType } from "./LocationType"
+import { LocationType } from './LocationType'
 
 export interface AddressType {
     id: string

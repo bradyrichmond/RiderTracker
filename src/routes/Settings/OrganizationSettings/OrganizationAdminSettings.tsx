@@ -1,18 +1,18 @@
-import { ApiContext } from "@/contexts/ApiContextProvider"
-import { Box, Button, Card, Typography } from "@mui/material"
+import { ApiContext } from '@/contexts/ApiContextProvider'
+import { Box, Button, Card, Typography } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
-import { useContext, useEffect, useState } from "react"
-import OrganizationAdminCard from "./OrganizationAdminCard"
-import AddEntityModal from "@/components/AddEntityModal"
-import { userFactory } from "../UserSettings/UserFactory"
-import { FormDataType } from "@/types/FormTypes"
+import { useContext, useEffect, useState } from 'react'
+import OrganizationAdminCard from './OrganizationAdminCard'
+import AddEntityModal from '@/components/AddEntityModal'
+import { userFactory } from '../UserSettings/UserFactory'
+import { FormDataType } from '@/types/FormTypes'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
-import { RIDER_TRACKER_ROLES } from "@/constants/Roles"
-import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
-import { UserType } from "@/types/UserType"
-import { AWSUserType } from "@/API/AdminApis"
+import { RIDER_TRACKER_ROLES } from '@/constants/Roles'
+import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
+import { UserType } from '@/types/UserType'
+import { AWSUserType } from '@/API/AdminApis'
 import { useTranslation } from 'react-i18next'
-import { OrgDataContext } from "@/contexts/OrgDataContext"
+import { OrgDataContext } from '@/contexts/OrgDataContext'
 
 const OrganizationAdminSettings = () => {
     const { orgId } = useContext(OrgDataContext)
@@ -45,17 +45,17 @@ const OrganizationAdminSettings = () => {
 
     const modalFormInputs: FormDataType = {
         inputs: [
-            { name: "First Name" },
-            { name: "Last Name" },
-            { name: "Email" },
-            { name: "Title" }
+            { name: 'First Name' },
+            { name: 'Last Name' },
+            { name: 'Email' },
+            { name: 'Title' }
         ]
     }
 
     const createNewAdmin = async (newAdmin: UserType) => {
         try {
             // TODO: Needs finer error management
-            const cognitoUser: AWSUserType = await api.admin.createCognitoUser({ 
+            const cognitoUser: AWSUserType = await api.admin.createCognitoUser({
                 given_name: newAdmin.firstName,
                 family_name: newAdmin.lastName,
                 email: newAdmin.email
@@ -94,8 +94,8 @@ const OrganizationAdminSettings = () => {
     return (
         <Grid xs={12} marginBottom='2rem'>
             {modalFormInputs ?
-                <AddEntityModal<UserType> 
-                    cancelAction={toggleShowModal} 
+                <AddEntityModal<UserType>
+                    cancelAction={toggleShowModal}
                     entityFactory={userFactory}
                     submitAction={createNewAdmin}
                     titleSingular={'Organization Admin'}
@@ -122,7 +122,7 @@ const OrganizationAdminSettings = () => {
                     </Box>
                 </Box>
                     {admins.length > 0 ?
-                        admins.map((a, idx) => <OrganizationAdminCard 
+                        admins.map((a, idx) => <OrganizationAdminCard
                                 key={a.id}
                                 id={a.id}
                                 orgId={a.orgId}

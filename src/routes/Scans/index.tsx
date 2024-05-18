@@ -1,22 +1,22 @@
-import EntityViewer from "@/components/EntityViewer"
-import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "@/constants/Roles"
-import { ApiContext } from "@/contexts/ApiContextProvider"
-import { RoleContext } from "@/contexts/RoleContextProvider"
-import { ScanType } from "@/types/ScanType"
-import { useContext, useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import EntityViewer from '@/components/EntityViewer'
+import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
+import { ApiContext } from '@/contexts/ApiContextProvider'
+import { RoleContext } from '@/contexts/RoleContextProvider'
+import { ScanType } from '@/types/ScanType'
+import { useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { scanFactory } from './ScanFactory'
-import { GridColDef } from "@mui/x-data-grid"
-import { Box, Button, Tooltip } from "@mui/material"
+import { GridColDef } from '@mui/x-data-grid'
+import { Box, Button, Tooltip } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info'
 import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove'
-import { OptionsType } from "@/types/FormTypes"
-import { RiderType } from "@/types/RiderType"
-import { useDeviceLocation } from "@/hooks/useDeviceLocation"
-import { locationFactory } from "./LocationFactory"
-import { AppShortcut } from "@mui/icons-material"
-import { UserType } from "@/types/UserType"
-import { OrgDataContext } from "@/contexts/OrgDataContext"
+import { OptionsType } from '@/types/FormTypes'
+import { RiderType } from '@/types/RiderType'
+import { useDeviceLocation } from '@/hooks/useDeviceLocation'
+import { locationFactory } from './LocationFactory'
+import { AppShortcut } from '@mui/icons-material'
+import { UserType } from '@/types/UserType'
+import { OrgDataContext } from '@/contexts/OrgDataContext'
 
 const Scans = () => {
     const [scans, setScans] = useState<ScanType[]>([])
@@ -41,7 +41,7 @@ const Scans = () => {
             const mapped = riderData.map((r: RiderType) => {
                 return { label: `${r.firstName} ${r.lastName}`, id: r.id }
             })
-            
+
             setRiders(mapped)
         } catch {
             setRiders([])
@@ -59,7 +59,7 @@ const Scans = () => {
                     const mapped = driverData.map((r: UserType) => {
                         return { label: `${r.firstName} ${r.lastName}`, id: r.id }
                     })
-                    
+
                     setDrivers(mapped)
                 } catch {
                     setDrivers([])
@@ -112,18 +112,18 @@ const Scans = () => {
                         }
                     </>
                 )
-            }},
+            } },
             { field: 'driverId',  headerName: 'Driver Id', flex: 1, align: 'center', headerAlign: 'center' },
             { field: 'riderCount',  headerName: 'Rider Count', flex: 1, align: 'center', headerAlign: 'center', renderCell: (params) => {
                 const riderIds = params.row.riderIds ?? []
 
                 return riderIds.length
-            }},
+            } },
             { field: 'deviceLocation',  headerName: 'Scan Location', flex: 1, align: 'center', headerAlign: 'center', renderCell: (params) => {
                 const { lat, lon } = params.row.deviceLocationOnSubmit ?? { lat: '', lon: '' }
 
                 return (!lat || !lon) ? 'Unknown' : `(${lat}, ${lon})`
-            }},
+            } },
             { field: 'viewDetails', headerName: '', align: 'center', headerAlign: 'center', renderCell: (params) => {
                 return (
                     <Button
@@ -136,7 +136,7 @@ const Scans = () => {
                         </Tooltip>
                     </Button>
                 )
-            }}
+            } }
         ]
 
         if (RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.DELETE_SCAN)) {
@@ -170,11 +170,11 @@ const Scans = () => {
                 createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_SCAN) ? createScan : undefined}
                 entityFactory={scanFactory}
                 getEntities={getScansAction}
-                modalFormInputs={{inputs: [
-                    { name: "Driver", inputType: "select", options: drivers },
-                    { name: "Rider", inputType: "select", options: riders },
-                    { name: "Stop Id" }
-                ]}}
+                modalFormInputs={{ inputs: [
+                    { name: 'Driver', inputType: 'select', options: drivers },
+                    { name: 'Rider', inputType: 'select', options: riders },
+                    { name: 'Stop Id' }
+                ] }}
                 entities={scans}
                 gridColumns={generateGridColumns()}
                 titleSingular='Scan'

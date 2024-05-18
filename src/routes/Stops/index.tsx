@@ -1,22 +1,22 @@
-import { useContext, useEffect, useState } from "react"
-import { useNavigate } from "react-router-dom"
-import { DataGrid, GridColDef } from "@mui/x-data-grid"
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Tooltip, Typography } from "@mui/material"
-import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "@/constants/Roles"
+import { useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Tooltip, Typography } from '@mui/material'
+import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
 import InfoIcon from '@mui/icons-material/Info'
 import WrongLocationIcon from '@mui/icons-material/WrongLocation'
-import { RoleContext } from "@/contexts/RoleContextProvider"
-import { StopType } from "@/types/StopType"
-import { ApiContext } from "@/contexts/ApiContextProvider"
+import { RoleContext } from '@/contexts/RoleContextProvider'
+import { StopType } from '@/types/StopType'
+import { ApiContext } from '@/contexts/ApiContextProvider'
 import { v4 as uuid } from 'uuid'
-import { Transition } from "@/components/AddEntityModal"
+import { Transition } from '@/components/AddEntityModal'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
-import { useForm } from "react-hook-form"
+import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import ShuffleOnIcon from '@mui/icons-material/ShuffleOn'
-import { useRandomNameGenerator } from "@/hooks/useRandomNameGenerator"
-import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
-import { OrgDataContext } from "@/contexts/OrgDataContext"
+import { useRandomNameGenerator } from '@/hooks/useRandomNameGenerator'
+import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
+import { OrgDataContext } from '@/contexts/OrgDataContext'
 
 const Stops = () => {
     const [stops, setStops] = useState<StopType[]>([])
@@ -50,7 +50,7 @@ const Stops = () => {
     const createStopAction = async (newStop: StopType) => {
         setDisableButtons(true)
         const validStop = newStop
-        validStop.riderIds = [""]
+        validStop.riderIds = ['']
 
         const validatedAddress = await api.addresses.validateAddress(newStop.address)
         if (validatedAddress) {
@@ -80,23 +80,25 @@ const Stops = () => {
             { field: 'stopName',  headerName: 'Stop Name', flex: 1, align: 'center', headerAlign: 'center' },
             { field: 'address',  headerName: 'Address', flex: 1, align: 'center', headerAlign: 'center' },
             { field: 'riderIds', headerName: 'Riders', flex: 1, align: 'center', headerAlign: 'center', valueGetter: (value: string[]) => value.length },
-            { field: 'viewDetails', headerName: 'Actions', flex: 1, align: 'center', headerAlign: 'center', renderCell: (params) => {
-                return (
-                    <Button
-                        variant="contained"
-                        size="small"
-                        onClick={() => viewStopDetails(params.row.id)}
-                    >
-                        <Tooltip title='View details'>
-                            <InfoIcon />
-                        </Tooltip>
-                    </Button>
-                )
-            }}
+            { field: 'viewDetails', headerName: 'Actions', flex: 1, align: 'center', headerAlign: 'center',
+                renderCell: (params) => {
+                    return (
+                        <Button
+                            variant="contained"
+                            size="small"
+                            onClick={() => viewStopDetails(params.row.id)}
+                        >
+                            <Tooltip title='View details'>
+                                <InfoIcon />
+                            </Tooltip>
+                        </Button>
+                    )
+                }
+            }
         ]
 
         if (RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.DELETE_STOP)) {
-            initialGridColumns.push({ 
+            initialGridColumns.push({
                 field: 'delete',
                 headerName: '',
                 flex: 1,
@@ -155,7 +157,7 @@ const Stops = () => {
                                 { readOnly: true }
                             }
                             value={randomName ?? ''}
-                        /> 
+                        />
                         <Box paddingLeft='1rem' paddingTop='1rem'>
                             <Button variant='contained' sx={{ padding: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }} onClick={() => updateRandomName()}>
                                 <Tooltip title='Generate a new random name'>
@@ -177,7 +179,7 @@ const Stops = () => {
                     </Box>
                 </DialogContent>
                 <DialogActions sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                    <Button disabled={disableButtons} variant='contained' onClick={cancelAction}>{t('cancel', { ns: 'settings'})}</Button>
+                    <Button disabled={disableButtons} variant='contained' onClick={cancelAction}>{t('cancel', { ns: 'settings' })}</Button>
                     <Button disabled={disableButtons} variant='contained' type="submit">{t('createStop')}</Button>
                 </DialogActions>
             </Dialog>
@@ -186,7 +188,7 @@ const Stops = () => {
                     <Typography variant='h2'>
                         {t('stops')}
                     </Typography>
-                </Box> 
+                </Box>
                 <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
                     <Button variant='contained' onClick={startAddingStop}>
                         <Box display='flex' flexDirection='row'>
@@ -199,7 +201,7 @@ const Stops = () => {
                 </Box>
             </Box>
             <Box flex='1'>
-                <DataGrid rows={stops} columns={generateGridColumns()} rowHeight={100} processRowUpdate={processRowUpdate}/>
+                <DataGrid rows={stops} columns={generateGridColumns()} rowHeight={100} processRowUpdate={processRowUpdate} />
             </Box>
         </Box>
     )

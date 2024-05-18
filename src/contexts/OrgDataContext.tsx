@@ -1,7 +1,7 @@
-import OrganizationPickerDialog from "@/components/OrganizationPickerDialog";
-import { OrganizationType } from "@/types/OrganizationType";
-import { Dispatch, SetStateAction, createContext } from "react";
-import { PropsWithChildren, useState } from "react"
+import OrganizationPickerDialog from '@/components/OrganizationPickerDialog';
+import { OrganizationType } from '@/types/OrganizationType';
+import { Dispatch, SetStateAction, createContext } from 'react';
+import { PropsWithChildren, useState } from 'react'
 
 const initialOrg: OrganizationType = {
     id: 'fake',
@@ -26,7 +26,7 @@ interface OrgDataContextProps {
 export const OrgDataContext = createContext<OrgDataContextProps>({
     orgId: '',
     setOrgId: () => {},
-    orgStopNames: [""],
+    orgStopNames: [''],
     setOrgStopNames: () => {},
     organizationArray: [initialOrg],
     setOrganizationArray: () => {},
@@ -56,7 +56,7 @@ export const OrgDataContextProvider = ({ children }: PropsWithChildren) => {
     }
 
     return (
-        <OrgDataContext.Provider value={{ 
+        <OrgDataContext.Provider value={{
             orgId, setOrgId,
             orgStopNames, setOrgStopNames,
             organizationOverride, setOrganizationOverride,
@@ -64,7 +64,7 @@ export const OrgDataContextProvider = ({ children }: PropsWithChildren) => {
             organizationArray, setOrganizationArray,
             toggleShowOrganizationSelector
         }}>
-            <OrganizationPickerDialog open={showOrganizationSelector} handleSelectOrganization={handleSelectOrganization} organizations={organizationArray}/>
+            <OrganizationPickerDialog open={showOrganizationSelector} handleSelectOrganization={handleSelectOrganization} organizations={organizationArray} />
             {children}
         </OrgDataContext.Provider>
     );

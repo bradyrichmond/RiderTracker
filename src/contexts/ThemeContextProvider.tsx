@@ -1,6 +1,6 @@
-import { useLocalStorage } from "@/hooks/useLocalStorage";
-import { createTheme, PaletteMode, ThemeOptions, ThemeProvider } from "@mui/material";
-import { createContext, useMemo } from "react";
+import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { createTheme, PaletteMode, ThemeOptions, ThemeProvider } from '@mui/material';
+import { createContext, useMemo } from 'react';
 
 export const ThemeContext = createContext({
   toggleColorMode: () => {},
@@ -44,21 +44,21 @@ const ThemeContextProvider = ({
     const muiWrapperUtils = useMemo(
         () => ({
             toggleColorMode: () => {
-                setValue((prevValue: PaletteMode) => { return prevValue === "light" ? "dark" : "light" } )
+                setValue((prevValue: PaletteMode) => { return prevValue === 'light' ? 'dark' : 'light' } )
             },
         }),
         []
     )
 
     const theme = useMemo(
-        () =>{
-            return (createTheme(generateThemeOptions(value))
-        )},
+        () => {
+            return (createTheme(generateThemeOptions(value)))
+        },
         [value]
     )
 
     return (
-        <ThemeContext.Provider value={{toggleColorMode: muiWrapperUtils.toggleColorMode, value}}>
+        <ThemeContext.Provider value={{ toggleColorMode: muiWrapperUtils.toggleColorMode, value }}>
             <ThemeProvider theme={theme}>{children}</ThemeProvider>
         </ThemeContext.Provider>
     )

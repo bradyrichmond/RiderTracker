@@ -1,17 +1,17 @@
-import EntityViewer from "@/components/EntityViewer"
-import { BusType } from "@/types/BusType"
+import EntityViewer from '@/components/EntityViewer'
+import { BusType } from '@/types/BusType'
 import { useNavigate } from 'react-router-dom'
-import { busFactory } from "./BusFactory"
-import { useContext, useState } from "react"
-import { Button, Tooltip } from "@mui/material"
+import { busFactory } from './BusFactory'
+import { useContext, useState } from 'react'
+import { Button, Tooltip } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info'
 import NoTransferIcon from '@mui/icons-material/NoTransfer'
-import { ApiContext } from "@/contexts/ApiContextProvider"
+import { ApiContext } from '@/contexts/ApiContextProvider'
 import { GridColDef } from '@mui/x-data-grid'
-import { RoleContext } from "@/contexts/RoleContextProvider"
-import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "@/constants/Roles"
+import { RoleContext } from '@/contexts/RoleContextProvider'
+import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
 import { useTranslation } from 'react-i18next'
-import { OrgDataContext } from "@/contexts/OrgDataContext"
+import { OrgDataContext } from '@/contexts/OrgDataContext'
 
 const Buses = () => {
     const [buses, setBuses] = useState<BusType[]>([])
@@ -54,11 +54,11 @@ const Buses = () => {
                         </Tooltip>
                     </Button>
                 )
-            }}
+            } }
         ]
 
         if (RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.DELETE_BUS)) {
-            initialGridColumns.push({ 
+            initialGridColumns.push({
                 field: 'delete',
                 headerName: '',
                 align: 'center',
@@ -85,16 +85,16 @@ const Buses = () => {
     const processRowUpdate = async (updatedRow: BusType) => {
         return updatedRow
     }
-    
+
     return (
         <EntityViewer<BusType>
             createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_BUS) ? createBusAction : undefined}
             entityFactory={busFactory}
             getEntities={updateBusesAction}
             entities={buses}
-            modalFormInputs={{inputs: [
-                { name: "Bus Number" }
-            ]}}
+            modalFormInputs={{ inputs: [
+                { name: 'Bus Number' }
+            ] }}
             gridColumns={generateGridColumns()}
             titleSingular='Bus'
             titlePlural={t('buses')}

@@ -1,4 +1,4 @@
-import { BusType } from "@/types/BusType";
+import { BusType } from '@/types/BusType';
 
 export function busFactory(args: string[]): BusType {
     return {

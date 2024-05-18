@@ -1,8 +1,8 @@
-import { Box, Typography } from "@mui/material"
-import { ReactNode, useContext } from "react"
-import { Link } from "react-router-dom"
-import { ROUTE_PROTECTION } from "../constants/RouteProtection"
-import { RoleContext } from "../contexts/RoleContextProvider"
+import { Box, Typography } from '@mui/material'
+import { ReactNode, useContext } from 'react'
+import { Link } from 'react-router-dom'
+import { ROUTE_PROTECTION } from '../constants/RouteProtection'
+import { RoleContext } from '../contexts/RoleContextProvider'
 
 interface NavLinkProps {
     icon: ReactNode
@@ -17,7 +17,7 @@ const NavLink = ({ icon, path, label }: NavLinkProps) => {
 
     return (
         <>
-            {routesForRole && routesForRole.includes(path) ? 
+            {routesForRole && routesForRole.includes(path) ?
                 <Box display='flex' flexDirection='column'>
                     <Box justifyContent='center' alignItems='center'>
                         <Link to={path}>

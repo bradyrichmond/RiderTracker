@@ -1,6 +1,6 @@
-import { Card, Typography } from "@mui/material"
-import Grid from "@mui/material/Unstable_Grid2/Grid2"
-import UpdatePasswordForm from "./UpdatePasswordForm"
+import { Card, Typography } from '@mui/material'
+import Grid from '@mui/material/Unstable_Grid2/Grid2'
+import UpdatePasswordForm from './UpdatePasswordForm'
 import { useTranslation } from 'react-i18next'
 
 const PasswordSettings = () => {

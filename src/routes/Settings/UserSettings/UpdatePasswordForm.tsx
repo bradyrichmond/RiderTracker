@@ -1,8 +1,8 @@
-import { ApiContext } from "@/contexts/ApiContextProvider"
-import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
-import { Box, Button, TextField } from "@mui/material"
-import { useContext } from "react"
-import { useForm } from "react-hook-form"
+import { ApiContext } from '@/contexts/ApiContextProvider'
+import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
+import { Box, Button, TextField } from '@mui/material'
+import { useContext } from 'react'
+import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
 interface PasswordFormInput {
@@ -58,13 +58,13 @@ const UpdatePasswordForm = () => {
             <form onSubmit={handleSubmit(onSubmit)}>
                 <TextField type='password' fullWidth label={t('currentPassword', { ns: 'common' })} {...register('oldPassword')} />
                 <TextField type='password' fullWidth label={t('newPassword', { ns: 'common' })} {...register('newPassword')} />
-                <TextField 
+                <TextField
                     type='password'
-                    fullWidth 
+                    fullWidth
                     label={t('retypePassword', { ns: 'common' })}
-                    {...register('verifyNewPassword')} 
+                    {...register('verifyNewPassword')}
                 />
-                <Button type='submit' variant='contained' fullWidth sx={{mt: '1rem'}}>{t('changePassword', { ns: 'common' })}</Button>
+                <Button type='submit' variant='contained' fullWidth sx={{ mt: '1rem' }}>{t('changePassword', { ns: 'common' })}</Button>
             </form>
         </Box>
     )

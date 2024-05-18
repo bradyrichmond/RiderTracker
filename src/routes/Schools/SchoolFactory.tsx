@@ -1,4 +1,4 @@
-import { SchoolType } from "@/types/SchoolType";
+import { SchoolType } from '@/types/SchoolType';
 
 export const schoolFactory = (args: string[] = []): SchoolType => {
     return {

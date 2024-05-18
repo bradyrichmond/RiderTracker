@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
-import { render, screen, waitFor, waitForElementToBeRemoved } from "@testing-library/react"
+import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
 import { AsRole, ProviderWrapperAsRole } from '@/helpers/ProviderWrapper'
 import Drivers from '..'
 import { PropsWithChildren } from 'react'
@@ -53,7 +53,7 @@ describe('Drivers Tests', () => {
   })
 
   it('hides add driver button when not authorized to add drivers', async () => {
-    render(<Drivers />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" />})
+    render(<Drivers />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" /> })
 
     await waitFor(() => {
       expect(screen.queryByText(/add driver/i)).not.toBeInTheDocument()
@@ -74,23 +74,23 @@ describe('Drivers Tests', () => {
     render(<Drivers />, { wrapper: ProviderWrapperAsRole })
 
     await waitFor(async () => {
-      const viewDetailButtons = await screen.findAllByTestId("InfoIcon")
+      const viewDetailButtons = await screen.findAllByTestId('InfoIcon')
       expect(viewDetailButtons.length).toBeGreaterThan(0)
-      const deleteDriverButtons = await screen.findAllByTestId("PersonRemoveIcon")
+      const deleteDriverButtons = await screen.findAllByTestId('PersonRemoveIcon')
       expect(deleteDriverButtons.length).toBeGreaterThan(0)
     })
   })
 
   it('hides the delete action buttons in the rows for unauthorized users', async () => {
-    render(<Drivers />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" />})
+    render(<Drivers />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" /> })
 
     await waitFor(async () => {
-      const viewDetailButtons = await screen.findAllByTestId("InfoIcon")
+      const viewDetailButtons = await screen.findAllByTestId('InfoIcon')
       expect(viewDetailButtons.length).toBeGreaterThan(0)
     })
 
     await waitFor(async () => {
-      const deleteDriverButton = screen.queryByTestId("PersonRemoveIcon")
+      const deleteDriverButton = screen.queryByTestId('PersonRemoveIcon')
       expect(deleteDriverButton).not.toBeInTheDocument()
     })
   })
@@ -107,14 +107,14 @@ describe('Drivers Tests', () => {
     render(<Drivers />, { wrapper: ProviderWrapperAsRole })
 
     await waitFor(async () => {
-        const viewDetailButtons = await screen.findAllByTestId("InfoIcon")
+        const viewDetailButtons = await screen.findAllByTestId('InfoIcon')
         await userEvent.hover(viewDetailButtons[0])
         const viewDetailsTooltip = await screen.findByText(/view details/i)
         expect(viewDetailsTooltip).toBeInTheDocument()
     })
 
     await waitFor(async () => {
-        const deleteDriverButtons = await screen.findAllByTestId("PersonRemoveIcon")
+        const deleteDriverButtons = await screen.findAllByTestId('PersonRemoveIcon')
         await userEvent.hover(deleteDriverButtons[0])
         const deleteDriverTooltip = await screen.findByText(/delete driver/i)
         expect(deleteDriverTooltip).toBeInTheDocument()

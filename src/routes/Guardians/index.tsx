@@ -1,16 +1,16 @@
-import EntityViewer from "@/components/EntityViewer"
+import EntityViewer from '@/components/EntityViewer'
 import { useNavigate } from 'react-router-dom'
-import { guardianFactory } from "./GuardianFactory"
+import { guardianFactory } from './GuardianFactory'
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
-import { useContext, useState } from "react"
-import { Button, Tooltip } from "@mui/material"
-import { ApiContext } from "@/contexts/ApiContextProvider"
-import { GridColDef } from "@mui/x-data-grid"
-import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "@/constants/Roles"
-import { RoleContext } from "@/contexts/RoleContextProvider"
-import { UserType } from "@/types/UserType"
-import { OrgDataContext } from "@/contexts/OrgDataContext"
+import { useContext, useState } from 'react'
+import { Button, Tooltip } from '@mui/material'
+import { ApiContext } from '@/contexts/ApiContextProvider'
+import { GridColDef } from '@mui/x-data-grid'
+import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
+import { RoleContext } from '@/contexts/RoleContextProvider'
+import { UserType } from '@/types/UserType'
+import { OrgDataContext } from '@/contexts/OrgDataContext'
 
 const Guardians = () => {
     const [guardians, setGuardians] = useState<UserType[]>([])
@@ -60,7 +60,7 @@ const Guardians = () => {
                         </Tooltip>
                     </Button>
                 )
-            }}
+            } }
         ]
 
         if (RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.DELETE_GUARDIAN)) {
@@ -87,17 +87,17 @@ const Guardians = () => {
     const processRowUpdate = async (updatedRow: UserType) => {
         return updatedRow
     }
-    
+
     return (
         <EntityViewer<UserType>
             createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_GUARDIAN) ? createGuardianAction : undefined}
             entityFactory={guardianFactory}
             getEntities={updateGuardians}
             entities={guardians}
-            modalFormInputs={{inputs: [
-                { name: "First Name" },
-                { name: "Last Name" }
-            ]}}
+            modalFormInputs={{ inputs: [
+                { name: 'First Name' },
+                { name: 'Last Name' }
+            ] }}
             gridColumns={generateGridColumns()}
             titleSingular='Guardian'
             titlePlural='Guardians'

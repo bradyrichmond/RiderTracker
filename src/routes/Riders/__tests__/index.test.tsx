@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
-import { render, screen, waitFor, waitForElementToBeRemoved } from "@testing-library/react"
+import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
 import { AsRole, ProviderWrapperAsRole } from '@/helpers/ProviderWrapper'
 import Riders from '..'
 import { PropsWithChildren } from 'react'
@@ -53,7 +53,7 @@ describe('Riders Tests', () => {
   })
 
   it('hides add rider button when not authorized to add riders', async () => {
-    render(<Riders />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" />})
+    render(<Riders />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" /> })
 
     await waitFor(() => {
       expect(screen.queryByText(/add rider/i)).not.toBeInTheDocument()
@@ -74,23 +74,23 @@ describe('Riders Tests', () => {
     render(<Riders />, { wrapper: ProviderWrapperAsRole })
 
     await waitFor(async () => {
-      const viewDetailButtons = await screen.findAllByTestId("InfoIcon")
+      const viewDetailButtons = await screen.findAllByTestId('InfoIcon')
       expect(viewDetailButtons.length).toBeGreaterThan(0)
-      const deleteRiderButtons = await screen.findAllByTestId("PersonRemoveIcon")
+      const deleteRiderButtons = await screen.findAllByTestId('PersonRemoveIcon')
       expect(deleteRiderButtons.length).toBeGreaterThan(0)
     })
   })
 
   it('hides the delete action buttons in the rows for unauthorized users', async () => {
-    render(<Riders />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" />})
+    render(<Riders />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" /> })
 
     await waitFor(async () => {
-      const viewDetailButtons = await screen.findAllByTestId("InfoIcon")
+      const viewDetailButtons = await screen.findAllByTestId('InfoIcon')
       expect(viewDetailButtons.length).toBeGreaterThan(0)
     })
 
     await waitFor(async () => {
-      const deleteRiderButtons = screen.queryByTestId("PersonRemoveIcon")
+      const deleteRiderButtons = screen.queryByTestId('PersonRemoveIcon')
       expect(deleteRiderButtons).not.toBeInTheDocument()
     })
   })

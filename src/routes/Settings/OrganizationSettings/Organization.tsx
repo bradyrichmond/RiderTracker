@@ -1,6 +1,6 @@
 import Grid from '@mui/material/Unstable_Grid2'
-import OrganizationAdminSettings from "./OrganizationAdminSettings"
-import OrganizationLogoSettings from "./OrganizationLogoSettings"
+import OrganizationAdminSettings from './OrganizationAdminSettings'
+import OrganizationLogoSettings from './OrganizationLogoSettings'
 
 const Organization = () => {
     return (

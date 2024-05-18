@@ -1,10 +1,10 @@
 import {
     RouterProvider
-} from "react-router-dom"
-import { useContext, useEffect } from "react"
-import { RoleContext } from "@/contexts/RoleContextProvider"
-import { createRouterObject } from "@/helpers/CreateRouterObject"
-import { Hub } from "aws-amplify/utils"
+} from 'react-router-dom'
+import { useContext, useEffect } from 'react'
+import { RoleContext } from '@/contexts/RoleContextProvider'
+import { createRouterObject } from '@/helpers/CreateRouterObject'
+import { Hub } from 'aws-amplify/utils'
 
 const router = createRouterObject()
 
@@ -16,11 +16,11 @@ const RootRouter = () => {
             console.log(`Auth listener heard ${event}`)
 
             switch (event) {
-                case "signedIn":
+                case 'signedIn':
                     updateUserData()
                     break
                 default:
-                    console.log(`Auth listener event complete`)
+                    console.log('Auth listener event complete')
             }
         })
 
