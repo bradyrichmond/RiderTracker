@@ -35,7 +35,7 @@ const validateAddress = async (address: string) => {
     const validationResponse = await client.validateAddressPost({}, { address })
 
     const preEvaluationAddress: GeoapifyValidateResponse = handleApiResponse<GeoapifyValidateResponse>(validationResponse)
-    const evaluated = evaluateAddressData(preEvaluationAddress)
+    const evaluated: AddressType = evaluateAddressData(preEvaluationAddress)
     return evaluated
 }
 
@@ -46,33 +46,37 @@ const getBulkAddressesByIds = async (orgId: string, addressIds: string[]) => {
     return handleApiResponse<AddressType[]>(addressesResponse)
 }
 
-const evaluateAddressData = (result: GeoapifyValidateResponse) => {
+const evaluateAddressData = (result: GeoapifyValidateResponse): AddressType => {
     const ACCEPT_LEVEL = 0.75;
 
     const { body } = result
 
     if (body.features.length === 0) {
-        return false
+        throw 'Address not found'
     } else {
         const place = body.features[0].properties
 
         if (place.rank.confidence > ACCEPT_LEVEL) {
-            const { housenumber, street, suburb, state, postcode, county, country, lat, lon, formatted } = place
+            const { housenumber, street, city, suburb, state, postcode, county, country, lat, lon, formatted } = place
 
             return {
+                id: 'temp',
+                orgId: 'temp',
                 houseNumber: housenumber,
                 street,
-                city: suburb,
+                city: city ?? suburb,
                 state,
-                postcode,
                 county,
                 country,
+                postcode,
+                formatted,
                 location: {
                     lat,
                     lon
                 },
-                formatted
             }
+        } else {
+            throw 'Address confidence is too low'
         }
     }
 }
