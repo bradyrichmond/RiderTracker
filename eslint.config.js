@@ -1,9 +1,9 @@
 import globals from "globals"
 import pluginJs from "@eslint/js"
-import tseslint from "typescript-eslint"
 import pluginReactConfig from "eslint-plugin-react/configs/recommended.js"
-import stylistic from '@stylistic/eslint-plugin'
 import reactRefresh from 'eslint-plugin-react-refresh'
+import stylistic from '@stylistic/eslint-plugin'
+import tseslint from "typescript-eslint"
 
 
 export default [
