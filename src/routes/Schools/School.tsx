@@ -1,5 +1,5 @@
 import { ApiContext } from "@/contexts/ApiContextProvider"
-import { RoleContext } from "@/contexts/RoleContextProvider"
+import { OrgDataContext } from "@/contexts/OrganizationDataContext"
 import { SchoolType } from "@/types/SchoolType"
 import { Box, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
@@ -9,7 +9,7 @@ const School = () => {
     const [school, setSchool] = useState<SchoolType>()
     const { id } = useParams()
     const { api } = useContext(ApiContext)
-    const { organizationId } = useContext(RoleContext)
+    const { orgId } = useContext(OrgDataContext)
 
     useEffect(() => {
         getSchoolData()
@@ -17,7 +17,7 @@ const School = () => {
 
     const getSchoolData = async () => {
         if (id) {
-            const school = await api.schools.getSchoolById(organizationId, id)
+            const school = await api.schools.getSchoolById(orgId, id)
             setSchool(school)
         }
     }

@@ -10,6 +10,7 @@ import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "@/constants/Roles
 import { RoleContext } from "@/contexts/RoleContextProvider"
 import { UserType } from "@/types/UserType"
 import { userFactory } from "../Settings/UserSettings/UserFactory"
+import { OrgDataContext } from "@/contexts/OrganizationDataContext"
 
 const Drivers = () => {
     const [drivers, setDrivers] = useState<UserType[]>([])
@@ -17,13 +18,14 @@ const Drivers = () => {
     const [snackbarMessage, setSnackbarMessage] = useState('')
     const navigate = useNavigate()
     const { api } = useContext(ApiContext)
-    const { heaviestRole, organizationId } = useContext(RoleContext)
+    const { heaviestRole } = useContext(RoleContext)
+    const { orgId } = useContext(OrgDataContext)
 
     const updateDriversAction = async () => {
         try {
-            const { driverIds } = await api.organizations.getOrganizationById(organizationId)
+            const { driverIds } = await api.organizations.getOrganizationById(orgId)
             if (driverIds) {
-                const drivers = await api.users.getBulkUsersByIds(organizationId, driverIds)
+                const drivers = await api.users.getBulkUsersByIds(orgId, driverIds)
                 setDrivers(drivers)
             }
         } catch {
@@ -36,7 +38,7 @@ const Drivers = () => {
     }
 
     const deleteDriverAction = async (driverId: string) => {
-        await api.users.deleteUser(organizationId, driverId)
+        await api.users.deleteUser(orgId, driverId)
         try {
             updateDriversAction()
         } catch (e) {
@@ -46,12 +48,12 @@ const Drivers = () => {
 
     const createDriverAction = async (_driver: UserType) => {
         try {
-            // const cognitoUser = await api.admin.createUser(organizationId, { given_name: driver.firstName, family_name: driver.lastName, email: driver.email })
+            // const cognitoUser = await api.admin.createUser(orgId, { given_name: driver.firstName, family_name: driver.lastName, email: driver.email })
             // const cognitoUsername = cognitoUser.User.Username
             // await api.admin.addUserToGroup(cognitoUsername, RIDER_TRACKER_ROLES.RIDER_TRACKER_DRIVER)
             // driver.id = cognitoUsername
 
-            // const { driverIds } = await api.organizations.getOrganizationById(organizationId)
+            // const { driverIds } = await api.organizations.getOrganizationById(orgId)
 
             // if (driverIds) {
             //     driverIds.push(cognitoUsername)
@@ -59,7 +61,7 @@ const Drivers = () => {
 
             // const drivers  = driverIds || [cognitoUsername]
 
-            // await api.organizations.updateOrganization(organizationId, { driverIds: drivers })
+            // await api.organizations.updateOrganization(orgId, { driverIds: drivers })
             throw ''
         } catch {
             setSnackbarMessage('Failed to create driver')

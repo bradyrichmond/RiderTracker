@@ -1,12 +1,12 @@
 import { Box, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
-import { RoleContext } from "@/contexts/RoleContextProvider"
 import { ScanType } from '@/types/ScanType'
 import { useParams } from 'react-router-dom'
 import { ApiContext } from "@/contexts/ApiContextProvider"
+import { OrgDataContext } from "@/contexts/OrganizationDataContext"
 
 const Scan = () => {
-    const { organizationId } = useContext(RoleContext)
+    const { orgId } = useContext(OrgDataContext)
     const [scan, setScan] = useState<ScanType>()
     const { id } = useParams()
     const { api } = useContext(ApiContext)
@@ -17,7 +17,7 @@ const Scan = () => {
 
     const getScanData = async () => {
         if (id) {
-            const scanData = await api.scans.getScanById(organizationId, id)
+            const scanData = await api.scans.getScanById(orgId, id)
             setScan(scanData)
         }
     }

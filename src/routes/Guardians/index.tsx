@@ -10,19 +10,21 @@ import { GridColDef } from "@mui/x-data-grid"
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "@/constants/Roles"
 import { RoleContext } from "@/contexts/RoleContextProvider"
 import { UserType } from "@/types/UserType"
+import { OrgDataContext } from "@/contexts/OrganizationDataContext"
 // import { AWSUserType } from "@/API/AdminApis"
 
 const Guardians = () => {
     const [guardians, setGuardians] = useState<UserType[]>([])
     const { api } = useContext(ApiContext)
-    const { heaviestRole, organizationId } = useContext(RoleContext)
+    const { heaviestRole } = useContext(RoleContext)
+    const { orgId } = useContext(OrgDataContext)
     const navigate = useNavigate()
 
     const updateGuardians = async () => {
         try {
-            const { guardianIds } = await api.organizations.getOrganizationById(organizationId)
+            const { guardianIds } = await api.organizations.getOrganizationById(orgId)
             if (guardianIds) {
-                const orgGuardians = await api.users.getBulkUsersByIds(organizationId, guardianIds)
+                const orgGuardians = await api.users.getBulkUsersByIds(orgId, guardianIds)
                 setGuardians(orgGuardians)
             }
         } catch (e) {
@@ -31,7 +33,7 @@ const Guardians = () => {
     }
 
     const deleteGuardianAction = async (guardianId: string) => {
-        await api.users.deleteUser(organizationId, guardianId)
+        await api.users.deleteUser(orgId, guardianId)
         updateGuardians()
     }
 
@@ -42,7 +44,7 @@ const Guardians = () => {
     const createGuardianAction = async (_newGuardian: UserType) => {
         try {
             // TODO: Needs finer error management
-            // const cognitoUser: AWSUserType = await api.admin.createUser(organizationId, { 
+            // const cognitoUser: AWSUserType = await api.admin.createUser(orgId, { 
             //     given_name: newGuardian.firstName,
             //     family_name: newGuardian.lastName,
             //     email: newGuardian.email
@@ -50,7 +52,7 @@ const Guardians = () => {
             // const cognitoUsername = cognitoUser.User.Username
             // await api.admin.addUserToGroup(cognitoUsername, RIDER_TRACKER_ROLES.RIDER_TRACKER_GUARDIAN)
             // newGuardian.id = cognitoUsername
-            // const { guardianIds } = await api.organizations.getOrganizationById(organizationId)
+            // const { guardianIds } = await api.organizations.getOrganizationById(orgId)
 
             // if (guardianIds) {
             //     guardianIds.push(cognitoUsername)
@@ -58,7 +60,7 @@ const Guardians = () => {
 
             // const builtGuardians  = guardianIds || [cognitoUsername]
 
-            // await api.organizations.updateOrganization(organizationId, { guardianIds: builtGuardians })
+            // await api.organizations.updateOrganization(orgId, { guardianIds: builtGuardians })
             // updateGuardians()
             throw ''
         } catch {

@@ -4,7 +4,7 @@ import * as userApi from '@/API/UserApis'
 import { v4 as uuid } from 'uuid'
 import { OrganizationType } from "@/types/OrganizationType"
 
-export const getOrganizationIdForUser = async (userId: string, role: string): Promise<string | OrganizationType[]> => {
+export const getOrgIdForUser = async (userId: string, role: string): Promise<string | OrganizationType[]> => {
     switch (role) {
         case RIDER_TRACKER_ROLES.RIDER_TRACKER_WIZARD:
             const wizardData = await orgApi.default.getOrganizations()

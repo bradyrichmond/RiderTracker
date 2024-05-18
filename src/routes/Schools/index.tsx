@@ -14,12 +14,14 @@ import { v4 as uuidv4 } from "uuid"
 import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
 import { useTranslation } from 'react-i18next'
 import { AddressType } from "@/types/AddressType"
+import { OrgDataContext } from "@/contexts/OrganizationDataContext"
 
 const Schools = () => {
     const [schools, setSchools] = useState<SchoolType[]>([])
     const [addresses, setAddresses] = useState<AddressType[]>([])
     const { api } = useContext(ApiContext)
-    const { heaviestRole, organizationId } = useContext(RoleContext)
+    const { heaviestRole } = useContext(RoleContext)
+    const { orgId } = useContext(OrgDataContext)
     const { setSnackbarSeverity, setSnackbarVisibilityMs, setSnackbarMessage } = useContext(SnackbarContext)
     const canEditSchool = RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.UPDATE_SCHOOL)
     const navigate = useNavigate()
@@ -34,10 +36,10 @@ const Schools = () => {
     }, [])
 
     const updateSchools = async () => {
-        if (organizationId) {
-            const fetchedSchools = await api.schools.getSchools(organizationId)
+        if (orgId) {
+            const fetchedSchools = await api.schools.getSchools(orgId)
             const addressIds = fetchedSchools.map((s: SchoolType) => s.address)
-            const fetchedAddresses = await api.addresses.getBulkAddressesByIds(organizationId, addressIds)
+            const fetchedAddresses = await api.addresses.getBulkAddressesByIds(orgId, addressIds)
             setAddresses(fetchedAddresses)
             setSchools(fetchedSchools)
         }
@@ -46,13 +48,13 @@ const Schools = () => {
     const createSchoolAction = async (newSchool: SchoolType) => {
         const validatedAddress = await api.addresses.validateAddress(newSchool.address)
         
-        if (!!validatedAddress) {
+        if (validatedAddress) {
             const newUuid = uuidv4()
             validatedAddress.id = newUuid
-            await api.addresses.createAddress(organizationId, validatedAddress)
+            await api.addresses.createAddress(orgId, validatedAddress)
 
             newSchool.address = validatedAddress.id
-            await api.schools.createSchool(organizationId, newSchool)
+            await api.schools.createSchool(orgId, newSchool)
 
             updateSchools()
         } else {
@@ -69,7 +71,7 @@ const Schools = () => {
     }
 
     const deleteSchoolAction = async (schoolId: string) => {
-        await api.schools.deleteSchool(organizationId, schoolId)
+        await api.schools.deleteSchool(orgId, schoolId)
         updateSchools()
     }
 
@@ -128,7 +130,7 @@ const Schools = () => {
     const processRowUpdate = async (updatedRow: SchoolType, originalRow: SchoolType) => {
         try {
             if (updatedRow !== originalRow) {
-                await api.schools.updateSchool(organizationId, originalRow.id, updatedRow)
+                await api.schools.updateSchool(orgId, originalRow.id, updatedRow)
                 await updateSchools()
             }
 

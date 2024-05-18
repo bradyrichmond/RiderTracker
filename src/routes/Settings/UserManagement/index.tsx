@@ -1,5 +1,4 @@
 import { ApiContext } from "@/contexts/ApiContextProvider"
-import { RoleContext } from "@/contexts/RoleContextProvider"
 import { UserType } from "@/types/UserType"
 import { Box, Button } from "@mui/material"
 import { CSSProperties, useContext, useEffect, useState } from "react"
@@ -8,13 +7,14 @@ import AutoSizer from "react-virtualized-auto-sizer"
 import UserCard from "./UserCard"
 import { useTranslation } from 'react-i18next'
 import SearchBar from "@/components/SearchBar"
+import { OrgDataContext } from "@/contexts/OrganizationDataContext"
 
 const UserManagement = () => {
     const [users, setUsers] = useState<UserType[]>([])
     const [outOfItems, setOutOfItems] = useState(false)
     const [searchArg, setSearchArg] = useState('')
     const { api } = useContext(ApiContext)
-    const { organizationId } = useContext(RoleContext)
+    const { orgId } = useContext(OrgDataContext)
     const { t } = useTranslation('common')
     
     useEffect(() => {
@@ -26,7 +26,7 @@ const UserManagement = () => {
     }, [searchArg])
 
     const fetchUsers = async () => {
-        const fetchedUsers = await api.users.getUsers({ orgId: organizationId, pagination: { pageSize: 11, lastKey: '', searchArg }})
+        const fetchedUsers = await api.users.getUsers({ orgId, pagination: { pageSize: 11, lastKey: '', searchArg }})
 
         if (fetchedUsers.items.length < 1) {
             setOutOfItems(true)
@@ -40,7 +40,7 @@ const UserManagement = () => {
 
     const loadMore = async () => {
         const lastKey = users[users.length - 1].id
-        const fetchedUsers = await api.users.getUsers({ orgId: organizationId, pagination: { pageSize: 11, lastKey, searchArg }})
+        const fetchedUsers = await api.users.getUsers({ orgId, pagination: { pageSize: 11, lastKey, searchArg }})
 
         if (fetchedUsers.items.length < 1) {
             setOutOfItems(true)

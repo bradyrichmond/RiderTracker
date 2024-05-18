@@ -1,26 +1,25 @@
 import { Box, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
-import { RoleContext } from "@/contexts/RoleContextProvider"
 import { BusType } from '@/types/BusType'
 import { useParams } from 'react-router-dom'
 import { ApiContext } from "@/contexts/ApiContextProvider"
 import { Trans, useTranslation } from 'react-i18next'
+import { OrgDataContext } from "@/contexts/OrganizationDataContext"
 
 const Bus = () => {
-    const roleContext = useContext(RoleContext)
     const [bus, setBus] = useState<BusType>()
     const { id } = useParams()
     const { api } = useContext(ApiContext)
-    const { organizationId } = useContext(RoleContext)
+    const { orgId } = useContext(OrgDataContext)
     const { t } = useTranslation()
 
     useEffect(() => {
         getBusData()
-    }, [roleContext, id])
+    }, [id])
 
     const getBusData = async () => {
         if (id) {
-            const busData = await api.buses.getBusById(organizationId, id)
+            const busData = await api.buses.getBusById(orgId, id)
             setBus(busData)
         }
     }

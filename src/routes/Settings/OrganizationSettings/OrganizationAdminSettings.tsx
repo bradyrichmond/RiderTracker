@@ -1,5 +1,4 @@
 import { ApiContext } from "@/contexts/ApiContextProvider"
-import { RoleContext } from "@/contexts/RoleContextProvider"
 import { Box, Button, Card, Typography } from "@mui/material"
 import Grid from '@mui/material/Unstable_Grid2'
 import { useContext, useEffect, useState } from "react"
@@ -13,9 +12,10 @@ import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
 import { UserType } from "@/types/UserType"
 import { AWSUserType } from "@/API/AdminApis"
 import { useTranslation } from 'react-i18next'
+import { OrgDataContext } from "@/contexts/OrganizationDataContext"
 
 const OrganizationAdminSettings = () => {
-    const { organizationId } = useContext(RoleContext)
+    const { orgId } = useContext(OrgDataContext)
     const { api } = useContext(ApiContext)
     const { setSnackbarSeverity, setSnackbarVisibilityMs, setSnackbarMessage } = useContext(SnackbarContext)
     const [ admins, setAdmins ] = useState<UserType[]>([])
@@ -24,14 +24,14 @@ const OrganizationAdminSettings = () => {
 
     useEffect(() => {
         getAdmins()
-    }, [organizationId])
+    }, [orgId])
 
     const getAdmins = async () => {
         try {
-            const { adminIds } = await api.organizations.getOrganizationById(organizationId)
+            const { adminIds } = await api.organizations.getOrganizationById(orgId)
 
             if (adminIds){
-                const orgAdmins = await api.users.getBulkUsersByIds(organizationId, adminIds)
+                const orgAdmins = await api.users.getBulkUsersByIds(orgId, adminIds)
                 setAdmins(orgAdmins)
             }
         } catch {
@@ -65,7 +65,7 @@ const OrganizationAdminSettings = () => {
             await api.admin.addUserToGroup(cognitoUsername, RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN)
 
             newAdmin.id = cognitoUsername
-            const { adminIds } = await api.organizations.getOrganizationById(organizationId)
+            const { adminIds } = await api.organizations.getOrganizationById(orgId)
 
             if (adminIds) {
                 adminIds.push(cognitoUsername)
@@ -73,9 +73,9 @@ const OrganizationAdminSettings = () => {
 
             const admins  = adminIds || [cognitoUsername]
 
-            await api.organizations.updateOrganization(organizationId, { adminIds: admins })
+            await api.organizations.updateOrganization(orgId, { adminIds: admins })
 
-            await api.admin.createUser(organizationId, { ...newAdmin, orgId: organizationId })
+            await api.admin.createUser(orgId, { ...newAdmin, orgId: orgId })
 
             getAdmins()
             toggleShowModal()

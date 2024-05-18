@@ -99,12 +99,15 @@ export const pickRenderElement = (field: FormInputType, index: number) => {
             }, [fieldName])
 
             return (
-                <Box display='flex' flexDirection='row'>
-                   <TextField fullWidth helperText='Random Name' 
+                <Box display='flex' flexDirection='row' alignItems='center'>
+                   <TextField fullWidth label='Random Name' 
                         sx={{"& .MuiInputBase-input.Mui-disabled": { WebkitTextFillColor: "#000000" },}} 
-                        disabled  {...register(fieldName)}
+                        inputProps={
+                            { readOnly: true }
+                        }
+                        {...register(fieldName)}
                     /> 
-                    <Box paddingLeft='1rem'>
+                    <Box paddingLeft='1rem' paddingTop='1rem'>
                         <Button variant='contained' sx={{ padding: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }} onClick={() => updateRandomName(fieldName)}>
                             <Tooltip title='Generate a new random name'>
                                 <ShuffleOnIcon />
@@ -137,6 +140,20 @@ export const pickRenderElement = (field: FormInputType, index: number) => {
                         debounceMs={500}
                     />
                 </>
+            )
+        case "hiddenTextfield":
+            return (
+                <Box sx={{ height: 0, overflow: 'hidden', padding: 0, mt: 0 }}>
+                     <TextField 
+                        fullWidth
+                        inputProps={
+                            { readOnly: true }
+                        }
+                        label={field.name}
+                        {...register(`inputs.${index}.name` as const)}
+
+                    />
+                </Box>
             )
         default:
             return (

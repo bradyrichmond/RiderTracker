@@ -8,18 +8,20 @@ import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
 import { Box, Paper, Typography } from "@mui/material"
 import { OrganizationAdminAction } from "../OrganizationSettings/OrganizationAdminCard"
 import DeleteIcon from '@mui/icons-material/Delete'
+import { OrgDataContext } from "@/contexts/OrganizationDataContext"
 
 const UserCard = ({ user, updateUsers, style }: { user: UserType, updateUsers: (_id: string) => void, style: CSSProperties }) => {
     const ref = useRef(null)
     const hovering = useHover(ref)
     const { t } = useTranslation()
     const { api } = useContext(ApiContext)
-    const { organizationId, userId } = useContext(RoleContext)
+    const { userId } = useContext(RoleContext)
+    const { orgId } = useContext(OrgDataContext)
     const { setSnackbarMessage, setSnackbarSeverity, setSnackbarVisibilityMs } = useContext(SnackbarContext)
 
     const deleteUserAction = async () => {
         if (user.id !== userId) {
-            await api.users.deleteUser(organizationId, user.id)
+            await api.users.deleteUser(orgId, user.id)
             updateUsers(user.id)
         } else {
             setSnackbarSeverity('error')

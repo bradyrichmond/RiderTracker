@@ -1,7 +1,7 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide } from '@mui/material'
 import { forwardRef, useContext, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
-import { useFieldArray, useForm, Controller, FormProvider } from "react-hook-form"
+import { Controller, FormProvider, useFieldArray, useForm } from "react-hook-form"
 import { BusType } from '../types/BusType'
 import { OrganizationType } from "../types/OrganizationType"
 import { RiderType } from "../types/RiderType"
@@ -11,9 +11,9 @@ import { pickRenderElement } from '../helpers/FormRenderHelpers'
 import { SchoolType } from '@/types/SchoolType'
 import { TransitionProps } from '@mui/material/transitions'
 import { ErrorMessage } from "@hookform/error-message"
-import { RoleContext } from '@/contexts/RoleContextProvider'
 import { StopType } from '@/types/StopType'
 import { UserType } from '@/types/UserType'
+import { OrgDataContext } from '@/contexts/OrganizationDataContext'
 
 export const Transition = forwardRef(function Transition(
     props: TransitionProps & {
@@ -33,13 +33,14 @@ const AddEntityModal = <T extends
     const formMethods = useForm<FormDataType>({
         defaultValues: formDefaultValues
     })
-    const { organizationId } = useContext(RoleContext)
+    const { orgId } = useContext(OrgDataContext)
 
     const {
         control,
         handleSubmit,
         watch,
-        formState
+        formState,
+        reset
     } = formMethods
 
     const { errors } = formState
@@ -55,10 +56,11 @@ const AddEntityModal = <T extends
         setDisabledButtons(true)
         const entityId = uuidv4()
         const args = values.map((v) => v.name)
-        args.unshift(organizationId)
+        args.unshift(orgId)
         args.unshift(entityId)
         const newEntity = entityFactory(args)
         await submitAction(newEntity)
+        reset()
         setDisabledButtons(false)
     }
 
@@ -78,7 +80,7 @@ const AddEntityModal = <T extends
                 <FormProvider {...formMethods} >
                     {fields.map((field, index) => {
                         return (
-                            <Box key={field.id} marginTop='2rem'>
+                            <Box key={field.id}>
                                 <Controller
                                     render={() => pickRenderElement(field, index) }
                                     name={`inputs.${index}.name`}

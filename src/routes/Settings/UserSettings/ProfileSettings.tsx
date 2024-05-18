@@ -9,14 +9,16 @@ import useFileUpload from "@/hooks/useFileUpload"
 import { MB } from "@/constants/Numbers"
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh'
 import { useTranslation } from 'react-i18next'
+import { OrgDataContext } from "@/contexts/OrganizationDataContext"
 
 const ProfileSettings = () => {
     const { api } = useContext(ApiContext)
-    const { organizationId, userId, userFullName, userPictureUrl, updateUserData } = useContext(RoleContext)
+    const { userId, userFullName, userPictureUrl, updateUserData } = useContext(RoleContext)
+    const { orgId } = useContext(OrgDataContext)
     const { t } = useTranslation('settings')
 
     const uploadFile = async (file: File) => {
-        await api.admin.updateUserProfileImage(organizationId, userId, file, userId)
+        await api.admin.updateUserProfileImage(orgId, userId, file, userId)
         await updateUserData()
     }
 

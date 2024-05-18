@@ -5,10 +5,9 @@ import { PropsWithChildren, useState } from "react"
 import { fetchAuthSession } from "@aws-amplify/auth"
 import { ApiContext } from "./ApiContextProvider"
 import RiderTrackerAPI from "@/API"
-import { getOrganizationIdForUser } from "@/helpers/GetOrganizationIdForUser"
-import OrganizationPickerDialog from "@/components/OrganizationPickerDialog"
-import { OrganizationType } from "@/types/OrganizationType"
+import { getOrgIdForUser } from "@/helpers/GetOrganizationIdForUser"
 import { signOut } from "aws-amplify/auth"
+import { OrgDataContext } from "./OrganizationDataContext"
 
 export const RoleContext = createContext({
     heaviestRole: 'RiderTracker_Guardian',
@@ -23,12 +22,6 @@ export const RoleContext = createContext({
     setAccessToken: (_accessToken: string) => {},
     userPictureUrl: '',
     setUserPictureUrl: (_pictureUrl: string) => {},
-    organizationId: '',
-    setOrganizationId: (_pictureUrl: string) => {},
-    organizationOverride: false,
-    setOrganizationOverride: (_bool: boolean) => {},
-    organizationLoginImageUrl: '',
-    setOrganizationLoginImageUrl: (_url: string) => {},
     updateUserData: async () => {}
 });
 
@@ -40,12 +33,8 @@ export const RoleContextProvider = ({ children }: PropsWithChildren<{}>) => {
     const [userPictureUrl, setUserPictureUrl] = useState("")
     const [accessToken, setAccessToken] = useState("")
     const [idToken, setIdToken] = useState("")
-    const [organizationId, setOrganizationId] = useState("")
-    const [organizationOverride, setOrganizationOverride] = useState(false)
-    const [showOrganizationSelector, setShowOrganizationSelector] = useState(false)
-    const [organizationArray, setOrganizationArray] = useState<OrganizationType[]>([])
-    const [organizationLoginImageUrl, setOrganizationLoginImageUrl] = useState('')
     const { api, setApi } = useContext(ApiContext)
+    const { orgId, setOrganizationLoginImageUrl, setOrganizationArray, setOrgId, toggleShowOrganizationSelector } = useContext(OrgDataContext)
 
     const updateUserData = async () => {
         try {
@@ -78,16 +67,16 @@ export const RoleContextProvider = ({ children }: PropsWithChildren<{}>) => {
     }, [userId, heaviestRole, idToken])
 
     useEffect(() => {
-        if (api && userId && organizationId) {
+        if (api && userId && orgId) {
             updateImages()
         }
-    }, [api, userId, organizationId])
+    }, [api, userId, orgId])
 
     const updateImages = async () => {
         try {
-            const profileImageKey = await api.users.getUserProfileImage(organizationId, userId)
+            const profileImageKey = await api.users.getUserProfileImage(orgId, userId)
             setUserPictureUrl(`https://s3.us-west-2.amazonaws.com/${profileImageKey}`)
-            const { loginImageKey } = await api.organizations.getOrganizationById(organizationId)
+            const { loginImageKey } = await api.organizations.getOrganizationById(orgId)
             if (loginImageKey) {
                 setOrganizationLoginImageUrl(`https://s3.us-west-2.amazonaws.com/${loginImageKey}`)
             }
@@ -99,14 +88,14 @@ export const RoleContextProvider = ({ children }: PropsWithChildren<{}>) => {
     const selectOrganizationAction = async () =>{
         try {
             if (userId && heaviestRole) {
-                const orgId = await getOrganizationIdForUser(userId, heaviestRole)
+                const orgId = await getOrgIdForUser(userId, heaviestRole)
                 if (Array.isArray(orgId)) {
                     setOrganizationArray(orgId)
                     toggleShowOrganizationSelector()
                     return
                 }
 
-                setOrganizationId(orgId)
+                setOrgId(orgId)
             }
         } catch (e) {
             console.error(e as string)
@@ -118,16 +107,6 @@ export const RoleContextProvider = ({ children }: PropsWithChildren<{}>) => {
         setApi(apiInstance)
     }
 
-    const toggleShowOrganizationSelector = () => {
-        setShowOrganizationSelector((cur) => !cur)
-    }
-
-    const handleSelectOrganization = (organizationId: string) => {
-        setOrganizationId(organizationId)
-        setOrganizationOverride(true)
-        toggleShowOrganizationSelector()
-    }
-
     return (
         <RoleContext.Provider value={{
             heaviestRole, setHeaviestRole,
@@ -136,13 +115,9 @@ export const RoleContextProvider = ({ children }: PropsWithChildren<{}>) => {
             userId, setUserId,
             accessToken, setAccessToken,
             userPictureUrl, setUserPictureUrl,
-            organizationId, setOrganizationId,
-            organizationOverride, setOrganizationOverride,
-            organizationLoginImageUrl, setOrganizationLoginImageUrl,
             updateUserData
         }}>
             <>
-                <OrganizationPickerDialog open={showOrganizationSelector} handleSelectOrganization={handleSelectOrganization} organizations={organizationArray}/>
                 {children}
             </>
         </RoleContext.Provider>

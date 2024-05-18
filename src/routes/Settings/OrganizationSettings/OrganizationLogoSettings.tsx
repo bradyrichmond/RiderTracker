@@ -8,14 +8,16 @@ import { ApiContext } from "@/contexts/ApiContextProvider"
 import { RoleContext } from "@/contexts/RoleContextProvider"
 import { useTranslation } from 'react-i18next'
 import Grid from '@mui/material/Unstable_Grid2'
+import { OrgDataContext } from "@/contexts/OrganizationDataContext"
 
 const OrganizationLogoSettings = () => {
     const { api } = useContext(ApiContext)
-    const { organizationId, updateUserData, organizationLoginImageUrl } = useContext(RoleContext)
+    const { updateUserData } = useContext(RoleContext)
+    const { orgId, organizationLoginImageUrl } = useContext(OrgDataContext)
     const { t } = useTranslation(['settings', 'common'])
 
     const uploadAction = async (file: File) => {
-        await api.organizations.updateOrganizationLoginImage(file, organizationId)
+        await api.organizations.updateOrganizationLoginImage(file, orgId)
         await updateUserData()
     }
 

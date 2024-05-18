@@ -6,7 +6,8 @@ export const SnackbarContext = createContext({
     setSnackbarMessage: (_s: string) => {},
     setSnackbarSeverity: (_ac: AlertColor) => {},
     setSnackbarVisibilityMs: (_n: number) => {},
-    setSnackbarVariant: (_s: SnackbarVariants) => {}
+    setSnackbarVariant: (_s: SnackbarVariants) => {},
+    showErrorSnackbar: (_message: string, _visibilityMs?: number) => {}
 })
 
 type SnackbarVariants = "filled" | "standard" | "outlined"
@@ -21,8 +22,14 @@ export const SnackbarContextProvider = ({ children }: PropsWithChildren<{}>) => 
         setSnackbarMessage('')
     }
 
+    const showErrorSnackbar = (message: string, visibilityMs?: number) => {
+        setSnackbarSeverity('error')
+        setSnackbarVisibilityMs(visibilityMs ?? 5000)
+        setSnackbarMessage(message)
+    }
+
     return (
-        <SnackbarContext.Provider value={{ setSnackbarMessage, setSnackbarSeverity, setSnackbarVisibilityMs, setSnackbarVariant }}>
+        <SnackbarContext.Provider value={{ setSnackbarMessage, setSnackbarSeverity, setSnackbarVisibilityMs, setSnackbarVariant, showErrorSnackbar }}>
             {children}
             <Snackbar open={!!snackbarMessage} autoHideDuration={snackbarVisibilityMs} onClose={onSnackbarClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
                 <Alert

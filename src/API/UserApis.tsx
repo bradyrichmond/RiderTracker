@@ -60,6 +60,13 @@ const getBulkUsersByIds = async (orgId: string, userIds: string[]) => {
     return handleApiResponse(usersResponse)
 }
 
+const getBulkGuardiansByIds = async (orgId: string, userIds: string[]) => {
+    const api = await RiderTrackerAPI.getClient()
+    const usersResponse = await api.client.organizationsOrgIdUsersBatchByIdPost({ orgId }, userIds)
+    
+    return handleApiResponse(usersResponse)
+}
+
 const deleteUser = async (orgId: string, id: string) => {
     const api = await RiderTrackerAPI.getClient()
     const deleteUserResponse = await api.client.organizationsOrgIdUsersIdDelete({ orgId, id })
@@ -81,6 +88,7 @@ export interface UserApiFunctionTypes {
     getUserById(orgId: string, id: string): Promise<UserType>
     getGuardianById(orgId: string, id: string): Promise<GuardianType>
     getBulkUsersByIds(orgId: string, userIds: string[]): Promise<UserType[]>
+    getBulkGuardiansByIds(orgId: string, userIds: string[]): Promise<GuardianType[]>
     deleteUser(orgId: string, id: string): Promise<any>
     updateUser(orgId: string, id: string, body: Record<string, string[]>): Promise<any>
 }
@@ -93,5 +101,6 @@ export default {
     getBulkUsersByIds,
     deleteUser,
     updateUser,
-    getGuardianById
+    getGuardianById,
+    getBulkGuardiansByIds
 }

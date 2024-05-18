@@ -1,13 +1,13 @@
 import { Box, Chip, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react"
-import { RoleContext } from "@/contexts/RoleContextProvider"
 import { useNavigate, useParams } from 'react-router-dom'
 import { RiderType } from "@/types/RiderType"
 import { ApiContext } from "@/contexts/ApiContextProvider"
 import { StopType } from "@/types/StopType"
+import { OrgDataContext } from "@/contexts/OrganizationDataContext"
 
 const Rider = () => {
-    const { organizationId } = useContext(RoleContext)
+    const { orgId } = useContext(OrgDataContext)
     const { api } = useContext(ApiContext)
     const [rider, setRider] = useState<RiderType>()
     const [stops, setStops] = useState<StopType[]>([])
@@ -29,13 +29,13 @@ const Rider = () => {
 
     const getRiderData = async () => {
         if (id) {
-            const riderData = await api.riders.getRiderById(organizationId, id)
+            const riderData = await api.riders.getRiderById(orgId, id)
             setRider(riderData)
         }
     }
 
     const getStopData = async () => {
-        const fetchedStops = await api.stops.getBulkStopsByIds(organizationId, rider?.stopIds ?? [])
+        const fetchedStops = await api.stops.getBulkStopsByIds(orgId, rider?.stopIds ?? [])
         setStops(fetchedStops)
     }
 

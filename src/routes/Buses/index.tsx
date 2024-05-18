@@ -11,16 +11,18 @@ import { GridColDef } from '@mui/x-data-grid'
 import { RoleContext } from "@/contexts/RoleContextProvider"
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "@/constants/Roles"
 import { useTranslation } from 'react-i18next'
+import { OrgDataContext } from "@/contexts/OrganizationDataContext"
 
 const Buses = () => {
     const [buses, setBuses] = useState<BusType[]>([])
     const { api } = useContext(ApiContext)
-    const { heaviestRole, organizationId } = useContext(RoleContext)
+    const { heaviestRole } = useContext(RoleContext)
+    const { orgId } = useContext(OrgDataContext)
     const navigate = useNavigate()
     const { t } = useTranslation(['buses', 'common'])
 
     const updateBusesAction = async () => {
-        const buses = await api.buses.getBuses(organizationId)
+        const buses = await api.buses.getBuses(orgId)
         setBuses(buses ?? [])
     }
 
@@ -29,12 +31,12 @@ const Buses = () => {
     }
 
     const deleteBusAction = async (busId: string) => {
-        await api.buses.deleteBus(organizationId, busId)
+        await api.buses.deleteBus(orgId, busId)
         updateBusesAction()
     }
 
     const createBusAction = async (newBus: BusType) => {
-        return await api.buses.createBus(organizationId, newBus)
+        return await api.buses.createBus(orgId, newBus)
     }
 
     const generateGridColumns = (): GridColDef[] => {

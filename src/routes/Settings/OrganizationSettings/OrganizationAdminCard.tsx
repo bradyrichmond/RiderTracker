@@ -9,6 +9,7 @@ import { RoleContext } from "@/contexts/RoleContextProvider"
 import { ApiContext } from "@/contexts/ApiContextProvider"
 import { RIDER_TRACKER_ROLES } from "@/constants/Roles"
 import { useTranslation } from 'react-i18next'
+import { OrgDataContext } from "@/contexts/OrganizationDataContext"
 
 interface OrganizationAdminCardProps extends UserType {
     index: number
@@ -21,7 +22,8 @@ const OrganizationAdminCard = ({ id, firstName, lastName, title, email, index, r
     const profileUrl = useMemo(() => `https://s3.us-west-2.amazonaws.com/ridertracker.profileimages/${id}.jpg`, [id])
     const ref = useRef(null)
     const hovering = useHover<HTMLDivElement>(ref)
-    const { userId, organizationId: orgId } = useContext(RoleContext)
+    const { userId } = useContext(RoleContext)
+    const { orgId } = useContext(OrgDataContext)
     const { api } = useContext(ApiContext)
     const { t } = useTranslation('settings')
 

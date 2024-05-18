@@ -7,6 +7,7 @@ import ThemeContextProvider from './contexts/ThemeContextProvider'
 import { SnackbarContextProvider } from './contexts/SnackbarContextProvider'
 import './helpers/I18n'
 import { I18nContextProvider } from './contexts/I18nContextProvider'
+import { OrgDataContextProvider } from './contexts/OrganizationDataContext'
 
 function App() {
   return (
@@ -16,7 +17,9 @@ function App() {
           <ThemeContextProvider>
             <SnackbarContextProvider>
               <I18nContextProvider>
-                <RootRouter />
+                <OrgDataContextProvider>
+                  <RootRouter />
+                </OrgDataContextProvider>
               </I18nContextProvider>
             </SnackbarContextProvider>
           </ThemeContextProvider>
