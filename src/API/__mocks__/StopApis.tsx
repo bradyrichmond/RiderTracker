@@ -1,53 +1,53 @@
 import { StopType } from "@/types/StopType"
 
-const getStops = async (_token: string) => Promise.resolve([
-    {
-       "id": "0c3dfca8-13eb-4df7-a194-883f0294d49b",
-       "organizationId": "123",
-       "riderIds": ["123456"],
-       "stopName": "Supportive Bear"
-    }
-])
-
-const getStopById = async (_token: string, id: string) => Promise.resolve({
+const getStopById = async (id: string) => Promise.resolve({
     "id": id,
-    "organizationId": "123456",
+    "orgId": "123456",
     "riderIds": ["123456"],
     "stopName": "Supportive Bear"
  })
 
-const getStopsForOrganization = async (_token: string, organizationId: string) => Promise.resolve([
+const getStops = async (orgId: string) => Promise.resolve([
     {
        "id": "0c3dfca8-13eb-4df7-a194-883f0294d49b",
-       "organizationId": organizationId,
+       "orgId": orgId,
        "riderIds": ["123456"],
        "stopName": "Supportive Bear"
     }
 ])
 
-const getBulkStopsById = async (_token: string, stopIds: string[]) => {
+const getBulkStopsById = async (stopIds: string[]) => {
     const stops: StopType[] = []
 
     stopIds.forEach((r) => stops.push({
         "id": r,
-        "organizationId": "123456",
+        "orgId": "123456",
         "riderIds": ["123456"],
-        "stopName": "Supportive Bear"
+        "stopName": "Supportive Bear",
+        "address": "789"
      }))
 
     return stops
 }
 
-const updateStop = async (_token: string, _rider: StopType) => Promise.resolve({})
+const updateStop = async () => Promise.resolve({})
 
-const createStop = async (_token: string, _body: StopType) => Promise.resolve({})
+const createStop = async () => Promise.resolve({})
 
-const deleteStop = async (_token: string, _id: string) => Promise.resolve({})
+const deleteStop = async () => Promise.resolve({})
+
+export interface StopApiFunctionTypes {
+    getStops(orgId: string): Promise<StopType[]>,
+    getStopById(id: string): Promise<StopType>,
+    getBulkStopsById(ids: string[]): Promise<StopType[]>,
+    updateStop(scan: StopType): Promise<object>,
+    createStop(scan: StopType): Promise<object>,
+    deleteStop(id: string): Promise<object>
+}
 
 export default {
     getStops,
     getStopById,
-    getStopsForOrganization,
     getBulkStopsById,
     updateStop,
     createStop,

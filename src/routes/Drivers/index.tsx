@@ -1,7 +1,7 @@
 import EntityViewer from "@/components/EntityViewer"
 import { useNavigate } from 'react-router-dom'
 import { useContext, useState } from "react"
-import { Alert, Button, Snackbar, Tooltip } from "@mui/material"
+import { Button, Tooltip } from "@mui/material"
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
 import { ApiContext } from "@/contexts/ApiContextProvider"
@@ -10,12 +10,10 @@ import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "@/constants/Roles
 import { RoleContext } from "@/contexts/RoleContextProvider"
 import { UserType } from "@/types/UserType"
 import { userFactory } from "../Settings/UserSettings/UserFactory"
-import { OrgDataContext } from "@/contexts/OrganizationDataContext"
+import { OrgDataContext } from "@/contexts/OrgDataContext"
 
 const Drivers = () => {
     const [drivers, setDrivers] = useState<UserType[]>([])
-    const [showErrorSnackbar, setShowErrorSnackBar] = useState(false)
-    const [snackbarMessage, setSnackbarMessage] = useState('')
     const navigate = useNavigate()
     const { api } = useContext(ApiContext)
     const { heaviestRole } = useContext(RoleContext)
@@ -46,27 +44,8 @@ const Drivers = () => {
         }
     }
 
-    const createDriverAction = async (_driver: UserType) => {
-        try {
-            // const cognitoUser = await api.admin.createUser(orgId, { given_name: driver.firstName, family_name: driver.lastName, email: driver.email })
-            // const cognitoUsername = cognitoUser.User.Username
-            // await api.admin.addUserToGroup(cognitoUsername, RIDER_TRACKER_ROLES.RIDER_TRACKER_DRIVER)
-            // driver.id = cognitoUsername
-
-            // const { driverIds } = await api.organizations.getOrganizationById(orgId)
-
-            // if (driverIds) {
-            //     driverIds.push(cognitoUsername)
-            // }
-
-            // const drivers  = driverIds || [cognitoUsername]
-
-            // await api.organizations.updateOrganization(orgId, { driverIds: drivers })
-            throw ''
-        } catch {
-            setSnackbarMessage('Failed to create driver')
-            setShowErrorSnackBar(true)
-        }
+    const createDriverAction = async () => {
+        return {}
     }
 
     const generateGridColumns = (): GridColDef[] => {
@@ -109,40 +88,26 @@ const Drivers = () => {
         return initialGridColumns
     }
 
-    const processRowUpdate = async (updatedRow: UserType, _originalRow: UserType) => {
+    const processRowUpdate = async (updatedRow: UserType) => {
         return updatedRow
     }
-
-    const toggleShowSnackbar = () => setShowErrorSnackBar((cur: boolean) => !cur)
     
     return (
-        <>
-            <Snackbar open={showErrorSnackbar} autoHideDuration={6000} onClose={toggleShowSnackbar} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-                <Alert
-                    onClose={toggleShowSnackbar}
-                    severity="error"
-                    variant="filled"
-                    sx={{ width: '100%' }}
-                >
-                    {snackbarMessage}
-                </Alert>
-            </Snackbar>
-            <EntityViewer<UserType>
-                createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_DRIVER) ? createDriverAction : undefined}
-                entityFactory={userFactory}
-                getEntities={updateDriversAction}
-                entities={drivers}
-                modalFormInputs={{inputs: [
-                    { name: "First Name" },
-                    { name: "Last Name" },
-                    { name: "Email", inputType: 'email' }
-                ]}}
-                gridColumns={generateGridColumns()}
-                titleSingular='Driver'
-                titlePlural='Drivers'
-                processRowUpdate={processRowUpdate}
-            />
-        </>
+        <EntityViewer<UserType>
+            createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_DRIVER) ? createDriverAction : undefined}
+            entityFactory={userFactory}
+            getEntities={updateDriversAction}
+            entities={drivers}
+            modalFormInputs={{inputs: [
+                { name: "First Name" },
+                { name: "Last Name" },
+                { name: "Email", inputType: 'email' }
+            ]}}
+            gridColumns={generateGridColumns()}
+            titleSingular='Driver'
+            titlePlural='Drivers'
+            processRowUpdate={processRowUpdate}
+        />
     )
 }
 

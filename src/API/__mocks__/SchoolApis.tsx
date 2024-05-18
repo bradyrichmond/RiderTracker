@@ -1,59 +1,56 @@
 import { SchoolType } from "@/types/SchoolType"
 
-const getSchools = async (_token: string) => Promise.resolve([
-    {
-        "id": "123456",
-        "organizationId": "123456",
-        "schoolName": "Sunnyside Elementary",
-        "riders": ["123456"],
-        "address": "123456"
-     }
-])
-
-const getSchoolById = async (_token: string, id: string) => Promise.resolve({
+const getSchoolById = async (id: string) => Promise.resolve({
     "id": id,
-    "organizationId": "123456",
+    "orgId": "123456",
     "schoolName": "Sunnyside Elementary",
     "riders": ["123456"],
     "address": "123456"
  })
 
-const getSchoolsForOrganization = async (_token: string, organizationId: string) => Promise.resolve([
+const getSchools = async (orgId: string) => Promise.resolve([
     {
         "id": "123456",
-        "organizationId": organizationId,
+        "orgId": orgId,
         "schoolName": "Sunnyside Elementary",
         "riders": ["123456"],
         "address": "123456"
      }
 ])
 
-const getBulkSchoolsById = async (_token: string, schoolIds: string[]) => {
+const getBulkSchoolsById = async (schoolIds: string[]) => {
     const schools: SchoolType[] = []
 
     schoolIds.forEach((s) => schools.push({
         "id": s,
-        "organizationId": "123456",
+        "orgId": "123456",
         "schoolName": "Sunnyside Elementary",
-        "riders": ["123456"],
         "address": "123456"
      }))
 
     return schools
 }
 
-const updateScan = async (_token: string, _school: SchoolType) => Promise.resolve({})
+const updateSchool = async () => Promise.resolve({})
 
-const createScan = async (_token: string, _body: SchoolType) => Promise.resolve({})
+const createSchool = async () => Promise.resolve({})
 
-const deleteScan = async (_token: string, _id: string) => Promise.resolve({})
+const deleteSchool = async () => Promise.resolve({})
+
+export interface SchoolApiFunctionTypes {
+    getSchools(orgId: string): Promise<SchoolType[]>,
+    getSchoolById(id: string): Promise<SchoolType>,
+    getBulkSchoolsById(ids: string[]): Promise<SchoolType[]>,
+    updateSchool(scan: SchoolType): Promise<object>,
+    createSchool(scan: SchoolType): Promise<object>,
+    deleteSchool(id: string): Promise<object>
+}
 
 export default {
     getSchools,
     getSchoolById,
-    getSchoolsForOrganization,
     getBulkSchoolsById,
-    updateScan,
-    createScan,
-    deleteScan
+    updateSchool,
+    createSchool,
+    deleteSchool
 }

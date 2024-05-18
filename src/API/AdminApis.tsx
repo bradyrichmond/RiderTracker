@@ -55,14 +55,14 @@ const createCognitoUser = async (body: CreateCognitoUserParams) => {
     const { client } = await RiderTrackerAPI.getClient()
     const createCognitoUserResponse = await client.adminProxyProxyAny(VERBS.POST, { proxy: 'createUser' }, body, { ["Content-Type"]: "application/json" })
 
-    return handleApiResponse(createCognitoUserResponse)
+    return handleApiResponse<AWSUserType>(createCognitoUserResponse)
 }
 
 const createUser = async (orgId: string, body: CreateUserParams, options?: Record<string, boolean>) => {
     const { client } = await RiderTrackerAPI.getClient(options?.forceRefresh)
     const createUserResponse = await client.organizationsOrgIdUsersPost({ orgId }, { ...body, stopIds: [""] })
 
-    return handleApiResponse(createUserResponse)
+    return handleApiResponse<object>(createUserResponse)
 }
 
 const addUserToGroup = async (username: string, groupname: string) => {
@@ -76,13 +76,13 @@ const removeUserFromGroup = async (username: string, groupname: string) => {
     const { client } = await RiderTrackerAPI.getClient()
     const removeUserFromGroupResponse = await client.adminProxyProxyAny(VERBS.POST, { proxy: 'removeUserFromGroup' }, { username, groupname })
 
-    return handleApiResponse(removeUserFromGroupResponse)
+    return handleApiResponse<object>(removeUserFromGroupResponse)
 }
 
 const updateUserAttributes = async (attributes: AttributeType[], username: string) => {
     const { client } = await RiderTrackerAPI.getClient()
     const updateUserAttributesResponse = await client.adminProxyProxyAny(VERBS.POST, { proxy: 'updateUserAttributes' }, { username, attributes })
-    return handleApiResponse(updateUserAttributesResponse)
+    return handleApiResponse<object>(updateUserAttributesResponse)
 }
 
 const updateUserProfileImage = async (orgId: string, userId: string, file: File, key: string) => {
@@ -94,7 +94,7 @@ const updateUserProfileImage = async (orgId: string, userId: string, file: File,
     const { client } = await RiderTrackerAPI.getClient()
     const updateUserProfileImageResponse = await client.adminProxyS3FolderObjectGet({ folder: bucket, object: fileName })
 
-    const putUrl = handleApiResponse(updateUserProfileImageResponse)
+    const putUrl = handleApiResponse<URL>(updateUserProfileImageResponse)
 
     await fetch(putUrl, {
         method: 'PUT',
@@ -108,16 +108,16 @@ const updateUser = async (orgId: string, id: string, body: Record<string, string
     const { client } = await RiderTrackerAPI.getClient()
     const updateUserResponse = await client.organizationsOrgIdUsersIdPut({ orgId, id }, body)
 
-    return handleApiResponse(updateUserResponse)
+    return handleApiResponse<object>(updateUserResponse)
 }
 
 export interface AdminApiFunctionTypes {
     createCognitoUser(body: CreateCognitoUserParams): Promise<AWSUserType>
-    createUser(orgId: string, body: CreateUserParams, options?: Record<string, boolean>): Promise<any>
-    updateUserProfileImage(orgId: string, userId: string, body: File, key: string): Promise<any>
-    updateUserAttributes(body: AttributeType[], username: string): Promise<any>
-    addUserToGroup(username: string, groupname: string): Promise<any>
-    removeUserFromGroup(username: string, groupname: string): Promise<any>
+    createUser(orgId: string, body: CreateUserParams, options?: Record<string, boolean>): Promise<object>
+    updateUserProfileImage(orgId: string, userId: string, body: File, key: string): Promise<object>
+    updateUserAttributes(body: AttributeType[], username: string): Promise<object>
+    addUserToGroup(username: string, groupname: string): Promise<object>
+    removeUserFromGroup(username: string, groupname: string): Promise<object>
 }
 
 export default {

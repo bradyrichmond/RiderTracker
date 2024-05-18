@@ -1,13 +1,10 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { render, screen, waitFor, waitForElementToBeRemoved } from "@testing-library/react"
-import { ProviderWrapperAsRole } from '@/helpers/ProviderWrapper'
-// @ts-ignore
-import RiderApis from '@/API/RiderApis'
-jest.mock('@/API/RiderApis')
-// @ts-ignore
-import OrganizationApis from '@/API/OrganizationApis'
+import { AsRole, ProviderWrapperAsRole } from '@/helpers/ProviderWrapper'
 import Riders from '..'
+import { PropsWithChildren } from 'react'
+jest.mock('@/API/RiderApis')
 jest.mock('@/API/OrganizationApis')
 
 afterEach(() => {
@@ -56,7 +53,7 @@ describe('Riders Tests', () => {
   })
 
   it('hides add rider button when not authorized to add riders', async () => {
-    render(<Riders />, { wrapper: (props: any) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" />})
+    render(<Riders />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" />})
 
     await waitFor(() => {
       expect(screen.queryByText(/add rider/i)).not.toBeInTheDocument()
@@ -85,7 +82,7 @@ describe('Riders Tests', () => {
   })
 
   it('hides the delete action buttons in the rows for unauthorized users', async () => {
-    render(<Riders />, { wrapper: (props: any) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" />})
+    render(<Riders />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" />})
 
     await waitFor(async () => {
       const viewDetailButtons = await screen.findAllByTestId("InfoIcon")

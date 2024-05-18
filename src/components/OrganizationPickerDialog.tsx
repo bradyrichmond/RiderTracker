@@ -62,7 +62,7 @@ const OrganizationPickerDialog = ({ open, handleSelectOrganization, organization
                 <DialogContent>
                     <FormControl fullWidth>
                         <Autocomplete
-                            id='organizationId'
+                            id='orgId'
                             options={mappedOrganizations}
                             getOptionLabel={(option: OptionsType) => option.label}
                             filterSelectedOptions

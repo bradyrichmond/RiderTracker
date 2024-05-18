@@ -16,13 +16,13 @@ import { GuardianType, UserType } from "@/types/UserType"
 
 export interface ModalProps<T> {
     cancelAction: () => void
-    organizationId?: string
+    orgId?: string
     submitAction: (_newEntity: T) => void
     titleSingular: string
 }
 
 interface EntityViewerProps<T> {
-    createEntity?(_body: T | string): Promise<void>
+    createEntity?(_body: T | string): Promise<object>
     entityFactory: (args: string[]) => T 
     getEntities(id?: string): void
     entities: T[]

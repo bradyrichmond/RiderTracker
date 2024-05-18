@@ -12,8 +12,7 @@ const RootRouter = () => {
     const { updateUserData } = useContext(RoleContext)
 
     useEffect(() => {
-        // @ts-ignore
-        const cleanup = Hub.listen('auth', ({ payload: { event, data } }) => {
+        const cleanup = Hub.listen('auth', ({ payload: { event } }) => {
             console.log(`Auth listener heard ${event}`)
 
             switch (event) {

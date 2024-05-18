@@ -59,9 +59,9 @@ const Settings = () => {
             <Tabs value={activeTab} onChange={handleChange} aria-label="settings tabs">
                 {roleWeight <= ROLE_WEIGHTS[RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN] ?
                     [
-                        <Tab label={t('profile')} {...a11yProps(0)} />,
-                        <Tab label={t('orgSettings')} {...a11yProps(1)} />,
-                        <Tab label={t('userManagement')} {...a11yProps(2)} />
+                        <Tab label={t('profile')} {...a11yProps(0)} key={0} />,
+                        <Tab label={t('orgSettings')} {...a11yProps(1)} key={1} />,
+                        <Tab label={t('userManagement')} {...a11yProps(2)} key={2} />
                     ]
                     :
                     null
@@ -70,13 +70,13 @@ const Settings = () => {
             <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
                 {roleWeight <= ROLE_WEIGHTS[RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN] ?
                     [
-                        <CustomTabPanel value={activeTab} index={0}>
+                        <CustomTabPanel value={activeTab} index={0} key={0}>
                             <Profile />
                         </CustomTabPanel>,
-                        <CustomTabPanel value={activeTab} index={1}>
+                        <CustomTabPanel value={activeTab} index={1} key={1}>
                             <Organization />
                         </CustomTabPanel>,
-                        <CustomTabPanel value={activeTab} index={2}>
+                        <CustomTabPanel value={activeTab} index={2} key={2}>
                             <UserManagement />
                         </CustomTabPanel>
                     ]

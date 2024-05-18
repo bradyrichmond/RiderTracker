@@ -16,7 +16,7 @@ import { useDeviceLocation } from "@/hooks/useDeviceLocation"
 import { locationFactory } from "./LocationFactory"
 import { AppShortcut } from "@mui/icons-material"
 import { UserType } from "@/types/UserType"
-import { OrgDataContext } from "@/contexts/OrganizationDataContext"
+import { OrgDataContext } from "@/contexts/OrgDataContext"
 
 const Scans = () => {
     const [scans, setScans] = useState<ScanType[]>([])
@@ -88,9 +88,10 @@ const Scans = () => {
             const fetchedLocation = await getCurrentPosition()
             const generatedLocation = locationFactory(fetchedLocation)
             const scanWithLocation = { ...newScan, deviceLocationOnSubmit: generatedLocation, manualScan: true }
-            await api.scans.createScan(orgId, scanWithLocation)
+            return await api.scans.createScan(orgId, scanWithLocation)
         } catch (e) {
             console.log(e)
+            return {}
         }
     }
 
@@ -159,7 +160,7 @@ const Scans = () => {
         return initialGridColumns
     }
 
-    const processRowUpdate = async (updatedRow: ScanType, _originalRow: ScanType) => {
+    const processRowUpdate = async (updatedRow: ScanType) => {
         return updatedRow
     }
 

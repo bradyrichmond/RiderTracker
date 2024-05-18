@@ -5,6 +5,7 @@ export interface UserType {
     lastName: string
     email: string
     title?: string
+    profileImageKey?: string
 }
 
 export interface GuardianType extends UserType {

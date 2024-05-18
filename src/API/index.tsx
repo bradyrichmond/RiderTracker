@@ -11,10 +11,6 @@ import { ApiGatewayClientType, generateApiGatewayClient } from '@/helpers/Genera
 
 export const API_BASE_NAME = 'https://uqz8uvqzcl.execute-api.us-west-2.amazonaws.com/DEV' // this will need to change with environment
 
-export interface ApiFunction {
-    (...args: any[]): Promise<any>
-}
-
 let instance: RiderTrackerAPI;
 
 class RiderTrackerAPI {

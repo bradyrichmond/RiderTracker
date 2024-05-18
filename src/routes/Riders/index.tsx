@@ -15,7 +15,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { useTranslation } from 'react-i18next'
 import { GuardianType } from '@/types/UserType'
 import { v4 as uuid } from 'uuid'
-import { OrgDataContext } from '@/contexts/OrganizationDataContext'
+import { OrgDataContext } from '@/contexts/OrgDataContext'
 
 const Riders = () => {
     const [riders, setRiders] = useState<RiderType[]>([])
@@ -138,7 +138,7 @@ const Riders = () => {
         return initialGridColumns
     }
 
-    const processRowUpdate = async (updatedRow: RiderType, _originalRow: RiderType) => {
+    const processRowUpdate = async (updatedRow: RiderType) => {
         return updatedRow
     }
 

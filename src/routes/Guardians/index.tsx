@@ -10,8 +10,7 @@ import { GridColDef } from "@mui/x-data-grid"
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "@/constants/Roles"
 import { RoleContext } from "@/contexts/RoleContextProvider"
 import { UserType } from "@/types/UserType"
-import { OrgDataContext } from "@/contexts/OrganizationDataContext"
-// import { AWSUserType } from "@/API/AdminApis"
+import { OrgDataContext } from "@/contexts/OrgDataContext"
 
 const Guardians = () => {
     const [guardians, setGuardians] = useState<UserType[]>([])
@@ -41,31 +40,8 @@ const Guardians = () => {
         navigate(`/guardians/${guardianId}`)
     }
 
-    const createGuardianAction = async (_newGuardian: UserType) => {
-        try {
-            // TODO: Needs finer error management
-            // const cognitoUser: AWSUserType = await api.admin.createUser(orgId, { 
-            //     given_name: newGuardian.firstName,
-            //     family_name: newGuardian.lastName,
-            //     email: newGuardian.email
-            // })
-            // const cognitoUsername = cognitoUser.User.Username
-            // await api.admin.addUserToGroup(cognitoUsername, RIDER_TRACKER_ROLES.RIDER_TRACKER_GUARDIAN)
-            // newGuardian.id = cognitoUsername
-            // const { guardianIds } = await api.organizations.getOrganizationById(orgId)
-
-            // if (guardianIds) {
-            //     guardianIds.push(cognitoUsername)
-            // }
-
-            // const builtGuardians  = guardianIds || [cognitoUsername]
-
-            // await api.organizations.updateOrganization(orgId, { guardianIds: builtGuardians })
-            // updateGuardians()
-            throw ''
-        } catch {
-            console.error('disabled')
-        }
+    const createGuardianAction = async () => {
+        return {}
     }
 
     const generateGridColumns = (): GridColDef[] => {
@@ -108,7 +84,7 @@ const Guardians = () => {
         return initialGridColumns
     }
 
-    const processRowUpdate = async (updatedRow: UserType, _originalRow: UserType) => {
+    const processRowUpdate = async (updatedRow: UserType) => {
         return updatedRow
     }
     

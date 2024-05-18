@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next'
 import ShuffleOnIcon from '@mui/icons-material/ShuffleOn'
 import { useRandomNameGenerator } from "@/hooks/useRandomNameGenerator"
 import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
-import { OrgDataContext } from "@/contexts/OrganizationDataContext"
+import { OrgDataContext } from "@/contexts/OrgDataContext"
 
 const Stops = () => {
     const [stops, setStops] = useState<StopType[]>([])
@@ -121,7 +121,7 @@ const Stops = () => {
         return initialGridColumns
     }
 
-    const processRowUpdate = async (updatedRow: StopType, _originalRow: StopType) => {
+    const processRowUpdate = async (updatedRow: StopType) => {
         return updatedRow
     }
 

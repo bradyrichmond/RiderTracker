@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect } from "react"
+import { Dispatch, SetStateAction, createContext, useContext, useEffect } from "react"
 import { getHeaviestRole } from "@/helpers/GetHeaviestRole"
 import { RiderTrackerRole, isRiderTrackerRole } from "@/constants/Roles"
 import { PropsWithChildren, useState } from "react"
@@ -7,25 +7,41 @@ import { ApiContext } from "./ApiContextProvider"
 import RiderTrackerAPI from "@/API"
 import { getOrgIdForUser } from "@/helpers/GetOrganizationIdForUser"
 import { signOut } from "aws-amplify/auth"
-import { OrgDataContext } from "./OrganizationDataContext"
+import { OrgDataContext } from "./OrgDataContext"
 
-export const RoleContext = createContext({
+interface RoleContextProps {
+    heaviestRole: string
+    setHeaviestRole: Dispatch<SetStateAction<string>>
+    userFullName: string
+    setUserFullName: Dispatch<SetStateAction<string>>
+    userEmail: string
+    setUserEmail: Dispatch<SetStateAction<string>>
+    userId: string
+    setUserId: Dispatch<SetStateAction<string>>
+    accessToken: string
+    setAccessToken: Dispatch<SetStateAction<string>>
+    userPictureUrl: string
+    setUserPictureUrl: Dispatch<SetStateAction<string>>
+    updateUserData: () => Promise<void>
+}
+
+export const RoleContext = createContext<RoleContextProps>({
     heaviestRole: 'RiderTracker_Guardian',
-    setHeaviestRole: (_role: RiderTrackerRole) => {},
+    setHeaviestRole: () => {},
     userFullName: '',
-    setUserFullName: (_userFullName: string) => {},
+    setUserFullName: () => {},
     userEmail: '',
-    setUserEmail: (_userEmail: string) => {},
+    setUserEmail: () => {},
     userId: '',
-    setUserId: (_userId: string) => {},
+    setUserId: () => {},
     accessToken: '',
-    setAccessToken: (_accessToken: string) => {},
+    setAccessToken: () => {},
     userPictureUrl: '',
-    setUserPictureUrl: (_pictureUrl: string) => {},
+    setUserPictureUrl: () => {},
     updateUserData: async () => {}
 });
 
-export const RoleContextProvider = ({ children }: PropsWithChildren<{}>) => {
+export const RoleContextProvider = ({ children }: PropsWithChildren) => {
     const [heaviestRole, setHeaviestRole] = useState("RiderTracker_Unauthenticated")
     const [userFullName, setUserFullName] = useState("")
     const [userEmail, setUserEmail] = useState("")
@@ -44,15 +60,18 @@ export const RoleContextProvider = ({ children }: PropsWithChildren<{}>) => {
             setIdToken(idToken?.toString() ?? '')
             const userAccessToken = session.tokens?.accessToken
             setAccessToken(userAccessToken?.toString() ?? '')
-            const sessionGroups = idToken?.payload["cognito:groups"]
-            const sessionGroupsArray = (sessionGroups as Array<string>).filter((s) => isRiderTrackerRole(s))
-            setUserEmail(idToken?.payload.email?.toString() ?? '')
+            const payload = idToken?.payload
+            if (payload) {
+                const sessionGroups = payload["cognito:groups"]
+                const sessionGroupsArray = (sessionGroups as Array<string>).filter((s) => isRiderTrackerRole(s))
+                setUserEmail(payload.email?.toString() ?? '')
 
-            const heaviestRoleFromGroups: RiderTrackerRole = getHeaviestRole(sessionGroupsArray ?? [])
-            setHeaviestRole(heaviestRoleFromGroups)
-            // @ts-ignore 
-            const { given_name, family_name } = session.tokens?.idToken?.payload
-            setUserFullName(`${given_name} ${family_name}`)
+                const heaviestRoleFromGroups: RiderTrackerRole = getHeaviestRole(sessionGroupsArray ?? [])
+                setHeaviestRole(heaviestRoleFromGroups)
+
+                const { given_name, family_name } = payload
+                setUserFullName(`${given_name} ${family_name}`)
+            }
 
             initializeApi()
         } catch {
@@ -90,7 +109,8 @@ export const RoleContextProvider = ({ children }: PropsWithChildren<{}>) => {
             if (userId && heaviestRole) {
                 const orgId = await getOrgIdForUser(userId, heaviestRole)
                 if (Array.isArray(orgId)) {
-                    setOrganizationArray(orgId)
+                    const orgs = await api.organizations.getOrganizations()
+                    setOrganizationArray(orgs)
                     toggleShowOrganizationSelector()
                     return
                 }

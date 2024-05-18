@@ -8,7 +8,7 @@ import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
 import { Box, Paper, Typography } from "@mui/material"
 import { OrganizationAdminAction } from "../OrganizationSettings/OrganizationAdminCard"
 import DeleteIcon from '@mui/icons-material/Delete'
-import { OrgDataContext } from "@/contexts/OrganizationDataContext"
+import { OrgDataContext } from "@/contexts/OrgDataContext"
 
 const UserCard = ({ user, updateUsers, style }: { user: UserType, updateUsers: (_id: string) => void, style: CSSProperties }) => {
     const ref = useRef(null)

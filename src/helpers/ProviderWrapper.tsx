@@ -3,9 +3,9 @@ import { ApiContextProvider } from '@/contexts/ApiContextProvider'
 import { PropsWithChildren, useContext, useEffect } from 'react'
 import { MemoryRouter } from 'react-router-dom'
 
-interface AsRole {
+export interface AsRole {
     role?: string
-    routes?: []
+    routes?: string[]
 }
 
 export const ProviderWrapper = ({ children }: PropsWithChildren) => {

@@ -4,13 +4,13 @@ import { useForm } from "react-hook-form"
 import { signIn, signOut, fetchAuthSession } from '@aws-amplify/auth'
 import { API_BASE_NAME } from "@/API"
 import { RoleContext } from "@/contexts/RoleContextProvider"
-import { getOrganizationIdForUser } from "@/helpers/GetOrganizationIdForUser"
+import { getOrgIdForUser } from "@/helpers/GetOrganizationIdForUser"
 import { getHeaviestRole } from "@/helpers/GetHeaviestRole"
 import { RiderTrackerRole, isRiderTrackerRole } from "@/constants/Roles"
-import { OrganizationType } from "@/types/OrganizationType"
 import { useNavigate } from "react-router-dom"
 import { Hub } from "aws-amplify/utils"
 import { useTranslation } from 'react-i18next'
+import { OrgDataContext } from "@/contexts/OrgDataContext"
 
 interface LoginFormInputs {
     username: string
@@ -19,7 +19,8 @@ interface LoginFormInputs {
 
 const LoginForm = () => {
     const { handleSubmit, register } = useForm<LoginFormInputs>()
-    const { organizationLoginImageUrl, setOrganizationLoginImageUrl, setUserId } = useContext(RoleContext)
+    const { setUserId } = useContext(RoleContext)
+    const { organizationLoginImageUrl, setOrganizationLoginImageUrl } = useContext(OrgDataContext)
     const [orgName, setOrgName] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
     const [orgId, setOrgId] = useState('')
@@ -32,8 +33,7 @@ const LoginForm = () => {
         const pathOrgSlug = path.split('.')[0]
         getOrgData(pathOrgSlug)
 
-        // @ts-ignore data is type AuthUser
-        const cleanup = Hub.listen('auth', async ({ payload: { event, data } }) => {
+        const cleanup = Hub.listen('auth', async ({ payload: { event } }) => {
             if (event === "signedIn") {
                 try {
                     await postLoginChecks()
@@ -103,9 +103,9 @@ const LoginForm = () => {
             const sessionUserId = session.userSub
 
             if (sessionUserId) {
-                const userOrgIds: string | OrganizationType[] = await getOrganizationIdForUser(sessionUserId, heaviestRoleFromGroups)
+                const userOrgIds: string | string[] = await getOrgIdForUser(sessionUserId, heaviestRoleFromGroups)
 
-                if ((Array.isArray(userOrgIds) && !userOrgIds.some((o) => o.id === id)) || userOrgIds !== id) {
+                if ((Array.isArray(userOrgIds) && !userOrgIds.some((o) => o === id)) || userOrgIds !== id) {
                     signOut()
                     throw 'User does not have access to organization.'
                 }

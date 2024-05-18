@@ -6,14 +6,14 @@ const getSchools = async (orgId: string) => {
     const { client } = await RiderTrackerAPI.getClient()
     const getSchoolsResponse = await client.organizationsOrgIdSchoolsGet({ orgId })
 
-    return handleApiResponse(getSchoolsResponse)
+    return handleApiResponse<SchoolType[]>(getSchoolsResponse)
 }
 
 const getSchoolById = async (orgId: string, id: string) => {
     const { client } = await RiderTrackerAPI.getClient()
     const getSchoolResponse = await client.organizationsOrgIdSchoolsIdGet({ orgId, id })
 
-    return handleApiResponse(getSchoolResponse)
+    return handleApiResponse<SchoolType>(getSchoolResponse)
 }
 
 const updateSchool = async (orgId: string, id: string, school: SchoolType) => {
@@ -24,29 +24,29 @@ const updateSchool = async (orgId: string, id: string, school: SchoolType) => {
     }
     const updateSchoolResponse = await client.organizationsOrgIdSchoolsIdPut({ orgId, id }, updatedSchool)
 
-    return handleApiResponse(updateSchoolResponse)
+    return handleApiResponse<object>(updateSchoolResponse)
 }
 
 const createSchool = async (orgId: string, body: SchoolType) => {
     const { client } = await RiderTrackerAPI.getClient()
     const createSchoolResponse = await client.organizationsOrgIdSchoolsPost({ orgId }, body)
 
-    return handleApiResponse(createSchoolResponse)
+    return handleApiResponse<object>(createSchoolResponse)
 }
 
 const deleteSchool = async (orgId: string, id: string) => {
     const { client } = await RiderTrackerAPI.getClient()
     const deleteSchoolsResponse = await client.organizationsOrgIdSchoolsIdDelete({ orgId, id }, {})
     
-    return handleApiResponse(deleteSchoolsResponse)
+    return handleApiResponse<object>(deleteSchoolsResponse)
 }
 
 export interface SchoolApiFunctionTypes {
     getSchools(orgId: string): Promise<SchoolType[]>,
     getSchoolById(orgId: string, id: string): Promise<SchoolType>,
-    updateSchool(orgId: string, id: string, school: SchoolType): Promise<any>,
-    createSchool(orgId: string, school: SchoolType): Promise<any>,
-    deleteSchool(orgId: string, id: string): Promise<any>
+    updateSchool(orgId: string, id: string, school: SchoolType): Promise<object>,
+    createSchool(orgId: string, school: SchoolType): Promise<object>,
+    deleteSchool(orgId: string, id: string): Promise<object>
 }
 
 export default {

@@ -1,5 +1,5 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide } from '@mui/material'
-import { forwardRef, useContext, useState } from 'react'
+import { ReactElement, forwardRef, useContext, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { Controller, FormProvider, useFieldArray, useForm } from "react-hook-form"
 import { BusType } from '../types/BusType'
@@ -9,20 +9,17 @@ import { ScanType } from "../types/ScanType"
 import { AddEntityModalProps, FormDataType } from '../types/FormTypes'
 import { pickRenderElement } from '../helpers/FormRenderHelpers'
 import { SchoolType } from '@/types/SchoolType'
-import { TransitionProps } from '@mui/material/transitions'
 import { ErrorMessage } from "@hookform/error-message"
 import { StopType } from '@/types/StopType'
 import { UserType } from '@/types/UserType'
-import { OrgDataContext } from '@/contexts/OrganizationDataContext'
+import { OrgDataContext } from '@/contexts/OrgDataContext'
 
-export const Transition = forwardRef(function Transition(
-    props: TransitionProps & {
-      children: React.ReactElement<any, any>;
-    },
-    ref: React.Ref<unknown>,
-  ) {
+export const Transition = forwardRef<HTMLDivElement, { children: ReactElement }>(function Transition<P>(
+    props: P & { children: React.ReactElement },
+    ref: React.Ref<HTMLDivElement>
+) {
     return <Slide direction="up" ref={ref} {...props} />;
-  });
+});
   
 
 const AddEntityModal = <T extends 

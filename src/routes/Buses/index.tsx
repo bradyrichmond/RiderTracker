@@ -11,7 +11,7 @@ import { GridColDef } from '@mui/x-data-grid'
 import { RoleContext } from "@/contexts/RoleContextProvider"
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from "@/constants/Roles"
 import { useTranslation } from 'react-i18next'
-import { OrgDataContext } from "@/contexts/OrganizationDataContext"
+import { OrgDataContext } from "@/contexts/OrgDataContext"
 
 const Buses = () => {
     const [buses, setBuses] = useState<BusType[]>([])
@@ -82,7 +82,7 @@ const Buses = () => {
         return initialGridColumns
     }
 
-    const processRowUpdate = async (updatedRow: BusType, _originalRow: BusType) => {
+    const processRowUpdate = async (updatedRow: BusType) => {
         return updatedRow
     }
     

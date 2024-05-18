@@ -14,7 +14,7 @@ import { v4 as uuidv4 } from "uuid"
 import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
 import { useTranslation } from 'react-i18next'
 import { AddressType } from "@/types/AddressType"
-import { OrgDataContext } from "@/contexts/OrganizationDataContext"
+import { OrgDataContext } from "@/contexts/OrgDataContext"
 
 const Schools = () => {
     const [schools, setSchools] = useState<SchoolType[]>([])

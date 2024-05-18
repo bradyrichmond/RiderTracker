@@ -1,13 +1,10 @@
 import '@testing-library/jest-dom'
 import { render, screen, waitFor, waitForElementToBeRemoved } from "@testing-library/react"
-import { ProviderWrapperAsRole } from '@/helpers/ProviderWrapper'
+import { AsRole, ProviderWrapperAsRole } from '@/helpers/ProviderWrapper'
 import userEvent from '@testing-library/user-event'
 import Stops from '..'
-// @ts-ignore
-import StopApis from '@/API/StopApis'
+import { PropsWithChildren } from 'react'
 jest.mock('@/API/StopApis')
-// @ts-ignore
-import OrganizationApis from '@/API/OrganizationApis'
 jest.mock('@/API/OrganizationApis')
 
 afterEach(() => {
@@ -75,7 +72,7 @@ describe('Stops Tests', () => {
   })
 
   it('hides the delete action buttons in the rows for unauthorized users', async () => {
-    render(<Stops />, { wrapper: (props: any) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" />})
+    render(<Stops />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" />})
 
     await waitFor(async () => {
       const viewDetailButtons = await screen.findAllByTestId("InfoIcon")

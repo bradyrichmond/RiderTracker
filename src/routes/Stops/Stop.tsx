@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react"
 import { StopType } from '@/types/StopType'
 import { useParams } from 'react-router-dom'
 import { ApiContext } from "@/contexts/ApiContextProvider"
-import { OrgDataContext } from "@/contexts/OrganizationDataContext"
+import { OrgDataContext } from "@/contexts/OrgDataContext"
 
 const Stop = () => {
     const [stop, setStop] = useState<StopType>()

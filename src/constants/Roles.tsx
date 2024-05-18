@@ -17,7 +17,7 @@ export enum RIDER_TRACKER_ROLES {
 const riderTrackerRole = ["RiderTracker_Wizard", "RiderTracker_OrgAdmin", "RiderTracker_Driver", "RiderTracker_Guardian"]
 export type RiderTrackerRole = (typeof riderTrackerRole)[number]
 
-export const isRiderTrackerRole = (x: any): x is RiderTrackerRole => {
+export const isRiderTrackerRole = (x: string): x is RiderTrackerRole => {
     return riderTrackerRole.includes(x)
 }
   

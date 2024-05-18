@@ -7,7 +7,7 @@ import ThemeContextProvider from './contexts/ThemeContextProvider'
 import { SnackbarContextProvider } from './contexts/SnackbarContextProvider'
 import './helpers/I18n'
 import { I18nContextProvider } from './contexts/I18nContextProvider'
-import { OrgDataContextProvider } from './contexts/OrganizationDataContext'
+import { OrgDataContextProvider } from './contexts/OrgDataContext'
 
 function App() {
   return (

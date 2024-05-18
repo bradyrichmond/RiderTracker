@@ -4,7 +4,7 @@ import { BusType } from '@/types/BusType'
 import { useParams } from 'react-router-dom'
 import { ApiContext } from "@/contexts/ApiContextProvider"
 import { Trans, useTranslation } from 'react-i18next'
-import { OrgDataContext } from "@/contexts/OrganizationDataContext"
+import { OrgDataContext } from "@/contexts/OrgDataContext"
 
 const Bus = () => {
     const [bus, setBus] = useState<BusType>()

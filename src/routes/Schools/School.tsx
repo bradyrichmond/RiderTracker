@@ -1,5 +1,5 @@
 import { ApiContext } from "@/contexts/ApiContextProvider"
-import { OrgDataContext } from "@/contexts/OrganizationDataContext"
+import { OrgDataContext } from "@/contexts/OrgDataContext"
 import { SchoolType } from "@/types/SchoolType"
 import { Box, Typography } from "@mui/material"
 import { useContext, useEffect, useState } from "react"

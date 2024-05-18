@@ -7,7 +7,7 @@ export const ThemeContext = createContext({
   value: 'light'
 })
 
-export const generateThemeOptions = (mode: PaletteMode): ThemeOptions => {
+const generateThemeOptions = (mode: PaletteMode): ThemeOptions => {
     return {
         palette: {
             mode,

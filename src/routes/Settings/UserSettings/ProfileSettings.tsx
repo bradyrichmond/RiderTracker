@@ -9,7 +9,7 @@ import useFileUpload from "@/hooks/useFileUpload"
 import { MB } from "@/constants/Numbers"
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh'
 import { useTranslation } from 'react-i18next'
-import { OrgDataContext } from "@/contexts/OrganizationDataContext"
+import { OrgDataContext } from "@/contexts/OrgDataContext"
 
 const ProfileSettings = () => {
     const { api } = useContext(ApiContext)

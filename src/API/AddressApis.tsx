@@ -1,4 +1,4 @@
-import { AddressType } from "../types/AddressType"
+import { AddressType, GeoapifyValidateResponse } from "../types/AddressType"
 import RiderTrackerAPI from "."
 import { handleApiResponse } from "@/helpers/ApiHelpers"
 
@@ -6,47 +6,47 @@ const getAddresses = async (orgId: string) => {
     const { client } = await RiderTrackerAPI.getClient()
     const addressesResponse = await client.organizationsOrgIdAddressesGet({ orgId })
 
-    return handleApiResponse(addressesResponse)
+    return handleApiResponse<AddressType[]>(addressesResponse)
 }
 
 const getAddressById = async (id: string) => {
     const { client } = await RiderTrackerAPI.getClient()
     const addressResponse = await client.organizationsOrgIdAddressesIdGet({ id })
 
-    return handleApiResponse(addressResponse)
+    return handleApiResponse<AddressType>(addressResponse)
 }
 
 const createAddress = async (orgId: string, body: AddressType) => {
     const { client } = await RiderTrackerAPI.getClient()
     const createAddressResponse = await client.organizationsOrgIdAddressesPost({ orgId }, body)
 
-    return handleApiResponse(createAddressResponse)
+    return handleApiResponse<object>(createAddressResponse)
 }
 
 const deleteAddress = async (orgId: string, id: string) => {
     const { client } = await RiderTrackerAPI.getClient()
     const deleteAddressResponse = await client.organizationsOrgIdAddressesIdDelete({ orgId, id })
 
-    return handleApiResponse(deleteAddressResponse)
+    return handleApiResponse<object>(deleteAddressResponse)
 }
 
 const validateAddress = async (address: string) => {
     const { client } = await RiderTrackerAPI.getClient()
     const validationResponse = await client.validateAddressPost({}, { address })
 
-    const preEvaluationAddress = handleApiResponse(validationResponse)
+    const preEvaluationAddress: GeoapifyValidateResponse = handleApiResponse<GeoapifyValidateResponse>(validationResponse)
     const evaluated = evaluateAddressData(preEvaluationAddress)
     return evaluated
 }
 
 const getBulkAddressesByIds = async (orgId: string, addressIds: string[]) => {
     const api = await RiderTrackerAPI.getClient()
-    const usersResponse = await api.client.organizationsOrgIdAddressesBatchByIdPost({ orgId }, addressIds)
+    const addressesResponse = await api.client.organizationsOrgIdAddressesBatchByIdPost({ orgId }, addressIds)
     
-    return handleApiResponse(usersResponse)
+    return handleApiResponse<AddressType[]>(addressesResponse)
 }
 
-const evaluateAddressData = (result: any) => {
+const evaluateAddressData = (result: GeoapifyValidateResponse) => {
     const ACCEPT_LEVEL = 0.75;
 
     const { body } = result
@@ -80,9 +80,9 @@ const evaluateAddressData = (result: any) => {
 export interface AddressApiFunctionTypes {
     getAddresses(orgId: string): Promise<AddressType[]>,
     getAddressById(id: string): Promise<AddressType>,
-    createAddress(orgId: string, address: AddressType): Promise<any>,
-    validateAddress(address: string): Promise<any>,
-    deleteAddress(orgId: string, id: string): Promise<void>,
+    createAddress(orgId: string, address: AddressType): Promise<object>,
+    validateAddress(address: string): Promise<AddressType>,
+    deleteAddress(orgId: string, id: string): Promise<object>,
     getBulkAddressesByIds(orgId: string, addressIds: string[]): Promise<AddressType[]>
 }
 

@@ -9,7 +9,7 @@ import { RoleContext } from "@/contexts/RoleContextProvider"
 import { ApiContext } from "@/contexts/ApiContextProvider"
 import { RIDER_TRACKER_ROLES } from "@/constants/Roles"
 import { useTranslation } from 'react-i18next'
-import { OrgDataContext } from "@/contexts/OrganizationDataContext"
+import { OrgDataContext } from "@/contexts/OrgDataContext"
 
 interface OrganizationAdminCardProps extends UserType {
     index: number

@@ -1,22 +1,19 @@
 import { Alert, AlertColor, Snackbar } from "@mui/material";
 import { createContext } from "react"
 import { PropsWithChildren, useState } from "react"
+
+interface SnackbarContextProps {
+    showErrorSnackbar: (message: string, visibilityMs?: number) => void
+}
  
-export const SnackbarContext = createContext({
-    setSnackbarMessage: (_s: string) => {},
-    setSnackbarSeverity: (_ac: AlertColor) => {},
-    setSnackbarVisibilityMs: (_n: number) => {},
-    setSnackbarVariant: (_s: SnackbarVariants) => {},
-    showErrorSnackbar: (_message: string, _visibilityMs?: number) => {}
+export const SnackbarContext = createContext<SnackbarContextProps>({
+    showErrorSnackbar: () => {}
 })
 
-type SnackbarVariants = "filled" | "standard" | "outlined"
-
-export const SnackbarContextProvider = ({ children }: PropsWithChildren<{}>) => {
+export const SnackbarContextProvider = ({ children }: PropsWithChildren) => {
     const [snackbarMessage, setSnackbarMessage] = useState<string>('')
     const [snackbarSeverity, setSnackbarSeverity] = useState<AlertColor>('error')
     const [snackbarVisibilityMs, setSnackbarVisibilityMs] = useState<number>(5000)
-    const [snackbarVariant, setSnackbarVariant] = useState<SnackbarVariants>("filled")
 
     const onSnackbarClose = () => {
         setSnackbarMessage('')
@@ -29,13 +26,13 @@ export const SnackbarContextProvider = ({ children }: PropsWithChildren<{}>) => 
     }
 
     return (
-        <SnackbarContext.Provider value={{ setSnackbarMessage, setSnackbarSeverity, setSnackbarVisibilityMs, setSnackbarVariant, showErrorSnackbar }}>
+        <SnackbarContext.Provider value={{ showErrorSnackbar }}>
             {children}
             <Snackbar open={!!snackbarMessage} autoHideDuration={snackbarVisibilityMs} onClose={onSnackbarClose} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
                 <Alert
                     onClose={onSnackbarClose}
                     severity={snackbarSeverity}
-                    variant={snackbarVariant}
+                    variant='filled'
                     sx={{ width: '100%' }}
                 >
                     {snackbarMessage}

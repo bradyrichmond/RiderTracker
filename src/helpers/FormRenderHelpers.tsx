@@ -10,8 +10,8 @@ import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
 export const pickRenderElement = (field: FormInputType, index: number) => {
     const { register, setValue, resetField } = useFormContext<FormDataType>()
     const { randomName, generateRandomName } = useRandomNameGenerator()
-    // @ts-ignore I want these to be used later
-    const { setSnackbarMessage, setSnackbarSeverity, setSnackbarVariant, setSnackbarVisibilityMs } = useContext(SnackbarContext)
+    const { showErrorSnackbar } = useContext(SnackbarContext)
+    const fieldName: `inputs.${number}.name` = `inputs.${index}.name`
 
     const updateRandomName = (fieldName: `inputs.${number}.name`) => {
         generateRandomName()
@@ -34,13 +34,19 @@ export const pickRenderElement = (field: FormInputType, index: number) => {
         const emailPattern = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/
 
         if (!val) {
-            setSnackbarMessage('Email address is required')
+            showErrorSnackbar('Email address is required')
         }
         
         if (!val.match(emailPattern)) {
-            setSnackbarMessage('Invalid email address')
+            showErrorSnackbar('Invalid email address')
         }
     }
+
+    useEffect(() => {
+        if (field.inputType === 'randomNameGenerator') {
+            updateRandomName(fieldName)
+        }
+    }, [fieldName])
 
     switch (field.inputType) {
         case "select":
@@ -93,11 +99,6 @@ export const pickRenderElement = (field: FormInputType, index: number) => {
                     </>
                 )
         case "randomNameGenerator":
-            const fieldName: `inputs.${number}.name` = `inputs.${index}.name`
-            useEffect(() => {
-                updateRandomName(fieldName)
-            }, [fieldName])
-
             return (
                 <Box display='flex' flexDirection='row' alignItems='center'>
                    <TextField fullWidth label='Random Name' 

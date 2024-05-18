@@ -1,23 +1,24 @@
 import { useLocalStorage } from "@/hooks/useLocalStorage"
-import { createContext, useEffect } from "react"
+import { Dispatch, SetStateAction, createContext, useEffect } from "react"
 import { PropsWithChildren, useState } from "react"
 import { changeLanguage } from 'i18next'
- 
-export const I18nContext = createContext({
-    language: 'en',
-    setLanguage(_lng: SupportedLangs) { },
-    open: false,
-    setOpen(_open: boolean) { }
-});
+import { SupportedLangs } from "@/constants/SupportedLangs"
 
-export enum SupportedLangs {
-    EN = "en",
-    ES = "es",
-    FR = "fr",
-    ZH = "zh"
+interface I18nContextProps {
+    language: SupportedLangs
+    setLanguage: Dispatch<SetStateAction<SupportedLangs>>
+    open: boolean,
+    setOpen: Dispatch<SetStateAction<boolean>>
 }
 
-export const I18nContextProvider = ({ children }: PropsWithChildren<{}>) => {
+export const I18nContext = createContext<I18nContextProps>({
+    language: SupportedLangs.EN,
+    setLanguage: () => {},
+    open: false,
+    setOpen: () => {}
+});
+
+export const I18nContextProvider = ({ children }: PropsWithChildren) => {
     const [language, setLanguage] = useLocalStorage<SupportedLangs>('riderTracker_locale', SupportedLangs.EN)
     const [open, setOpen] = useState(false)
 

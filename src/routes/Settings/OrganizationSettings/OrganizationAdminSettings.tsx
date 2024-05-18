@@ -12,7 +12,7 @@ import { SnackbarContext } from "@/contexts/SnackbarContextProvider"
 import { UserType } from "@/types/UserType"
 import { AWSUserType } from "@/API/AdminApis"
 import { useTranslation } from 'react-i18next'
-import { OrgDataContext } from "@/contexts/OrganizationDataContext"
+import { OrgDataContext } from "@/contexts/OrgDataContext"
 
 const OrganizationAdminSettings = () => {
     const { orgId } = useContext(OrgDataContext)

@@ -7,7 +7,7 @@ import AutoSizer from "react-virtualized-auto-sizer"
 import UserCard from "./UserCard"
 import { useTranslation } from 'react-i18next'
 import SearchBar from "@/components/SearchBar"
-import { OrgDataContext } from "@/contexts/OrganizationDataContext"
+import { OrgDataContext } from "@/contexts/OrgDataContext"
 
 const UserManagement = () => {
     const [users, setUsers] = useState<UserType[]>([])
@@ -60,7 +60,7 @@ const UserManagement = () => {
         return <UserCard user={user} updateUsers={updateListAfterDelete} style={style} />
     }
 
-    const getItemSize = (_index: number) => {
+    const getItemSize = () => {
         return 150
     }
 

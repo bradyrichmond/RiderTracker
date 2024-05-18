@@ -1,6 +1,6 @@
 import { OrganizationType } from "@/types/OrganizationType"
 
-const getOrganizations = async (_token: string) => Promise.resolve([
+const getOrganizations = async () => Promise.resolve([
     {
         "id": "123"
     },
@@ -9,17 +9,17 @@ const getOrganizations = async (_token: string) => Promise.resolve([
     }
 ])
 
-const getOrganizationById = async (_token: string, id: string) => Promise.resolve({ id })
+const getOrganizationById = async (id: string) => Promise.resolve({ id })
 
-const createOrganization = async (_token: string, _body: OrganizationType) => Promise.resolve({})
+const createOrganization = async () => Promise.resolve({})
 
-const deleteOrganization = async (_token: string, _id: string) => Promise.resolve({})
+const deleteOrganization = async () => Promise.resolve({})
 
 export interface OrganizationApiFunctionTypes {
-    getOrganizations(token: string): Promise<OrganizationType[]>,
-    getOrganizationById(token: string, id: string): Promise<OrganizationType>,
-    createOrganization(token: string, organization: OrganizationType): Promise<OrganizationType>,
-    deleteOrganization(token: string, id: string): Promise<OrganizationType>
+    getOrganizations(): Promise<OrganizationType[]>,
+    getOrganizationById(id: string): Promise<OrganizationType>,
+    createOrganization(organization: OrganizationType): Promise<object>,
+    deleteOrganization(id: string): Promise<object>
 }
 
 export default {

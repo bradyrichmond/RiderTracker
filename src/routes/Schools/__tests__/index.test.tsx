@@ -1,16 +1,11 @@
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import { render, screen, waitFor, waitForElementToBeRemoved } from "@testing-library/react"
-import { ProviderWrapperAsRole } from '@/helpers/ProviderWrapper'
-// @ts-ignore
-import SchoolApis from '@/API/SchoolApis'
-jest.mock('@/API/SchoolApis')
-// @ts-ignore
-import AddressApis from '@/API/AddressApis'
-jest.mock('@/API/AddressApis')
-// @ts-ignore
-import OrganizationApis from '@/API/OrganizationApis'
+import { AsRole, ProviderWrapperAsRole } from '@/helpers/ProviderWrapper'
 import Schools from '..'
+import { PropsWithChildren } from 'react'
+jest.mock('@/API/SchoolApis')
+jest.mock('@/API/AddressApis')
 jest.mock('@/API/OrganizationApis')
 
 afterEach(() => {
@@ -59,7 +54,7 @@ describe('Schools Tests', () => {
   })
 
   it('hides add school button when not authorized to add schools', async () => {
-    render(<Schools />, { wrapper: (props: any) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" />})
+    render(<Schools />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" />})
 
     await waitFor(() => {
       expect(screen.queryByText(/add school/i)).not.toBeInTheDocument()
@@ -88,7 +83,7 @@ describe('Schools Tests', () => {
   })
 
   it('hides the delete action buttons in the rows for unauthorized users', async () => {
-    render(<Schools />, { wrapper: (props: any) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" />})
+    render(<Schools />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" />})
 
     await waitFor(async () => {
       const viewDetailButtons = await screen.findAllByTestId("InfoIcon")

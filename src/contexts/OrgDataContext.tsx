@@ -1,6 +1,6 @@
 import OrganizationPickerDialog from "@/components/OrganizationPickerDialog";
 import { OrganizationType } from "@/types/OrganizationType";
-import { createContext } from "react";
+import { Dispatch, SetStateAction, createContext } from "react";
 import { PropsWithChildren, useState } from "react"
 
 const initialOrg: OrganizationType = {
@@ -9,22 +9,35 @@ const initialOrg: OrganizationType = {
     orgSlug: 'fake'
 }
 
-export const OrgDataContext = createContext({
-    // @ts-ignore
+interface OrgDataContextProps {
+    orgId: string
+    setOrgId: Dispatch<SetStateAction<string>>
+    orgStopNames: string[]
+    setOrgStopNames: Dispatch<SetStateAction<string[]>>
+    organizationArray: OrganizationType[]
+    setOrganizationArray: Dispatch<SetStateAction<OrganizationType[]>>
+    organizationOverride: boolean
+    setOrganizationOverride: Dispatch<SetStateAction<boolean>>
+    organizationLoginImageUrl: string
+    setOrganizationLoginImageUrl: Dispatch<SetStateAction<string>>
+    toggleShowOrganizationSelector: () => void
+}
+
+export const OrgDataContext = createContext<OrgDataContextProps>({
     orgId: '',
-    setOrgId: (_neworgId: string) => {},
+    setOrgId: () => {},
     orgStopNames: [""],
-    setOrgStopNames: (_newStopNames: string[]) => {},
+    setOrgStopNames: () => {},
     organizationArray: [initialOrg],
-    setOrganizationArray: (_newStopNames: OrganizationType[]) => {},
+    setOrganizationArray: () => {},
     organizationOverride: false,
-    setOrganizationOverride: (_bool: boolean) => {},
+    setOrganizationOverride: () => {},
     organizationLoginImageUrl: '',
-    setOrganizationLoginImageUrl: (_url: string) => {},
+    setOrganizationLoginImageUrl: () => {},
     toggleShowOrganizationSelector: () => {}
 });
 
-export const OrgDataContextProvider = ({ children }: PropsWithChildren<{}>) => {
+export const OrgDataContextProvider = ({ children }: PropsWithChildren) => {
     const [orgId, setOrgId] = useState<string>('')
     const [orgStopNames, setOrgStopNames] = useState<string[]>([])
     const [organizationOverride, setOrganizationOverride] = useState(false)

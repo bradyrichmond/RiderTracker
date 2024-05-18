@@ -3,7 +3,7 @@ import { useContext, useEffect, useState } from "react"
 import { useParams } from 'react-router-dom'
 import { ApiContext } from "@/contexts/ApiContextProvider"
 import { GuardianType } from "@/types/UserType"
-import { OrgDataContext } from "@/contexts/OrganizationDataContext"
+import { OrgDataContext } from "@/contexts/OrgDataContext"
 
 const Guardian = () => {
     const [guardian, setGuardian] = useState<GuardianType>()
