@@ -9,7 +9,7 @@ import bg5 from './images/bg5.jpg'
 import bg6 from './images/bg6.jpg'
 import LoginForm from './LoginForm'
 import { fetchAuthSession } from 'aws-amplify/auth'
-import { RoleContext } from '@/contexts/RoleContextProvider'
+import { RoleContext } from '@/contexts/RoleContext'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 

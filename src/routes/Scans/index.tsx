@@ -1,7 +1,7 @@
 import EntityViewer from '@/components/EntityViewer'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
 import { ApiContext } from '@/contexts/ApiContextProvider'
-import { RoleContext } from '@/contexts/RoleContextProvider'
+import { RoleContext } from '@/contexts/RoleContext'
 import { ScanType } from '@/types/ScanType'
 import { useContext, useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -88,10 +88,9 @@ const Scans = () => {
             const fetchedLocation = await getCurrentPosition()
             const generatedLocation = locationFactory(fetchedLocation)
             const scanWithLocation = { ...newScan, deviceLocationOnSubmit: generatedLocation, manualScan: true }
-            return await api.scans.createScan(orgId, scanWithLocation)
+            await api.scans.createScan(orgId, scanWithLocation)
         } catch (e) {
             console.log(e)
-            return {}
         }
     }
 

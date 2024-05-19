@@ -8,7 +8,7 @@ import InfoIcon from '@mui/icons-material/Info'
 import NoTransferIcon from '@mui/icons-material/NoTransfer'
 import { ApiContext } from '@/contexts/ApiContextProvider'
 import { GridColDef } from '@mui/x-data-grid'
-import { RoleContext } from '@/contexts/RoleContextProvider'
+import { RoleContext } from '@/contexts/RoleContext'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
 import { useTranslation } from 'react-i18next'
 import { OrgDataContext } from '@/contexts/OrgDataContext'
@@ -36,7 +36,7 @@ const Buses = () => {
     }
 
     const createBusAction = async (newBus: BusType) => {
-        return await api.buses.createBus(orgId, newBus)
+        await api.buses.createBus(orgId, newBus)
     }
 
     const generateGridColumns = (): GridColDef[] => {

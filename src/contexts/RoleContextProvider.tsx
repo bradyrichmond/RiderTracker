@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, createContext, useContext, useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { getHeaviestRole } from '@/helpers/GetHeaviestRole'
 import { RiderTrackerRole, isRiderTrackerRole } from '@/constants/Roles'
 import { PropsWithChildren, useState } from 'react'
@@ -8,38 +8,7 @@ import RiderTrackerAPI from '@/API'
 import { getOrgIdForUser } from '@/helpers/GetOrganizationIdForUser'
 import { signOut } from 'aws-amplify/auth'
 import { OrgDataContext } from './OrgDataContext'
-
-interface RoleContextProps {
-    heaviestRole: string
-    setHeaviestRole: Dispatch<SetStateAction<string>>
-    userFullName: string
-    setUserFullName: Dispatch<SetStateAction<string>>
-    userEmail: string
-    setUserEmail: Dispatch<SetStateAction<string>>
-    userId: string
-    setUserId: Dispatch<SetStateAction<string>>
-    accessToken: string
-    setAccessToken: Dispatch<SetStateAction<string>>
-    userPictureUrl: string
-    setUserPictureUrl: Dispatch<SetStateAction<string>>
-    updateUserData: () => Promise<void>
-}
-
-export const RoleContext = createContext<RoleContextProps>({
-    heaviestRole: 'RiderTracker_Guardian',
-    setHeaviestRole: () => {},
-    userFullName: '',
-    setUserFullName: () => {},
-    userEmail: '',
-    setUserEmail: () => {},
-    userId: '',
-    setUserId: () => {},
-    accessToken: '',
-    setAccessToken: () => {},
-    userPictureUrl: '',
-    setUserPictureUrl: () => {},
-    updateUserData: async () => {}
-});
+import { RoleContext } from './RoleContext'
 
 export const RoleContextProvider = ({ children }: PropsWithChildren) => {
     const [heaviestRole, setHeaviestRole] = useState('RiderTracker_Unauthenticated')
@@ -107,15 +76,20 @@ export const RoleContextProvider = ({ children }: PropsWithChildren) => {
     const selectOrganizationAction = async () => {
         try {
             if (userId && heaviestRole) {
-                const orgId = await getOrgIdForUser(userId, heaviestRole)
-                if (Array.isArray(orgId)) {
-                    const orgs = await api.organizations.getOrganizations()
-                    setOrganizationArray(orgs)
-                    toggleShowOrganizationSelector()
+                const fetchedOrgId = await getOrgIdForUser(userId, heaviestRole)
+                if (fetchedOrgId) {
+                    if (Array.isArray(fetchedOrgId)) {
+                        const orgs = await api.organizations.getOrganizations()
+                        setOrganizationArray(orgs)
+                        toggleShowOrganizationSelector()
+                        return
+                    }
+
+                    setOrgId(fetchedOrgId)
                     return
                 }
 
-                setOrgId(orgId)
+                throw 'No orgId found'
             }
         } catch (e) {
             console.error(e as string)
@@ -137,9 +111,7 @@ export const RoleContextProvider = ({ children }: PropsWithChildren) => {
             userPictureUrl, setUserPictureUrl,
             updateUserData
         }}>
-            <>
-                {children}
-            </>
+            {children}
         </RoleContext.Provider>
     );
 };

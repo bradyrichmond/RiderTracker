@@ -17,7 +17,7 @@ interface NavigationDrawerProps {
 export interface NavItemType {
     label: string
     path: string
-    Icon?: ComponentType
+    Icon: ComponentType
 }
 
 const NavigationDrawer = ({ toggleDrawer, open, navItems }: NavigationDrawerProps) => {

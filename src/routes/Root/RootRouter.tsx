@@ -2,7 +2,7 @@ import {
     RouterProvider
 } from 'react-router-dom'
 import { useContext, useEffect } from 'react'
-import { RoleContext } from '@/contexts/RoleContextProvider'
+import { RoleContext } from '@/contexts/RoleContext'
 import { createRouterObject } from '@/helpers/CreateRouterObject'
 import { Hub } from 'aws-amplify/utils'
 

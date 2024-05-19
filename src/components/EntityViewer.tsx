@@ -1,7 +1,7 @@
 import { Box, Button, Typography } from '@mui/material'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { useContext, useEffect, useState } from 'react'
-import { RoleContext } from '../contexts/RoleContextProvider'
+import { RoleContext } from '../contexts/RoleContext'
 import { useParams } from 'react-router-dom'
 import { BusType } from '../types/BusType'
 import { OrganizationType } from '../types/OrganizationType'
@@ -22,7 +22,7 @@ export interface ModalProps<T> {
 }
 
 interface EntityViewerProps<T> {
-    createEntity?(_body: T | string): Promise<object>
+    createEntity?(_body: T | string): Promise<void>
     entityFactory: (args: string[]) => T
     getEntities(id?: string): void
     entities: T[]
@@ -34,12 +34,8 @@ interface EntityViewerProps<T> {
 }
 
 
-const EntityViewer = <T extends
-        BusType | GuardianType | OrganizationType | RiderType | ScanType | SchoolType | StopType | UserType>(
-    {
-        createEntity, entityFactory, entities, getEntities, modalFormInputs, gridColumns, titleSingular, titlePlural, processRowUpdate
-    }: EntityViewerProps<T>
-) => {
+const EntityViewer = <T extends BusType | GuardianType | OrganizationType | RiderType | ScanType | SchoolType | StopType | UserType>(
+    { createEntity, entityFactory, entities, getEntities, modalFormInputs, gridColumns, titleSingular, titlePlural, processRowUpdate }: EntityViewerProps<T>) => {
     const [showModal, setShowModal] = useState(false)
     const roleContext = useContext(RoleContext)
     const { id } = useParams()

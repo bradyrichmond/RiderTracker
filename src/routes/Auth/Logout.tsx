@@ -1,4 +1,4 @@
-import { RoleContext } from '@/contexts/RoleContextProvider'
+import { RoleContext } from '@/contexts/RoleContext'
 import { Box, CircularProgress, Typography } from '@mui/material'
 import { signOut } from 'aws-amplify/auth'
 import { Hub } from 'aws-amplify/utils'

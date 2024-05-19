@@ -3,7 +3,7 @@ import { CSSProperties, useContext, useRef } from 'react'
 import { useHover } from 'usehooks-ts'
 import { useTranslation } from 'react-i18next'
 import { ApiContext } from '@/contexts/ApiContextProvider'
-import { RoleContext } from '@/contexts/RoleContextProvider'
+import { RoleContext } from '@/contexts/RoleContext'
 import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 import { Box, Paper, Typography } from '@mui/material'
 import { OrganizationAdminAction } from '../OrganizationSettings/OrganizationAdminCard'
@@ -17,16 +17,14 @@ const UserCard = ({ user, updateUsers, style }: { user: UserType, updateUsers: (
     const { api } = useContext(ApiContext)
     const { userId } = useContext(RoleContext)
     const { orgId } = useContext(OrgDataContext)
-    const { setSnackbarMessage, setSnackbarSeverity, setSnackbarVisibilityMs } = useContext(SnackbarContext)
+    const { showErrorSnackbar } = useContext(SnackbarContext)
 
     const deleteUserAction = async () => {
         if (user.id !== userId) {
             await api.users.deleteUser(orgId, user.id)
             updateUsers(user.id)
         } else {
-            setSnackbarSeverity('error')
-            setSnackbarVisibilityMs(5000)
-            setSnackbarMessage('Can\'t delete yourself')
+            showErrorSnackbar('Can\'t delete yourself')
         }
     }
 

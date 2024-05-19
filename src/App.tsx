@@ -13,17 +13,17 @@ function App() {
   return (
     <Box width='100%' height='100%'>
       <ApiContextProvider>
-        <RoleContextProvider>
-          <ThemeContextProvider>
-            <SnackbarContextProvider>
-              <I18nContextProvider>
-                <OrgDataContextProvider>
-                  <RootRouter />
-                </OrgDataContextProvider>
-              </I18nContextProvider>
-            </SnackbarContextProvider>
-          </ThemeContextProvider>
-        </RoleContextProvider>
+        <OrgDataContextProvider>
+          <RoleContextProvider>
+            <ThemeContextProvider>
+              <SnackbarContextProvider>
+                <I18nContextProvider>
+                  <RootRouter />  
+                </I18nContextProvider>
+              </SnackbarContextProvider>
+            </ThemeContextProvider>
+          </RoleContextProvider>
+        </OrgDataContextProvider>
       </ApiContextProvider>
     </Box>
   )

@@ -5,7 +5,6 @@ import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextFie
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
 import InfoIcon from '@mui/icons-material/Info'
 import WrongLocationIcon from '@mui/icons-material/WrongLocation'
-import { RoleContext } from '@/contexts/RoleContextProvider'
 import { StopType } from '@/types/StopType'
 import { ApiContext } from '@/contexts/ApiContextProvider'
 import { v4 as uuid } from 'uuid'
@@ -17,6 +16,7 @@ import ShuffleOnIcon from '@mui/icons-material/ShuffleOn'
 import { useRandomNameGenerator } from '@/hooks/useRandomNameGenerator'
 import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 import { OrgDataContext } from '@/contexts/OrgDataContext'
+import { RoleContext } from '@/contexts/RoleContext'
 
 const Stops = () => {
     const [stops, setStops] = useState<StopType[]>([])
@@ -33,9 +33,11 @@ const Stops = () => {
     const { randomName, generateRandomName } = useRandomNameGenerator()
 
     useEffect(() => {
-        const nextStopId = uuid()
-        setNewStopId(nextStopId)
-        updateStops()
+        if (orgId) {
+            const nextStopId = uuid()
+            setNewStopId(nextStopId)
+            updateStops()
+        }
     }, [orgId])
 
     const updateRandomName = () => {
@@ -48,20 +50,33 @@ const Stops = () => {
     }
 
     const createStopAction = async (newStop: StopType) => {
-        setDisableButtons(true)
-        const validStop = newStop
-        validStop.riderIds = ['']
+        try {
+            setDisableButtons(true)
+            const validStop = newStop
+            validStop.riderIds = ['']
+            validStop.stopName = randomName
 
-        const validatedAddress = await api.addresses.validateAddress(newStop.address)
-        if (validatedAddress) {
-            await api.stops.createStop(orgId, validStop)
-            const nextStopId = uuid()
-            setNewStopId(nextStopId)
-            reset()
+            const validatedAddress = await api.addresses.validateAddress(newStop.address)
+            if (validatedAddress) {
+                const newId = uuid()
+                validatedAddress.id = newId
+                validatedAddress.orgId = orgId
+                await api.addresses.createAddress(orgId, validatedAddress)
+                validStop.address = validatedAddress.id
+                await api.stops.createStop(orgId, validStop)
+                const nextStopId = uuid()
+                setNewStopId(nextStopId)
+                reset()
+                updateStops()
+            } else {
+                throw 'Adding Stop failed due to invalid address.'
+            }
+
             setDisableButtons(false)
-            updateStops()
-        } else {
-            showErrorSnackbar('Adding Stop failed due to invalid address.')
+            cancelAction()
+        } catch (e) {
+            showErrorSnackbar(e as string)
+            setDisableButtons(false)
         }
 
     }
@@ -201,7 +216,11 @@ const Stops = () => {
                 </Box>
             </Box>
             <Box flex='1'>
-                <DataGrid rows={stops} columns={generateGridColumns()} rowHeight={100} processRowUpdate={processRowUpdate} />
+                {stops ?
+                    <DataGrid rows={stops} columns={generateGridColumns()} rowHeight={100} processRowUpdate={processRowUpdate} />
+                    :
+                    null
+                }
             </Box>
         </Box>
     )

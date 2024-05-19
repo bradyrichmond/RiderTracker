@@ -2,10 +2,10 @@ import { Box, Container, Typography } from '@mui/material'
 import { Outlet } from 'react-router-dom'
 import NavigationContainer from '@/components/NavigationContainer'
 import { useContext } from 'react'
-import { RoleContext } from '@/contexts/RoleContextProvider'
+import { OrgDataContext } from '@/contexts/OrgDataContext'
 
 const Root = () => {
-    const { organizationOverride } = useContext(RoleContext)
+    const { organizationOverride } = useContext(OrgDataContext)
 
     return (
         <Box display='flex' flexDirection='column' height='100%' bgcolor='background.paper' color='text.primary' overflow='auto'>

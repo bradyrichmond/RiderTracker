@@ -13,7 +13,7 @@ const useFileUpload = ({ uploadAction, sizeLimitInBytes }: UseFileUploadArgs) =>
     const [fileName, setFileName] = useState('')
     const [temporaryFileUrl, setTemporaryFileUrl] = useState('')
     const inputFile = useRef<HTMLInputElement>(null)
-    const { setSnackbarMessage, setSnackbarSeverity, setSnackbarVisibilityMs } = useContext(SnackbarContext)
+    const { showErrorSnackbar } = useContext(SnackbarContext)
     const { t } = useTranslation('common')
 
     const openFileDialog = () => {
@@ -37,15 +37,11 @@ const useFileUpload = ({ uploadAction, sizeLimitInBytes }: UseFileUploadArgs) =>
     }
 
     const showFileTooLargeSnackbar = () => {
-        setSnackbarSeverity('error')
-        setSnackbarVisibilityMs(5000)
-        setSnackbarMessage(t('fileTooLarge'))
+        showErrorSnackbar(t('fileTooLarge'))
     }
 
     const fileUploadFailed = () => {
-        setSnackbarSeverity('error')
-        setSnackbarVisibilityMs(5000)
-        setSnackbarMessage(t('fileUploadFailed'))
+        showErrorSnackbar(t('fileUploadFailed'))
     }
 
     const uploadFile = async () => {

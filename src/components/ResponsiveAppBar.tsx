@@ -13,10 +13,10 @@ import MenuItem from '@mui/material/MenuItem'
 import AdbIcon from '@mui/icons-material/Adb'
 import { ComponentType, MouseEvent, useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { RoleContext } from '../contexts/RoleContextProvider'
+import { RoleContext } from '../contexts/RoleContext'
 import { ROUTE_PROTECTION, SettingsItemType } from '../constants/RouteProtection'
 import { useTheme } from '@mui/material'
-import { NavItemType } from './NavigationContainer'
+import { NavItemType } from './NavigationDrawer'
 
 
 interface MenuItemWithIconProps {
@@ -183,12 +183,17 @@ const ResponsiveAppBar = () => {
                                     onClose={handleCloseUserMenu}
                                 >
                                     {settings.map(({ label, action, Component, path, Icon }) => {
-                                        return Component ?
-                                            <Component key={label} />
-                                            :
-                                            <MenuItem key={label} onClick={action ? action : () => navigate(path)}>
-                                                <MenuItemWithIcon label={label} Icon={Icon} color={theme.palette.text.primary} />
-                                            </MenuItem>
+                                            if (Icon) {
+                                                return  (
+                                                    <MenuItem key={label} onClick={action ? action : () => navigate(path)}>
+                                                        <MenuItemWithIcon label={label} Icon={Icon} color={theme.palette.text.primary} />
+                                                    </MenuItem>
+                                                )
+                                            }
+
+                                            if (Component) {
+                                                return <Component key={label} />
+                                            }
                                         }
                                     )}
                                 </Menu>

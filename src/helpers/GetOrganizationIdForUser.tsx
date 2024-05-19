@@ -5,6 +5,8 @@ import { v4 as uuid } from 'uuid'
 import { OrganizationType } from '@/types/OrganizationType'
 
 export const getOrgIdForUser = async (userId: string, role: string): Promise<string | string[]> => {
+    const requestId = uuid()
+
     if (role === RIDER_TRACKER_ROLES.RIDER_TRACKER_WIZARD) {
         const wizardData: OrganizationType[] = await orgApi.default.getOrganizations()
         const mappedOrgIds: string[] = wizardData.map((w: OrganizationType) => w.id)
@@ -12,17 +14,17 @@ export const getOrgIdForUser = async (userId: string, role: string): Promise<str
     }
 
     if (role === RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN) {
-        const adminData = await userApi.default.getUserById(uuid(), userId)
+        const adminData = await userApi.default.getUserById(requestId, userId)
         return adminData.orgId
     }
 
     if (role === RIDER_TRACKER_ROLES.RIDER_TRACKER_DRIVER) {
-        const driverData = await userApi.default.getUserById(uuid(), userId)
+        const driverData = await userApi.default.getUserById(requestId, userId)
         return driverData.orgId
     }
 
     if (role === RIDER_TRACKER_ROLES.RIDER_TRACKER_GUARDIAN) {
-        const guardianData = await userApi.default.getGuardianById(uuid(), userId)
+        const guardianData = await userApi.default.getGuardianById(requestId, userId)
         return guardianData.orgId
     }
 

@@ -7,7 +7,7 @@ import { GridColDef } from '@mui/x-data-grid'
 import { Button, Tooltip } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
-import { RoleContext } from '@/contexts/RoleContextProvider'
+import { RoleContext } from '@/contexts/RoleContext'
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox'
 import { useNavigate } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid'
@@ -22,7 +22,7 @@ const Schools = () => {
     const { api } = useContext(ApiContext)
     const { heaviestRole } = useContext(RoleContext)
     const { orgId } = useContext(OrgDataContext)
-    const { setSnackbarSeverity, setSnackbarVisibilityMs, setSnackbarMessage } = useContext(SnackbarContext)
+    const { showErrorSnackbar } = useContext(SnackbarContext)
     const canEditSchool = RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.UPDATE_SCHOOL)
     const navigate = useNavigate()
     const { t } = useTranslation('schools')
@@ -142,9 +142,7 @@ const Schools = () => {
     }
 
     const showUpdateError = () => {
-        setSnackbarSeverity('error')
-        setSnackbarVisibilityMs(5000)
-        setSnackbarMessage(t('schoolUpdateError'))
+        showErrorSnackbar(t('schoolUpdateError'))
     }
 
     return (

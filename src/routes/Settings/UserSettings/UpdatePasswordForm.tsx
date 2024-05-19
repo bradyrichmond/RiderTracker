@@ -13,7 +13,7 @@ interface PasswordFormInput {
 
 const UpdatePasswordForm = () => {
     const { handleSubmit, register } = useForm<PasswordFormInput>()
-    const { setSnackbarMessage, setSnackbarSeverity, setSnackbarVisibilityMs } = useContext(SnackbarContext)
+    const { showErrorSnackbar } = useContext(SnackbarContext)
     const { api } = useContext(ApiContext)
     const { t } = useTranslation(['settings', 'common'])
 
@@ -38,15 +38,11 @@ const UpdatePasswordForm = () => {
     }
 
     const showPasswordSetFailureSnackbar = () => {
-        setSnackbarSeverity('error')
-        setSnackbarVisibilityMs(5000)
-        setSnackbarMessage(t('passwordChangeFailed', { ns: 'common' }))
+        showErrorSnackbar(t('passwordChangeFailed', { ns: 'common' }))
     }
 
     const showPasswordMismatchSnackbar = () => {
-        setSnackbarSeverity('error')
-        setSnackbarVisibilityMs(5000)
-        setSnackbarMessage(t('passwordNoMatchError', { ns: 'common' }))
+        showErrorSnackbar(t('passwordNoMatchError', { ns: 'common' }))
     }
 
     const verifyNewPasswordMatch = (pw1: string, pw2: string) => {

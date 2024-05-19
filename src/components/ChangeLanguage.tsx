@@ -2,11 +2,12 @@ import { Autocomplete, Box, Button, Dialog, DialogTitle, TextField } from '@mui/
 import { Transition } from './AddEntityModal'
 import Flag from 'react-flagkit'
 import { SyntheticEvent, useContext, useState } from 'react'
-import { I18nContext, SupportedLangs } from '@/contexts/I18nContextProvider'
+import { I18nContext } from '@/contexts/I18nContextProvider'
 import { MenuItem } from '@mui/material'
 import { MenuItemWithIcon } from './ResponsiveAppBar'
 import { useTranslation } from 'react-i18next'
 import LanguageIcon from '@mui/icons-material/Language'
+import { SupportedLangs } from '@/constants/SupportedLangs'
 
 interface LanguageOptionsType {
     label: string
