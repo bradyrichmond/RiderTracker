@@ -1,5 +1,7 @@
 import { handleApiResponse } from '@/helpers/ApiHelpers'
 import RiderTrackerAPI from '.'
+import { AddressType } from '@/types/AddressType'
+import { RIDER_TRACKER_ROLES } from '@/constants/Roles'
 
 interface CreateUserParams {
     id: string
@@ -8,10 +10,11 @@ interface CreateUserParams {
     lastName: string
     email: string
     stopIds?: string[]
+    riderIds?: string[]
     address?: string
 }
 
-interface CreateCognitoUserParams {
+export interface CreateCognitoUserParams {
     given_name: string
     family_name: string
     email: string
@@ -65,6 +68,49 @@ const createUser = async (orgId: string, body: CreateUserParams, options?: Recor
     return handleApiResponse<object>(createUserResponse)
 }
 
+const createGuardian = async (guardian: CreateCognitoUserParams, address: AddressType, orgId: string) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    
+    try {
+        // First, create the cognito user
+        const newCognitoUser = await createCognitoUser(guardian)
+    
+        // Second, create the new address
+        const newAddress = await client.organizationsOrgIdAddressesPost({ orgId }, address)
+        const id = newCognitoUser.User.Username
+        
+        // Third, create add the new user to the db
+        await createUser(orgId, {
+            id,
+            orgId,
+            firstName: guardian.given_name,
+            lastName: guardian.family_name,
+            email: guardian.email,
+            address: newAddress.id
+        })
+        
+        // Fourth, add user id to org guardian ids
+        const org = await client.organizationsOrgIdGet({ orgId })
+        let newGuardianIds: string[]
+        
+        if (!org.guardianIds) {
+            newGuardianIds = [id]
+        } else {
+            newGuardianIds = org.guardianIds.filter((g: string) => g !== '')
+            newGuardianIds.push(id)
+        }
+
+        await client.organizationsOrgIdPut({ orgId }, { guardianIds: newGuardianIds })
+
+        // Fifth, add the user to the org guardians group
+        const addUserToGroupResponse = await addUserToGroup(id, RIDER_TRACKER_ROLES.RIDER_TRACKER_GUARDIAN)
+
+        return addUserToGroupResponse
+    } catch (e) {
+        throw e as string
+    }
+}
+
 const addUserToGroup = async (username: string, groupname: string) => {
     const { client } = await RiderTrackerAPI.getClient()
     const addUserToGroupResponse = await client.adminProxyProxyAny(VERBS.POST, { proxy: 'addUserToGroup' }, { username, groupname })
@@ -114,6 +160,7 @@ const updateUser = async (orgId: string, id: string, body: Record<string, string
 export interface AdminApiFunctionTypes {
     createCognitoUser(body: CreateCognitoUserParams): Promise<AWSUserType>
     createUser(orgId: string, body: CreateUserParams, options?: Record<string, boolean>): Promise<object>
+    createGuardian(guardian: CreateCognitoUserParams, address: AddressType, orgId: string): Promise<object>
     updateUserProfileImage(orgId: string, userId: string, body: File, key: string): Promise<object>
     updateUserAttributes(body: AttributeType[], username: string): Promise<object>
     addUserToGroup(username: string, groupname: string): Promise<object>
@@ -123,6 +170,7 @@ export interface AdminApiFunctionTypes {
 export default {
     createCognitoUser,
     createUser,
+    createGuardian,
     updateUserProfileImage,
     updateUserAttributes,
     addUserToGroup,

@@ -78,7 +78,7 @@ const Stops = () => {
             showErrorSnackbar(e as string)
             setDisableButtons(false)
         }
-
+        generateRandomName()
     }
 
     const deleteStopAction = async (id: string) => {

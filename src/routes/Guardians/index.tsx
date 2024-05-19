@@ -1,9 +1,7 @@
-import EntityViewer from '@/components/EntityViewer'
 import { useNavigate } from 'react-router-dom'
-import { guardianFactory } from './GuardianFactory'
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
-import { useContext, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Button, Tooltip } from '@mui/material'
 import { ApiContext } from '@/contexts/ApiContextProvider'
 import { GridColDef } from '@mui/x-data-grid'
@@ -11,6 +9,15 @@ import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles
 import { RoleContext } from '@/contexts/RoleContext'
 import { UserType } from '@/types/UserType'
 import { OrgDataContext } from '@/contexts/OrgDataContext'
+import NewEntityViewer from '@/components/NewEntityViewer'
+import CreateGuardianDialog from './CreateGuardianDialog'
+
+export interface CreateGuardianInput {
+    given_name: string
+    family_name: string
+    email: string
+    address: string
+}
 
 const Guardians = () => {
     const [guardians, setGuardians] = useState<UserType[]>([])
@@ -18,7 +25,12 @@ const Guardians = () => {
     const { heaviestRole } = useContext(RoleContext)
     const { orgId } = useContext(OrgDataContext)
     const navigate = useNavigate()
+    const [isAddingGuardian, setIsAddingGuardian] = useState<boolean>(false)
 
+    useEffect(() => {
+        updateGuardians()
+    }, [orgId])
+    
     const updateGuardians = async () => {
         try {
             const { guardianIds } = await api.organizations.getOrganizationById(orgId)
@@ -40,14 +52,21 @@ const Guardians = () => {
         navigate(`/guardians/${guardianId}`)
     }
 
-    const createGuardianAction = async () => {
-        return 
+    const createGuardian = async (guardian: CreateGuardianInput) => {
+        const { given_name, family_name, email, address } = guardian
+        const validatedAddress = await api.addresses.validateAddress(address)
+        await api.admin.createGuardian({ given_name, family_name, email }, validatedAddress, orgId)
+        toggleShowModal()
+        updateGuardians()
     }
 
     const generateGridColumns = (): GridColDef[] => {
         const initialGridColumns: GridColDef[] = [
             { field: 'firstName',  headerName: 'First Name', flex: 1, align: 'center', headerAlign: 'center' },
             { field: 'lastName',  headerName: 'Last Name', flex: 1, align: 'center', headerAlign: 'center' },
+            { field: 'riderIds',  headerName: 'Riders', flex: 1, align: 'center', headerAlign: 'center', valueFormatter: (value: string[] | null) => {
+                return Array.isArray(value) ? value.length : 0
+            } },
             { field: 'viewDetails', headerName: '', flex: 1, align: 'center', headerAlign: 'center', renderCell: (params) => {
                 return (
                     <Button
@@ -88,20 +107,19 @@ const Guardians = () => {
         return updatedRow
     }
 
+    const toggleShowModal = () => {
+        setIsAddingGuardian((cur) => !cur)
+    }
+
     return (
-        <EntityViewer<UserType>
-            createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_GUARDIAN) ? createGuardianAction : undefined}
-            entityFactory={guardianFactory}
-            getEntities={updateGuardians}
+        <NewEntityViewer<UserType>
             entities={guardians}
-            modalFormInputs={{ inputs: [
-                { name: 'First Name' },
-                { name: 'Last Name' }
-            ] }}
             gridColumns={generateGridColumns()}
             titleSingular='Guardian'
             titlePlural='Guardians'
             processRowUpdate={processRowUpdate}
+            toggleShowModal={toggleShowModal}
+            Modal={() => <CreateGuardianDialog cancel={toggleShowModal} createGuardian={createGuardian} isAddingGuardian={isAddingGuardian} />}
         />
     )
 }
