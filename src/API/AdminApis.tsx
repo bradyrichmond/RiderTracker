@@ -2,6 +2,7 @@ import { handleApiResponse } from '@/helpers/ApiHelpers'
 import RiderTrackerAPI from '.'
 import { AddressType } from '@/types/AddressType'
 import { RIDER_TRACKER_ROLES } from '@/constants/Roles'
+import { OrganizationType } from '@/types/OrganizationType'
 
 interface CreateUserParams {
     id: string
@@ -74,10 +75,10 @@ const createGuardian = async (guardian: CreateCognitoUserParams, address: Addres
     try {
         // First, create the cognito user
         const newCognitoUser = await createCognitoUser(guardian)
+        const id = newCognitoUser.User.Username
     
         // Second, create the new address
-        const newAddress = await client.organizationsOrgIdAddressesPost({ orgId }, address)
-        const id = newCognitoUser.User.Username
+        await client.organizationsOrgIdAddressesPost({ orgId }, address)
         
         // Third, create add the new user to the db
         await createUser(orgId, {
@@ -86,11 +87,12 @@ const createGuardian = async (guardian: CreateCognitoUserParams, address: Addres
             firstName: guardian.given_name,
             lastName: guardian.family_name,
             email: guardian.email,
-            address: newAddress.id
+            address: address.id
         })
         
         // Fourth, add user id to org guardian ids
-        const org = await client.organizationsOrgIdGet({ orgId })
+        const getOrgResponse = await client.organizationsOrgIdGet({ orgId })
+        const org: OrganizationType = handleApiResponse(getOrgResponse)
         let newGuardianIds: string[]
         
         if (!org.guardianIds) {
