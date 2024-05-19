@@ -43,7 +43,7 @@ interface AttributeType {
     Name: string, Value: string
 }
 
-export enum VERBS{
+export enum VERBS {
     GET = 'GET',
     POST = 'POST',
     PUT = 'PUT',

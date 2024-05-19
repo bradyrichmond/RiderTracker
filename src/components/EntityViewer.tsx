@@ -38,7 +38,7 @@ const EntityViewer = <T extends
         BusType | GuardianType | OrganizationType | RiderType | ScanType | SchoolType | StopType | UserType>(
     {
         createEntity, entityFactory, entities, getEntities, modalFormInputs, gridColumns, titleSingular, titlePlural, processRowUpdate
-    }:EntityViewerProps<T>
+    }: EntityViewerProps<T>
 ) => {
     const [showModal, setShowModal] = useState(false)
     const roleContext = useContext(RoleContext)

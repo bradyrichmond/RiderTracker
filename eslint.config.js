@@ -36,7 +36,12 @@ export default [
       '@stylistic/no-trailing-spaces': 'warn',
       '@stylistic/no-whitespace-before-property': 'warn',
       '@stylistic/object-curly-spacing': ['warn', 'always'],
-      '@stylistic/semi-spacing': 'error',
+      '@stylistic/semi-spacing': ['warn', { 'after': true }],
+      '@stylistic/space-before-blocks': 'warn',
+      '@stylistic/space-infix-ops': 'warn',
+      '@stylistic/spaced-comment': ['error', 'always'],
+      '@stylistic/template-curly-spacing': 'warn',
+      '@stylistic/type-annotation-spacing': ['warn', { "before": false, "after": true, 'overrides': { 'arrow': { 'before': true, 'after': true } } }],
       '@stylistic/quotes': ['warn', 'single'],
       '@stylistic/quote-props': ['warn', 'as-needed']
     }

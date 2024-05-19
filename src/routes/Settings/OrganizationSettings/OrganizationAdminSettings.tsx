@@ -17,7 +17,7 @@ import { OrgDataContext } from '@/contexts/OrgDataContext'
 const OrganizationAdminSettings = () => {
     const { orgId } = useContext(OrgDataContext)
     const { api } = useContext(ApiContext)
-    const { setSnackbarSeverity, setSnackbarVisibilityMs, setSnackbarMessage } = useContext(SnackbarContext)
+    const { showErrorSnackbar } = useContext(SnackbarContext)
     const [ admins, setAdmins ] = useState<UserType[]>([])
     const [ showModal, setShowModal ] = useState(false)
     const { t } = useTranslation('settings')
@@ -30,7 +30,7 @@ const OrganizationAdminSettings = () => {
         try {
             const { adminIds } = await api.organizations.getOrganizationById(orgId)
 
-            if (adminIds){
+            if (adminIds) {
                 const orgAdmins = await api.users.getBulkUsersByIds(orgId, adminIds)
                 setAdmins(orgAdmins)
             }
@@ -86,9 +86,7 @@ const OrganizationAdminSettings = () => {
     }
 
     const showCreateAdminErrorSnackbar = () => {
-        setSnackbarSeverity('error')
-        setSnackbarVisibilityMs(5000)
-        setSnackbarMessage(t('createAdminError'))
+        showErrorSnackbar(t('createAdminError'))
     }
 
     return (

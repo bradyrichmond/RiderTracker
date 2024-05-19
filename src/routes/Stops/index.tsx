@@ -76,7 +76,7 @@ const Stops = () => {
     }
 
     const generateGridColumns = (): GridColDef[] => {
-        const initialGridColumns:GridColDef[] = [
+        const initialGridColumns: GridColDef[] = [
             { field: 'stopName',  headerName: 'Stop Name', flex: 1, align: 'center', headerAlign: 'center' },
             { field: 'address',  headerName: 'Address', flex: 1, align: 'center', headerAlign: 'center' },
             { field: 'riderIds', headerName: 'Riders', flex: 1, align: 'center', headerAlign: 'center', valueGetter: (value: string[]) => value.length },

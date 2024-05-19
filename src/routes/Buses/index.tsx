@@ -40,7 +40,7 @@ const Buses = () => {
     }
 
     const generateGridColumns = (): GridColDef[] => {
-        const initialGridColumns:GridColDef[] = [
+        const initialGridColumns: GridColDef[] = [
             { field: 'id',  headerName: 'ID', flex: 1, align: 'center', headerAlign: 'center' },
             { field: 'viewDetails', headerName: '', flex: 1, align: 'center', headerAlign: 'center', renderCell: (params) => {
                 return (
