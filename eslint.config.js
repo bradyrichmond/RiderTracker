@@ -5,7 +5,6 @@ import reactRefresh from 'eslint-plugin-react-refresh'
 import tseslint from 'typescript-eslint'
 import parser from '@typescript-eslint/parser'
 import stylistic from '@stylistic/eslint-plugin'
-import jsxAlly from 'jsx-ally'
 
 export default [
   pluginJs.configs.recommended,
@@ -19,21 +18,13 @@ export default [
     },
     plugins: {
       'react-refresh': reactRefresh,
-      '@stylistic': stylistic,
-      'jsx-ally': jsxAlly
+      '@stylistic': stylistic
     },
     rules: {
       'react-refresh/only-export-components': [
         'warn',
         { allowConstantExport: true },
       ],
-      'jsx-a11y/alt-text': [ 2, {
-        'elements': [ 'img', 'object', 'area', 'input[type=\'image\']' ],
-        'img': ['Image'],
-        'object': ['Object'],
-        'area': ['Area'],
-        'input[type=\'image\']': ['InputImage']
-      }],
       'react/react-in-jsx-scope': ['off'],
       'react/jsx-no-useless-fragment': ['warn', { 'allowExpressions': true }],
       '@stylistic/arrow-spacing': 'warn',
