@@ -3,7 +3,7 @@ import { RiderType } from '@/types/RiderType'
 import { Autocomplete, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, TextField, Tooltip, Typography } from '@mui/material'
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
-import { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { ApiContext } from '@/contexts/ApiContextProvider'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
@@ -25,19 +25,24 @@ const Riders = () => {
     const [isAddingRider, setIsAddingRider] = useState(false)
     const [disableButtons, setDisableButtons] = useState(false)
     const [newUserId, setNewUserId] = useState('')
+    const [schoolIdInput, setSchoolIdInput] = useState('')
     const navigate = useNavigate()
     const { api } = useContext(ApiContext)
     const { heaviestRole } = useContext(RoleContext)
     const { orgId } = useContext(OrgDataContext)
     const { t } = useTranslation(['riders','common'])
-    const { handleSubmit, register, reset } = useForm<RiderType>()
+    const { handleSubmit, register, reset, resetField, setValue } = useForm<RiderType>()
 
     useEffect(() => {
-        getRiders()
-        getAllSchools()
-        getAllStops()
-        getAllGuardians()
+        getData()
     }, [orgId])
+
+    const getData = async () => {
+        await getAllSchools()
+        await getAllStops()
+        await getAllGuardians()
+        await getRiders()
+    }
 
     const getRiders = async () => {
         // TODO: add pagination handling
@@ -87,21 +92,32 @@ const Riders = () => {
 
     const createRider = async (newRider: RiderType) => {
         setDisableButtons(true)
+        newRider.schoolId = schoolIdInput
         await api.riders.createRider(orgId, newRider)
         reset()
+        resetMultiSelects()
         setDisableButtons(false)
     }
 
-    const getSchoolNameById = (schoolId: string) => {
-        return allSchools.find((s) => s.id === schoolId)
+    const resetMultiSelects = () => {
+        resetField('schoolId')
+        resetField('guardianIds')
+        resetField('stopIds')
     }
 
-    const generateGridColumns = (): GridColDef[] => {
+    const getSchoolNameById = (schoolId: string) => {
+        if (schoolId) {
+            return allSchools.find((s) => s.id === schoolId)?.label
+        } 
+    }
+
+    const columns = useMemo((): GridColDef[] => {
         const initialGridColumns: GridColDef[] = [
             { field: 'firstName',  headerName: 'First Name', flex: 1, align: 'center', headerAlign: 'center' },
             { field: 'lastName',  headerName: 'Last Name', flex: 1, align: 'center', headerAlign: 'center' },
-            { field: 'school',  headerName: 'School', flex: 1, align: 'center', headerAlign: 'center', valueGetter: (value) => getSchoolNameById(value) },
-            { field: 'stops',  headerName: 'Stop(s)', flex: 1, align: 'center', headerAlign: 'center', valueFormatter: (value: string[]) => value.length },
+            { field: 'schoolId',  headerName: 'School', flex: 1, align: 'center', headerAlign: 'center', valueGetter: (value) => getSchoolNameById(value) },
+            { field: 'stopIds',  headerName: 'Stops', flex: 1, align: 'center', headerAlign: 'center', valueFormatter: (value: string[]) => Array.isArray(value) ? value.length : 0 },
+            { field: 'guardianIds',  headerName: 'Guardians', flex: 1, align: 'center', headerAlign: 'center', valueFormatter: (value: string[]) => Array.isArray(value) ? value.length : 0 },
             { field: 'viewDetails', headerName: '', flex: 1, align: 'center', headerAlign: 'center', renderCell: (params) => {
                 return (
                     <Button
@@ -136,7 +152,7 @@ const Riders = () => {
         }
 
         return initialGridColumns
-    }
+    }, [riders])
 
     const processRowUpdate = async (updatedRow: RiderType) => {
         return updatedRow
@@ -182,6 +198,7 @@ const Riders = () => {
                             options={allSchools}
                             getOptionLabel={(option: OptionsType) => option.label}
                             filterSelectedOptions
+                            onChange={ (_e, value: OptionsType | null) => setSchoolIdInput(value?.id ?? '') }
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
@@ -198,6 +215,7 @@ const Riders = () => {
                             options={allGuardians}
                             getOptionLabel={(option: OptionsType) => option.label}
                             filterSelectedOptions
+                            onChange={(_e, values: OptionsType[]) => setValue("guardianIds", values.map((v: OptionsType) => v.id))}
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
@@ -214,6 +232,7 @@ const Riders = () => {
                             options={allStops}
                             getOptionLabel={(option: OptionsType) => option.label}
                             filterSelectedOptions
+                            onChange={(_e, values: OptionsType[]) => setValue("stopIds", values.map((v: OptionsType) => v.id))}
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
@@ -257,7 +276,7 @@ const Riders = () => {
                 </Box>
             </Box>
             <Box flex='1'>
-                <DataGrid rows={riders} columns={generateGridColumns()} rowHeight={100} processRowUpdate={processRowUpdate} />
+                <DataGrid rows={riders} columns={columns} rowHeight={100} processRowUpdate={processRowUpdate} />
             </Box>
         </Box>
     )

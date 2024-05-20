@@ -3,5 +3,7 @@ export interface RiderType {
     firstName: string
     lastName: string
     orgId: string
-    stopIds?: string[]
+    schoolId: string
+    stopIds: string[]
+    guardianIds?: string[]
 }
