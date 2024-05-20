@@ -45,7 +45,7 @@ const Drivers = () => {
     }
 
     const createDriverAction = async () => {
-        return 
+        return
     }
 
     const generateGridColumns = (): GridColDef[] => {

@@ -30,7 +30,7 @@ const Guardians = () => {
     useEffect(() => {
         updateGuardians()
     }, [orgId])
-    
+
     const updateGuardians = async () => {
         try {
             const { guardianIds } = await api.organizations.getOrganizationById(orgId)

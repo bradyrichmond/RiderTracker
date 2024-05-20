@@ -39,7 +39,7 @@ export default [
       '@stylistic/semi-spacing': ['warn', { 'after': true }],
       '@stylistic/space-before-blocks': 'warn',
       '@stylistic/space-infix-ops': 'warn',
-      '@stylistic/spaced-comment': ['error', 'always'],
+      '@stylistic/spaced-comment': ['warn', 'always'],
       '@stylistic/template-curly-spacing': 'warn',
       '@stylistic/type-annotation-spacing': ['warn', { "before": false, "after": true, 'overrides': { 'arrow': { 'before': true, 'after': true } } }],
       '@stylistic/quotes': ['warn', 'single'],

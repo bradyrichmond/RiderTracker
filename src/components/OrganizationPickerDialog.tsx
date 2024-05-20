@@ -35,7 +35,7 @@ const OrganizationPickerDialog = ({ open, handleSelectOrganization, organization
         showErrorSnackbar('You must select an organization to continue.')
     }
 
-    return (      
+    return (
         <Dialog
             open={open}
             PaperProps={{

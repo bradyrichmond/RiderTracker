@@ -18,7 +18,7 @@ function App() {
             <ThemeContextProvider>
               <SnackbarContextProvider>
                 <I18nContextProvider>
-                  <RootRouter />  
+                  <RootRouter />
                 </I18nContextProvider>
               </SnackbarContextProvider>
             </ThemeContextProvider>
