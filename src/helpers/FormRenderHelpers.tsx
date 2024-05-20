@@ -119,20 +119,17 @@ export const pickRenderElement = (field: FormInputType, index: number) => {
             )
         case 'address':
             return (
-                <>
-                    <TextField
+                <TextField
                         fullWidth
                         autoComplete='off'
                         label={field.name}
                         {...register(`inputs.${index}.name` as const)}
 
                     />
-                </>
             )
         case 'email':
             return (
-                <>
-                    <DebouncedTextField
+                <DebouncedTextField
                         fullWidth
                         autoComplete='off'
                         label={field.name}
@@ -140,7 +137,6 @@ export const pickRenderElement = (field: FormInputType, index: number) => {
                         onChange={handleEmailValidation}
                         debounceMs={500}
                     />
-                </>
             )
         case 'hiddenTextfield':
             return (

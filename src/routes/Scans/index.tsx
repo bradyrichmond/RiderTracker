@@ -164,8 +164,7 @@ const Scans = () => {
     }
 
     return (
-        <>
-            <EntityViewer<ScanType>
+        <EntityViewer<ScanType>
                 createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_SCAN) ? createScan : undefined}
                 entityFactory={scanFactory}
                 getEntities={getScansAction}
@@ -180,7 +179,6 @@ const Scans = () => {
                 titlePlural='Scans'
                 processRowUpdate={processRowUpdate}
             />
-        </>
     )
 }
 

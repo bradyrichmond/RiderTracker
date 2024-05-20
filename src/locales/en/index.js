@@ -2,6 +2,7 @@ import auth from './auth.json'
 import buses from './buses.json'
 import common from './common.json'
 import onboarding from './onboarding.json'
+import riders from './riders.json'
 import settings from './settings.json'
 
 export default {
@@ -9,5 +10,6 @@ export default {
     buses,
     common,
     onboarding,
+    riders,
     settings
 }
