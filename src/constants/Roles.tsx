@@ -1,4 +1,4 @@
-type ResourceType = 'buses' | 'drivers' | 'guardians' | 'organizations' | 'riders' | 'scans' | 'stops'
+type ResourceType = 'buses' | 'drivers' | 'guardians' | 'organizations' | 'riders' | 'routes' | 'scans' | 'stops'
 
 interface RiderTrackerPermission {
     action: RiderTrackerAction;
@@ -48,6 +48,9 @@ export type RiderTrackerAction =
     | 'CREATE_STOP'
     | 'UPDATE_STOP'
     | 'DELETE_STOP'
+    | 'CREATE_ROUTE'
+    | 'UPDATE_ROUTE'
+    | 'DELETE_ROUTE'
     | 'ADD_RIDER_TO_STOP'
     | 'REMOVE_RIDER_FROM_STOP'
     | 'ADD_STOP_TO_RIDER'
@@ -75,6 +78,9 @@ export const permissions: Record<RiderTrackerAction, RiderTrackerPermission> = {
     CREATE_RIDER: { action: 'CREATE_RIDER', name: 'Create Rider', resourceType: 'riders' },
     UPDATE_RIDER: { action: 'UPDATE_RIDER', name: 'Update Rider', resourceType: 'riders' },
     DELETE_RIDER: { action: 'DELETE_RIDER', name: 'Delete Rider', resourceType: 'riders', requiresConfirmation: true },
+    CREATE_ROUTE: { action: 'CREATE_ROUTE', name: 'Create Route', resourceType: 'routes' },
+    UPDATE_ROUTE: { action: 'UPDATE_ROUTE', name: 'Update Route', resourceType: 'routes' },
+    DELETE_ROUTE: { action: 'DELETE_ROUTE', name: 'Delete Route', resourceType: 'routes', requiresConfirmation: true },
     CREATE_SCAN: { action: 'CREATE_SCAN', name: 'Create Scan', resourceType: 'scans' },
     UPDATE_SCAN: { action: 'UPDATE_SCAN', name: 'Update Scan', resourceType: 'scans' },
     DELETE_SCAN: { action: 'DELETE_SCAN', name: 'Delete Scan', resourceType: 'scans', requiresConfirmation: true },
@@ -111,6 +117,9 @@ export const RIDERTRACKER_PERMISSIONS_BY_ROLE: Record<RiderTrackerRole, RiderTra
         permissions.CREATE_RIDER,
         permissions.UPDATE_RIDER,
         permissions.DELETE_RIDER,
+        permissions.CREATE_ROUTE,
+        permissions.UPDATE_ROUTE,
+        permissions.DELETE_ROUTE,
         permissions.CREATE_SCAN,
         permissions.UPDATE_SCAN,
         permissions.DELETE_SCAN,

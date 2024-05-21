@@ -23,6 +23,16 @@ const createRoute = async (orgId: string, body: RouteType) => {
     return handleApiResponse<object>(createRouteResponse)
 }
 
+const updateRoute = async (orgId: string, id: string, route: RouteType) => {
+    const { client } = await RiderTrackerAPI.getClient()
+    const updatedRoute = {
+        stopIds: route.stopIds
+    }
+    const updateRouteResponse = await client.organizationsOrgIdRoutesIdPut({ orgId, id }, updatedRoute)
+
+    return handleApiResponse<object>(updateRouteResponse)
+}
+
 const deleteRoute = async (orgId: string, id: string) => {
     const { client } = await RiderTrackerAPI.getClient()
     const deleteRouteResponse = await client.organizationsOrgIdRoutesIdDelete({ orgId, id })
@@ -34,6 +44,7 @@ export interface RouteApiFunctionTypes {
     getRoutes(orgId: string): Promise<RouteType[]>,
     getRouteById(orgId: string, id: string): Promise<RouteType>,
     createRoute(orgId: string, route: RouteType): Promise<object>,
+    updateRoute(orgId: string, id: string, route: RouteType): Promise<object>
     deleteRoute(orgId: string, id: string): Promise<object>
 }
 
@@ -41,5 +52,6 @@ export default {
     getRoutes,
     getRouteById,
     createRoute,
+    updateRoute,
     deleteRoute
 }

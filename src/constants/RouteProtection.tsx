@@ -5,7 +5,6 @@ import ChildCareIcon from '@mui/icons-material/ChildCare'
 import ArticleIcon from '@mui/icons-material/Article'
 import PersonIcon from '@mui/icons-material/Person'
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew'
-import PlaceIcon from '@mui/icons-material/Place'
 import SchoolIcon from '@mui/icons-material/School'
 import { ComponentType, FC } from 'react'
 import ToggleLightMode from '@/components/ToggleLightMode'
@@ -124,11 +123,6 @@ const WIZARD_NAV_ITEMS: NavItemType[] = [
         path: '/app/schools',
         label: 'Schools',
         Icon: SchoolIcon
-    },
-    {
-        path: '/app/stops',
-        label: 'Stops',
-        Icon: PlaceIcon
     }
 ]
 
@@ -167,11 +161,6 @@ const ORG_ADMIN_NAV_ITEMS: NavItemType[] = [
         path: '/app/schools',
         label: 'Schools',
         Icon: SchoolIcon
-    },
-    {
-        path: '/app/stops',
-        label: 'Stops',
-        Icon: PlaceIcon
     }
 ]
 

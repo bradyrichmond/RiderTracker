@@ -14,8 +14,6 @@ import Riders from '@/routes/Riders'
 import Root from '@/routes/Root'
 import Unauthorized from '@/routes/Protected/Unauthorized'
 import Scan from '@/routes/Scans/Scan'
-import Stops from '@/routes/Stops'
-import Stop from '@/routes/Stops/Stop'
 import Schools from '@/routes/Schools'
 import School from '@/routes/Schools/School'
 import Settings from '@/routes/Settings'
@@ -97,14 +95,6 @@ export const createRouterObject = () => {
                     {
                         path: '/app/schools/:id',
                         element: <ProtectedRoute route='/app/schools/:id'><School /></ProtectedRoute>
-                    },
-                    {
-                        path: '/app/stops',
-                        element: <ProtectedRoute route='/app/stops'><Stops /></ProtectedRoute>
-                    },
-                    {
-                        path: '/app/stops/:id',
-                        element: <ProtectedRoute route='/app/stops/:id'><Stop /></ProtectedRoute>
                     },
                     {
                         path: '/app/unauthorized',
