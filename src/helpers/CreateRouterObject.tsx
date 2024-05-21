@@ -23,6 +23,8 @@ import Logout from '@/routes/Auth/Logout'
 import Auth from '@/routes/Auth'
 import Onboarding from '@/routes/Onboarding'
 import { fetchAuthSession } from 'aws-amplify/auth'
+import Routes from '@/routes/Routes'
+import { Typography } from '@mui/material'
 
 export const createRouterObject = () => {
     return createBrowserRouter([{
@@ -71,6 +73,14 @@ export const createRouterObject = () => {
                     {
                         path: '/app/riders/:id',
                         element: <ProtectedRoute route='/app/riders/:id'><Rider /></ProtectedRoute>
+                    },
+                    {
+                        path: '/app/routes',
+                        element: <ProtectedRoute route='/app/routes'><Routes /></ProtectedRoute>
+                    },
+                    {
+                        path: '/app/routes/:id',
+                        element: <ProtectedRoute route='/app/routes/:id'><Typography>route</Typography></ProtectedRoute>
                     },
                     {
                         path: '/app/scans',

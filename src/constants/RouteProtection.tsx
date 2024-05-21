@@ -7,16 +7,18 @@ import PersonIcon from '@mui/icons-material/Person'
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew'
 import PlaceIcon from '@mui/icons-material/Place'
 import SchoolIcon from '@mui/icons-material/School'
-import { FC } from 'react'
+import { ComponentType, FC } from 'react'
 import ToggleLightMode from '@/components/ToggleLightMode'
 import AccountBoxIcon from '@mui/icons-material/AccountBox'
 import LoginIcon from '@mui/icons-material/Login'
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline'
+import MapIcon from '@mui/icons-material/Map'
 import ChangeLanguage from '@/components/ChangeLanguage'
 
-export interface SettingsItemType extends NavItemType {
+export interface SettingsItemType extends Omit<NavItemType, 'Icon'> {
     action?(): Promise<void>
     Component?: FC
+    Icon?: ComponentType
 }
 
 const ALL_ROUTES: string[] = [
@@ -30,7 +32,8 @@ const ALL_ROUTES: string[] = [
     '/app/settings',
     '/app/riders',
     '/app/riders/:id',
-    '/app/riders/:id/scans',
+    '/app/routes',
+    '/app/routes/:id',
     '/app/scans',
     '/app/scans/:id',
     '/app/schools',
@@ -50,6 +53,8 @@ const ORG_ADMIN_ROUTES: string[] = [
     '/app/settings',
     '/app/riders',
     '/app/riders/:id',
+    '/app/routes',
+    '/app/routes/:id',
     '/app/scans',
     '/app/scans/:id',
     '/app/stops',
@@ -64,6 +69,8 @@ const DRIVER_ROUTES: string[] = [
     '/app/buses/:id',
     '/app/drivers/:id',
     '/app/riders/:id',
+    '/app/routes',
+    '/app/routes/:id',
     '/app/settings'
 ]
 
@@ -104,6 +111,11 @@ const WIZARD_NAV_ITEMS: NavItemType[] = [
         Icon: ChildCareIcon
     },
     {
+        path: '/app/riders',
+        label: 'Routes',
+        Icon: MapIcon
+    },
+    {
         path: '/app/scans',
         label: 'Scans',
         Icon: ArticleIcon
@@ -140,6 +152,11 @@ const ORG_ADMIN_NAV_ITEMS: NavItemType[] = [
         path: '/app/riders',
         label: 'Riders',
         Icon: ChildCareIcon
+    },
+    {
+        path: '/app/routes',
+        label: 'Routes',
+        Icon: MapIcon
     },
     {
         path: '/app/scans',
@@ -224,7 +241,7 @@ interface RouteProtectionItem {
     name: string,
     routes: string[],
     navItems: NavItemType[],
-    settingsItems: NavItemType[]
+    settingsItems: SettingsItemType[]
 }
 
 export const ROUTE_PROTECTION: RouteProtectionItem[] = [

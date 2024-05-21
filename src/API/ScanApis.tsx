@@ -4,7 +4,7 @@ import { handleApiResponse } from '@/helpers/ApiHelpers'
 
 const getScans = async (orgId: string) => {
     const { client } = await RiderTrackerAPI.getClient()
-    const getScansResponse = await client.organizationsOrgIdRidersPost({ orgId })
+    const getScansResponse = await client.organizationsOrgIdScansGet({ orgId })
 
     return handleApiResponse<ScanType[]>(getScansResponse)
 }

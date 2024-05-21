@@ -117,7 +117,7 @@ apigClientFactory.newClient = function (config) {
         
         return apiGatewayClient.makeRequest(adminProxyS3FolderObjectOptionsRequest, authType, additionalParams, config.apiKey);
     };
-    
+
 
     apigClient.adminProxyProxyAny = function (method, params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
@@ -135,6 +135,7 @@ apigClientFactory.newClient = function (config) {
         
         return apiGatewayClient.makeRequest(adminProxyProxyOptionsRequest, authType, additionalParams, config.apiKey);
     };
+    
     
     apigClient.adminProxyProxyOptions = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
@@ -727,6 +728,132 @@ apigClientFactory.newClient = function (config) {
         
         
         return apiGatewayClient.makeRequest(organizationsOrgIdRidersIdOptionsRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdRoutesGet = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        apiGateway.core.utils.assertParametersDefined(params, ['orgId'], ['body']);
+        
+        var organizationsOrgIdRoutesGetRequest = {
+            verb: 'get'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/routes').expand(apiGateway.core.utils.parseParametersToObject(params, ['orgId'])),
+            headers: apiGateway.core.utils.parseParametersToObject(params, []),
+            queryParams: apiGateway.core.utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdRoutesGetRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdRoutesPost = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        apiGateway.core.utils.assertParametersDefined(params, ['orgId'], ['body']);
+        
+        var organizationsOrgIdRoutesPostRequest = {
+            verb: 'post'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/routes').expand(apiGateway.core.utils.parseParametersToObject(params, ['orgId'])),
+            headers: apiGateway.core.utils.parseParametersToObject(params, []),
+            queryParams: apiGateway.core.utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdRoutesPostRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdRoutesOptions = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        apiGateway.core.utils.assertParametersDefined(params, [], ['body']);
+        
+        var organizationsOrgIdRoutesOptionsRequest = {
+            verb: 'options'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/routes').expand(apiGateway.core.utils.parseParametersToObject(params, [])),
+            headers: apiGateway.core.utils.parseParametersToObject(params, []),
+            queryParams: apiGateway.core.utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdRoutesOptionsRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdRoutesIdGet = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        apiGateway.core.utils.assertParametersDefined(params, ['orgId', 'id'], ['body']);
+        
+        var organizationsOrgIdRoutesIdGetRequest = {
+            verb: 'get'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/routes/{id}').expand(apiGateway.core.utils.parseParametersToObject(params, ['orgId', 'id'])),
+            headers: apiGateway.core.utils.parseParametersToObject(params, []),
+            queryParams: apiGateway.core.utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdRoutesIdGetRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdRoutesIdPut = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        apiGateway.core.utils.assertParametersDefined(params, ['orgId', 'id'], ['body']);
+        
+        var organizationsOrgIdRoutesIdPutRequest = {
+            verb: 'put'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/routes/{id}').expand(apiGateway.core.utils.parseParametersToObject(params, ['orgId', 'id'])),
+            headers: apiGateway.core.utils.parseParametersToObject(params, []),
+            queryParams: apiGateway.core.utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdRoutesIdPutRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdRoutesIdDelete = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        apiGateway.core.utils.assertParametersDefined(params, ['orgId', 'id'], ['body']);
+        
+        var organizationsOrgIdRoutesIdDeleteRequest = {
+            verb: 'delete'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/routes/{id}').expand(apiGateway.core.utils.parseParametersToObject(params, ['orgId', 'id'])),
+            headers: apiGateway.core.utils.parseParametersToObject(params, []),
+            queryParams: apiGateway.core.utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdRoutesIdDeleteRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdRoutesIdOptions = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        apiGateway.core.utils.assertParametersDefined(params, [], ['body']);
+        
+        var organizationsOrgIdRoutesIdOptionsRequest = {
+            verb: 'options'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/routes/{id}').expand(apiGateway.core.utils.parseParametersToObject(params, [])),
+            headers: apiGateway.core.utils.parseParametersToObject(params, []),
+            queryParams: apiGateway.core.utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdRoutesIdOptionsRequest, authType, additionalParams, config.apiKey);
     };
     
     

@@ -3,6 +3,7 @@ import AdminApis, { AdminApiFunctionTypes } from './AdminApis'
 import BusApis, { BusApiFunctionTypes } from './BusApis'
 import OrganizationApis, { OrganizationApiFunctionTypes } from './OrganizationApis'
 import RiderApis, { RiderApiFunctionTypes } from './RiderApis'
+import RouteApis, { RouteApiFunctionTypes } from './RouteApis'
 import ScanApis, { ScanApiFunctionTypes } from './ScanApis'
 import SchoolApis, { SchoolApiFunctionTypes } from './SchoolApis'
 import StopApis, { StopApiFunctionTypes } from './StopApis'
@@ -20,6 +21,7 @@ class RiderTrackerAPI {
     buses: BusApiFunctionTypes
     organizations: OrganizationApiFunctionTypes
     riders: RiderApiFunctionTypes
+    routes: RouteApiFunctionTypes
     scans: ScanApiFunctionTypes
     schools: SchoolApiFunctionTypes
     stops: StopApiFunctionTypes
@@ -32,6 +34,7 @@ class RiderTrackerAPI {
         this.buses = BusApis
         this.organizations = OrganizationApis
         this.riders = RiderApis
+        this.routes = RouteApis
         this.scans = ScanApis
         this.schools = SchoolApis
         this.stops = StopApis
