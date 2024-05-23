@@ -10,7 +10,7 @@ import { RiderTrackerRole, isRiderTrackerRole } from '@/constants/Roles'
 import { useNavigate } from 'react-router-dom'
 import { Hub } from 'aws-amplify/utils'
 import { useTranslation } from 'react-i18next'
-import { OrgDataContext } from '@/contexts/OrgDataContext'
+import { useOrgStore } from '@/store/OrgStore'
 
 interface LoginFormInputs {
     username: string
@@ -20,7 +20,7 @@ interface LoginFormInputs {
 const LoginForm = () => {
     const { handleSubmit, register } = useForm<LoginFormInputs>()
     const { setUserId } = useContext(RoleContext)
-    const { organizationLoginImageUrl, setOrganizationLoginImageUrl } = useContext(OrgDataContext)
+    const { organizationLoginImageUrl, setOrganizationLoginImageUrl } = useOrgStore()
     const [orgName, setOrgName] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
     const [orgId, setOrgId] = useState('')

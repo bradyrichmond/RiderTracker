@@ -8,7 +8,7 @@ import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 import { Box, Paper, Typography } from '@mui/material'
 import { OrganizationAdminAction } from '../OrganizationSettings/OrganizationAdminCard'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { OrgDataContext } from '@/contexts/OrgDataContext'
+import { useOrgStore } from '@/store/OrgStore'
 
 const UserCard = ({ user, updateUsers, style }: { user: UserType, updateUsers: (_id: string) => void, style: CSSProperties }) => {
     const ref = useRef(null)
@@ -16,7 +16,7 @@ const UserCard = ({ user, updateUsers, style }: { user: UserType, updateUsers: (
     const { t } = useTranslation()
     const { api } = useContext(ApiContext)
     const { userId } = useContext(RoleContext)
-    const { orgId } = useContext(OrgDataContext)
+    const { orgId } = useOrgStore()
     const { showErrorSnackbar } = useContext(SnackbarContext)
 
     const deleteUserAction = async () => {

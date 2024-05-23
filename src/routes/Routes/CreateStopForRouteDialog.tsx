@@ -5,9 +5,9 @@ import ShuffleOnIcon from '@mui/icons-material/ShuffleOn'
 import { StopType } from '@/types/StopType'
 import { useRandomNameGenerator } from '@/hooks/useRandomNameGenerator'
 import { useForm } from 'react-hook-form'
-import { useContext, useEffect, useState } from 'react'
-import { OrgDataContext } from '@/contexts/OrgDataContext'
+import {useEffect, useState } from 'react'
 import { v4 as uuid } from 'uuid'
+import { useOrgStore } from '@/store/OrgStore'
 
 interface CreateStopForRouteDialogProps {
     cancelAction(): void
@@ -21,7 +21,7 @@ const CreateStopForRouteDialog = ({ cancelAction, createStop, isAddingStop }: Cr
     const { t } = useTranslation(['routes', 'common'])
     const { randomName, generateRandomName } = useRandomNameGenerator()
     const { handleSubmit, register, reset } = useForm<StopType>()
-    const { orgId } = useContext(OrgDataContext)
+    const { orgId } = useOrgStore()
 
     useEffect(() => {
         if (orgId) {

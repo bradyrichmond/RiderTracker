@@ -16,7 +16,7 @@ import { useDeviceLocation } from '@/hooks/useDeviceLocation'
 import { locationFactory } from './LocationFactory'
 import { AppShortcut } from '@mui/icons-material'
 import { UserType } from '@/types/UserType'
-import { OrgDataContext } from '@/contexts/OrgDataContext'
+import { useOrgStore } from '@/store/OrgStore'
 
 const Scans = () => {
     const [scans, setScans] = useState<ScanType[]>([])
@@ -24,7 +24,7 @@ const Scans = () => {
     const [drivers, setDrivers] = useState<OptionsType[]>([])
     const { api } = useContext(ApiContext)
     const { heaviestRole } = useContext(RoleContext)
-    const { orgId } = useContext(OrgDataContext)
+    const { orgId } = useOrgStore()
     const navigate = useNavigate()
     const { getCurrentPosition } = useDeviceLocation()
 

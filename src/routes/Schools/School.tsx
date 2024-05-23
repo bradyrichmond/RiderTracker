@@ -1,5 +1,5 @@
 import { ApiContext } from '@/contexts/ApiContextProvider'
-import { OrgDataContext } from '@/contexts/OrgDataContext'
+import { useOrgStore } from '@/store/OrgStore'
 import { SchoolType } from '@/types/SchoolType'
 import { Box, Typography } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
@@ -9,7 +9,7 @@ const School = () => {
     const [school, setSchool] = useState<SchoolType>()
     const { id } = useParams()
     const { api } = useContext(ApiContext)
-    const { orgId } = useContext(OrgDataContext)
+    const { orgId } = useOrgStore()
 
     useEffect(() => {
         getSchoolData()

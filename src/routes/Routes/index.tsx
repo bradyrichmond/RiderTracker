@@ -5,10 +5,10 @@ import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { RouteType } from '@/types/RouteType'
 import { ApiContext } from '@/contexts/ApiContextProvider'
 import { useTranslation } from 'react-i18next'
-import { OrgDataContext } from '@/contexts/OrgDataContext'
 import CreateRouteDialog from './CreateRouteDialog'
 import RouteDrawer from './RouteDrawer'
 import { useNavigate } from 'react-router-dom'
+import { useOrgStore } from '@/store/OrgStore'
 
 interface RoutesProps {
     activeRoute?: string
@@ -18,7 +18,7 @@ const Routes = ({ activeRoute }: RoutesProps) => {
     const [routes, setRoutes] = useState<RouteType[]>([])
     const [isAddingRoute, setIsAddingRoute] = useState(false)
     const { api } = useContext(ApiContext)
-    const { orgId } = useContext(OrgDataContext)
+    const { orgId } = useOrgStore()
     const { t } = useTranslation('routes')
     const navigate = useNavigate()
 

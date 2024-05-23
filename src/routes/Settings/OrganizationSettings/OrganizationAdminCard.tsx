@@ -9,7 +9,7 @@ import { RoleContext } from '@/contexts/RoleContext'
 import { ApiContext } from '@/contexts/ApiContextProvider'
 import { RIDER_TRACKER_ROLES } from '@/constants/Roles'
 import { useTranslation } from 'react-i18next'
-import { OrgDataContext } from '@/contexts/OrgDataContext'
+import { useOrgStore } from '@/store/OrgStore'
 
 interface OrganizationAdminCardProps extends UserType {
     index: number
@@ -23,7 +23,7 @@ const OrganizationAdminCard = ({ id, firstName, lastName, title, email, index, r
     const ref = useRef(null)
     const hovering = useHover<HTMLDivElement>(ref)
     const { userId } = useContext(RoleContext)
-    const { orgId } = useContext(OrgDataContext)
+    const { orgId } = useOrgStore()
     const { api } = useContext(ApiContext)
     const { t } = useTranslation('settings')
 

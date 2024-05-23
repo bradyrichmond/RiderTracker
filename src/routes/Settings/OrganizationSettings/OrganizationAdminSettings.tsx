@@ -12,10 +12,10 @@ import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 import { UserType } from '@/types/UserType'
 import { AWSUserType } from '@/API/AdminApis'
 import { useTranslation } from 'react-i18next'
-import { OrgDataContext } from '@/contexts/OrgDataContext'
+import { useOrgStore } from '@/store/OrgStore'
 
 const OrganizationAdminSettings = () => {
-    const { orgId } = useContext(OrgDataContext)
+    const { orgId } = useOrgStore()
     const { api } = useContext(ApiContext)
     const { showErrorSnackbar } = useContext(SnackbarContext)
     const [ admins, setAdmins ] = useState<UserType[]>([])

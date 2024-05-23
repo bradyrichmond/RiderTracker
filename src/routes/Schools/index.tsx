@@ -14,14 +14,14 @@ import { v4 as uuidv4 } from 'uuid'
 import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 import { useTranslation } from 'react-i18next'
 import { AddressType } from '@/types/AddressType'
-import { OrgDataContext } from '@/contexts/OrgDataContext'
+import { useOrgStore } from '@/store/OrgStore'
 
 const Schools = () => {
     const [schools, setSchools] = useState<SchoolType[]>([])
     const [addresses, setAddresses] = useState<AddressType[]>([])
     const { api } = useContext(ApiContext)
     const { heaviestRole } = useContext(RoleContext)
-    const { orgId } = useContext(OrgDataContext)
+    const { orgId } = useOrgStore()
     const { showErrorSnackbar } = useContext(SnackbarContext)
     const canEditSchool = RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.UPDATE_SCHOOL)
     const navigate = useNavigate()

@@ -7,14 +7,14 @@ import AutoSizer from 'react-virtualized-auto-sizer'
 import UserCard from './UserCard'
 import { useTranslation } from 'react-i18next'
 import SearchBar from '@/components/SearchBar'
-import { OrgDataContext } from '@/contexts/OrgDataContext'
+import { useOrgStore } from '@/store/OrgStore'
 
 const UserManagement = () => {
     const [users, setUsers] = useState<UserType[]>([])
     const [outOfItems, setOutOfItems] = useState(false)
     const [searchArg, setSearchArg] = useState('')
     const { api } = useContext(ApiContext)
-    const { orgId } = useContext(OrgDataContext)
+    const { orgId } = useOrgStore()
     const { t } = useTranslation('common')
 
     useEffect(() => {

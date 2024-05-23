@@ -11,13 +11,13 @@ import { GridColDef } from '@mui/x-data-grid'
 import { RoleContext } from '@/contexts/RoleContext'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
 import { useTranslation } from 'react-i18next'
-import { OrgDataContext } from '@/contexts/OrgDataContext'
+import { useOrgStore } from '@/store/OrgStore'
 
 const Buses = () => {
     const [buses, setBuses] = useState<BusType[]>([])
     const { api } = useContext(ApiContext)
     const { heaviestRole } = useContext(RoleContext)
-    const { orgId } = useContext(OrgDataContext)
+    const { orgId } = useOrgStore()
     const navigate = useNavigate()
     const { t } = useTranslation(['buses', 'common'])
 

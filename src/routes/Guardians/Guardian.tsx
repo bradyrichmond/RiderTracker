@@ -3,13 +3,13 @@ import { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { ApiContext } from '@/contexts/ApiContextProvider'
 import { GuardianType } from '@/types/UserType'
-import { OrgDataContext } from '@/contexts/OrgDataContext'
+import { useOrgStore } from '@/store/OrgStore'
 
 const Guardian = () => {
     const [guardian, setGuardian] = useState<GuardianType>()
     const { id } = useParams()
     const { api } = useContext(ApiContext)
-    const { orgId } = useContext(OrgDataContext)
+    const { orgId } = useOrgStore()
 
     useEffect(() => {
         getGuardianData()

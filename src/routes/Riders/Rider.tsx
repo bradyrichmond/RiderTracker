@@ -4,10 +4,10 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { RiderType } from '@/types/RiderType'
 import { ApiContext } from '@/contexts/ApiContextProvider'
 import { StopType } from '@/types/StopType'
-import { OrgDataContext } from '@/contexts/OrgDataContext'
+import { useOrgStore } from '@/store/OrgStore'
 
 const Rider = () => {
-    const { orgId } = useContext(OrgDataContext)
+    const { orgId } = useOrgStore()
     const { api } = useContext(ApiContext)
     const [rider, setRider] = useState<RiderType>()
     const [stops, setStops] = useState<StopType[]>([])

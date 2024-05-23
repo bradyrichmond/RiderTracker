@@ -7,8 +7,8 @@ import { ApiContext } from './ApiContextProvider'
 import RiderTrackerAPI from '@/API'
 import { getOrgIdForUser } from '@/helpers/GetOrganizationIdForUser'
 import { signOut } from 'aws-amplify/auth'
-import { OrgDataContext } from './OrgDataContext'
 import { RoleContext } from './RoleContext'
+import { useOrgStore } from '@/store/OrgStore'
 
 export const RoleContextProvider = ({ children }: PropsWithChildren) => {
     const [heaviestRole, setHeaviestRole] = useState('RiderTracker_Unauthenticated')
@@ -19,7 +19,7 @@ export const RoleContextProvider = ({ children }: PropsWithChildren) => {
     const [accessToken, setAccessToken] = useState('')
     const [idToken, setIdToken] = useState('')
     const { api, setApi } = useContext(ApiContext)
-    const { orgId, setOrganizationLoginImageUrl, setOrganizationArray, setOrgId, toggleShowOrganizationSelector } = useContext(OrgDataContext)
+    const { orgId, setOrganizationLoginImageUrl, setOrganizationArray, setOrgId } = useOrgStore()
 
     const updateUserData = async () => {
         try {
@@ -81,7 +81,6 @@ export const RoleContextProvider = ({ children }: PropsWithChildren) => {
                     if (Array.isArray(fetchedOrgId)) {
                         const orgs = await api.organizations.getOrganizations()
                         setOrganizationArray(orgs)
-                        toggleShowOrganizationSelector()
                         return
                     }
 

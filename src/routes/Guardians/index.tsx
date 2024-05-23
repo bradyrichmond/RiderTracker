@@ -8,9 +8,9 @@ import { GridColDef } from '@mui/x-data-grid'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
 import { RoleContext } from '@/contexts/RoleContext'
 import { UserType } from '@/types/UserType'
-import { OrgDataContext } from '@/contexts/OrgDataContext'
 import NewEntityViewer from '@/components/NewEntityViewer'
 import CreateGuardianDialog from './CreateGuardianDialog'
+import { useOrgStore } from '@/store/OrgStore'
 
 export interface CreateGuardianInput {
     given_name: string
@@ -23,7 +23,7 @@ const Guardians = () => {
     const [guardians, setGuardians] = useState<UserType[]>([])
     const { api } = useContext(ApiContext)
     const { heaviestRole } = useContext(RoleContext)
-    const { orgId } = useContext(OrgDataContext)
+    const { orgId } = useOrgStore()
     const navigate = useNavigate()
     const [isAddingGuardian, setIsAddingGuardian] = useState<boolean>(false)
 

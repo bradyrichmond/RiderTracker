@@ -1,8 +1,8 @@
 import { Transition } from '@/components/AddEntityModal'
-import { OrgDataContext } from '@/contexts/OrgDataContext'
+import { useOrgStore } from '@/store/OrgStore'
 import { RouteType } from '@/types/RouteType'
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { v4 as uuid } from 'uuid'
@@ -18,7 +18,7 @@ const CreateRouteDialog = ({ createRoute, cancelAction, isAddingRoute }: CreateR
     const [newRouteId, setNewRouteId] = useState('')
     const { t } = useTranslation(['routes', 'common'])
     const { handleSubmit, register, reset } = useForm<RouteType>()
-    const { orgId } = useContext(OrgDataContext)
+    const { orgId } = useOrgStore()
 
     useEffect(() => {
         const nextRouteId = uuid()

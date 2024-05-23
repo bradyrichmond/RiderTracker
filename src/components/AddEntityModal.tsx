@@ -1,5 +1,5 @@
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, Slide } from '@mui/material'
-import { ReactElement, forwardRef, useContext, useState } from 'react'
+import { ReactElement, forwardRef, useState } from 'react'
 import { v4 as uuidv4 } from 'uuid'
 import { Controller, FormProvider, useFieldArray, useForm } from 'react-hook-form'
 import { BusType } from '../types/BusType'
@@ -12,7 +12,7 @@ import { SchoolType } from '@/types/SchoolType'
 import { ErrorMessage } from '@hookform/error-message'
 import { StopType } from '@/types/StopType'
 import { UserType } from '@/types/UserType'
-import { OrgDataContext } from '@/contexts/OrgDataContext'
+import { useOrgStore } from '@/store/OrgStore'
 
 export const Transition = forwardRef<HTMLDivElement, { children: ReactElement }>(function Transition<P>(
     props: P & { children: React.ReactElement },
@@ -30,7 +30,7 @@ const AddEntityModal = <T extends
     const formMethods = useForm<FormDataType>({
         defaultValues: formDefaultValues
     })
-    const { orgId } = useContext(OrgDataContext)
+    const { orgId } = useOrgStore()
 
     const {
         control,

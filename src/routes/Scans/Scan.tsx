@@ -3,10 +3,10 @@ import { useContext, useEffect, useState } from 'react'
 import { ScanType } from '@/types/ScanType'
 import { useParams } from 'react-router-dom'
 import { ApiContext } from '@/contexts/ApiContextProvider'
-import { OrgDataContext } from '@/contexts/OrgDataContext'
+import { useOrgStore } from '@/store/OrgStore'
 
 const Scan = () => {
-    const { orgId } = useContext(OrgDataContext)
+    const { orgId } = useOrgStore()
     const [scan, setScan] = useState<ScanType>()
     const { id } = useParams()
     const { api } = useContext(ApiContext)

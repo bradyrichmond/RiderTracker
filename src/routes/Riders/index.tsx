@@ -11,8 +11,8 @@ import { RoleContext } from '@/contexts/RoleContext'
 import { OptionsType } from '@/types/FormTypes'
 import { GuardianType } from '@/types/UserType'
 import { v4 as uuid } from 'uuid'
-import { OrgDataContext } from '@/contexts/OrgDataContext'
 import CreateRiderDialog from './CreateRiderDialog'
+import { useOrgStore } from '@/store/OrgStore'
 
 const Riders = () => {
     const [riders, setRiders] = useState<RiderType[]>([])
@@ -25,7 +25,7 @@ const Riders = () => {
     const navigate = useNavigate()
     const { api } = useContext(ApiContext)
     const { heaviestRole, userId } = useContext(RoleContext)
-    const { orgId } = useContext(OrgDataContext)
+    const { orgId } = useOrgStore()
 
     useEffect(() => {
         if (orgId) {

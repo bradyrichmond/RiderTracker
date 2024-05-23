@@ -10,14 +10,14 @@ import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles
 import { RoleContext } from '@/contexts/RoleContext'
 import { UserType } from '@/types/UserType'
 import { userFactory } from '../Settings/UserSettings/UserFactory'
-import { OrgDataContext } from '@/contexts/OrgDataContext'
+import { useOrgStore } from '@/store/OrgStore'
 
 const Drivers = () => {
     const [drivers, setDrivers] = useState<UserType[]>([])
     const navigate = useNavigate()
     const { api } = useContext(ApiContext)
     const { heaviestRole } = useContext(RoleContext)
-    const { orgId } = useContext(OrgDataContext)
+    const { orgId } = useOrgStore()
 
     const updateDriversAction = async () => {
         try {
