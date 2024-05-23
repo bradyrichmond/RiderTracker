@@ -7,7 +7,7 @@ import { RouteApis, RouteApiFunctionTypes } from './RouteApis'
 import { ScanApis, ScanApiFunctionTypes } from './ScanApis'
 import { SchoolApis, SchoolApiFunctionTypes } from './SchoolApis'
 import { StopApis, StopApiFunctionTypes } from './StopApis'
-import UserApis, { UserApiFunctionTypes } from './UserApis'
+import { UserApis, UserApiFunctionTypes } from './UserApis'
 import { ApiGatewayClientType, generateApiGatewayClient } from '@/helpers/GenerateApiGatewayClient'
 
 export const API_BASE_NAME = 'https://uqz8uvqzcl.execute-api.us-west-2.amazonaws.com/DEV' // this will need to change with environment
@@ -36,7 +36,7 @@ class RiderTrackerAPI {
         this.scans = new ScanApis(newClient)
         this.schools = new SchoolApis(newClient)
         this.stops = new StopApis(newClient)
-        this.users = UserApis
+        this.users = new UserApis(newClient)
     }
 
     static async getClient() {
