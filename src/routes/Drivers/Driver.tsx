@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useApiStore } from '@/store/ApiStore'
 import { UserType } from '@/types/UserType'
@@ -17,7 +17,7 @@ const Driver = () => {
 
     const getDriverData = async () => {
         if (id) {
-            const driverData = await api.users.getUserById(orgId, id)
+            const driverData = await api?.users.getUserById(orgId, id)
             setDriver(driverData)
         }
     }

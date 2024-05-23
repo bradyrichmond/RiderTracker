@@ -11,31 +11,31 @@ export class AddressApis {
 
     async getAddresses(orgId: string): Promise<AddressType[]> {
         const addressesResponse = await this.client.organizationsOrgIdAddressesGet({ orgId })
-    
+
         return handleApiResponse<AddressType[]>(addressesResponse)
     }
 
     async getAddressById(id: string): Promise<AddressType> {
         const addressResponse = await this.client.organizationsOrgIdAddressesIdGet({ id })
-    
+
         return handleApiResponse<AddressType>(addressResponse)
     }
 
     async createAddress(orgId: string, body: AddressType): Promise<object> {
         const createAddressResponse = await this.client.organizationsOrgIdAddressesPost({ orgId }, body)
-    
+
         return handleApiResponse<object>(createAddressResponse)
     }
-    
+
     async deleteAddress(orgId: string, id: string): Promise<object> {
         const deleteAddressResponse = await this.client.organizationsOrgIdAddressesIdDelete({ orgId, id })
-    
+
         return handleApiResponse<object>(deleteAddressResponse)
     }
 
     async validateAddress(address: string): Promise<AddressType> {
         const validationResponse = await this.client.validateAddressPost({}, { address })
-    
+
         const preEvaluationAddress: GeoapifyValidateResponse = handleApiResponse<GeoapifyValidateResponse>(validationResponse)
         const evaluated: AddressType = this._evaluateAddressData(preEvaluationAddress)
         return evaluated
@@ -43,23 +43,23 @@ export class AddressApis {
 
     async getBulkAddressesByIds(orgId: string, addressIds: string[]): Promise<AddressType[]> {
         const addressesResponse = await this.client.organizationsOrgIdAddressesBatchByIdPost({ orgId }, addressIds)
-    
+
         return handleApiResponse<AddressType[]>(addressesResponse)
     }
 
     _evaluateAddressData(result: GeoapifyValidateResponse): AddressType {
         const ACCEPT_LEVEL = 0.75;
-    
+
         const { body } = result
-    
+
         if (body.features.length === 0) {
             throw 'Address not found'
         } else {
             const place = body.features[0].properties
-    
+
             if (place.rank.confidence > ACCEPT_LEVEL) {
                 const { housenumber, street, city, suburb, state, postcode, county, country, lat, lon, formatted } = place
-    
+
                 return {
                     id: 'temp',
                     orgId: 'temp',

@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { Box, Button, Typography } from '@mui/material'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
@@ -29,12 +29,12 @@ const Routes = ({ activeRoute }: RoutesProps) => {
     }, [orgId, activeRoute])
 
     const updateRoutes = async () => {
-        const fetchedRoutes = await api.routes.getRoutes(orgId)
-        setRoutes(fetchedRoutes)
+        const fetchedRoutes = await api?.routes.getRoutes(orgId)
+        setRoutes(fetchedRoutes ?? [])
     }
 
     const createRoute = async (newRoute: RouteType) => {
-        await api.routes.createRoute(orgId, newRoute)
+        await api?.routes.createRoute(orgId, newRoute)
         setIsAddingRoute(false)
         updateRoutes()
     }

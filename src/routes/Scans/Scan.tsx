@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ScanType } from '@/types/ScanType'
 import { useParams } from 'react-router-dom'
 import { useApiStore } from '@/store/ApiStore'
@@ -17,7 +17,7 @@ const Scan = () => {
 
     const getScanData = async () => {
         if (id) {
-            const scanData = await api.scans.getScanById(orgId, id)
+            const scanData = await api?.scans.getScanById(orgId, id)
             setScan(scanData)
         }
     }

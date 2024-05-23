@@ -1,7 +1,7 @@
 import { useApiStore } from '@/store/ApiStore'
 import { UserType } from '@/types/UserType'
 import { Box, Button } from '@mui/material'
-import { CSSProperties, useContext, useEffect, useState } from 'react'
+import { CSSProperties, useEffect, useState } from 'react'
 import { VariableSizeList as List } from 'react-window'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import UserCard from './UserCard'
@@ -26,28 +26,30 @@ const UserManagement = () => {
     }, [searchArg])
 
     const fetchUsers = async () => {
-        const fetchedUsers = await api.users.getUsers({ orgId, pagination: { pageSize: 11, lastKey: '', searchArg } })
+        const fetchedUsers = await api?.users.getUsers({ orgId, pagination: { pageSize: 11, lastKey: '', searchArg } })
 
-        if (fetchedUsers.items.length < 1) {
+        if (fetchedUsers && fetchedUsers.items.length < 1) {
             setOutOfItems(true)
             setUsers([])
             return
         }
 
-        setUsers(fetchedUsers.items)
+        setUsers(fetchedUsers?.items ?? [])
         setOutOfItems(false)
     }
 
     const loadMore = async () => {
         const lastKey = users[users.length - 1].id
-        const fetchedUsers = await api.users.getUsers({ orgId, pagination: { pageSize: 11, lastKey, searchArg } })
+        const fetchedUsers = await api?.users.getUsers({ orgId, pagination: { pageSize: 11, lastKey, searchArg } })
 
-        if (fetchedUsers.items.length < 1) {
+        if (fetchedUsers && fetchedUsers.items.length < 1) {
             setOutOfItems(true)
             return
         }
 
-        setUsers((u) => [...u, ...fetchedUsers.items])
+        const items = fetchedUsers?.items ?? []
+
+        setUsers((u) => [...u, ...items])
     }
 
     const updateListAfterDelete = (userId: string) => {

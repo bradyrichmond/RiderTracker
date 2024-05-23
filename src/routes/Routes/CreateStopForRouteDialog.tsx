@@ -5,7 +5,7 @@ import ShuffleOnIcon from '@mui/icons-material/ShuffleOn'
 import { StopType } from '@/types/StopType'
 import { useRandomNameGenerator } from '@/hooks/useRandomNameGenerator'
 import { useForm } from 'react-hook-form'
-import {useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { v4 as uuid } from 'uuid'
 import { useOrgStore } from '@/store/OrgStore'
 

@@ -11,34 +11,34 @@ export class RouteApis {
 
     async getRoutes(orgId: string) {
         const getRoutesResponse = await this.client.organizationsOrgIdRoutesGet({ orgId })
-    
+
         return handleApiResponse<RouteType[]>(getRoutesResponse)
     }
-    
+
     async getRouteById(orgId: string, id: string) {
         const getRouteResponse = await this.client.organizationsOrgIdRoutesIdGet({ orgId, id })
-    
+
         return handleApiResponse<RouteType>(getRouteResponse)
     }
-    
+
     async createRoute(orgId: string, body: RouteType) {
         const createRouteResponse = await this.client.organizationsOrgIdRoutesPost({ orgId }, body)
-    
+
         return handleApiResponse<object>(createRouteResponse)
     }
-    
+
     async updateRoute(orgId: string, id: string, route: RouteType) {
         const updatedRoute = {
             stopIds: route.stopIds
         }
         const updateRouteResponse = await this.client.organizationsOrgIdRoutesIdPut({ orgId, id }, updatedRoute)
-    
+
         return handleApiResponse<object>(updateRouteResponse)
     }
-    
+
     async deleteRoute(orgId: string, id: string) {
         const deleteRouteResponse = await this.client.organizationsOrgIdRoutesIdDelete({ orgId, id })
-    
+
         return handleApiResponse<object>(deleteRouteResponse)
     }
 }

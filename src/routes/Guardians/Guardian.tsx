@@ -1,5 +1,5 @@
 import { Box, Typography } from '@mui/material'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useApiStore } from '@/store/ApiStore'
 import { GuardianType } from '@/types/UserType'
@@ -18,7 +18,7 @@ const Guardian = () => {
     const getGuardianData = async () => {
         if (id) {
             try {
-                const guardianData = await api.users.getGuardianById(orgId, id)
+                const guardianData = await api?.users.getGuardianById(orgId, id)
                 setGuardian(guardianData)
             } catch {
                 console.error('Error setting guardian')

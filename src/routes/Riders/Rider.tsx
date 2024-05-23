@@ -1,5 +1,5 @@
 import { Box, Chip, Typography } from '@mui/material'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { RiderType } from '@/types/RiderType'
 import { useApiStore } from '@/store/ApiStore'
@@ -29,14 +29,14 @@ const Rider = () => {
 
     const getRiderData = async () => {
         if (id) {
-            const riderData = await api.riders.getRiderById(orgId, id)
+            const riderData = await api?.riders.getRiderById(orgId, id)
             setRider(riderData)
         }
     }
 
     const getStopData = async () => {
-        const fetchedStops = await api.stops.getBulkStopsByIds(orgId, rider?.stopIds ?? [])
-        setStops(fetchedStops)
+        const fetchedStops = await api?.stops.getBulkStopsByIds(orgId, rider?.stopIds ?? [])
+        setStops(fetchedStops ?? [])
     }
 
     return (

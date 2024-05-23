@@ -28,55 +28,55 @@ export class UserApis {
             console.log(e)
         }
     }
-    
+
     async getUsers({ orgId, pagination }: GetUsersArgs) {
         const getUsersResponse = await this.client.organizationsOrgIdUsersGet({ orgId }, {}, { queryParams: pagination })
-    
+
         return handleApiResponse<{ items: UserType[], count: number }>(getUsersResponse)
     }
-    
+
     async getUserById(orgId: string, id: string) {
         const getUserResponse = await this.client.organizationsOrgIdUsersIdGet({ orgId, id })
-    
+
         return handleApiResponse<UserType>(getUserResponse)
     }
-    
+
     async getGuardianById(orgId: string, id: string) {
         const getGuardianResponse = await this.client.organizationsOrgIdUsersIdGet({ orgId, id })
-    
+
         return handleApiResponse<GuardianType>(getGuardianResponse)
     }
-    
+
     async getUserProfileImage(orgId: string, userId: string) {
         const profileImageResponse = await this.client.organizationsOrgIdUsersIdGet({ orgId, id: userId })
-    
+
         const response = handleApiResponse<UserType>(profileImageResponse)
-    
+
         const { profileImageKey } = response
         return profileImageKey
     }
-    
+
     async getBulkUsersByIds(orgId: string, userIds: string[]) {
         const usersResponse = await this.client.organizationsOrgIdUsersBatchByIdPost({ orgId }, userIds)
-    
+
         return handleApiResponse<UserType[]>(usersResponse)
     }
-    
+
     async getBulkGuardiansByIds(orgId: string, userIds: string[]) {
         const usersResponse = await this.client.organizationsOrgIdUsersBatchByIdPost({ orgId }, userIds)
-    
+
         return handleApiResponse<GuardianType[]>(usersResponse)
     }
-    
+
     async deleteUser(orgId: string, id: string) {
         const deleteUserResponse = await this.client.organizationsOrgIdUsersIdDelete({ orgId, id })
-    
+
         return handleApiResponse<object>(deleteUserResponse)
     }
-    
+
     async updateUser(orgId: string, id: string, body: Record<string, string | string[]>) {
         const updateUserResponse = await this.client.organizationsOrgIdUsersIdPut({ orgId, id }, body)
-    
+
         return handleApiResponse<object>(updateUserResponse)
     }
 }
