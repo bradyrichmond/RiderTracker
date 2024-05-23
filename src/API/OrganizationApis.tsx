@@ -1,88 +1,90 @@
 import { OrganizationType } from '@/types/OrganizationType'
-import RiderTrackerAPI from '.'
 import { handleApiResponse } from '@/helpers/ApiHelpers'
+import { ApiGatewayClientType } from '@/helpers/GenerateApiGatewayClient'
 
-const getOrganizations = async () => {
-    const { client } = await RiderTrackerAPI.getClient()
-    const response = await client.organizationsGet()
+export class OrgApis {
+    client: ApiGatewayClientType
 
-    return handleApiResponse<OrganizationType[]>(response)
-}
-
-const getOrganizationById = async (orgId: string) => {
-    const { client } = await RiderTrackerAPI.getClient()
-    const response = await client.organizationsOrgIdGet({ orgId })
-
-    return handleApiResponse<OrganizationType>(response)
-}
-
-const createOrganization = async (newOrg: OrganizationType) => {
-    const { client } = await RiderTrackerAPI.getClient()
-    const response = await client.organizationsPost({}, newOrg)
-
-    return handleApiResponse<object>(response)
-}
-
-const updateOrganizationLoginImage = async (file: File, orgId: string) => {
-    const fileExtension = file.name.split('.').pop()
-    const bucket = 'ridertracker.organizationimages'
-    const fileName = `${orgId}.${fileExtension}`
-    const fullFileName = `${bucket}/${fileName}`
-
-    const { client } = await RiderTrackerAPI.getClient()
-    const updateOrgImageResponse = await client.adminProxyS3FolderObjectGet({ folder: bucket, object: fileName })
-
-    const putUrl = handleApiResponse<URL>(updateOrgImageResponse)
-
-    await fetch(putUrl, {
-        method: 'PUT',
-        body: file
-    })
-
-    return updateOrganization(orgId, { loginImageKey: fullFileName })
-}
-
-const updateOrganization = async (orgId: string, body: Record<string, string | string[]>) => {
-    const { client } = await RiderTrackerAPI.getClient()
-
-    const response = await client.organizationsOrgIdPut({ orgId }, body)
-    return handleApiResponse<object>(response)
-}
-
-const getOrganizationLoginDataBySlug = async (orgSlug: string) => {
-    const { client } = await RiderTrackerAPI.getClient()
-    const response = client.publicOrganizationsOrgSlugGet({ orgSlug })
-    return handleApiResponse<OrganizationType>(response)
-}
-
-const addAdminToOrganization = async (orgId: string, userId: string) => {
-    const { adminIds } = await getOrganizationById(orgId)
-    let newAdminIds: string[] = []
-
-    if (adminIds) {
-        adminIds.push(userId)
-        newAdminIds = adminIds
-    } else {
-        newAdminIds = ['']
+    constructor(apiGClient: ApiGatewayClientType) {
+        this.client = apiGClient
     }
 
-    return await updateOrganization(orgId, { adminIds: newAdminIds })
-}
-
-const removeAdminFromOrganization = async (orgId: string, userId: string) => {
-    const { adminIds } = await getOrganizationById(orgId)
-    let newAdminIds: string[] = []
-
-    if (adminIds) {
-        newAdminIds = adminIds.filter((a: string) => a !== userId)
-    } else {
-        newAdminIds = ['']
+    async getOrganizations() {
+        const response = await this.client.organizationsGet()
+    
+        return handleApiResponse<OrganizationType[]>(response)
     }
-
-    return await updateOrganization(orgId, { adminIds: newAdminIds })
+    
+    async getOrganizationById(orgId: string) {
+        const response = await this.client.organizationsOrgIdGet({ orgId })
+    
+        return handleApiResponse<OrganizationType>(response)
+    }
+    
+    async createOrganization(newOrg: OrganizationType) {
+        const response = await this.client.organizationsPost({}, newOrg)
+    
+        return handleApiResponse<object>(response)
+    }
+    
+    async updateOrganizationLoginImage(file: File, orgId: string) {
+        const fileExtension = file.name.split('.').pop()
+        const bucket = 'ridertracker.organizationimages'
+        const fileName = `${orgId}.${fileExtension}`
+        const fullFileName = `${bucket}/${fileName}`
+    
+        const updateOrgImageResponse = await this.client.adminProxyS3FolderObjectGet({ folder: bucket, object: fileName })
+    
+        const putUrl = handleApiResponse<URL>(updateOrgImageResponse)
+    
+        await fetch(putUrl, {
+            method: 'PUT',
+            body: file
+        })
+    
+        return this.updateOrganization(orgId, { loginImageKey: fullFileName })
+    }
+    
+    async updateOrganization(orgId: string, body: Record<string, string | string[]>) {
+    
+        const response = await this.client.organizationsOrgIdPut({ orgId }, body)
+        return handleApiResponse<object>(response)
+    }
+    
+    async getOrganizationLoginDataBySlug(orgSlug: string) {
+        const response = this.client.publicOrganizationsOrgSlugGet({ orgSlug })
+        return handleApiResponse<OrganizationType>(response)
+    }
+    
+    async addAdminToOrganization(orgId: string, userId: string) {
+        const { adminIds } = await this.getOrganizationById(orgId)
+        let newAdminIds: string[] = []
+    
+        if (adminIds) {
+            adminIds.push(userId)
+            newAdminIds = adminIds
+        } else {
+            newAdminIds = ['']
+        }
+    
+        return await this.updateOrganization(orgId, { adminIds: newAdminIds })
+    }
+    
+    async removeAdminFromOrganization(orgId: string, userId: string) {
+        const { adminIds } = await this.getOrganizationById(orgId)
+        let newAdminIds: string[] = []
+    
+        if (adminIds) {
+            newAdminIds = adminIds.filter((a: string) => a !== userId)
+        } else {
+            newAdminIds = ['']
+        }
+    
+        return await this.updateOrganization(orgId, { adminIds: newAdminIds })
+    }
 }
 
-export interface OrganizationApiFunctionTypes {
+export interface OrgApiFunctionTypes {
     getOrganizations(): Promise<OrganizationType[]>,
     getOrganizationById(orgId: string): Promise<OrganizationType>,
     createOrganization(newOrganization: OrganizationType): Promise<object>,
@@ -91,15 +93,4 @@ export interface OrganizationApiFunctionTypes {
     updateOrganization(orgId: string, body: Record<string, string | string[]>): Promise<object>
     addAdminToOrganization(orgId: string, userId: string): Promise<object>
     removeAdminFromOrganization(orgId: string, userId: string): Promise<object>
-}
-
-export default {
-    getOrganizations,
-    getOrganizationById,
-    createOrganization,
-    updateOrganizationLoginImage,
-    getOrganizationLoginDataBySlug,
-    updateOrganization,
-    addAdminToOrganization,
-    removeAdminFromOrganization
 }
