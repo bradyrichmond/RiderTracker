@@ -5,7 +5,7 @@ import { OrgApis, OrgApiFunctionTypes } from './OrganizationApis'
 import { RiderApis, RiderApiFunctionTypes } from './RiderApis'
 import { RouteApis, RouteApiFunctionTypes } from './RouteApis'
 import { ScanApis, ScanApiFunctionTypes } from './ScanApis'
-import SchoolApis, { SchoolApiFunctionTypes } from './SchoolApis'
+import { SchoolApis, SchoolApiFunctionTypes } from './SchoolApis'
 import StopApis, { StopApiFunctionTypes } from './StopApis'
 import UserApis, { UserApiFunctionTypes } from './UserApis'
 import { ApiGatewayClientType, generateApiGatewayClient } from '@/helpers/GenerateApiGatewayClient'
@@ -34,7 +34,7 @@ class RiderTrackerAPI {
         this.riders = new RiderApis(newClient)
         this.routes = new RouteApis(newClient)
         this.scans = new ScanApis(newClient)
-        this.schools = SchoolApis
+        this.schools = new SchoolApis(newClient)
         this.stops = StopApis
         this.users = UserApis
     }
