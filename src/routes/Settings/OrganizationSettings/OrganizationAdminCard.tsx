@@ -47,8 +47,8 @@ const OrganizationAdminCard = ({ id, firstName, lastName, title, email, index, r
     }
 
     const deleteAdminAction = async (id: string) => {
-        await api.organizations.removeAdminFromOrganization(orgId, id)
-        await api.admin.removeUserFromGroup(id, RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN)
+        await api?.organizations.removeAdminFromOrganization(orgId, id)
+        await api?.admin.removeUserFromGroup(id, RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN)
         refreshAdmins()
     }
 

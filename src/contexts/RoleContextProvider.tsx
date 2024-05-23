@@ -3,7 +3,6 @@ import { getHeaviestRole } from '@/helpers/GetHeaviestRole'
 import { RiderTrackerRole, isRiderTrackerRole } from '@/constants/Roles'
 import { PropsWithChildren, useState } from 'react'
 import { fetchAuthSession } from '@aws-amplify/auth'
-import { getOrgIdForUser } from '@/helpers/GetOrganizationIdForUser'
 import { signOut } from 'aws-amplify/auth'
 import { RoleContext } from './RoleContext'
 import { useOrgStore } from '@/store/OrgStore'
@@ -75,7 +74,7 @@ export const RoleContextProvider = ({ children }: PropsWithChildren) => {
     const selectOrganizationAction = async () => {
         try {
             if (userId && heaviestRole) {
-                const fetchedOrgId = await getOrgIdForUser(userId, heaviestRole)
+                const fetchedOrgId = await api?.organizations.getOrgIdForUser(userId, heaviestRole)
                 if (fetchedOrgId) {
                     if (Array.isArray(fetchedOrgId)) {
                         const orgs = await api?.organizations.getOrganizations()

@@ -1,6 +1,9 @@
 import { OrganizationType } from '@/types/OrganizationType'
 import { handleApiResponse } from '@/helpers/ApiHelpers'
 import { ApiGatewayClientType } from '@/helpers/GenerateApiGatewayClient'
+import { v4 as uuid } from 'uuid'
+import { RIDER_TRACKER_ROLES } from '@/constants/Roles'
+import { UserType } from '@/types/UserType'
 
 export class OrgApis {
     client: ApiGatewayClientType
@@ -19,6 +22,25 @@ export class OrgApis {
         const response = await this.client.organizationsOrgIdGet({ orgId })
 
         return handleApiResponse<OrganizationType>(response)
+    }
+
+    async getOrgIdForUser(userId: string, role: string): Promise<string | string[]> {
+        const requestId = uuid()
+    
+        if (role === RIDER_TRACKER_ROLES.RIDER_TRACKER_WIZARD) {
+            const wizardData: OrganizationType[] = await this.client.organizationsGet()
+            const mappedOrgIds: string[] = wizardData.map((w: OrganizationType) => w.id)
+            return mappedOrgIds
+        }
+    
+        const userGetResponse = await this.client.organizationsOrgIdUsersIdGet({ orgId: requestId, id: userId })
+        const userData = handleApiResponse<UserType>(userGetResponse)
+        
+        if (!userData.orgId) {
+            throw 'No org for this user'
+        }
+
+        return userData.orgId
     }
 
     async createOrganization(newOrg: OrganizationType) {
@@ -85,10 +107,11 @@ export class OrgApis {
 }
 
 export interface OrgApiFunctionTypes {
-    getOrganizations(): Promise<OrganizationType[]>,
-    getOrganizationById(orgId: string): Promise<OrganizationType>,
-    createOrganization(newOrganization: OrganizationType): Promise<object>,
-    updateOrganizationLoginImage(file: File, orgId: string): Promise<object>,
+    getOrganizations(): Promise<OrganizationType[]>
+    getOrganizationById(orgId: string): Promise<OrganizationType>
+    getOrgIdForUser(userId: string, role: string): Promise<string | string[]>
+    createOrganization(newOrganization: OrganizationType): Promise<object>
+    updateOrganizationLoginImage(file: File, orgId: string): Promise<object>
     getOrganizationLoginDataBySlug(orgslug: string): Promise<OrganizationType>
     updateOrganization(orgId: string, body: Record<string, string | string[]>): Promise<object>
     addAdminToOrganization(orgId: string, userId: string): Promise<object>

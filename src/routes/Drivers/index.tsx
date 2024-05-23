@@ -21,10 +21,10 @@ const Drivers = () => {
 
     const updateDriversAction = async () => {
         try {
-            const { driverIds } = await api.organizations.getOrganizationById(orgId)
-            if (driverIds) {
-                const drivers = await api.users.getBulkUsersByIds(orgId, driverIds)
-                setDrivers(drivers)
+            const org = await api?.organizations.getOrganizationById(orgId)
+            if (org?.driverIds) {
+                const drivers = await api?.users.getBulkUsersByIds(orgId, org.driverIds)
+                setDrivers(drivers ?? [])
             }
         } catch {
             console.error('updateDriversAction failed')
@@ -36,7 +36,8 @@ const Drivers = () => {
     }
 
     const deleteDriverAction = async (driverId: string) => {
-        await api.users.deleteUser(orgId, driverId)
+        await api?.users.deleteUser(orgId, driverId)
+        
         try {
             updateDriversAction()
         } catch (e) {

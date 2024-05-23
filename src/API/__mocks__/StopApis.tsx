@@ -24,7 +24,8 @@ const getBulkStopsById = async (stopIds: string[]) => {
         orgId: '123456',
         riderIds: ['123456'],
         stopName: 'Supportive Bear',
-        address: '789'
+        address: '789',
+        routeId: 'ea215520-0026-4f4e-bced-fc010cd2b631'
      }))
 
     return stops

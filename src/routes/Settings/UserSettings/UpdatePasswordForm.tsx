@@ -31,7 +31,7 @@ const UpdatePasswordForm = () => {
 
     const submitPasswordChangeRequest = async (oldPassword: string, newPassword: string) => {
         try {
-            await api.users.changeUserPassword(oldPassword, newPassword)
+            await api?.users.changeUserPassword(oldPassword, newPassword)
         } catch {
             showPasswordSetFailureSnackbar()
         }

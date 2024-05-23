@@ -21,7 +21,7 @@ const UserCard = ({ user, updateUsers, style }: { user: UserType, updateUsers: (
 
     const deleteUserAction = async () => {
         if (user.id !== userId) {
-            await api.users.deleteUser(orgId, user.id)
+            await api?.users.deleteUser(orgId, user.id)
             updateUsers(user.id)
         } else {
             showErrorSnackbar('Can\'t delete yourself')

@@ -38,7 +38,7 @@ const UpdateProfileDataForm = () => {
 
     const onSubmit = async (data: ProfileFormInputs) => {
         const formattedData = mapFormDataToCognito(data)
-        await api.admin.updateUserAttributes(formattedData, userId)
+        await api?.admin.updateUserAttributes(formattedData, userId)
         updateUserData()
         showDataChangeSnackbar()
         reset()

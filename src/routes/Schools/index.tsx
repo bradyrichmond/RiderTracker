@@ -37,24 +37,27 @@ const Schools = () => {
 
     const updateSchools = async () => {
         if (orgId) {
-            const fetchedSchools = await api.schools.getSchools(orgId)
-            const addressIds = fetchedSchools.map((s: SchoolType) => s.address)
-            const fetchedAddresses = await api.addresses.getBulkAddressesByIds(orgId, addressIds)
-            setAddresses(fetchedAddresses)
-            setSchools(fetchedSchools)
+            const fetchedSchools = await api?.schools.getSchools(orgId)
+            const addressIds = fetchedSchools?.map((s: SchoolType) => s.address)
+
+            if (addressIds) {
+                const fetchedAddresses = await api?.addresses.getBulkAddressesByIds(orgId, addressIds)
+                setAddresses(fetchedAddresses ?? [])
+                setSchools(fetchedSchools ?? [])
+            }
         }
     }
 
     const createSchoolAction = async (newSchool: SchoolType) => {
-        const validatedAddress = await api.addresses.validateAddress(newSchool.address)
+        const validatedAddress = await api?.addresses.validateAddress(newSchool.address)
 
         if (validatedAddress) {
             const newUuid = uuidv4()
             validatedAddress.id = newUuid
-            await api.addresses.createAddress(orgId, validatedAddress)
+            await api?.addresses.createAddress(orgId, validatedAddress)
 
             newSchool.address = validatedAddress.id
-            await api.schools.createSchool(orgId, newSchool)
+            await api?.schools.createSchool(orgId, newSchool)
 
             updateSchools()
         } else {
@@ -71,7 +74,7 @@ const Schools = () => {
     }
 
     const deleteSchoolAction = async (schoolId: string) => {
-        await api.schools.deleteSchool(orgId, schoolId)
+        await api?.schools.deleteSchool(orgId, schoolId)
         updateSchools()
     }
 
@@ -130,7 +133,7 @@ const Schools = () => {
     const processRowUpdate = async (updatedRow: SchoolType, originalRow: SchoolType) => {
         try {
             if (updatedRow !== originalRow) {
-                await api.schools.updateSchool(orgId, originalRow.id, updatedRow)
+                await api?.schools.updateSchool(orgId, originalRow.id, updatedRow)
                 await updateSchools()
             }
 

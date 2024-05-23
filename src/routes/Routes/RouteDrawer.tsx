@@ -38,28 +38,37 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
     }, [routeId, orgId])
 
     const getRouteData = async () => {
-        const fetchedRoute = await api.routes.getRouteById(orgId, routeId)
-        setRouteNumber(fetchedRoute.routeNumber)
+        const fetchedRoute = await api?.routes.getRouteById(orgId, routeId)
 
-        if (fetchedRoute.stopIds) {
-            getStopsForRoute(fetchedRoute.stopIds)
-        }
+        if (fetchedRoute) {
+            setRouteNumber(fetchedRoute.routeNumber)
 
-        if (fetchedRoute.riderIds) {
-            getRidersForRoute(fetchedRoute.riderIds)
+            if (fetchedRoute.stopIds) {
+                getStopsForRoute(fetchedRoute.stopIds)
+            }
+
+            if (fetchedRoute.riderIds) {
+                getRidersForRoute(fetchedRoute.riderIds)
+            }
         }
     }
 
     const getStopsForRoute = async (stopIds: string[]) => {
-        const fetchedStops = await api.stops.getBulkStopsByIds(orgId, stopIds)
-        const mappedStops: OptionsType[] = fetchedStops.map((s) => ({ id: s.id, label: s.stopName }))
-        setStops(mappedStops)
+        const fetchedStops = await api?.stops.getBulkStopsByIds(orgId, stopIds)
+        
+        if (fetchedStops) {
+            const mappedStops: OptionsType[] = fetchedStops.map((s) => ({ id: s.id, label: s.stopName }))
+            setStops(mappedStops)
+        }
     }
 
     const getRidersForRoute = async (riderIds: string[]) => {
-        const fechedRiders = await api.riders.getBulkRidersByIds(orgId, riderIds)
-        const mappedRiders: OptionsType[] = fechedRiders.map((s) => ({ id: s.id, label: `${s.firstName} ${s.lastName}` }))
-        setRiders(mappedRiders)
+        const fechedRiders = await api?.riders.getBulkRidersByIds(orgId, riderIds)
+        
+        if (fechedRiders) {
+            const mappedRiders: OptionsType[] = fechedRiders.map((s) => ({ id: s.id, label: `${s.firstName} ${s.lastName}` }))
+            setRiders(mappedRiders)
+        }
     }
 
     const toggleAddingStop = () => {
@@ -67,7 +76,7 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
     }
 
     const deleteRouteAction = async () => {
-        await api.routes.deleteRoute(orgId, routeId)
+        await api?.routes.deleteRoute(orgId, routeId)
     }
 
     const createStopAction = async (newStop: StopType) => {
@@ -75,16 +84,16 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
         const newAddressId = await createAddress(newStop.address)
         newStop.address = newAddressId
 
-        await api.stops.createStop(orgId, newStop)
+        await api?.stops.createStop(orgId, newStop)
         toggleAddingStop()
     }
 
     const createAddress = async (address: string) => {
-        const validatedAddress = await api.addresses.validateAddress(address)
+        const validatedAddress = await api?.addresses.validateAddress(address)
 
         if (validatedAddress) {
             const newAddressId = uuid()
-            await api.addresses.createAddress(orgId, validatedAddress)
+            await api?.addresses.createAddress(orgId, validatedAddress)
             return newAddressId
         } else {
             throw 'Unable to validate address'

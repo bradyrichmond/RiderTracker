@@ -35,14 +35,14 @@ const Scans = () => {
     }, [orgId])
 
     const updateAllRiders = async () => {
-        const riderData = await api.riders.getRiders(orgId)
+        const riderData = await api?.riders.getRiders(orgId)
 
         try {
-            const mapped = riderData.map((r: RiderType) => {
+            const mapped = riderData?.map((r: RiderType) => {
                 return { label: `${r.firstName} ${r.lastName}`, id: r.id }
             })
 
-            setRiders(mapped)
+            setRiders(mapped ?? [])
         } catch {
             setRiders([])
         }
@@ -50,17 +50,17 @@ const Scans = () => {
 
     const updateAllDrivers = async () => {
         try {
-            const { driverIds } = await api.organizations.getOrganizationById(orgId)
+            const org = await api?.organizations.getOrganizationById(orgId)
 
-            if (driverIds) {
-                const driverData = await api.users.getBulkUsersByIds(orgId, driverIds)
+            if (org?.driverIds) {
+                const driverData = await api?.users.getBulkUsersByIds(orgId, org.driverIds)
 
                 try {
-                    const mapped = driverData.map((r: UserType) => {
+                    const mapped = driverData?.map((r: UserType) => {
                         return { label: `${r.firstName} ${r.lastName}`, id: r.id }
                     })
 
-                    setDrivers(mapped)
+                    setDrivers(mapped ?? [])
                 } catch {
                     setDrivers([])
                 }
@@ -71,8 +71,8 @@ const Scans = () => {
     }
 
     const getScansAction = async () => {
-        const scans = await api.scans.getScans(orgId)
-        setScans(scans)
+        const scans = await api?.scans.getScans(orgId)
+        setScans(scans ?? [])
     }
 
     const viewScanDetails = (scanId: string) => {
@@ -80,7 +80,7 @@ const Scans = () => {
     }
 
     const deleteScanAction = async (scanId: string) => {
-        await api.scans.deleteScan(orgId, scanId)
+        await api?.scans.deleteScan(orgId, scanId)
     }
 
     const createScan = async (newScan: ScanType) => {
@@ -88,7 +88,7 @@ const Scans = () => {
             const fetchedLocation = await getCurrentPosition()
             const generatedLocation = locationFactory(fetchedLocation)
             const scanWithLocation = { ...newScan, deviceLocationOnSubmit: generatedLocation, manualScan: true }
-            await api.scans.createScan(orgId, scanWithLocation)
+            await api?.scans.createScan(orgId, scanWithLocation)
         } catch (e) {
             console.log(e)
         }

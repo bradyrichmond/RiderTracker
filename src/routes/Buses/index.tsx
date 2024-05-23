@@ -22,7 +22,7 @@ const Buses = () => {
     const { t } = useTranslation(['buses', 'common'])
 
     const updateBusesAction = async () => {
-        const buses = await api.buses.getBuses(orgId)
+        const buses = await api?.buses.getBuses(orgId)
         setBuses(buses ?? [])
     }
 
@@ -31,12 +31,12 @@ const Buses = () => {
     }
 
     const deleteBusAction = async (busId: string) => {
-        await api.buses.deleteBus(orgId, busId)
+        await api?.buses.deleteBus(orgId, busId)
         updateBusesAction()
     }
 
     const createBusAction = async (newBus: BusType) => {
-        await api.buses.createBus(orgId, newBus)
+        await api?.buses.createBus(orgId, newBus)
     }
 
     const generateGridColumns = (): GridColDef[] => {

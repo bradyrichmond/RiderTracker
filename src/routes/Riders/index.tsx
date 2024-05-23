@@ -42,39 +42,49 @@ const Riders = () => {
 
     const getRiders = async () => {
         // TODO: add pagination handling
-        const fetchedRiders = await api.riders.getRiders(orgId)
-        setRiders(fetchedRiders)
+        const fetchedRiders = await api?.riders.getRiders(orgId)
+        setRiders(fetchedRiders ?? [])
     }
 
     const getAllSchools = async () => {
-        const fetchedSchools = await api.schools.getSchools(orgId)
-        const mappedSchools = fetchedSchools.map((s) => ({
-            label: s.schoolName,
-            id: s.id
-        }))
-        setAllSchools(mappedSchools)
+        const fetchedSchools = await api?.schools.getSchools(orgId)
+        
+        if (fetchedSchools) {
+            const mappedSchools = fetchedSchools.map((s) => ({
+                label: s.schoolName,
+                id: s.id
+            }))
+            setAllSchools(mappedSchools)
+        }
     }
 
     const getAllStops = async () => {
-        const fetchedStops = await api.stops.getStops(orgId)
-        const mappedStops = fetchedStops.map((s) => ({
-            label: s.stopName,
-            id: s.id
-        }))
+        const fetchedStops = await api?.stops.getStops(orgId)
 
-        setAllStops(mappedStops)
+        if (fetchedStops) {
+            const mappedStops = fetchedStops.map((s) => ({
+                label: s.stopName,
+                id: s.id
+            }))
+
+            setAllStops(mappedStops)
+        }
     }
 
     const getAllGuardians = async () => {
-        const org = await api.organizations.getOrganizationById(orgId)
-        const orgGuardianIds = org.guardianIds
+        const org = await api?.organizations.getOrganizationById(orgId)
+        const orgGuardianIds = org?.guardianIds
+
         if (orgGuardianIds) {
-            const fetchedGuardians: GuardianType[] = await api.users.getBulkGuardiansByIds(orgId, orgGuardianIds)
-            const mappedGuardians = fetchedGuardians.map((g: GuardianType) => ({
-                label: `${g.firstName} ${g.lastName}`,
-                id: g.id
-            }))
-            setAllGuardians(mappedGuardians)
+            const fetchedGuardians: GuardianType[] | undefined = await api?.users.getBulkGuardiansByIds(orgId, orgGuardianIds)
+
+            if (fetchedGuardians) {
+                const mappedGuardians = fetchedGuardians.map((g: GuardianType) => ({
+                    label: `${g.firstName} ${g.lastName}`,
+                    id: g.id
+                }))
+                setAllGuardians(mappedGuardians)
+            }
         }
     }
 
@@ -83,12 +93,14 @@ const Riders = () => {
     }
 
     const deleteRiderAction = async (riderId: string) => {
-        await api.riders.deleteRider(orgId, riderId)
+        await api?.riders.deleteRider(orgId, riderId)
     }
 
     const createRider = async (newRider: RiderType) => {
         setDisableButtons(true)
-        await api.riders.createRider(orgId, newRider)
+
+        await api?.riders.createRider(orgId, newRider)
+        
         setDisableButtons(false)
         setIsAddingRider(false)
     }

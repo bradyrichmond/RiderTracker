@@ -4,13 +4,13 @@ import { useForm } from 'react-hook-form'
 import { signIn, signOut, fetchAuthSession } from '@aws-amplify/auth'
 import { API_BASE_NAME } from '@/API'
 import { RoleContext } from '@/contexts/RoleContext'
-import { getOrgIdForUser } from '@/helpers/GetOrganizationIdForUser'
 import { getHeaviestRole } from '@/helpers/GetHeaviestRole'
 import { RiderTrackerRole, isRiderTrackerRole } from '@/constants/Roles'
 import { useNavigate } from 'react-router-dom'
 import { Hub } from 'aws-amplify/utils'
 import { useTranslation } from 'react-i18next'
 import { useOrgStore } from '@/store/OrgStore'
+import { useApiStore } from '@/store/ApiStore'
 
 interface LoginFormInputs {
     username: string
@@ -93,6 +93,7 @@ const LoginForm = () => {
         const orgSlugResponse = await fetch(`${API_BASE_NAME}/public/organizations/${pathOrgSlug}`)
         const { id } = await orgSlugResponse.json()
         const previousPath = history.state?.usr?.previousPath
+        const { api } = useApiStore()
 
         if (tokens) {
             const { idToken } = tokens
@@ -103,7 +104,7 @@ const LoginForm = () => {
             const sessionUserId = session.userSub
 
             if (sessionUserId) {
-                const userOrgIds: string | string[] = await getOrgIdForUser(sessionUserId, heaviestRoleFromGroups)
+                const userOrgIds: string | string[] | undefined = await api?.organizations.getOrgIdForUser(sessionUserId, heaviestRoleFromGroups)
 
                 if ((Array.isArray(userOrgIds) && !userOrgIds.some((o) => o === id)) || userOrgIds !== id) {
                     signOut()

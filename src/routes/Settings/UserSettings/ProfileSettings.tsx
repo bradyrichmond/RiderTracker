@@ -18,7 +18,7 @@ const ProfileSettings = () => {
     const { t } = useTranslation('settings')
 
     const uploadFile = async (file: File) => {
-        await api.admin.updateUserProfileImage(orgId, userId, file, userId)
+        await api?.admin.updateUserProfileImage(orgId, userId, file, userId)
         await updateUserData()
     }
 

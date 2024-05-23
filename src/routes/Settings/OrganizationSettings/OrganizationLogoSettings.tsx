@@ -17,7 +17,7 @@ const OrganizationLogoSettings = () => {
     const { t } = useTranslation(['settings', 'common'])
 
     const uploadAction = async (file: File) => {
-        await api.organizations.updateOrganizationLoginImage(file, orgId)
+        await api?.organizations.updateOrganizationLoginImage(file, orgId)
         await updateUserData()
     }
 

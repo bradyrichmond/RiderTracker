@@ -5,6 +5,8 @@ export function riderFactory(args: (string)[] = []): RiderType {
         id: args[0],
         orgId: args[1],
         firstName: args[2],
-        lastName: args[3]
+        lastName: args[3],
+        schoolId: args[4],
+        stopIds: []
     };
 }

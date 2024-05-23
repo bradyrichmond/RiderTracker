@@ -33,10 +33,11 @@ const Guardians = () => {
 
     const updateGuardians = async () => {
         try {
-            const { guardianIds } = await api.organizations.getOrganizationById(orgId)
-            if (guardianIds) {
-                const orgGuardians = await api.users.getBulkUsersByIds(orgId, guardianIds)
-                setGuardians(orgGuardians)
+            const org = await api?.organizations.getOrganizationById(orgId)
+
+            if (org?.guardianIds) {
+                const orgGuardians = await api?.users.getBulkUsersByIds(orgId, org.guardianIds)
+                setGuardians(orgGuardians ?? [])
             }
         } catch (e) {
             console.log(e as string)
@@ -44,7 +45,7 @@ const Guardians = () => {
     }
 
     const deleteGuardianAction = async (guardianId: string) => {
-        await api.users.deleteUser(orgId, guardianId)
+        await api?.users.deleteUser(orgId, guardianId)
         updateGuardians()
     }
 
@@ -54,8 +55,12 @@ const Guardians = () => {
 
     const createGuardian = async (guardian: CreateGuardianInput) => {
         const { given_name, family_name, email, address } = guardian
-        const validatedAddress = await api.addresses.validateAddress(address)
-        await api.admin.createGuardian({ given_name, family_name, email }, validatedAddress, orgId)
+        const validatedAddress = await api?.addresses.validateAddress(address)
+
+        if (validatedAddress) {
+            await api?.admin.createGuardian({ given_name, family_name, email }, validatedAddress, orgId)
+        }
+
         toggleShowModal()
         updateGuardians()
     }

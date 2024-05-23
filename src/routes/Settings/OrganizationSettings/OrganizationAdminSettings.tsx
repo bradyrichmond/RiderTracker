@@ -28,11 +28,11 @@ const OrganizationAdminSettings = () => {
 
     const getAdmins = async () => {
         try {
-            const { adminIds } = await api.organizations.getOrganizationById(orgId)
+            const org = await api?.organizations.getOrganizationById(orgId)
 
-            if (adminIds) {
-                const orgAdmins = await api.users.getBulkUsersByIds(orgId, adminIds)
-                setAdmins(orgAdmins)
+            if (org?.adminIds) {
+                const orgAdmins = await api?.users.getBulkUsersByIds(orgId, org.adminIds)
+                setAdmins(orgAdmins ?? [])
             }
         } catch {
             console.error('getadmins failed')
@@ -55,30 +55,32 @@ const OrganizationAdminSettings = () => {
     const createNewAdmin = async (newAdmin: UserType) => {
         try {
             // TODO: Needs finer error management
-            const cognitoUser: AWSUserType = await api.admin.createCognitoUser({
+            const cognitoUser: AWSUserType | undefined = await api?.admin.createCognitoUser({
                 given_name: newAdmin.firstName,
                 family_name: newAdmin.lastName,
                 email: newAdmin.email
             })
-            const cognitoUsername = cognitoUser.User.Username
+            const cognitoUsername = cognitoUser?.User.Username
 
-            await api.admin.addUserToGroup(cognitoUsername, RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN)
+            if (cognitoUsername) {
+                await api?.admin.addUserToGroup(cognitoUsername, RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN)
 
-            newAdmin.id = cognitoUsername
-            const { adminIds } = await api.organizations.getOrganizationById(orgId)
+                newAdmin.id = cognitoUsername
+                const org = await api?.organizations.getOrganizationById(orgId)
 
-            if (adminIds) {
-                adminIds.push(cognitoUsername)
+                if (org?.adminIds) {
+                    org.adminIds.push(cognitoUsername)
+                }
+
+                const admins = org?.adminIds || [cognitoUsername]
+
+                await api?.organizations.updateOrganization(orgId, { adminIds: admins })
+
+                await api?.admin.createUser(orgId, { ...newAdmin, orgId: orgId })
+
+                getAdmins()
+                toggleShowModal()
             }
-
-            const admins  = adminIds || [cognitoUsername]
-
-            await api.organizations.updateOrganization(orgId, { adminIds: admins })
-
-            await api.admin.createUser(orgId, { ...newAdmin, orgId: orgId })
-
-            getAdmins()
-            toggleShowModal()
         } catch (e) {
             console.error(e)
             showCreateAdminErrorSnackbar()
