@@ -14,7 +14,7 @@ interface CreateGuardianDialogProps {
 
 const CreateGuardianDialog = ({ cancel, createGuardian, isAddingGuardian }: CreateGuardianDialogProps) => {
     const [disableButtons, setDisableButtons] = useState<boolean>(false)
-    const { t } = useTranslation(['guardians', 'settings', 'common'])
+    const { t } = useTranslation(['guardians', 'common'])
     const { showErrorSnackbar } = useContext(SnackbarContext)
     const {
         handleSubmit,
@@ -55,7 +55,7 @@ const CreateGuardianDialog = ({ cancel, createGuardian, isAddingGuardian }: Crea
                 <TextField fullWidth label='Address' {...register('address')} />
             </DialogContent>
             <DialogActions sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                <Button disabled={disableButtons} variant='contained' onClick={cancel}>{t('cancel', { ns: 'settings' })}</Button>
+                <Button disabled={disableButtons} variant='contained' onClick={cancel}>{t('cancel', { ns: 'common' })}</Button>
                 <Button disabled={disableButtons} variant='contained' type="submit">{t('createGuardian')}</Button>
             </DialogActions>
         </Dialog>

@@ -2,6 +2,7 @@
     "acceptableFileTypes": "Acceptable file type: jpg, jpeg, png, and svg. Max file size: 10MB",
     "authFailed": "Incorrect username or password.",
     "back": "Back",
+    "cancel": "Cancel",
     "changeLanguage": "Change Language",
     "changePassword": "Change Password",
     "changeProfilePicture": "Change Profile Picture",

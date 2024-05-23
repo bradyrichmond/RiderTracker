@@ -18,7 +18,7 @@ interface CreateStopForRouteDialogProps {
 const CreateStopForRouteDialog = ({ cancelAction, createStop, isAddingStop }: CreateStopForRouteDialogProps) => {
     const [newStopId, setNewStopId] = useState<string>('')
     const [disableButtons, setDisableButtons] = useState<boolean>(false)
-    const { t } = useTranslation('routes')
+    const { t } = useTranslation(['routes', 'common'])
     const { randomName, generateRandomName } = useRandomNameGenerator()
     const { handleSubmit, register, reset } = useForm<StopType>()
     const { orgId } = useContext(OrgDataContext)
@@ -83,7 +83,7 @@ const CreateStopForRouteDialog = ({ cancelAction, createStop, isAddingStop }: Cr
                 </Box>
             </DialogContent>
             <DialogActions sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                <Button disabled={disableButtons} variant='contained' onClick={cancelAction}>{t('cancel', { ns: 'settings' })}</Button>
+                <Button disabled={disableButtons} variant='contained' onClick={cancelAction}>{t('cancel', { ns: 'common' })}</Button>
                 <Button disabled={disableButtons} variant='contained' type="submit">{t('createStop')}</Button>
             </DialogActions>
         </Dialog>

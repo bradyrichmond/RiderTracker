@@ -3,6 +3,7 @@ import AutoSizer from 'react-virtualized-auto-sizer'
 import { VariableSizeList as List } from 'react-window'
 import RouteDrawerDetailListItem from './RouteDrawerDetailListItem'
 import { OptionsType } from '@/types/FormTypes'
+import { useTranslation } from 'react-i18next'
 
 interface RouteDrawerDetailListProps {
     items: OptionsType[]
@@ -10,6 +11,7 @@ interface RouteDrawerDetailListProps {
 }
 
 const RouteDrawerDetailList = ({ items, action }: RouteDrawerDetailListProps) => {
+    const{ t } = useTranslation('common')
     const handleAction = (id: string) => {
         action(id)
     }
@@ -20,7 +22,7 @@ const RouteDrawerDetailList = ({ items, action }: RouteDrawerDetailListProps) =>
 
     const row = ({ index }: { index: number }) => {
         const item = items[index]
-        return <RouteDrawerDetailListItem label={item.label} action={handleAction} id={item.id} />
+        return <RouteDrawerDetailListItem label={item.label} action={handleAction} id={item.id} tooltipTitle={t('viewDetails')} />
     }
 
     return (

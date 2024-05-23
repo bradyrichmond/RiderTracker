@@ -16,7 +16,7 @@ interface CreateRouteDialogProps {
 const CreateRouteDialog = ({ createRoute, cancelAction, isAddingRoute }: CreateRouteDialogProps) => {
     const [disableButtons, setDisableButtons] = useState<boolean>(false)
     const [newRouteId, setNewRouteId] = useState('')
-    const { t } = useTranslation(['routes', 'settings'])
+    const { t } = useTranslation(['routes', 'common'])
     const { handleSubmit, register, reset } = useForm<RouteType>()
     const { orgId } = useContext(OrgDataContext)
 
@@ -64,7 +64,7 @@ const CreateRouteDialog = ({ createRoute, cancelAction, isAddingRoute }: CreateR
                 </Box>
             </DialogContent>
             <DialogActions sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                <Button disabled={disableButtons} variant='contained' onClick={cancelAction}>{t('cancel', { ns: 'settings' })}</Button>
+                <Button disabled={disableButtons} variant='contained' onClick={cancelAction}>{t('cancel', { ns: 'common' })}</Button>
                 <Button disabled={disableButtons} variant='contained' type="submit">{t('createRoute')}</Button>
             </DialogActions>
         </Dialog>

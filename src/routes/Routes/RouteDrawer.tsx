@@ -2,7 +2,7 @@ import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles
 import { ApiContext } from '@/contexts/ApiContextProvider'
 import { OrgDataContext } from '@/contexts/OrgDataContext'
 import { RoleContext } from '@/contexts/RoleContext'
-import { Box, Button, Drawer, Fab, Paper, Stack, Tooltip } from '@mui/material'
+import { Box, Button, Divider, Drawer, Fab, Paper, Stack, Tooltip, Typography } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import AddLocationIcon from '@mui/icons-material/AddLocation'
@@ -13,6 +13,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import { OptionsType } from '@/types/FormTypes'
 import RouteDrawerDetailList from './RouteDrawerDetailList'
 import { useNavigate } from 'react-router-dom'
+import { useTranslation } from 'react-i18next'
 
 interface RouteDrawerProps {
     open: boolean
@@ -21,12 +22,14 @@ interface RouteDrawerProps {
 
 const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
     const [isAddingStop, setIsAddingStop] = useState(false)
+    const [routeNumber, setRouteNumber] = useState('')
     const [stops, setStops] = useState<OptionsType[]>([])
     const [riders, setRiders] = useState<OptionsType[]>([])
     const { api } = useContext(ApiContext)
     const { orgId } = useContext(OrgDataContext)
     const { heaviestRole } = useContext(RoleContext)
     const navigate = useNavigate()
+    const { t } = useTranslation('routes')
 
     useEffect(() => {
         if (routeId) {
@@ -36,6 +39,7 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
 
     const getRouteData = async () => {
         const fetchedRoute = await api.routes.getRouteById(orgId, routeId)
+        setRouteNumber(fetchedRoute.routeNumber)
 
         if (fetchedRoute.stopIds) {
             getStopsForRoute(fetchedRoute.stopIds)
@@ -102,17 +106,23 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
     return (
         <Drawer open={open} onClose={toggleDrawer} anchor='right' variant="temporary">
             <CreateStopForRouteDialog createStop={createStopAction} cancelAction={toggleAddingStop} isAddingStop={isAddingStop} />
-            <Box sx={{ ml: '1rem', mt: '1rem', mb: '1rem' }}>
+            <Box sx={{ ml: '1rem', mt: '1rem', mb: '1rem', display: 'flex', flexDirection: 'row' }}>
                 <Fab onClick={toggleDrawer}><ArrowForwardIcon /></Fab>
+                <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <Typography variant='h3'>Route {routeNumber}</Typography>
+                </Box>
             </Box>
+            <Divider />
             <Box sx={{ margin: '1rem', width: '20vw', display: 'flex', flexDirection: 'column', height: '100%' }}>
                 <Box sx={{ flex: 1 }}>
                     <Stack direction='column' justifyContent='' alignItems='center' spacing={2} sx={{ height: '100%' }}>
+                        <Typography variant='h5'>{t('stops')}</Typography>
                         <Paper sx={{ width: '100%', flex: 1 }}>
                             <Box sx={{ height: '100%', width: '100%' }}>
                                 <RouteDrawerDetailList items={stops} action={viewStopDetail} />
                             </Box>
                         </Paper>
+                        <Typography variant='h5'>{t('riders')}</Typography>
                         <Paper sx={{ width: '100%', flex: 1 }}>
                             <Box sx={{ height: '100%', width: '100%' }}>
                                 <RouteDrawerDetailList items={riders} action={viewRiderDetail} />

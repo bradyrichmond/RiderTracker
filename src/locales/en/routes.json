@@ -1,5 +1,10 @@
 {
-    "routes": "Routes",
     "addRoute": "Add Route",
-    "createRoute": "Create Route"
+    "addStop": "Add Stop",
+    "createRoute": "Create Route",
+    "createStop": "Create Stop",
+    "riders": "Riders",
+    "route": "Route",
+    "routes": "Routes",
+    "stops": "Stops"
 }

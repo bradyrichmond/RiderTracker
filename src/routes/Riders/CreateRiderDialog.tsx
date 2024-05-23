@@ -125,7 +125,7 @@ const CreateRiderDialog = ({ allGuardians, allSchools, allStops, cancelAction, c
                     </Box>
                 </DialogContent>
                 <DialogActions sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
-                    <Button disabled={disableButtons} variant='contained' onClick={cancelAction}>{t('cancel', { ns: 'settings' })}</Button>
+                    <Button disabled={disableButtons} variant='contained' onClick={cancelAction}>{t('cancel', { ns: 'common' })}</Button>
                     <Button disabled={disableButtons} variant='contained' type="submit">{t('createRider')}</Button>
                 </DialogActions>
             </Dialog>
