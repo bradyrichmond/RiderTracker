@@ -1,10 +1,11 @@
-import { RoleContext, RoleContextProvider } from '@/contexts/RoleContextProvider'
+import { RoleContextProvider } from '@/contexts/RoleContextProvider'
 import { ApiContextProvider } from '@/contexts/ApiContextProvider'
 import { PropsWithChildren, useContext, useEffect } from 'react'
 import { MemoryRouter } from 'react-router-dom'
+import { RoleContext } from '@/contexts/RoleContext'
 
 export interface AsRole {
-    role?: string
+    userRole?: string
     routes?: string[]
 }
 
@@ -20,12 +21,12 @@ export const ProviderWrapper = ({ children }: PropsWithChildren) => {
     )
 }
 
-export const ProviderWrapperAsRole = ({ children, role, routes }: PropsWithChildren<AsRole>) => {
+export const ProviderWrapperAsRole = ({ children, userRole, routes }: PropsWithChildren<AsRole>) => {
     return (
         <MemoryRouter initialEntries={routes ?? ['/']}>
             <RoleContextProvider>
                 <ApiContextProvider>
-                    <AsRole role={role}>
+                    <AsRole userRole={userRole}>
                         {children}
                     </AsRole>
                 </ApiContextProvider>
@@ -35,11 +36,11 @@ export const ProviderWrapperAsRole = ({ children, role, routes }: PropsWithChild
 }
 
 // Wrapper to use the apiContext to set the user role when testing
-export const AsRole = ({ children, role }: PropsWithChildren<AsRole>) => {
+export const AsRole = ({ children, userRole }: PropsWithChildren<AsRole>) => {
     const { setHeaviestRole } = useContext(RoleContext)
 
     useEffect(() => {
-        setHeaviestRole(role ?? 'RiderTracker_Wizard')
+        setHeaviestRole(userRole ?? 'RiderTracker_Wizard')
     }, [])
 
     return (

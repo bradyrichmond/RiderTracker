@@ -11,7 +11,7 @@ interface RouteDrawerDetailListProps {
 }
 
 const RouteDrawerDetailList = ({ items, action }: RouteDrawerDetailListProps) => {
-    const{ t } = useTranslation('common')
+    const { t } = useTranslation('common')
     const handleAction = (id: string) => {
         action(id)
     }

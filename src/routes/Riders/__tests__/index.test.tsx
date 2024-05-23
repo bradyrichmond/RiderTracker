@@ -53,7 +53,7 @@ describe('Riders Tests', () => {
   })
 
   it('hides add rider button when not authorized to add riders', async () => {
-    render(<Riders />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" /> })
+    render(<Riders />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} userRole="RiderTracker_Guardian" /> })
 
     await waitFor(() => {
       expect(screen.queryByText(/add rider/i)).not.toBeInTheDocument()
@@ -82,7 +82,7 @@ describe('Riders Tests', () => {
   })
 
   it('hides the delete action buttons in the rows for unauthorized users', async () => {
-    render(<Riders />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} role="RiderTracker_Guardian" /> })
+    render(<Riders />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} userRole="RiderTracker_Guardian" /> })
 
     await waitFor(async () => {
       const viewDetailButtons = await screen.findAllByTestId('InfoIcon')
