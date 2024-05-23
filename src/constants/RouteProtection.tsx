@@ -38,7 +38,7 @@ const ALL_ROUTES: string[] = [
     '/app/schools',
     '/app/schools/:id',
     '/app/stops',
-    '/app/stops/:id'
+    '/app/stops/:stopsId'
 ];
 
 const ORG_ADMIN_ROUTES: string[] = [
@@ -57,7 +57,7 @@ const ORG_ADMIN_ROUTES: string[] = [
     '/app/scans',
     '/app/scans/:id',
     '/app/stops',
-    '/app/stops/:id',
+    '/app/stops/:stopId',
     '/app/schools',
     '/app/schools/:id'
 ]

@@ -1,6 +1,7 @@
 import { StopType } from '@/types/StopType'
 import RiderTrackerAPI from '.'
 import { handleApiResponse } from '@/helpers/ApiHelpers'
+import { RouteType } from '@/types/RouteType'
 
 const getStops = async (orgId: string) => {
     const { client } = await RiderTrackerAPI.getClient()
@@ -25,9 +26,22 @@ const updateStop = async (orgId: string, id: string, stop: StopType) => {
 
 const createStop = async (orgId: string, body: StopType) => {
     const { client } = await RiderTrackerAPI.getClient()
-    const createStopResponse = await client.organizationsOrgIdStopsPost({ orgId }, body)
+    await client.organizationsOrgIdStopsPost({ orgId }, body)
 
-    return handleApiResponse<object>(createStopResponse)
+    const routeResponse = await client.organizationsOrgIdRoutesIdGet({ orgId, id: body.routeId })
+    const { stopIds } = handleApiResponse<RouteType>(routeResponse)
+
+    let stops: string[] | undefined = stopIds
+
+    if (!stops) {
+        stops = []
+    }
+
+    stops.push(body.id)
+
+    const updateRouteResponse = await client.organizationsOrgIdRoutesIdPut({ orgId, id: body.routeId }, { stopIds: stops })
+
+    return handleApiResponse<object>(updateRouteResponse)
 }
 
 const deleteStop = async (orgId: string, id: string) => {

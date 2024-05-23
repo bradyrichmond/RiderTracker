@@ -1,6 +1,8 @@
 import { RiderType } from '../types/RiderType'
 import RiderTrackerAPI from '.'
 import { handleApiResponse } from '@/helpers/ApiHelpers'
+import { RouteType } from '@/types/RouteType'
+import { ApiGatewayClientType } from '@/helpers/GenerateApiGatewayClient'
 
 const getRiders = async (orgId: string) => {
     const { client } = await RiderTrackerAPI.getClient()
@@ -34,7 +36,32 @@ const createRider = async (orgId: string, body: RiderType) => {
     const { client } = await RiderTrackerAPI.getClient()
     const createRiderResponse = await client.organizationsOrgIdRidersPost({ orgId }, body)
 
+    _updateAfterCreateRider(client, orgId, body)
+
     return handleApiResponse<object>(createRiderResponse)
+}
+
+const _updateAfterCreateRider = async (client: ApiGatewayClientType, orgId: string, rider: RiderType) => {
+    const stopIds = rider.stopIds
+    const routes = await _getRoutesForStops(client, orgId, stopIds)
+
+    for (const route of routes) {
+        let newRiders: string[] | undefined = route.riderIds
+
+        if (!newRiders) {
+            newRiders = []
+        }
+
+        newRiders.push(rider.id)
+        await client.organizationsOrgIdRoutesIdPut({ orgId, id: route.id }, { riderIds: newRiders })
+    }
+}
+
+const _getRoutesForStops = async (client: ApiGatewayClientType, orgId: string, stopIds: string[]) => {
+    const fetchedRoutes = await client.organizationsOrgIdRoutesGet({ orgId })
+    const routes = handleApiResponse<RouteType[]>(fetchedRoutes)
+    const filteredRoutes = routes.filter((r: RouteType) => stopIds.filter((s: string) => r.stopIds?.includes(s)).length > 0)
+    return filteredRoutes
 }
 
 const deleteRider = async (orgId: string, id: string) => {

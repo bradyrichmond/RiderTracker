@@ -21,8 +21,8 @@ import Logout from '@/routes/Auth/Logout'
 import Auth from '@/routes/Auth'
 import Onboarding from '@/routes/Onboarding'
 import { fetchAuthSession } from 'aws-amplify/auth'
-import Routes from '@/routes/Routes'
-import { Typography } from '@mui/material'
+import RouteStop from '@/routes/Routes/RouteStop'
+import RoutesWrapper from '@/routes/Routes/RoutesWrapper'
 
 export const createRouterObject = () => {
     return createBrowserRouter([{
@@ -74,11 +74,11 @@ export const createRouterObject = () => {
                     },
                     {
                         path: '/app/routes',
-                        element: <ProtectedRoute route='/app/routes'><Routes /></ProtectedRoute>
+                        element: <ProtectedRoute route='/app/routes'><RoutesWrapper /></ProtectedRoute>
                     },
                     {
                         path: '/app/routes/:id',
-                        element: <ProtectedRoute route='/app/routes/:id'><Typography>route</Typography></ProtectedRoute>
+                        element: <ProtectedRoute route='/app/routes/:id'><RoutesWrapper /></ProtectedRoute>
                     },
                     {
                         path: '/app/scans',
@@ -87,6 +87,10 @@ export const createRouterObject = () => {
                     {
                         path: '/app/scans/:id',
                         element: <ProtectedRoute route='/app/scans/:id'><Scan /></ProtectedRoute>
+                    },
+                    {
+                        path: '/app/stops/:stopId',
+                        element: <ProtectedRoute route='/app/stops/:stopId'><RouteStop /></ProtectedRoute>
                     },
                     {
                         path: '/app/schools',

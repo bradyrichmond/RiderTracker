@@ -32,10 +32,12 @@ const CreateStopForRouteDialog = ({ cancelAction, createStop, isAddingStop }: Cr
 
     const handleCreateStop = async (stop: StopType) => {
         setDisableButtons(true)
+        stop.stopName = randomName
         await createStop(stop)
         generateRandomName()
         setDisableButtons(false)
         reset()
+        generateRandomName()
     }
 
     return (

@@ -90,6 +90,7 @@ const Riders = () => {
         setDisableButtons(true)
         await api.riders.createRider(orgId, newRider)
         setDisableButtons(false)
+        setIsAddingRider(false)
     }
 
     const getSchoolNameById = (schoolId: string) => {
