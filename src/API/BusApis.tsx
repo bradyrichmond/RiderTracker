@@ -1,33 +1,37 @@
 import { BusType } from '@/types/BusType'
-import RiderTrackerAPI from '.'
 import { handleApiResponse } from '@/helpers/ApiHelpers'
+import { ApiGatewayClientType } from '@/helpers/GenerateApiGatewayClient'
 
-const getBuses = async (orgId: string) => {
-    const { client } = await RiderTrackerAPI.getClient()
-    const getBusesResponse = await client.organizationsOrgIdBusesGet({ orgId })
+export class BusApis {
+    client: ApiGatewayClientType
 
-    return handleApiResponse<BusType[]>(getBusesResponse)
-}
+    constructor(apiGClient: ApiGatewayClientType) {
+        this.client = apiGClient
+    }
 
-const getBusById = async (orgId: string, busId: string) => {
-    const { client } = await RiderTrackerAPI.getClient()
-    const getBusResponse = await client.organizationsOrgIdBusesIdGet({ orgId, id: busId })
-
-    return handleApiResponse<BusType>(getBusResponse)
-}
-
-const createBus = async (orgId: string, body: BusType) => {
-    const { client } = await RiderTrackerAPI.getClient()
-    const createBusResponse = await client.organizationsOrgIdBusesPost({ orgId }, body)
-
-    return handleApiResponse<object>(createBusResponse)
-}
-
-const deleteBus = async (orgId: string, id: string) => {
-    const { client } = await RiderTrackerAPI.getClient()
-    const deleteBusResponse = await client.organizationsOrgIdBusesIdDelete({ orgId, id })
-
-    return handleApiResponse<object>(deleteBusResponse)
+    async getBuses(orgId: string) {
+        const getBusesResponse = await this.client.organizationsOrgIdBusesGet({ orgId })
+    
+        return handleApiResponse<BusType[]>(getBusesResponse)
+    }
+    
+    async getBusById(orgId: string, busId: string) {
+        const getBusResponse = await this.client.organizationsOrgIdBusesIdGet({ orgId, id: busId })
+    
+        return handleApiResponse<BusType>(getBusResponse)
+    }
+    
+    async createBus(orgId: string, body: BusType) {
+        const createBusResponse = await this.client.organizationsOrgIdBusesPost({ orgId }, body)
+    
+        return handleApiResponse<object>(createBusResponse)
+    }
+    
+    async deleteBus(orgId: string, id: string) {
+        const deleteBusResponse = await this.client.organizationsOrgIdBusesIdDelete({ orgId, id })
+    
+        return handleApiResponse<object>(deleteBusResponse)
+    }
 }
 
 export interface BusApiFunctionTypes {
@@ -35,11 +39,4 @@ export interface BusApiFunctionTypes {
     getBusById(orgId: string, id: string): Promise<BusType>,
     createBus(orgId: string, body: BusType): Promise<object>,
     deleteBus(orgId: string, id: string): Promise<object>
-}
-
-export default {
-    getBuses,
-    getBusById,
-    createBus,
-    deleteBus
 }
