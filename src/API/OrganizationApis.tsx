@@ -26,16 +26,16 @@ export class OrgApis {
 
     async getOrgIdForUser(userId: string, role: string): Promise<string | string[]> {
         const requestId = uuid()
-    
+
         if (role === RIDER_TRACKER_ROLES.RIDER_TRACKER_WIZARD) {
             const wizardData: OrganizationType[] = await this.client.organizationsGet()
             const mappedOrgIds: string[] = wizardData.map((w: OrganizationType) => w.id)
             return mappedOrgIds
         }
-    
+
         const userGetResponse = await this.client.organizationsOrgIdUsersIdGet({ orgId: requestId, id: userId })
         const userData = handleApiResponse<UserType>(userGetResponse)
-        
+
         if (!userData.orgId) {
             throw 'No org for this user'
         }

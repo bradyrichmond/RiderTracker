@@ -1,13 +1,13 @@
 import { Autocomplete, Box, Button, Dialog, DialogTitle, TextField } from '@mui/material'
 import { Transition } from './AddEntityModal'
 import Flag from 'react-flagkit'
-import { SyntheticEvent, useContext, useState } from 'react'
-import { I18nContext } from '@/contexts/I18nContextProvider'
+import { SyntheticEvent, useState } from 'react'
 import { MenuItem } from '@mui/material'
 import { MenuItemWithIcon } from './ResponsiveAppBar'
 import { useTranslation } from 'react-i18next'
 import LanguageIcon from '@mui/icons-material/Language'
 import { SupportedLangs } from '@/constants/SupportedLangs'
+import { useI18nStore } from '@/store/I18nStore'
 
 interface LanguageOptionsType {
     label: string
@@ -16,7 +16,7 @@ interface LanguageOptionsType {
 }
 
 const ChangeLanguage = () => {
-    const { setLanguage, open, setOpen } = useContext(I18nContext)
+    const { setLanguage, open, setOpen } = useI18nStore()
     const [localLanguage, setLocalLanguage] = useState<SupportedLangs>(SupportedLangs.EN)
     const { t } = useTranslation('common')
 

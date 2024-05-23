@@ -37,7 +37,7 @@ const Drivers = () => {
 
     const deleteDriverAction = async (driverId: string) => {
         await api?.users.deleteUser(orgId, driverId)
-        
+
         try {
             updateDriversAction()
         } catch (e) {

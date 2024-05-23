@@ -48,7 +48,7 @@ const Riders = () => {
 
     const getAllSchools = async () => {
         const fetchedSchools = await api?.schools.getSchools(orgId)
-        
+
         if (fetchedSchools) {
             const mappedSchools = fetchedSchools.map((s) => ({
                 label: s.schoolName,
@@ -100,7 +100,7 @@ const Riders = () => {
         setDisableButtons(true)
 
         await api?.riders.createRider(orgId, newRider)
-        
+
         setDisableButtons(false)
         setIsAddingRider(false)
     }

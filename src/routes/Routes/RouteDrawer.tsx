@@ -55,7 +55,7 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
 
     const getStopsForRoute = async (stopIds: string[]) => {
         const fetchedStops = await api?.stops.getBulkStopsByIds(orgId, stopIds)
-        
+
         if (fetchedStops) {
             const mappedStops: OptionsType[] = fetchedStops.map((s) => ({ id: s.id, label: s.stopName }))
             setStops(mappedStops)
@@ -64,7 +64,7 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
 
     const getRidersForRoute = async (riderIds: string[]) => {
         const fechedRiders = await api?.riders.getBulkRidersByIds(orgId, riderIds)
-        
+
         if (fechedRiders) {
             const mappedRiders: OptionsType[] = fechedRiders.map((s) => ({ id: s.id, label: `${s.firstName} ${s.lastName}` }))
             setRiders(mappedRiders)
