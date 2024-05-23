@@ -1,82 +1,84 @@
 import { AddressType, GeoapifyValidateResponse } from '../types/AddressType'
-import RiderTrackerAPI from '.'
 import { handleApiResponse } from '@/helpers/ApiHelpers'
+import { ApiGatewayClientType } from '@/helpers/GenerateApiGatewayClient'
 
-const getAddresses = async (orgId: string) => {
-    const { client } = await RiderTrackerAPI.getClient()
-    const addressesResponse = await client.organizationsOrgIdAddressesGet({ orgId })
+export class AddressApis {
+    client: ApiGatewayClientType
 
-    return handleApiResponse<AddressType[]>(addressesResponse)
-}
+    constructor(apiGClient: ApiGatewayClientType) {
+        this.client = apiGClient
+    }
 
-const getAddressById = async (id: string) => {
-    const { client } = await RiderTrackerAPI.getClient()
-    const addressResponse = await client.organizationsOrgIdAddressesIdGet({ id })
+    async getAddresses(orgId: string): Promise<AddressType[]> {
+        const addressesResponse = await this.client.organizationsOrgIdAddressesGet({ orgId })
+    
+        return handleApiResponse<AddressType[]>(addressesResponse)
+    }
 
-    return handleApiResponse<AddressType>(addressResponse)
-}
+    async getAddressById(id: string): Promise<AddressType> {
+        const addressResponse = await this.client.organizationsOrgIdAddressesIdGet({ id })
+    
+        return handleApiResponse<AddressType>(addressResponse)
+    }
 
-const createAddress = async (orgId: string, body: AddressType) => {
-    const { client } = await RiderTrackerAPI.getClient()
-    const createAddressResponse = await client.organizationsOrgIdAddressesPost({ orgId }, body)
+    async createAddress(orgId: string, body: AddressType): Promise<object> {
+        const createAddressResponse = await this.client.organizationsOrgIdAddressesPost({ orgId }, body)
+    
+        return handleApiResponse<object>(createAddressResponse)
+    }
+    
+    async deleteAddress(orgId: string, id: string): Promise<object> {
+        const deleteAddressResponse = await this.client.organizationsOrgIdAddressesIdDelete({ orgId, id })
+    
+        return handleApiResponse<object>(deleteAddressResponse)
+    }
 
-    return handleApiResponse<object>(createAddressResponse)
-}
+    async validateAddress(address: string): Promise<AddressType> {
+        const validationResponse = await this.client.validateAddressPost({}, { address })
+    
+        const preEvaluationAddress: GeoapifyValidateResponse = handleApiResponse<GeoapifyValidateResponse>(validationResponse)
+        const evaluated: AddressType = this._evaluateAddressData(preEvaluationAddress)
+        return evaluated
+    }
 
-const deleteAddress = async (orgId: string, id: string) => {
-    const { client } = await RiderTrackerAPI.getClient()
-    const deleteAddressResponse = await client.organizationsOrgIdAddressesIdDelete({ orgId, id })
+    async getBulkAddressesByIds(orgId: string, addressIds: string[]): Promise<AddressType[]> {
+        const addressesResponse = await this.client.organizationsOrgIdAddressesBatchByIdPost({ orgId }, addressIds)
+    
+        return handleApiResponse<AddressType[]>(addressesResponse)
+    }
 
-    return handleApiResponse<object>(deleteAddressResponse)
-}
-
-const validateAddress = async (address: string) => {
-    const { client } = await RiderTrackerAPI.getClient()
-    const validationResponse = await client.validateAddressPost({}, { address })
-
-    const preEvaluationAddress: GeoapifyValidateResponse = handleApiResponse<GeoapifyValidateResponse>(validationResponse)
-    const evaluated: AddressType = evaluateAddressData(preEvaluationAddress)
-    return evaluated
-}
-
-const getBulkAddressesByIds = async (orgId: string, addressIds: string[]) => {
-    const api = await RiderTrackerAPI.getClient()
-    const addressesResponse = await api.client.organizationsOrgIdAddressesBatchByIdPost({ orgId }, addressIds)
-
-    return handleApiResponse<AddressType[]>(addressesResponse)
-}
-
-const evaluateAddressData = (result: GeoapifyValidateResponse): AddressType => {
-    const ACCEPT_LEVEL = 0.75;
-
-    const { body } = result
-
-    if (body.features.length === 0) {
-        throw 'Address not found'
-    } else {
-        const place = body.features[0].properties
-
-        if (place.rank.confidence > ACCEPT_LEVEL) {
-            const { housenumber, street, city, suburb, state, postcode, county, country, lat, lon, formatted } = place
-
-            return {
-                id: 'temp',
-                orgId: 'temp',
-                houseNumber: housenumber,
-                street,
-                city: city ?? suburb,
-                state,
-                county,
-                country,
-                postcode,
-                formatted,
-                location: {
-                    lat,
-                    lon
-                }
-            }
+    _evaluateAddressData(result: GeoapifyValidateResponse): AddressType {
+        const ACCEPT_LEVEL = 0.75;
+    
+        const { body } = result
+    
+        if (body.features.length === 0) {
+            throw 'Address not found'
         } else {
-            throw 'Address confidence is too low'
+            const place = body.features[0].properties
+    
+            if (place.rank.confidence > ACCEPT_LEVEL) {
+                const { housenumber, street, city, suburb, state, postcode, county, country, lat, lon, formatted } = place
+    
+                return {
+                    id: 'temp',
+                    orgId: 'temp',
+                    houseNumber: housenumber,
+                    street,
+                    city: city ?? suburb,
+                    state,
+                    county,
+                    country,
+                    postcode,
+                    formatted,
+                    location: {
+                        lat,
+                        lon
+                    }
+                }
+            } else {
+                throw 'Address confidence is too low'
+            }
         }
     }
 }
@@ -88,13 +90,4 @@ export interface AddressApiFunctionTypes {
     validateAddress(address: string): Promise<AddressType>,
     deleteAddress(orgId: string, id: string): Promise<object>,
     getBulkAddressesByIds(orgId: string, addressIds: string[]): Promise<AddressType[]>
-}
-
-export default {
-    getAddresses,
-    getAddressById,
-    createAddress,
-    validateAddress,
-    deleteAddress,
-    getBulkAddressesByIds
 }
