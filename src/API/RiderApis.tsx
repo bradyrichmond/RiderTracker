@@ -1,74 +1,75 @@
 import { RiderType } from '../types/RiderType'
-import RiderTrackerAPI from '.'
 import { handleApiResponse } from '@/helpers/ApiHelpers'
 import { RouteType } from '@/types/RouteType'
 import { ApiGatewayClientType } from '@/helpers/GenerateApiGatewayClient'
 
-const getRiders = async (orgId: string) => {
-    const { client } = await RiderTrackerAPI.getClient()
-    const getRidersResponse = await client.organizationsOrgIdRidersGet({ orgId })
+export class RiderApis {
+    client: ApiGatewayClientType
 
-    return handleApiResponse<RiderType[]>(getRidersResponse)
-}
-
-const getRiderById = async (orgId: string, id: string) => {
-    const { client } = await RiderTrackerAPI.getClient()
-    const getRiderResponse = await client.organizationsOrgIdRidersIdGet({ orgId, id })
-
-    return handleApiResponse<RiderType>(getRiderResponse)
-}
-
-const getBulkRidersByIds = async (orgId: string, userIds: string[]) => {
-    const api = await RiderTrackerAPI.getClient()
-    const ridersResponse = await api.client.organizationsOrgIdRidersBatchByIdPost({ orgId }, userIds)
-
-    return handleApiResponse<RiderType[]>(ridersResponse)
-}
-
-const updateRider = async (orgId: string, id: string, rider: RiderType) => {
-    const { client } = await RiderTrackerAPI.getClient()
-    const updateRiderResponse = await client.organizationsOrgIdRidersIdPut({ orgId, id }, rider)
-
-    return handleApiResponse<object>(updateRiderResponse)
-}
-
-const createRider = async (orgId: string, body: RiderType) => {
-    const { client } = await RiderTrackerAPI.getClient()
-    const createRiderResponse = await client.organizationsOrgIdRidersPost({ orgId }, body)
-
-    _updateAfterCreateRider(client, orgId, body)
-
-    return handleApiResponse<object>(createRiderResponse)
-}
-
-const _updateAfterCreateRider = async (client: ApiGatewayClientType, orgId: string, rider: RiderType) => {
-    const stopIds = rider.stopIds
-    const routes = await _getRoutesForStops(client, orgId, stopIds)
-
-    for (const route of routes) {
-        let newRiders: string[] | undefined = route.riderIds
-
-        if (!newRiders) {
-            newRiders = []
-        }
-
-        newRiders.push(rider.id)
-        await client.organizationsOrgIdRoutesIdPut({ orgId, id: route.id }, { riderIds: newRiders })
+    constructor(apiGClient: ApiGatewayClientType) {
+        this.client = apiGClient
     }
-}
 
-const _getRoutesForStops = async (client: ApiGatewayClientType, orgId: string, stopIds: string[]) => {
-    const fetchedRoutes = await client.organizationsOrgIdRoutesGet({ orgId })
-    const routes = handleApiResponse<RouteType[]>(fetchedRoutes)
-    const filteredRoutes = routes.filter((r: RouteType) => stopIds.filter((s: string) => r.stopIds?.includes(s)).length > 0)
-    return filteredRoutes
-}
-
-const deleteRider = async (orgId: string, id: string) => {
-    const { client } = await RiderTrackerAPI.getClient()
-    const deleteRiderResponse = await client.organizationsOrgIdRidersIdDelete({ orgId, id })
-
-    return handleApiResponse<object>(deleteRiderResponse)
+    async getRiders(orgId: string) {
+        const getRidersResponse = await this.client.organizationsOrgIdRidersGet({ orgId })
+    
+        return handleApiResponse<RiderType[]>(getRidersResponse)
+    }
+    
+    async getRiderById(orgId: string, id: string) {
+        const getRiderResponse = await this.client.organizationsOrgIdRidersIdGet({ orgId, id })
+    
+        return handleApiResponse<RiderType>(getRiderResponse)
+    }
+    
+    async getBulkRidersByIds(orgId: string, userIds: string[]) {
+        const ridersResponse = await this.client.organizationsOrgIdRidersBatchByIdPost({ orgId }, userIds)
+    
+        return handleApiResponse<RiderType[]>(ridersResponse)
+    }
+    
+    async updateRider(orgId: string, id: string, rider: RiderType) {
+        const updateRiderResponse = await this.client.organizationsOrgIdRidersIdPut({ orgId, id }, rider)
+    
+        return handleApiResponse<object>(updateRiderResponse)
+    }
+    
+    async createRider(orgId: string, body: RiderType) {
+        const createRiderResponse = await this.client.organizationsOrgIdRidersPost({ orgId }, body)
+    
+        this._updateAfterCreateRider(orgId, body)
+    
+        return handleApiResponse<object>(createRiderResponse)
+    }
+    
+    async _updateAfterCreateRider(orgId: string, rider: RiderType) {
+        const stopIds = rider.stopIds
+        const routes = await this._getRoutesForStops(orgId, stopIds)
+    
+        for (const route of routes) {
+            let newRiders: string[] | undefined = route.riderIds
+    
+            if (!newRiders) {
+                newRiders = []
+            }
+    
+            newRiders.push(rider.id)
+            await this.client.organizationsOrgIdRoutesIdPut({ orgId, id: route.id }, { riderIds: newRiders })
+        }
+    }
+    
+    async _getRoutesForStops(orgId: string, stopIds: string[]) {
+        const fetchedRoutes = await this.client.organizationsOrgIdRoutesGet({ orgId })
+        const routes = handleApiResponse<RouteType[]>(fetchedRoutes)
+        const filteredRoutes = routes.filter((r: RouteType) => stopIds.filter((s: string) => r.stopIds?.includes(s)).length > 0)
+        return filteredRoutes
+    }
+    
+    async deleteRider(orgId: string, id: string) {
+        const deleteRiderResponse = await this.client.organizationsOrgIdRidersIdDelete({ orgId, id })
+    
+        return handleApiResponse<object>(deleteRiderResponse)
+    }
 }
 
 export interface RiderApiFunctionTypes {
@@ -78,13 +79,4 @@ export interface RiderApiFunctionTypes {
     createRider(orgId: string, rider: RiderType): Promise<object>,
     deleteRider(orgId: string, id: string): Promise<object>,
     getBulkRidersByIds(orgId: string, userIds: string[]): Promise<RiderType[]>
-}
-
-export default {
-    getRiders,
-    getRiderById,
-    updateRider,
-    createRider,
-    deleteRider,
-    getBulkRidersByIds
 }
