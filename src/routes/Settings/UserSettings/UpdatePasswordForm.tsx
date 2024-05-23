@@ -1,4 +1,4 @@
-import { ApiContext } from '@/contexts/ApiContextProvider'
+import { useApiStore } from '@/store/ApiStore'
 import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 import { Box, Button, TextField } from '@mui/material'
 import { useContext } from 'react'
@@ -14,7 +14,7 @@ interface PasswordFormInput {
 const UpdatePasswordForm = () => {
     const { handleSubmit, register } = useForm<PasswordFormInput>()
     const { showErrorSnackbar } = useContext(SnackbarContext)
-    const { api } = useContext(ApiContext)
+    const { api } = useApiStore()
     const { t } = useTranslation(['settings', 'common'])
 
     const onSubmit = (data: PasswordFormInput) => {

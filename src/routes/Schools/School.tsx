@@ -1,4 +1,4 @@
-import { ApiContext } from '@/contexts/ApiContextProvider'
+import { useApiStore } from '@/store/ApiStore'
 import { useOrgStore } from '@/store/OrgStore'
 import { SchoolType } from '@/types/SchoolType'
 import { Box, Typography } from '@mui/material'
@@ -8,7 +8,7 @@ import { useParams } from 'react-router-dom'
 const School = () => {
     const [school, setSchool] = useState<SchoolType>()
     const { id } = useParams()
-    const { api } = useContext(ApiContext)
+    const { api } = useApiStore()
     const { orgId } = useOrgStore()
 
     useEffect(() => {

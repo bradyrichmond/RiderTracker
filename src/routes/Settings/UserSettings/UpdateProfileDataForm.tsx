@@ -1,4 +1,4 @@
-import { ApiContext } from '@/contexts/ApiContextProvider'
+import { useApiStore } from '@/store/ApiStore'
 import { RoleContext } from '@/contexts/RoleContext'
 import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 import { Box, Button, TextField } from '@mui/material'
@@ -15,7 +15,7 @@ interface ProfileFormInputs {
 const UpdateProfileDataForm = () => {
     const { userFullName, userEmail, userId, updateUserData } = useContext(RoleContext)
     const { showErrorSnackbar } = useContext(SnackbarContext)
-    const { api } = useContext(ApiContext)
+    const { api } = useApiStore()
     const { t } = useTranslation('common')
 
     const { firstName, lastName } = useMemo(() => {

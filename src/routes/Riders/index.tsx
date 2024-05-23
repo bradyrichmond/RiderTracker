@@ -4,7 +4,7 @@ import { Box, Button, Tooltip } from '@mui/material'
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
 import { useContext, useEffect, useMemo, useState } from 'react'
-import { ApiContext } from '@/contexts/ApiContextProvider'
+import { useApiStore } from '@/store/ApiStore'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { RoleContext } from '@/contexts/RoleContext'
@@ -23,7 +23,7 @@ const Riders = () => {
     const [disableButtons, setDisableButtons] = useState(false)
     const [newRiderId, setNewRiderId] = useState('')
     const navigate = useNavigate()
-    const { api } = useContext(ApiContext)
+    const { api } = useApiStore()
     const { heaviestRole, userId } = useContext(RoleContext)
     const { orgId } = useOrgStore()
 

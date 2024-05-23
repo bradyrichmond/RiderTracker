@@ -2,14 +2,14 @@ import { Box, Typography } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
 import { ScanType } from '@/types/ScanType'
 import { useParams } from 'react-router-dom'
-import { ApiContext } from '@/contexts/ApiContextProvider'
+import { useApiStore } from '@/store/ApiStore'
 import { useOrgStore } from '@/store/OrgStore'
 
 const Scan = () => {
     const { orgId } = useOrgStore()
     const [scan, setScan] = useState<ScanType>()
     const { id } = useParams()
-    const { api } = useContext(ApiContext)
+    const { api } = useApiStore()
 
     useEffect(() => {
         getScanData()

@@ -1,15 +1,15 @@
 import { Box, Typography } from '@mui/material'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { BusType } from '@/types/BusType'
 import { useParams } from 'react-router-dom'
-import { ApiContext } from '@/contexts/ApiContextProvider'
+import { useApiStore } from '@/store/ApiStore'
 import { Trans, useTranslation } from 'react-i18next'
 import { useOrgStore } from '@/store/OrgStore'
 
 const Bus = () => {
     const [bus, setBus] = useState<BusType>()
     const { id } = useParams()
-    const { api } = useContext(ApiContext)
+    const { api } = useApiStore()
     const { orgId } = useOrgStore()
     const { t } = useTranslation()
 
@@ -19,7 +19,7 @@ const Bus = () => {
 
     const getBusData = async () => {
         if (id) {
-            const busData = await api.buses.getBusById(orgId, id)
+            const busData = await api?.buses.getBusById(orgId, id)
             setBus(busData)
         }
     }

@@ -1,5 +1,5 @@
 import EntityViewer from '@/components/EntityViewer'
-import { ApiContext } from '@/contexts/ApiContextProvider'
+import { useApiStore } from '@/store/ApiStore'
 import { SchoolType } from '@/types/SchoolType'
 import { useContext, useEffect, useState } from 'react'
 import { schoolFactory } from './SchoolFactory'
@@ -19,7 +19,7 @@ import { useOrgStore } from '@/store/OrgStore'
 const Schools = () => {
     const [schools, setSchools] = useState<SchoolType[]>([])
     const [addresses, setAddresses] = useState<AddressType[]>([])
-    const { api } = useContext(ApiContext)
+    const { api } = useApiStore()
     const { heaviestRole } = useContext(RoleContext)
     const { orgId } = useOrgStore()
     const { showErrorSnackbar } = useContext(SnackbarContext)

@@ -1,14 +1,14 @@
 import { Box, Typography } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { ApiContext } from '@/contexts/ApiContextProvider'
+import { useApiStore } from '@/store/ApiStore'
 import { GuardianType } from '@/types/UserType'
 import { useOrgStore } from '@/store/OrgStore'
 
 const Guardian = () => {
     const [guardian, setGuardian] = useState<GuardianType>()
     const { id } = useParams()
-    const { api } = useContext(ApiContext)
+    const { api } = useApiStore()
     const { orgId } = useOrgStore()
 
     useEffect(() => {

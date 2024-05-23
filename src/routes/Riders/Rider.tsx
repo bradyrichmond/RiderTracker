@@ -2,13 +2,13 @@ import { Box, Chip, Typography } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { RiderType } from '@/types/RiderType'
-import { ApiContext } from '@/contexts/ApiContextProvider'
+import { useApiStore } from '@/store/ApiStore'
 import { StopType } from '@/types/StopType'
 import { useOrgStore } from '@/store/OrgStore'
 
 const Rider = () => {
     const { orgId } = useOrgStore()
-    const { api } = useContext(ApiContext)
+    const { api } = useApiStore()
     const [rider, setRider] = useState<RiderType>()
     const [stops, setStops] = useState<StopType[]>([])
     const navigate = useNavigate()

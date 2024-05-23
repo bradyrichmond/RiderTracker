@@ -1,4 +1,4 @@
-import { ApiContext } from '@/contexts/ApiContextProvider'
+import { useApiStore } from '@/store/ApiStore'
 import { Box, Button, Card, Typography } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import { useContext, useEffect, useState } from 'react'
@@ -16,7 +16,7 @@ import { useOrgStore } from '@/store/OrgStore'
 
 const OrganizationAdminSettings = () => {
     const { orgId } = useOrgStore()
-    const { api } = useContext(ApiContext)
+    const { api } = useApiStore()
     const { showErrorSnackbar } = useContext(SnackbarContext)
     const [ admins, setAdmins ] = useState<UserType[]>([])
     const [ showModal, setShowModal ] = useState(false)

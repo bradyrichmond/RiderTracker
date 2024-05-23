@@ -1,6 +1,6 @@
 import EntityViewer from '@/components/EntityViewer'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
-import { ApiContext } from '@/contexts/ApiContextProvider'
+import { useApiStore } from '@/store/ApiStore'
 import { RoleContext } from '@/contexts/RoleContext'
 import { ScanType } from '@/types/ScanType'
 import { useContext, useEffect, useState } from 'react'
@@ -22,7 +22,7 @@ const Scans = () => {
     const [scans, setScans] = useState<ScanType[]>([])
     const [riders, setRiders] = useState<OptionsType[]>([])
     const [drivers, setDrivers] = useState<OptionsType[]>([])
-    const { api } = useContext(ApiContext)
+    const { api } = useApiStore()
     const { heaviestRole } = useContext(RoleContext)
     const { orgId } = useOrgStore()
     const navigate = useNavigate()

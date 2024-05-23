@@ -4,14 +4,14 @@ import FolderIcon from '@mui/icons-material/Folder'
 import useFileUpload from '@/hooks/useFileUpload'
 import { MB } from '@/constants/Numbers'
 import { useContext } from 'react'
-import { ApiContext } from '@/contexts/ApiContextProvider'
+import { useApiStore } from '@/store/ApiStore'
 import { RoleContext } from '@/contexts/RoleContext'
 import { useTranslation } from 'react-i18next'
 import Grid from '@mui/material/Unstable_Grid2'
 import { useOrgStore } from '@/store/OrgStore'
 
 const OrganizationLogoSettings = () => {
-    const { api } = useContext(ApiContext)
+    const { api } = useApiStore()
     const { updateUserData } = useContext(RoleContext)
     const { orgId, organizationLoginImageUrl } = useOrgStore()
     const { t } = useTranslation(['settings', 'common'])

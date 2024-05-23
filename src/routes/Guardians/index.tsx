@@ -3,7 +3,7 @@ import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
 import { useContext, useEffect, useState } from 'react'
 import { Button, Tooltip } from '@mui/material'
-import { ApiContext } from '@/contexts/ApiContextProvider'
+import { useApiStore } from '@/store/ApiStore'
 import { GridColDef } from '@mui/x-data-grid'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
 import { RoleContext } from '@/contexts/RoleContext'
@@ -21,7 +21,7 @@ export interface CreateGuardianInput {
 
 const Guardians = () => {
     const [guardians, setGuardians] = useState<UserType[]>([])
-    const { api } = useContext(ApiContext)
+    const { api } = useApiStore()
     const { heaviestRole } = useContext(RoleContext)
     const { orgId } = useOrgStore()
     const navigate = useNavigate()

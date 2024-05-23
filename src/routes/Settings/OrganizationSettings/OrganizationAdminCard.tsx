@@ -6,7 +6,7 @@ import { UserType } from '@/types/UserType'
 import { useHover } from 'usehooks-ts'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { RoleContext } from '@/contexts/RoleContext'
-import { ApiContext } from '@/contexts/ApiContextProvider'
+import { useApiStore } from '@/store/ApiStore'
 import { RIDER_TRACKER_ROLES } from '@/constants/Roles'
 import { useTranslation } from 'react-i18next'
 import { useOrgStore } from '@/store/OrgStore'
@@ -24,7 +24,7 @@ const OrganizationAdminCard = ({ id, firstName, lastName, title, email, index, r
     const hovering = useHover<HTMLDivElement>(ref)
     const { userId } = useContext(RoleContext)
     const { orgId } = useOrgStore()
-    const { api } = useContext(ApiContext)
+    const { api } = useApiStore()
     const { t } = useTranslation('settings')
 
     useEffect(() => {

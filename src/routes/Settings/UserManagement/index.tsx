@@ -1,4 +1,4 @@
-import { ApiContext } from '@/contexts/ApiContextProvider'
+import { useApiStore } from '@/store/ApiStore'
 import { UserType } from '@/types/UserType'
 import { Box, Button } from '@mui/material'
 import { CSSProperties, useContext, useEffect, useState } from 'react'
@@ -13,7 +13,7 @@ const UserManagement = () => {
     const [users, setUsers] = useState<UserType[]>([])
     const [outOfItems, setOutOfItems] = useState(false)
     const [searchArg, setSearchArg] = useState('')
-    const { api } = useContext(ApiContext)
+    const { api } = useApiStore()
     const { orgId } = useOrgStore()
     const { t } = useTranslation('common')
 

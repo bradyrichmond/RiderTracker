@@ -2,7 +2,7 @@ import { UserType } from '@/types/UserType'
 import { CSSProperties, useContext, useRef } from 'react'
 import { useHover } from 'usehooks-ts'
 import { useTranslation } from 'react-i18next'
-import { ApiContext } from '@/contexts/ApiContextProvider'
+import { useApiStore } from '@/store/ApiStore'
 import { RoleContext } from '@/contexts/RoleContext'
 import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 import { Box, Paper, Typography } from '@mui/material'
@@ -14,7 +14,7 @@ const UserCard = ({ user, updateUsers, style }: { user: UserType, updateUsers: (
     const ref = useRef(null)
     const hovering = useHover(ref)
     const { t } = useTranslation()
-    const { api } = useContext(ApiContext)
+    const { api } = useApiStore()
     const { userId } = useContext(RoleContext)
     const { orgId } = useOrgStore()
     const { showErrorSnackbar } = useContext(SnackbarContext)

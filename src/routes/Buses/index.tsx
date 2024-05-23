@@ -6,7 +6,7 @@ import { useContext, useState } from 'react'
 import { Button, Tooltip } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info'
 import NoTransferIcon from '@mui/icons-material/NoTransfer'
-import { ApiContext } from '@/contexts/ApiContextProvider'
+import { useApiStore } from '@/store/ApiStore'
 import { GridColDef } from '@mui/x-data-grid'
 import { RoleContext } from '@/contexts/RoleContext'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
@@ -15,7 +15,7 @@ import { useOrgStore } from '@/store/OrgStore'
 
 const Buses = () => {
     const [buses, setBuses] = useState<BusType[]>([])
-    const { api } = useContext(ApiContext)
+    const { api } = useApiStore()
     const { heaviestRole } = useContext(RoleContext)
     const { orgId } = useOrgStore()
     const navigate = useNavigate()

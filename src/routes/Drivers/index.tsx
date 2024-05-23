@@ -4,7 +4,7 @@ import { useContext, useState } from 'react'
 import { Button, Tooltip } from '@mui/material'
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
-import { ApiContext } from '@/contexts/ApiContextProvider'
+import { useApiStore } from '@/store/ApiStore'
 import { GridColDef } from '@mui/x-data-grid'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
 import { RoleContext } from '@/contexts/RoleContext'
@@ -15,7 +15,7 @@ import { useOrgStore } from '@/store/OrgStore'
 const Drivers = () => {
     const [drivers, setDrivers] = useState<UserType[]>([])
     const navigate = useNavigate()
-    const { api } = useContext(ApiContext)
+    const { api } = useApiStore()
     const { heaviestRole } = useContext(RoleContext)
     const { orgId } = useOrgStore()
 

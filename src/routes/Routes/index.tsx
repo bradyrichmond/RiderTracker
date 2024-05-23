@@ -3,7 +3,7 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { Box, Button, Typography } from '@mui/material'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { RouteType } from '@/types/RouteType'
-import { ApiContext } from '@/contexts/ApiContextProvider'
+import { useApiStore } from '@/store/ApiStore'
 import { useTranslation } from 'react-i18next'
 import CreateRouteDialog from './CreateRouteDialog'
 import RouteDrawer from './RouteDrawer'
@@ -17,7 +17,7 @@ interface RoutesProps {
 const Routes = ({ activeRoute }: RoutesProps) => {
     const [routes, setRoutes] = useState<RouteType[]>([])
     const [isAddingRoute, setIsAddingRoute] = useState(false)
-    const { api } = useContext(ApiContext)
+    const { api } = useApiStore()
     const { orgId } = useOrgStore()
     const { t } = useTranslation('routes')
     const navigate = useNavigate()

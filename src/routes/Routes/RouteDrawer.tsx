@@ -1,5 +1,5 @@
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
-import { ApiContext } from '@/contexts/ApiContextProvider'
+import { useApiStore } from '@/store/ApiStore'
 import { RoleContext } from '@/contexts/RoleContext'
 import { Box, Button, Divider, Drawer, Fab, Paper, Stack, Tooltip, Typography } from '@mui/material'
 import { useContext, useEffect, useState } from 'react'
@@ -25,7 +25,7 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
     const [routeNumber, setRouteNumber] = useState('')
     const [stops, setStops] = useState<OptionsType[]>([])
     const [riders, setRiders] = useState<OptionsType[]>([])
-    const { api } = useContext(ApiContext)
+    const { api } = useApiStore()
     const { orgId } = useOrgStore()
     const { heaviestRole } = useContext(RoleContext)
     const navigate = useNavigate()

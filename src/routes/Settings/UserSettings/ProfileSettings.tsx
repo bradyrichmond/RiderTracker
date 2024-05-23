@@ -2,7 +2,7 @@ import { Avatar, Badge, Box, Card, Tooltip, Typography } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2/Grid2'
 import FolderIcon from '@mui/icons-material/Folder'
 import { useContext } from 'react'
-import { ApiContext } from '@/contexts/ApiContextProvider'
+import { useApiStore } from '@/store/ApiStore'
 import { RoleContext } from '@/contexts/RoleContext'
 import UpdateProfileDataForm from './UpdateProfileDataForm'
 import useFileUpload from '@/hooks/useFileUpload'
@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next'
 import { useOrgStore } from '@/store/OrgStore'
 
 const ProfileSettings = () => {
-    const { api } = useContext(ApiContext)
+    const { api } = useApiStore()
     const { userId, userFullName, userPictureUrl, updateUserData } = useContext(RoleContext)
     const { orgId } = useOrgStore()
     const { t } = useTranslation('settings')

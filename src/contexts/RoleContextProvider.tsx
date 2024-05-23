@@ -1,14 +1,13 @@
-import { useContext, useEffect } from 'react'
+import { useEffect } from 'react'
 import { getHeaviestRole } from '@/helpers/GetHeaviestRole'
 import { RiderTrackerRole, isRiderTrackerRole } from '@/constants/Roles'
 import { PropsWithChildren, useState } from 'react'
 import { fetchAuthSession } from '@aws-amplify/auth'
-import { ApiContext } from './ApiContextProvider'
-import RiderTrackerAPI from '@/API'
 import { getOrgIdForUser } from '@/helpers/GetOrganizationIdForUser'
 import { signOut } from 'aws-amplify/auth'
 import { RoleContext } from './RoleContext'
 import { useOrgStore } from '@/store/OrgStore'
+import { useApiStore } from '@/store/ApiStore'
 
 export const RoleContextProvider = ({ children }: PropsWithChildren) => {
     const [heaviestRole, setHeaviestRole] = useState('RiderTracker_Unauthenticated')
@@ -18,7 +17,7 @@ export const RoleContextProvider = ({ children }: PropsWithChildren) => {
     const [userPictureUrl, setUserPictureUrl] = useState('')
     const [accessToken, setAccessToken] = useState('')
     const [idToken, setIdToken] = useState('')
-    const { api, setApi } = useContext(ApiContext)
+    const { api, updateApi } = useApiStore()
     const { orgId, setOrganizationLoginImageUrl, setOrganizationArray, setOrgId } = useOrgStore()
 
     const updateUserData = async () => {
@@ -62,11 +61,11 @@ export const RoleContextProvider = ({ children }: PropsWithChildren) => {
 
     const updateImages = async () => {
         try {
-            const profileImageKey = await api.users.getUserProfileImage(orgId, userId)
+            const profileImageKey = await api?.users.getUserProfileImage(orgId, userId)
             setUserPictureUrl(`https://s3.us-west-2.amazonaws.com/${profileImageKey}`)
-            const { loginImageKey } = await api.organizations.getOrganizationById(orgId)
-            if (loginImageKey) {
-                setOrganizationLoginImageUrl(`https://s3.us-west-2.amazonaws.com/${loginImageKey}`)
+            const orgdata = await api?.organizations.getOrganizationById(orgId)
+            if (orgdata?.loginImageKey) {
+                setOrganizationLoginImageUrl(`https://s3.us-west-2.amazonaws.com/${orgdata?.loginImageKey}`)
             }
         } catch {
             console.error('unable to update images')
@@ -79,8 +78,8 @@ export const RoleContextProvider = ({ children }: PropsWithChildren) => {
                 const fetchedOrgId = await getOrgIdForUser(userId, heaviestRole)
                 if (fetchedOrgId) {
                     if (Array.isArray(fetchedOrgId)) {
-                        const orgs = await api.organizations.getOrganizations()
-                        setOrganizationArray(orgs)
+                        const orgs = await api?.organizations.getOrganizations()
+                        setOrganizationArray(orgs ?? [])
                         return
                     }
 
@@ -96,8 +95,7 @@ export const RoleContextProvider = ({ children }: PropsWithChildren) => {
     }
 
     const initializeApi = async () => {
-        const apiInstance = await RiderTrackerAPI.getClient()
-        setApi(apiInstance)
+        await updateApi()
     }
 
     return (
