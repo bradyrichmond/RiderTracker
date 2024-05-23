@@ -4,7 +4,7 @@ import { BusApis, BusApiFunctionTypes } from './BusApis'
 import { OrgApis, OrgApiFunctionTypes } from './OrganizationApis'
 import { RiderApis, RiderApiFunctionTypes } from './RiderApis'
 import { RouteApis, RouteApiFunctionTypes } from './RouteApis'
-import ScanApis, { ScanApiFunctionTypes } from './ScanApis'
+import { ScanApis, ScanApiFunctionTypes } from './ScanApis'
 import SchoolApis, { SchoolApiFunctionTypes } from './SchoolApis'
 import StopApis, { StopApiFunctionTypes } from './StopApis'
 import UserApis, { UserApiFunctionTypes } from './UserApis'
@@ -33,7 +33,7 @@ class RiderTrackerAPI {
         this.organizations = new OrgApis(newClient)
         this.riders = new RiderApis(newClient)
         this.routes = new RouteApis(newClient)
-        this.scans = ScanApis
+        this.scans = new ScanApis(newClient)
         this.schools = SchoolApis
         this.stops = StopApis
         this.users = UserApis
