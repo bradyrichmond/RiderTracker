@@ -21,7 +21,7 @@ export class UserApis {
         this.client = apiGClient
     }
 
-    async changeUserPassword(oldPassword: string, newPassword: string) {
+    changeUserPassword = async (oldPassword: string, newPassword: string) => {
         try {
             await updatePassword({ oldPassword, newPassword })
         } catch (e) {
@@ -29,25 +29,25 @@ export class UserApis {
         }
     }
 
-    async getUsers({ orgId, pagination }: GetUsersArgs) {
+    getUsers = async ({ orgId, pagination }: GetUsersArgs) => {
         const getUsersResponse = await this.client.organizationsOrgIdUsersGet({ orgId }, {}, { queryParams: pagination })
 
         return handleApiResponse<{ items: UserType[], count: number }>(getUsersResponse)
     }
 
-    async getUserById(orgId: string, id: string) {
+    getUserById = async (orgId: string, id: string) => {
         const getUserResponse = await this.client.organizationsOrgIdUsersIdGet({ orgId, id })
 
         return handleApiResponse<UserType>(getUserResponse)
     }
 
-    async getGuardianById(orgId: string, id: string) {
+    getGuardianById = async (orgId: string, id: string) => {
         const getGuardianResponse = await this.client.organizationsOrgIdUsersIdGet({ orgId, id })
 
         return handleApiResponse<GuardianType>(getGuardianResponse)
     }
 
-    async getUserProfileImage(orgId: string, userId: string) {
+    getUserProfileImage = async (orgId: string, userId: string) => {
         const profileImageResponse = await this.client.organizationsOrgIdUsersIdGet({ orgId, id: userId })
 
         const response = handleApiResponse<UserType>(profileImageResponse)
@@ -56,25 +56,25 @@ export class UserApis {
         return profileImageKey
     }
 
-    async getBulkUsersByIds(orgId: string, userIds: string[]) {
+    getBulkUsersByIds = async (orgId: string, userIds: string[]) => {
         const usersResponse = await this.client.organizationsOrgIdUsersBatchByIdPost({ orgId }, userIds)
 
         return handleApiResponse<UserType[]>(usersResponse)
     }
 
-    async getBulkGuardiansByIds(orgId: string, userIds: string[]) {
+    getBulkGuardiansByIds = async (orgId: string, userIds: string[]) => {
         const usersResponse = await this.client.organizationsOrgIdUsersBatchByIdPost({ orgId }, userIds)
 
         return handleApiResponse<GuardianType[]>(usersResponse)
     }
 
-    async deleteUser(orgId: string, id: string) {
+    deleteUser = async (orgId: string, id: string) => {
         const deleteUserResponse = await this.client.organizationsOrgIdUsersIdDelete({ orgId, id })
 
         return handleApiResponse<object>(deleteUserResponse)
     }
 
-    async updateUser(orgId: string, id: string, body: Record<string, string | string[]>) {
+    updateUser = async (orgId: string, id: string, body: Record<string, string | string[]>) => {
         const updateUserResponse = await this.client.organizationsOrgIdUsersIdPut({ orgId, id }, body)
 
         return handleApiResponse<object>(updateUserResponse)

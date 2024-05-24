@@ -9,6 +9,7 @@ interface ApiStore {
 export const useApiStore = create<ApiStore>((set) => ({
     api: undefined,
     updateApi: async () => {
-        set({ api: await RiderTrackerAPI.getClient() })
+        const newClient = await RiderTrackerAPI.getClient()
+        set({ api: newClient })
     }
 }))

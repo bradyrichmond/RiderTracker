@@ -1,15 +1,17 @@
 import {
     RouterProvider
 } from 'react-router-dom'
-import { useContext, useEffect } from 'react'
-import { RoleContext } from '@/contexts/RoleContext'
+import { useEffect } from 'react'
 import { createRouterObject } from '@/helpers/CreateRouterObject'
 import { Hub } from 'aws-amplify/utils'
+import { useUserStore } from '@/store/UserStore'
+import { useApiStore } from '@/store/ApiStore'
 
 const router = createRouterObject()
 
 const RootRouter = () => {
-    const { updateUserData } = useContext(RoleContext)
+    const { updateUserData } = useUserStore()
+    const { updateApi } = useApiStore()
 
     useEffect(() => {
         const cleanup = Hub.listen('auth', ({ payload: { event } }) => {
@@ -17,10 +19,10 @@ const RootRouter = () => {
 
             switch (event) {
                 case 'signedIn':
-                    updateUserData()
+                    initialize()
                     break
                 default:
-                    console.log('Auth listener event complete')
+                    console.log('Auth listener event complete', `Event: ${JSON.stringify(event)}`)
             }
         })
 
@@ -28,6 +30,11 @@ const RootRouter = () => {
             cleanup()
         }
     }, [])
+
+    const initialize = async () => {
+        await updateUserData()
+        await updateApi()
+    }
 
     return (
         <RouterProvider router={router} />

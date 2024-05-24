@@ -1,12 +1,12 @@
 import { Box, Tab, Tabs } from '@mui/material'
-import { SyntheticEvent, useContext, useMemo, useState } from 'react'
+import { SyntheticEvent, useMemo, useState } from 'react'
 import Profile from './UserSettings/Profile'
 import Organization from './OrganizationSettings/Organization'
 import UserManagement from './UserManagement'
-import { RoleContext } from '@/contexts/RoleContext'
 import { ROLE_WEIGHTS } from '@/constants/RoleWeights'
 import { RIDER_TRACKER_ROLES } from '@/constants/Roles'
 import { useTranslation } from 'react-i18next'
+import { useUserStore } from '@/store/UserStore'
 
 interface TabPanelProps {
     children?: React.ReactNode
@@ -44,7 +44,7 @@ function a11yProps(index: number) {
 
 const Settings = () => {
     const [activeTab, setActiveTab] = useState<number>(0)
-    const { heaviestRole } = useContext(RoleContext)
+    const { heaviestRole } = useUserStore()
     const { t } = useTranslation('settings')
     const roleWeight = useMemo(() => {
         return ROLE_WEIGHTS[heaviestRole]

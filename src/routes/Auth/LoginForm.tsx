@@ -1,16 +1,14 @@
 import { Box, Button, TextField, Typography } from '@mui/material'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { signIn, signOut, fetchAuthSession } from '@aws-amplify/auth'
+import { signIn, signOut } from '@aws-amplify/auth'
 import { API_BASE_NAME } from '@/API'
-import { RoleContext } from '@/contexts/RoleContext'
-import { getHeaviestRole } from '@/helpers/GetHeaviestRole'
-import { RiderTrackerRole, isRiderTrackerRole } from '@/constants/Roles'
 import { useNavigate } from 'react-router-dom'
 import { Hub } from 'aws-amplify/utils'
 import { useTranslation } from 'react-i18next'
 import { useOrgStore } from '@/store/OrgStore'
 import { useApiStore } from '@/store/ApiStore'
+import { useUserStore } from '@/store/UserStore'
 
 interface LoginFormInputs {
     username: string
@@ -19,11 +17,11 @@ interface LoginFormInputs {
 
 const LoginForm = () => {
     const { handleSubmit, register } = useForm<LoginFormInputs>()
-    const { setUserId } = useContext(RoleContext)
-    const { organizationLoginImageUrl, setOrganizationLoginImageUrl } = useOrgStore()
+    const { heaviestRole, updateUserData, userId } = useUserStore()
+    const { orgId, setOrgId, organizationLoginImageUrl, setOrganizationLoginImageUrl } = useOrgStore()
+    const { api } = useApiStore()
     const [orgName, setOrgName] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
-    const [orgId, setOrgId] = useState('')
     const [disableButtons, setDisabledButtons] = useState(false)
     const navigate = useNavigate()
     const { t } = useTranslation(['auth', 'common'])
@@ -36,7 +34,7 @@ const LoginForm = () => {
         const cleanup = Hub.listen('auth', async ({ payload: { event } }) => {
             if (event === 'signedIn') {
                 try {
-                    await postLoginChecks()
+                    await updateUserData()
                 } catch (e) {
                     setErrorMessage(e as string)
                 }
@@ -47,6 +45,12 @@ const LoginForm = () => {
             cleanup()
         }
     }, [])
+
+    useEffect(() => {
+        if (api) {
+            postLoginChecks()
+        }
+    }, [api])
 
     useEffect(() => {
         setDisabledButtons(true)
@@ -86,34 +90,20 @@ const LoginForm = () => {
     }
 
     const postLoginChecks = async () => {
-        const session = await fetchAuthSession()
-        const tokens = session.tokens
-        const path = window.location.toString().split('//')[1]
-        const pathOrgSlug = path.split('.')[0]
-        const orgSlugResponse = await fetch(`${API_BASE_NAME}/public/organizations/${pathOrgSlug}`)
-        const { id } = await orgSlugResponse.json()
-        const previousPath = history.state?.usr?.previousPath
-        const { api } = useApiStore()
+        if (api) {
+            const path = window.location.toString().split('//')[1]
+            const pathOrgSlug = path.split('.')[0]
+            const orgSlugResponse = await fetch(`${API_BASE_NAME}/public/organizations/${pathOrgSlug}`)
+            const { id } = await orgSlugResponse.json()
+            const previousPath = history.state?.usr?.previousPath
+            const userOrgIds: string | string[] | undefined = await api?.organizations.getOrgIdForUser(userId, heaviestRole)
 
-        if (tokens) {
-            const { idToken } = tokens
-            const sessionGroups = idToken?.payload['cognito:groups']
-            const sessionGroupsArray = (sessionGroups as Array<string>).filter((s) => isRiderTrackerRole(s))
-
-            const heaviestRoleFromGroups: RiderTrackerRole = getHeaviestRole(sessionGroupsArray ?? [])
-            const sessionUserId = session.userSub
-
-            if (sessionUserId) {
-                const userOrgIds: string | string[] | undefined = await api?.organizations.getOrgIdForUser(sessionUserId, heaviestRoleFromGroups)
-
-                if ((Array.isArray(userOrgIds) && !userOrgIds.some((o) => o === id)) || userOrgIds !== id) {
-                    signOut()
-                    throw 'User does not have access to organization.'
-                }
-
-                setUserId(sessionUserId)
-                navigate(previousPath ?? '/app')
+            if ((Array.isArray(userOrgIds) && !userOrgIds.some((o) => o === id)) || userOrgIds !== id) {
+                signOut()
+                throw 'User does not have access to organization.'
             }
+
+            navigate(previousPath ?? '/app')
         }
     }
 

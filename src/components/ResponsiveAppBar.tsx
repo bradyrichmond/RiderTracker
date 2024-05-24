@@ -11,12 +11,12 @@ import Button from '@mui/material/Button'
 import Tooltip from '@mui/material/Tooltip'
 import MenuItem from '@mui/material/MenuItem'
 import AdbIcon from '@mui/icons-material/Adb'
-import { ComponentType, MouseEvent, useContext, useState } from 'react'
+import { ComponentType, MouseEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { RoleContext } from '../contexts/RoleContext'
 import { ROUTE_PROTECTION, SettingsItemType } from '../constants/RouteProtection'
 import { useTheme } from '@mui/material'
 import { NavItemType } from './NavigationDrawer'
+import { useUserStore } from '@/store/UserStore'
 
 
 interface MenuItemWithIconProps {
@@ -44,7 +44,7 @@ const ResponsiveAppBar = () => {
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null)
     const navigate = useNavigate()
-    const { userFullName, userPictureUrl, heaviestRole, userId } = useContext(RoleContext)
+    const { userFullName, userPictureUrl, heaviestRole, userId } = useUserStore()
     const routeProtection = ROUTE_PROTECTION.find((r) => r.name === heaviestRole)
     const pages: NavItemType[] = routeProtection?.navItems ?? []
     const settings: SettingsItemType[] = routeProtection?.settingsItems ?? []

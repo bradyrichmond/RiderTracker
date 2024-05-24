@@ -3,16 +3,15 @@ import PriorityHighIcon from '@mui/icons-material/PriorityHigh'
 import FolderIcon from '@mui/icons-material/Folder'
 import useFileUpload from '@/hooks/useFileUpload'
 import { MB } from '@/constants/Numbers'
-import { useContext } from 'react'
 import { useApiStore } from '@/store/ApiStore'
-import { RoleContext } from '@/contexts/RoleContext'
 import { useTranslation } from 'react-i18next'
 import Grid from '@mui/material/Unstable_Grid2'
 import { useOrgStore } from '@/store/OrgStore'
+import { useUserStore } from '@/store/UserStore'
 
 const OrganizationLogoSettings = () => {
     const { api } = useApiStore()
-    const { updateUserData } = useContext(RoleContext)
+    const { updateUserData } = useUserStore()
     const { orgId, organizationLoginImageUrl } = useOrgStore()
     const { t } = useTranslation(['settings', 'common'])
 

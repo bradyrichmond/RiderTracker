@@ -62,19 +62,19 @@ export class AdminApis {
         this.client = apiGClient
     }
 
-    async createCognitoUser(body: CreateCognitoUserParams) {
+    createCognitoUser = async (body: CreateCognitoUserParams) => {
         const createCognitoUserResponse = await this.client.adminProxyProxyAny(VERBS.POST, { proxy: 'createUser' }, body, { ['Content-Type']: 'application/json' })
 
         return handleApiResponse<AWSUserType>(createCognitoUserResponse)
     }
 
-    async createUser(orgId: string, body: CreateUserParams) {
+    createUser = async (orgId: string, body: CreateUserParams) => {
         const createUserResponse = await this.client.organizationsOrgIdUsersPost({ orgId }, { ...body, stopIds: [''] })
 
         return handleApiResponse<object>(createUserResponse)
     }
 
-    async createGuardian(guardian: CreateCognitoUserParams, address: AddressType, orgId: string) {
+    createGuardian = async (guardian: CreateCognitoUserParams, address: AddressType, orgId: string) => {
 
         try {
             // First, create the cognito user
@@ -117,24 +117,24 @@ export class AdminApis {
         }
     }
 
-    async addUserToGroup(username: string, groupname: string) {
+    addUserToGroup = async (username: string, groupname: string) => {
         const addUserToGroupResponse = await this.client.adminProxyProxyAny(VERBS.POST, { proxy: 'addUserToGroup' }, { username, groupname })
 
         return handleApiResponse(addUserToGroupResponse)
     }
 
-    async removeUserFromGroup(username: string, groupname: string) {
+    removeUserFromGroup = async (username: string, groupname: string) => {
         const removeUserFromGroupResponse = await this.client.adminProxyProxyAny(VERBS.POST, { proxy: 'removeUserFromGroup' }, { username, groupname })
 
         return handleApiResponse<object>(removeUserFromGroupResponse)
     }
 
-    async updateUserAttributes(attributes: AttributeType[], username: string) {
+    updateUserAttributes = async (attributes: AttributeType[], username: string) => {
         const updateUserAttributesResponse = await this.client.adminProxyProxyAny(VERBS.POST, { proxy: 'updateUserAttributes' }, { username, attributes })
         return handleApiResponse<object>(updateUserAttributesResponse)
     }
 
-    async updateUserProfileImage(orgId: string, userId: string, file: File, key: string) {
+    updateUserProfileImage = async (orgId: string, userId: string, file: File, key: string) => {
         const fileExtension = file.name.split('.').pop()
         const bucket = 'ridertracker.profileimages'
         const fileName = `${key}.${fileExtension}`
@@ -152,7 +152,7 @@ export class AdminApis {
         return this.updateUser(orgId, userId, { profileImageKey: fullFileName })
     }
 
-    async updateUser(orgId: string, id: string, body: Record<string, string>) {
+    updateUser = async (orgId: string, id: string, body: Record<string, string>) => {
         const updateUserResponse = await this.client.organizationsOrgIdUsersIdPut({ orgId, id }, body)
 
         return handleApiResponse<object>(updateUserResponse)

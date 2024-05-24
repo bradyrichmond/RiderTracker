@@ -1,5 +1,5 @@
 import { Box, LinearProgress, Grid, useTheme, Typography } from '@mui/material'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import bg0 from './images/bg0.jpg'
 import bg1 from './images/bg1.jpg'
 import bg2 from './images/bg2.jpg'
@@ -9,9 +9,9 @@ import bg5 from './images/bg5.jpg'
 import bg6 from './images/bg6.jpg'
 import LoginForm from './LoginForm'
 import { fetchAuthSession } from 'aws-amplify/auth'
-import { RoleContext } from '@/contexts/RoleContext'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { useUserStore } from '@/store/UserStore'
 
 const bgImages = [
     bg0,
@@ -27,7 +27,7 @@ const Auth = () => {
     const [image, setImage] = useState('')
     const [isLoading, setIsLoading] = useState(true)
     const theme = useTheme()
-    const { setUserId, updateUserData } = useContext(RoleContext)
+    const { setUserId, updateUserData } = useUserStore()
     const navigate = useNavigate()
     const { t } = useTranslation('auth')
 

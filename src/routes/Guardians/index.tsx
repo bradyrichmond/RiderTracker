@@ -1,16 +1,16 @@
 import { useNavigate } from 'react-router-dom'
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button, Tooltip } from '@mui/material'
 import { useApiStore } from '@/store/ApiStore'
 import { GridColDef } from '@mui/x-data-grid'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
-import { RoleContext } from '@/contexts/RoleContext'
 import { UserType } from '@/types/UserType'
 import NewEntityViewer from '@/components/NewEntityViewer'
 import CreateGuardianDialog from './CreateGuardianDialog'
 import { useOrgStore } from '@/store/OrgStore'
+import { useUserStore } from '@/store/UserStore'
 
 export interface CreateGuardianInput {
     given_name: string
@@ -22,7 +22,7 @@ export interface CreateGuardianInput {
 const Guardians = () => {
     const [guardians, setGuardians] = useState<UserType[]>([])
     const { api } = useApiStore()
-    const { heaviestRole } = useContext(RoleContext)
+    const { heaviestRole } = useUserStore()
     const { orgId } = useOrgStore()
     const navigate = useNavigate()
     const [isAddingGuardian, setIsAddingGuardian] = useState<boolean>(false)

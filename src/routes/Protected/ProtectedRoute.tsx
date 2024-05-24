@@ -1,15 +1,15 @@
-import { PropsWithChildren, useContext } from 'react'
+import { PropsWithChildren } from 'react'
 import { Navigate } from 'react-router-dom'
 import { ROUTE_PROTECTION } from '@/constants/RouteProtection'
-import { RoleContext } from '@/contexts/RoleContext'
 import Unauthorized from './Unauthorized'
+import { useUserStore } from '@/store/UserStore'
 
 interface ProtectedRouteProps {
     route: string
 }
 
 const ProtectedRoute = ({ route, children }: PropsWithChildren<ProtectedRouteProps>) => {
-    const { heaviestRole, userId } = useContext(RoleContext)
+    const { heaviestRole, userId } = useUserStore()
     const routePermissions = ROUTE_PROTECTION.find((rp) => rp.name === heaviestRole)
 
     const previousPath = location.pathname

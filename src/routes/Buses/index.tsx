@@ -2,21 +2,21 @@ import EntityViewer from '@/components/EntityViewer'
 import { BusType } from '@/types/BusType'
 import { useNavigate } from 'react-router-dom'
 import { busFactory } from './BusFactory'
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import { Button, Tooltip } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info'
 import NoTransferIcon from '@mui/icons-material/NoTransfer'
 import { useApiStore } from '@/store/ApiStore'
 import { GridColDef } from '@mui/x-data-grid'
-import { RoleContext } from '@/contexts/RoleContext'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
 import { useTranslation } from 'react-i18next'
 import { useOrgStore } from '@/store/OrgStore'
+import { useUserStore } from '@/store/UserStore'
 
 const Buses = () => {
     const [buses, setBuses] = useState<BusType[]>([])
     const { api } = useApiStore()
-    const { heaviestRole } = useContext(RoleContext)
+    const { heaviestRole } = useUserStore()
     const { orgId } = useOrgStore()
     const navigate = useNavigate()
     const { t } = useTranslation(['buses', 'common'])

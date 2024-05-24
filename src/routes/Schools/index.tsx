@@ -7,7 +7,6 @@ import { GridColDef } from '@mui/x-data-grid'
 import { Button, Tooltip } from '@mui/material'
 import InfoIcon from '@mui/icons-material/Info'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
-import { RoleContext } from '@/contexts/RoleContext'
 import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox'
 import { useNavigate } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid'
@@ -15,12 +14,13 @@ import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 import { useTranslation } from 'react-i18next'
 import { AddressType } from '@/types/AddressType'
 import { useOrgStore } from '@/store/OrgStore'
+import { useUserStore } from '@/store/UserStore'
 
 const Schools = () => {
     const [schools, setSchools] = useState<SchoolType[]>([])
     const [addresses, setAddresses] = useState<AddressType[]>([])
     const { api } = useApiStore()
-    const { heaviestRole } = useContext(RoleContext)
+    const { heaviestRole } = useUserStore()
     const { orgId } = useOrgStore()
     const { showErrorSnackbar } = useContext(SnackbarContext)
     const canEditSchool = RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.UPDATE_SCHOOL)

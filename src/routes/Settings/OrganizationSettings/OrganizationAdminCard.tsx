@@ -1,15 +1,15 @@
 import { Avatar, Box, Paper, SvgIconProps, Tooltip, Typography } from '@mui/material'
-import { ComponentType, useContext, useEffect, useMemo, useRef, useState } from 'react'
+import { ComponentType, useEffect, useMemo, useRef, useState } from 'react'
 import PersonIcon from '@mui/icons-material/Person'
 import EmailIcon from '@mui/icons-material/Email'
 import { UserType } from '@/types/UserType'
 import { useHover } from 'usehooks-ts'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { RoleContext } from '@/contexts/RoleContext'
 import { useApiStore } from '@/store/ApiStore'
 import { RIDER_TRACKER_ROLES } from '@/constants/Roles'
 import { useTranslation } from 'react-i18next'
 import { useOrgStore } from '@/store/OrgStore'
+import { useUserStore } from '@/store/UserStore'
 
 interface OrganizationAdminCardProps extends UserType {
     index: number
@@ -22,7 +22,7 @@ const OrganizationAdminCard = ({ id, firstName, lastName, title, email, index, r
     const profileUrl = useMemo(() => `https://s3.us-west-2.amazonaws.com/ridertracker.profileimages/${id}.jpg`, [id])
     const ref = useRef(null)
     const hovering = useHover<HTMLDivElement>(ref)
-    const { userId } = useContext(RoleContext)
+    const { userId } = useUserStore()
     const { orgId } = useOrgStore()
     const { api } = useApiStore()
     const { t } = useTranslation('settings')

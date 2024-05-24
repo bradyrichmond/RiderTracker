@@ -3,19 +3,19 @@ import { CSSProperties, useContext, useRef } from 'react'
 import { useHover } from 'usehooks-ts'
 import { useTranslation } from 'react-i18next'
 import { useApiStore } from '@/store/ApiStore'
-import { RoleContext } from '@/contexts/RoleContext'
 import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 import { Box, Paper, Typography } from '@mui/material'
 import { OrganizationAdminAction } from '../OrganizationSettings/OrganizationAdminCard'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { useOrgStore } from '@/store/OrgStore'
+import { useUserStore } from '@/store/UserStore'
 
 const UserCard = ({ user, updateUsers, style }: { user: UserType, updateUsers: (_id: string) => void, style: CSSProperties }) => {
     const ref = useRef(null)
     const hovering = useHover(ref)
     const { t } = useTranslation()
     const { api } = useApiStore()
-    const { userId } = useContext(RoleContext)
+    const { userId } = useUserStore()
     const { orgId } = useOrgStore()
     const { showErrorSnackbar } = useContext(SnackbarContext)
 

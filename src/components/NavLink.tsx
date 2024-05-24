@@ -1,8 +1,8 @@
 import { Box, Typography } from '@mui/material'
-import { ReactNode, useContext } from 'react'
+import { ReactNode } from 'react'
 import { Link } from 'react-router-dom'
 import { ROUTE_PROTECTION } from '../constants/RouteProtection'
-import { RoleContext } from '../contexts/RoleContext'
+import { useUserStore } from '@/store/UserStore'
 
 interface NavLinkProps {
     icon: ReactNode
@@ -11,8 +11,8 @@ interface NavLinkProps {
 }
 
 const NavLink = ({ icon, path, label }: NavLinkProps) => {
-    const roleContext = useContext(RoleContext);
-    const routePermissions = ROUTE_PROTECTION.find((rp) => rp.name === roleContext.heaviestRole)
+    const { heaviestRole } = useUserStore()
+    const routePermissions = ROUTE_PROTECTION.find((rp) => rp.name === heaviestRole)
     const routesForRole = routePermissions?.routes ?? []
 
     return (

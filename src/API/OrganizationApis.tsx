@@ -12,19 +12,19 @@ export class OrgApis {
         this.client = apiGClient
     }
 
-    async getOrganizations() {
+    getOrganizations = async () => {
         const response = await this.client.organizationsGet()
 
         return handleApiResponse<OrganizationType[]>(response)
     }
 
-    async getOrganizationById(orgId: string) {
+    getOrganizationById = async (orgId: string) => {
         const response = await this.client.organizationsOrgIdGet({ orgId })
 
         return handleApiResponse<OrganizationType>(response)
     }
 
-    async getOrgIdForUser(userId: string, role: string): Promise<string | string[]> {
+    getOrgIdForUser = async (userId: string, role: string): Promise<string | string[]> => {
         const requestId = uuid()
 
         if (role === RIDER_TRACKER_ROLES.RIDER_TRACKER_WIZARD) {
@@ -43,13 +43,13 @@ export class OrgApis {
         return userData.orgId
     }
 
-    async createOrganization(newOrg: OrganizationType) {
+    createOrganization = async (newOrg: OrganizationType) => {
         const response = await this.client.organizationsPost({}, newOrg)
 
         return handleApiResponse<object>(response)
     }
 
-    async updateOrganizationLoginImage(file: File, orgId: string) {
+    updateOrganizationLoginImage = async (file: File, orgId: string) => {
         const fileExtension = file.name.split('.').pop()
         const bucket = 'ridertracker.organizationimages'
         const fileName = `${orgId}.${fileExtension}`
@@ -67,18 +67,18 @@ export class OrgApis {
         return this.updateOrganization(orgId, { loginImageKey: fullFileName })
     }
 
-    async updateOrganization(orgId: string, body: Record<string, string | string[]>) {
+    updateOrganization = async (orgId: string, body: Record<string, string | string[]>) => {
 
         const response = await this.client.organizationsOrgIdPut({ orgId }, body)
         return handleApiResponse<object>(response)
     }
 
-    async getOrganizationLoginDataBySlug(orgSlug: string) {
+    getOrganizationLoginDataBySlug = async (orgSlug: string) => {
         const response = this.client.publicOrganizationsOrgSlugGet({ orgSlug })
         return handleApiResponse<OrganizationType>(response)
     }
 
-    async addAdminToOrganization(orgId: string, userId: string) {
+    addAdminToOrganization = async (orgId: string, userId: string) => {
         const { adminIds } = await this.getOrganizationById(orgId)
         let newAdminIds: string[] = []
 
@@ -92,7 +92,7 @@ export class OrgApis {
         return await this.updateOrganization(orgId, { adminIds: newAdminIds })
     }
 
-    async removeAdminFromOrganization(orgId: string, userId: string) {
+    removeAdminFromOrganization = async (orgId: string, userId: string) => {
         const { adminIds } = await this.getOrganizationById(orgId)
         let newAdminIds: string[] = []
 

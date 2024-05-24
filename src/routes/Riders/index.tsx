@@ -3,16 +3,16 @@ import { RiderType } from '@/types/RiderType'
 import { Box, Button, Tooltip } from '@mui/material'
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
-import { useContext, useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useApiStore } from '@/store/ApiStore'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import { RoleContext } from '@/contexts/RoleContext'
 import { OptionsType } from '@/types/FormTypes'
 import { GuardianType } from '@/types/UserType'
 import { v4 as uuid } from 'uuid'
 import CreateRiderDialog from './CreateRiderDialog'
 import { useOrgStore } from '@/store/OrgStore'
+import { useUserStore } from '@/store/UserStore'
 
 const Riders = () => {
     const [riders, setRiders] = useState<RiderType[]>([])
@@ -24,7 +24,7 @@ const Riders = () => {
     const [newRiderId, setNewRiderId] = useState('')
     const navigate = useNavigate()
     const { api } = useApiStore()
-    const { heaviestRole, userId } = useContext(RoleContext)
+    const { heaviestRole, userId } = useUserStore()
     const { orgId } = useOrgStore()
 
     useEffect(() => {

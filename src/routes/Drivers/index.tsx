@@ -1,22 +1,22 @@
 import EntityViewer from '@/components/EntityViewer'
 import { useNavigate } from 'react-router-dom'
-import { useContext, useState } from 'react'
+import { useState } from 'react'
 import { Button, Tooltip } from '@mui/material'
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
 import { useApiStore } from '@/store/ApiStore'
 import { GridColDef } from '@mui/x-data-grid'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
-import { RoleContext } from '@/contexts/RoleContext'
 import { UserType } from '@/types/UserType'
 import { userFactory } from '../Settings/UserSettings/UserFactory'
 import { useOrgStore } from '@/store/OrgStore'
+import { useUserStore } from '@/store/UserStore'
 
 const Drivers = () => {
     const [drivers, setDrivers] = useState<UserType[]>([])
     const navigate = useNavigate()
     const { api } = useApiStore()
-    const { heaviestRole } = useContext(RoleContext)
+    const { heaviestRole } = useUserStore()
     const { orgId } = useOrgStore()
 
     const updateDriversAction = async () => {

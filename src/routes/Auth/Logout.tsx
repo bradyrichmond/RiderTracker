@@ -1,13 +1,13 @@
-import { RoleContext } from '@/contexts/RoleContext'
 import { Box, CircularProgress, Typography } from '@mui/material'
 import { signOut } from 'aws-amplify/auth'
 import { Hub } from 'aws-amplify/utils'
-import { useContext, useEffect } from 'react'
+import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
+import { useUserStore } from '@/store/UserStore'
 
 const Logout = () => {
-    const { setUserId } = useContext(RoleContext)
+    const { setUserId } = useUserStore()
     const navigate = useNavigate()
     const { t } = useTranslation('common')
 

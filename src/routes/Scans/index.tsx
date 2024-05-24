@@ -1,9 +1,8 @@
 import EntityViewer from '@/components/EntityViewer'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
 import { useApiStore } from '@/store/ApiStore'
-import { RoleContext } from '@/contexts/RoleContext'
 import { ScanType } from '@/types/ScanType'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { scanFactory } from './ScanFactory'
 import { GridColDef } from '@mui/x-data-grid'
@@ -17,13 +16,14 @@ import { locationFactory } from './LocationFactory'
 import { AppShortcut } from '@mui/icons-material'
 import { UserType } from '@/types/UserType'
 import { useOrgStore } from '@/store/OrgStore'
+import { useUserStore } from '@/store/UserStore'
 
 const Scans = () => {
     const [scans, setScans] = useState<ScanType[]>([])
     const [riders, setRiders] = useState<OptionsType[]>([])
     const [drivers, setDrivers] = useState<OptionsType[]>([])
     const { api } = useApiStore()
-    const { heaviestRole } = useContext(RoleContext)
+    const { heaviestRole } = useUserStore()
     const { orgId } = useOrgStore()
     const navigate = useNavigate()
     const { getCurrentPosition } = useDeviceLocation()

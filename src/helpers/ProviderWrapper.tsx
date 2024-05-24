@@ -1,7 +1,7 @@
 import { RoleContextProvider } from '@/contexts/RoleContextProvider'
-import { PropsWithChildren, useContext, useEffect } from 'react'
+import { PropsWithChildren, useEffect } from 'react'
 import { MemoryRouter } from 'react-router-dom'
-import { RoleContext } from '@/contexts/RoleContext'
+import { useUserStore } from '@/store/UserStore'
 
 export interface AsRole {
     userRole?: string
@@ -32,7 +32,7 @@ export const ProviderWrapperAsRole = ({ children, userRole, routes }: PropsWithC
 
 // Wrapper to use the roleContext to set the user role when testing
 export const AsRole = ({ children, userRole }: PropsWithChildren<AsRole>) => {
-    const { setHeaviestRole } = useContext(RoleContext)
+    const { setHeaviestRole } = useUserStore()
 
     useEffect(() => {
         setHeaviestRole(userRole ?? 'RiderTracker_Wizard')

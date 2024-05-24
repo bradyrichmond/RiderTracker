@@ -1,10 +1,10 @@
 import { useApiStore } from '@/store/ApiStore'
-import { RoleContext } from '@/contexts/RoleContext'
 import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 import { Box, Button, TextField } from '@mui/material'
 import { useMemo, useContext } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { useUserStore } from '@/store/UserStore'
 
 interface ProfileFormInputs {
     firstName: string
@@ -13,7 +13,7 @@ interface ProfileFormInputs {
 }
 
 const UpdateProfileDataForm = () => {
-    const { userFullName, userEmail, userId, updateUserData } = useContext(RoleContext)
+    const { userFullName, userEmail, userId, updateUserData } = useUserStore()
     const { showErrorSnackbar } = useContext(SnackbarContext)
     const { api } = useApiStore()
     const { t } = useTranslation('common')

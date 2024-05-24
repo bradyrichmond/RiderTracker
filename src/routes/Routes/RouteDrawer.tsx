@@ -1,8 +1,7 @@
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
 import { useApiStore } from '@/store/ApiStore'
-import { RoleContext } from '@/contexts/RoleContext'
 import { Box, Button, Divider, Drawer, Fab, Paper, Stack, Tooltip, Typography } from '@mui/material'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import AddLocationIcon from '@mui/icons-material/AddLocation'
 import CreateStopForRouteDialog from './CreateStopForRouteDialog'
@@ -14,6 +13,7 @@ import RouteDrawerDetailList from './RouteDrawerDetailList'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useOrgStore } from '@/store/OrgStore'
+import { useUserStore } from '@/store/UserStore'
 
 interface RouteDrawerProps {
     open: boolean
@@ -27,7 +27,7 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
     const [riders, setRiders] = useState<OptionsType[]>([])
     const { api } = useApiStore()
     const { orgId } = useOrgStore()
-    const { heaviestRole } = useContext(RoleContext)
+    const { heaviestRole } = useUserStore()
     const navigate = useNavigate()
     const { t } = useTranslation('routes')
 

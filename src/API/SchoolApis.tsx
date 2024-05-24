@@ -9,19 +9,19 @@ export class SchoolApis {
         this.client = apiGClient
     }
 
-    async getSchools(orgId: string) {
+    getSchools = async (orgId: string) => {
         const getSchoolsResponse = await this.client.organizationsOrgIdSchoolsGet({ orgId })
 
         return handleApiResponse<SchoolType[]>(getSchoolsResponse)
     }
 
-    async getSchoolById(orgId: string, id: string) {
+    getSchoolById = async (orgId: string, id: string) => {
         const getSchoolResponse = await this.client.organizationsOrgIdSchoolsIdGet({ orgId, id })
 
         return handleApiResponse<SchoolType>(getSchoolResponse)
     }
 
-    async updateSchool(orgId: string, id: string, school: SchoolType) {
+    updateSchool = async (orgId: string, id: string, school: SchoolType) => {
         const updatedSchool = {
             schoolName: school.schoolName,
             address: school.address
@@ -31,13 +31,13 @@ export class SchoolApis {
         return handleApiResponse<object>(updateSchoolResponse)
     }
 
-    async createSchool(orgId: string, body: SchoolType) {
+    createSchool = async (orgId: string, body: SchoolType) => {
         const createSchoolResponse = await this.client.organizationsOrgIdSchoolsPost({ orgId }, body)
 
         return handleApiResponse<object>(createSchoolResponse)
     }
 
-    async deleteSchool(orgId: string, id: string) {
+    deleteSchool = async (orgId: string, id: string) => {
         const deleteSchoolsResponse = await this.client.organizationsOrgIdSchoolsIdDelete({ orgId, id }, {})
 
         return handleApiResponse<object>(deleteSchoolsResponse)

@@ -1,19 +1,18 @@
 import { Avatar, Badge, Box, Card, Tooltip, Typography } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2/Grid2'
 import FolderIcon from '@mui/icons-material/Folder'
-import { useContext } from 'react'
 import { useApiStore } from '@/store/ApiStore'
-import { RoleContext } from '@/contexts/RoleContext'
 import UpdateProfileDataForm from './UpdateProfileDataForm'
 import useFileUpload from '@/hooks/useFileUpload'
 import { MB } from '@/constants/Numbers'
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh'
 import { useTranslation } from 'react-i18next'
 import { useOrgStore } from '@/store/OrgStore'
+import { useUserStore } from '@/store/UserStore'
 
 const ProfileSettings = () => {
     const { api } = useApiStore()
-    const { userId, userFullName, userPictureUrl, updateUserData } = useContext(RoleContext)
+    const { userId, userFullName, userPictureUrl, updateUserData } = useUserStore()
     const { orgId } = useOrgStore()
     const { t } = useTranslation('settings')
 
