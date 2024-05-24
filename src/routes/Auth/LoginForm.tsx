@@ -18,18 +18,15 @@ interface LoginFormInputs {
 const LoginForm = () => {
     const { handleSubmit, register } = useForm<LoginFormInputs>()
     const { heaviestRole, updateUserData, userId } = useUserStore()
-    const { orgId, setOrgId, organizationLoginImageUrl, setOrganizationLoginImageUrl } = useOrgStore()
+    const { orgId, orgName, organizationLoginImageUrl, updateOrgData } = useOrgStore()
     const { api } = useApiStore()
-    const [orgName, setOrgName] = useState('')
     const [errorMessage, setErrorMessage] = useState('')
     const [disableButtons, setDisabledButtons] = useState(false)
     const navigate = useNavigate()
     const { t } = useTranslation(['auth', 'common'])
 
     useEffect(() => {
-        const path = window.location.toString().split('//')[1]
-        const pathOrgSlug = path.split('.')[0]
-        getOrgData(pathOrgSlug)
+        updateOrgData()
 
         const cleanup = Hub.listen('auth', async ({ payload: { event } }) => {
             if (event === 'signedIn') {
@@ -58,16 +55,6 @@ const LoginForm = () => {
             setDisabledButtons(false)
         }
     }, [orgId])
-
-    const getOrgData = async (slug: string) => {
-        const orgSlugResponse = await fetch(`${API_BASE_NAME}/public/organizations/${slug}`)
-        const { orgName: fetchedOrgName, loginImageKey, id } = await orgSlugResponse.json()
-        setOrgId(id)
-        setOrgName(fetchedOrgName)
-        if (loginImageKey) {
-            setOrganizationLoginImageUrl(`https://s3.us-west-2.amazonaws.com/${loginImageKey}`)
-        }
-    }
 
     const login = async (data: LoginFormInputs) => {
         setDisabledButtons(true)
