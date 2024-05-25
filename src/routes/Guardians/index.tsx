@@ -11,6 +11,7 @@ import NewEntityViewer from '@/components/NewEntityViewer'
 import CreateGuardianDialog from './CreateGuardianDialog'
 import { useOrgStore } from '@/store/OrgStore'
 import { useUserStore } from '@/store/UserStore'
+import { useGuardianStore } from '@/store/GuardianStore'
 
 export interface CreateGuardianInput {
     given_name: string
@@ -20,7 +21,7 @@ export interface CreateGuardianInput {
 }
 
 const Guardians = () => {
-    const [guardians, setGuardians] = useState<UserType[]>([])
+    const { guardians, getGuardians, changeSearchArg } = useGuardianStore()
     const { api } = useApiStore()
     const { heaviestRole } = useUserStore()
     const { orgId } = useOrgStore()
@@ -28,25 +29,11 @@ const Guardians = () => {
     const [isAddingGuardian, setIsAddingGuardian] = useState<boolean>(false)
 
     useEffect(() => {
-        updateGuardians()
-    }, [orgId])
-
-    const updateGuardians = async () => {
-        try {
-            const org = await api?.organizations.getOrganizationById(orgId)
-
-            if (org?.guardianIds) {
-                const orgGuardians = await api?.users.getBulkUsersByIds(orgId, org.guardianIds)
-                setGuardians(orgGuardians ?? [])
-            }
-        } catch (e) {
-            console.log(e as string)
-        }
-    }
+        getGuardians()
+    }, [])
 
     const deleteGuardianAction = async (guardianId: string) => {
         await api?.users.deleteUser(orgId, guardianId)
-        updateGuardians()
     }
 
     const viewGuardianDetails = (guardianId: string) => {
@@ -62,7 +49,6 @@ const Guardians = () => {
         }
 
         toggleShowModal()
-        updateGuardians()
     }
 
     const generateGridColumns = (): GridColDef[] => {
@@ -125,6 +111,8 @@ const Guardians = () => {
             processRowUpdate={processRowUpdate}
             toggleShowModal={toggleShowModal}
             Modal={() => <CreateGuardianDialog cancel={toggleShowModal} createGuardian={createGuardian} isAddingGuardian={isAddingGuardian} />}
+            searchAction={changeSearchArg}
+            refreshAction={getGuardians}
         />
     )
 }

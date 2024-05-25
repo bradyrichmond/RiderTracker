@@ -2,17 +2,7 @@ import { updatePassword } from '@aws-amplify/auth'
 import { GuardianType, UserType } from '@/types/UserType'
 import { handleApiResponse } from '@/helpers/ApiHelpers'
 import { ApiGatewayClientType } from '@/helpers/GenerateApiGatewayClient'
-
-interface PaginationArgs {
-    pageSize: number
-    lastKey: string
-    searchArg: string
-}
-
-interface GetUsersArgs {
-    orgId: string
-    pagination: PaginationArgs
-}
+import { RIDER_TRACKER_ROLES } from '@/constants/Roles'
 
 export class UserApis {
     client: ApiGatewayClientType
@@ -29,8 +19,8 @@ export class UserApis {
         }
     }
 
-    getUsers = async ({ orgId, pagination }: GetUsersArgs) => {
-        const getUsersResponse = await this.client.organizationsOrgIdUsersGet({ orgId }, {}, { queryParams: pagination })
+    getUsers = async (orgId: string) => {
+        const getUsersResponse = await this.client.organizationsOrgIdUsersGet({ orgId }, {})
 
         return handleApiResponse<{ items: UserType[], count: number }>(getUsersResponse)
     }
@@ -39,6 +29,16 @@ export class UserApis {
         const getUserResponse = await this.client.organizationsOrgIdUsersIdGet({ orgId, id })
 
         return handleApiResponse<UserType>(getUserResponse)
+    }
+
+    getGuardians = async (orgId: string) => {
+        const getUsersResponse = await this.client.organizationsOrgIdUsersGet({ orgId }, {}, {
+            queryParams: {
+                userType: RIDER_TRACKER_ROLES.RIDER_TRACKER_GUARDIAN
+            }
+        })
+
+        return handleApiResponse<{ items: GuardianType[], count: number }>(getUsersResponse)
     }
 
     getGuardianById = async (orgId: string, id: string) => {
@@ -84,8 +84,9 @@ export class UserApis {
 export interface UserApiFunctionTypes {
     changeUserPassword(previousPassword: string, proposedPassword: string): Promise<void>
     getUserProfileImage(orgId: string, userId: string): Promise<string | undefined>
-    getUsers(args: GetUsersArgs): Promise<{ items: UserType[], count: number }>
+    getUsers(orgId: string): Promise<{ items: UserType[], count: number }>
     getUserById(orgId: string, id: string): Promise<UserType>
+    getGuardians(orgId: string): Promise<{ items: GuardianType[], count: number }>
     getGuardianById(orgId: string, id: string): Promise<GuardianType>
     getBulkUsersByIds(orgId: string, userIds: string[]): Promise<UserType[]>
     getBulkGuardiansByIds(orgId: string, userIds: string[]): Promise<GuardianType[]>

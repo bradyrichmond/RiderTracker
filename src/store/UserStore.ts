@@ -51,22 +51,22 @@ export const useUserStore = create<UserStore>((set) => ({
         try {
             const session = await fetchAuthSession()
             stateUpdate.userId = session.userSub
-            
+
             const idToken = session.tokens?.idToken
             const payload = idToken?.payload
-    
+
             if (payload) {
                 const sessionGroups = payload['cognito:groups']
                 const sessionGroupsArray = (sessionGroups as Array<string>).filter((s) => isRiderTrackerRole(s))
                 stateUpdate.userEmail = payload.email?.toString()
-    
+
                 const heaviestRoleFromGroups: RiderTrackerRole = getHeaviestRole(sessionGroupsArray ?? [])
                 stateUpdate.heaviestRole = heaviestRoleFromGroups
-    
+
                 const { given_name, family_name } = payload
                 stateUpdate.userFullName = `${given_name} ${family_name}`
             }
-    
+
             set(stateUpdate)
         } catch {
             signOut()

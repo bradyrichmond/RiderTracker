@@ -1,4 +1,3 @@
-import { RoleContextProvider } from '@/contexts/RoleContextProvider'
 import { PropsWithChildren, useEffect } from 'react'
 import { MemoryRouter } from 'react-router-dom'
 import { useUserStore } from '@/store/UserStore'
@@ -11,9 +10,7 @@ export interface AsRole {
 export const ProviderWrapper = ({ children }: PropsWithChildren) => {
     return (
         <MemoryRouter>
-            <RoleContextProvider>
-                {children}
-            </RoleContextProvider>
+            {children}
         </MemoryRouter>
     )
 }
@@ -21,11 +18,9 @@ export const ProviderWrapper = ({ children }: PropsWithChildren) => {
 export const ProviderWrapperAsRole = ({ children, userRole, routes }: PropsWithChildren<AsRole>) => {
     return (
         <MemoryRouter initialEntries={routes ?? ['/']}>
-            <RoleContextProvider>
-                <AsRole userRole={userRole}>
-                    {children}
-                </AsRole>
-            </RoleContextProvider>
+            <AsRole userRole={userRole}>
+                {children}
+            </AsRole>
         </MemoryRouter>
     )
 }

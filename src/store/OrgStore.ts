@@ -31,10 +31,10 @@ export const useOrgStore = create<OrgStore>((set) => ({
         const pathOrgSlug = path.split('.')[0]
         const orgSlugResponse = await fetch(`${API_BASE_NAME}/public/organizations/${pathOrgSlug}`)
         const { orgName: fetchedOrgName, loginImageKey, id } = await orgSlugResponse.json()
-        
+
         stateUpdate.orgId = id
         stateUpdate.orgName = fetchedOrgName
-        
+
         if (loginImageKey) {
             stateUpdate.organizationLoginImageUrl = `https://s3.us-west-2.amazonaws.com/${loginImageKey}`
         }

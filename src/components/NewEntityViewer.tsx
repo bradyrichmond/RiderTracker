@@ -9,6 +9,8 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { SchoolType } from '@/types/SchoolType'
 import { StopType } from '@/types/StopType'
 import { GuardianType, UserType } from '@/types/UserType'
+import SearchBar from './SearchBar'
+import SyncIcon from '@mui/icons-material/Sync';
 
 interface NewEntityViewerProps<T> {
     entities: T[]
@@ -18,11 +20,13 @@ interface NewEntityViewerProps<T> {
     processRowUpdate(updatedRow: T, originalRow: T): Promise<T>
     Modal?: ComponentType
     toggleShowModal: () => void
+    searchAction?: (searchArg: string) => Promise<void>
+    refreshAction?(): void
 }
 
 
 const NewEntityViewer = <T extends BusType | GuardianType | OrganizationType | RiderType | ScanType | SchoolType | StopType | UserType>(
-    { entities, gridColumns, titleSingular, titlePlural, processRowUpdate, Modal, toggleShowModal }: NewEntityViewerProps<T>) => {
+    { entities, gridColumns, titleSingular, titlePlural, processRowUpdate, Modal, toggleShowModal, searchAction, refreshAction }: NewEntityViewerProps<T>) => {
 
     return (
         <Box height='100%' width='100%' display='flex' flexDirection='column'>
@@ -37,8 +41,15 @@ const NewEntityViewer = <T extends BusType | GuardianType | OrganizationType | R
                         {titlePlural}
                     </Typography>
                 </Box>
-                {Modal ?
-                    <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
+                <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
+                    {refreshAction ?
+                        <Box sx={{ mr: '2rem', ml: '2rem' }}>
+                            <Button variant='contained'><SyncIcon fontSize='large' /></Button>
+                        </Box>
+                        :
+                        null
+                    }
+                    {Modal ?
                         <Button variant='contained' onClick={toggleShowModal}>
                             <Box display='flex' flexDirection='row'>
                                 <AddCircleIcon />
@@ -47,13 +58,29 @@ const NewEntityViewer = <T extends BusType | GuardianType | OrganizationType | R
                                 </Box>
                             </Box>
                         </Button>
-                    </Box>
-                    :
-                    null
-                }
+                        :
+                        null
+                    }
+                </Box>
             </Box>
-            <Box flex='1'>
-                <DataGrid rows={entities} columns={gridColumns} rowHeight={100} processRowUpdate={processRowUpdate} />
+            <Box sx={{ flex: '1', display: 'flex', flexDirection: 'column' }}>
+                <Box>
+                    {searchAction ?
+                        <Box sx={{ mb: '2rem' }}>
+                            <SearchBar onChange={searchAction} debounceMs={300} fullWidth />
+                        </Box>
+                        :
+                        null
+                    }
+                </Box>
+                <Box sx={{ flex: '1' }}>
+                    <DataGrid
+                        rows={entities}
+                        columns={gridColumns}
+                        rowHeight={100}
+                        processRowUpdate={processRowUpdate}
+                    />
+                </Box>
             </Box>
         </Box>
     )
