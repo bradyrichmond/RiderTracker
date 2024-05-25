@@ -3,7 +3,7 @@ import { RiderType } from '@/types/RiderType'
 import { Box, Button, Tooltip, Typography } from '@mui/material'
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
-import { useEffect, useMemo, useState } from 'react'
+import { useContext, useEffect, useMemo, useState } from 'react'
 import { useApiStore } from '@/store/ApiStore'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
@@ -17,9 +17,11 @@ import { useOrgStore } from '@/store/OrgStore'
 import { useUserStore } from '@/store/UserStore'
 import { useRiderStore } from '@/store/RiderStore'
 import { useTranslation } from 'react-i18next'
+import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 
 const Riders = () => {
-    const { getRiders, riders } = useRiderStore()
+    const { createRider, getRiders, riders } = useRiderStore()
+    const { showErrorSnackbar } = useContext(SnackbarContext)
     const [allSchools, setAllSchools] = useState<OptionsType[]>([])
     const [allGuardians, setAllGuardians] = useState<OptionsType[]>([])
     const [allStops, setAllStops] = useState<OptionsType[]>([])
@@ -95,13 +97,18 @@ const Riders = () => {
         await api?.riders.deleteRider(orgId, riderId)
     }
 
-    const createRider = async (newRider: RiderType) => {
+    const handleCreateRider = async (newRider: RiderType) => {
         setDisableButtons(true)
 
-        await api?.riders.createRider(orgId, newRider)
+        try {
+            await createRider(newRider)
 
-        setDisableButtons(false)
-        setIsAddingRider(false)
+            setDisableButtons(false)
+            setIsAddingRider(false)
+        } catch {
+            setDisableButtons(false)
+            showErrorSnackbar('Failed to create rider.')
+        }
     }
 
     const getSchoolNameById = (schoolId: string) => {
@@ -175,7 +182,7 @@ const Riders = () => {
                 allSchools={allSchools}
                 allStops={allStops}
                 cancelAction={cancelAction}
-                createRider={createRider}
+                createRider={handleCreateRider}
                 disableButtons={disableButtons}
                 isAddingRider={isAddingRider}
                 newRiderId={newRiderId}

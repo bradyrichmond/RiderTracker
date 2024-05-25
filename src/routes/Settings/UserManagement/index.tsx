@@ -1,21 +1,18 @@
 import { useApiStore } from '@/store/ApiStore'
 import { UserType } from '@/types/UserType'
-import { Box, Button } from '@mui/material'
+import { Box } from '@mui/material'
 import { CSSProperties, useEffect, useState } from 'react'
 import { VariableSizeList as List } from 'react-window'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import UserCard from './UserCard'
-import { useTranslation } from 'react-i18next'
 import SearchBar from '@/components/SearchBar'
 import { useOrgStore } from '@/store/OrgStore'
 
 const UserManagement = () => {
     const [users, setUsers] = useState<UserType[]>([])
-    const [outOfItems, setOutOfItems] = useState(false)
     const [searchArg, setSearchArg] = useState('')
     const { api } = useApiStore()
     const { orgId } = useOrgStore()
-    const { t } = useTranslation('common')
 
     useEffect(() => {
         fetchUsers()
@@ -26,30 +23,9 @@ const UserManagement = () => {
     }, [searchArg])
 
     const fetchUsers = async () => {
-        const fetchedUsers = await api?.users.getUsers({ orgId, pagination: { pageSize: 11, lastKey: '', searchArg } })
-
-        if (fetchedUsers && fetchedUsers.items.length < 1) {
-            setOutOfItems(true)
-            setUsers([])
-            return
-        }
+        const fetchedUsers = await api?.users.getUsers(orgId)
 
         setUsers(fetchedUsers?.items ?? [])
-        setOutOfItems(false)
-    }
-
-    const loadMore = async () => {
-        const lastKey = users[users.length - 1].id
-        const fetchedUsers = await api?.users.getUsers({ orgId, pagination: { pageSize: 11, lastKey, searchArg } })
-
-        if (fetchedUsers && fetchedUsers.items.length < 1) {
-            setOutOfItems(true)
-            return
-        }
-
-        const items = fetchedUsers?.items ?? []
-
-        setUsers((u) => [...u, ...items])
     }
 
     const updateListAfterDelete = (userId: string) => {
@@ -89,15 +65,6 @@ const UserManagement = () => {
                     )}
                 </AutoSizer>
             </Box>
-            {!outOfItems ?
-                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mt: '2rem' }}>
-                    <Button variant='contained' onClick={loadMore}>
-                        {t('loadMore')}
-                    </Button>
-                </Box>
-                :
-                null
-            }
         </Box>
     )
 }

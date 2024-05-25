@@ -6,7 +6,7 @@ import { Button, Tooltip } from '@mui/material'
 import { useApiStore } from '@/store/ApiStore'
 import { GridColDef } from '@mui/x-data-grid'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
-import { UserType } from '@/types/UserType'
+import { GuardianType, UserType } from '@/types/UserType'
 import NewEntityViewer from '@/components/NewEntityViewer'
 import CreateGuardianDialog from './CreateGuardianDialog'
 import { useOrgStore } from '@/store/OrgStore'
@@ -25,6 +25,7 @@ const Guardians = () => {
     const { api } = useApiStore()
     const { heaviestRole } = useUserStore()
     const { orgId } = useOrgStore()
+    const { deleteGuardian } = useGuardianStore()
     const navigate = useNavigate()
     const [isAddingGuardian, setIsAddingGuardian] = useState<boolean>(false)
 
@@ -32,8 +33,8 @@ const Guardians = () => {
         getGuardians()
     }, [])
 
-    const deleteGuardianAction = async (guardianId: string) => {
-        await api?.users.deleteUser(orgId, guardianId)
+    const deleteGuardianAction = async (guardian: GuardianType) => {
+        await deleteGuardian(guardian)
     }
 
     const viewGuardianDetails = (guardianId: string) => {
@@ -80,7 +81,7 @@ const Guardians = () => {
                         <Button
                             variant="contained"
                             size="small"
-                            onClick={() => deleteGuardianAction(params.row.id)}
+                            onClick={() => deleteGuardianAction(params.row)}
                         >
                             <Tooltip title='Delete Guardian'>
                                 <PersonRemoveIcon />

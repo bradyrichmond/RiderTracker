@@ -11,7 +11,7 @@ interface CreateRiderDialogProps {
     allSchools: OptionsType[]
     allStops: OptionsType[]
     cancelAction(): void
-    createRider(data: RiderType): void
+    createRider(data: RiderType): Promise<void>
     disableButtons: boolean
     isAddingRider: boolean
     newRiderId: string
@@ -24,10 +24,10 @@ const CreateRiderDialog = ({ allGuardians, allSchools, allStops, cancelAction, c
     const { t } = useTranslation(['riders','common'])
     const { handleSubmit, register, reset, resetField, setValue } = useForm<RiderType>()
 
-    const handleCreateRider = (newRider: RiderType) => {
+    const handleCreateRider = async (newRider: RiderType) => {
         newRider.id = newRiderId
         newRider.schoolId = schoolIdInput
-        createRider(newRider)
+        await createRider(newRider)
         resetForm()
     }
 
