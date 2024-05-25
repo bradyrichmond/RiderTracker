@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom'
 import { RiderType } from '@/types/RiderType'
-import { Box, Button, Tooltip } from '@mui/material'
+import { Box, Button, Tooltip, Typography } from '@mui/material'
 import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
 import InfoIcon from '@mui/icons-material/Info'
 import { useEffect, useMemo, useState } from 'react'
@@ -11,11 +11,15 @@ import { OptionsType } from '@/types/FormTypes'
 import { GuardianType } from '@/types/UserType'
 import { v4 as uuid } from 'uuid'
 import CreateRiderDialog from './CreateRiderDialog'
+import AddCircleIcon from '@mui/icons-material/AddCircle'
+import SyncIcon from '@mui/icons-material/Sync'
 import { useOrgStore } from '@/store/OrgStore'
 import { useUserStore } from '@/store/UserStore'
+import { useRiderStore } from '@/store/RiderStore'
+import { useTranslation } from 'react-i18next'
 
 const Riders = () => {
-    const [riders, setRiders] = useState<RiderType[]>([])
+    const { getRiders, riders } = useRiderStore()
     const [allSchools, setAllSchools] = useState<OptionsType[]>([])
     const [allGuardians, setAllGuardians] = useState<OptionsType[]>([])
     const [allStops, setAllStops] = useState<OptionsType[]>([])
@@ -26,6 +30,7 @@ const Riders = () => {
     const { api } = useApiStore()
     const { heaviestRole, userId } = useUserStore()
     const { orgId } = useOrgStore()
+    const { t } = useTranslation('riders')
 
     useEffect(() => {
         if (orgId) {
@@ -38,12 +43,6 @@ const Riders = () => {
         await getAllStops()
         await getAllGuardians()
         await getRiders()
-    }
-
-    const getRiders = async () => {
-        // TODO: add pagination handling
-        const fetchedRiders = await api?.riders.getRiders(orgId)
-        setRiders(fetchedRiders ?? [])
     }
 
     const getAllSchools = async () => {
@@ -183,6 +182,26 @@ const Riders = () => {
                 orgId={orgId}
                 startAddingRider={startAddingRider}
             />
+            <Box marginBottom='2rem' display='flex' flexDirection='row'>
+                <Box display='flex' justifyContent='center' alignItems='center'>
+                    <Typography variant='h2'>
+                        {t('riders')}
+                    </Typography>
+                </Box>
+                <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
+                    <Box sx={{ mr: '2rem', ml: '2rem' }}>
+                        <Button variant='contained' onClick={() => getRiders()}><SyncIcon fontSize='large' /></Button>
+                    </Box>
+                    <Button variant='contained' onClick={startAddingRider}>
+                        <Box display='flex' flexDirection='row'>
+                            <AddCircleIcon />
+                            <Box flex='1' marginLeft='1rem'>
+                                <Typography>{t('addRider')}</Typography>
+                            </Box>
+                        </Box>
+                    </Button>
+                </Box>
+            </Box>
             <Box flex='1'>
                 <DataGrid rows={riders} columns={columns} rowHeight={100} processRowUpdate={processRowUpdate} />
             </Box>

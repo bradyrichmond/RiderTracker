@@ -10,7 +10,7 @@ import { SchoolType } from '@/types/SchoolType'
 import { StopType } from '@/types/StopType'
 import { GuardianType, UserType } from '@/types/UserType'
 import SearchBar from './SearchBar'
-import SyncIcon from '@mui/icons-material/Sync';
+import SyncIcon from '@mui/icons-material/Sync'
 
 interface NewEntityViewerProps<T> {
     entities: T[]
@@ -35,7 +35,7 @@ const NewEntityViewer = <T extends BusType | GuardianType | OrganizationType | R
                 :
                 null
             }
-            <Box marginBottom='2rem' display='flex' flexDirection='row'>
+            <Box display='flex' flexDirection='row'>
                 <Box display='flex' justifyContent='center' alignItems='center'>
                     <Typography variant='h2'>
                         {titlePlural}
@@ -44,7 +44,7 @@ const NewEntityViewer = <T extends BusType | GuardianType | OrganizationType | R
                 <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
                     {refreshAction ?
                         <Box sx={{ mr: '2rem', ml: '2rem' }}>
-                            <Button variant='contained'><SyncIcon fontSize='large' /></Button>
+                            <Button variant='contained' onClick={() => refreshAction()}><SyncIcon fontSize='large' /></Button>
                         </Box>
                         :
                         null
