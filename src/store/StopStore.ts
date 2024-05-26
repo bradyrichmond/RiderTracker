@@ -12,6 +12,7 @@ interface StopStore {
     createStop(stop: StopType): Promise<void>
     deleteStop(stopId: string): Promise<void>
     addRiderToStop(rider: RiderType, stop: StopType): Promise<void>
+    removeRiderFromStop(riderId: string, stopId: string): Promise<void>
 }
 
 export const useStopStore = create<StopStore>((set, get) => ({
@@ -73,12 +74,21 @@ export const useStopStore = create<StopStore>((set, get) => ({
     },
     addRiderToStop: async (rider: RiderType, stop: StopType) => {
         const api = useApiStore.getState().api
+        let riderIds = stop.riderIds
 
-        if (!stop.riderIds) {
-            stop.riderIds = []
+        if (!riderIds || riderIds.length < 1) {
+            riderIds = []
         }
 
-        stop.riderIds.push(rider.id)
+        riderIds.push(rider.id)
+        await api?.stops.updateStop(stop.orgId, stop.id, { riderIds })
+    },
+    removeRiderFromStop: async (stopId: string, riderId: string) => {
+        const stop = await get().getStopById(stopId)
+        const api = useApiStore.getState().api
+        const newRiderIds = stop.riderIds?.filter((r: string) => r !== riderId)
+        stop.riderIds = newRiderIds && newRiderIds.length > 0 ? newRiderIds : ['']
+
         await api?.stops.updateStop(stop.orgId, stop.id, stop)
     }
 }))

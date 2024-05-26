@@ -11,6 +11,7 @@ interface RouteStore {
     deleteRoute(routeId: string): Promise<void>
     getRouteById(routeId: string): Promise<RouteType>
     addStopToRoute(route: RouteType, stop: StopType): Promise<void>
+    addRiderToRoute(route: RouteType, riderId: string): Promise<void>
 }
 
 export const useRouteStore = create<RouteStore>((set, get) => ({
@@ -50,6 +51,9 @@ export const useRouteStore = create<RouteStore>((set, get) => ({
 
         await api?.routes.deleteRoute(orgId, routeId)
         await get().getRoutes()
+        // TODOS: 
+        // Delete all stops on route
+        // remove stops from riders, maybe done automatically by delete stop?
     },
     addStopToRoute: async (route: RouteType, stop: StopType) => {
         const api = useApiStore.getState().api
@@ -64,5 +68,18 @@ export const useRouteStore = create<RouteStore>((set, get) => ({
         route.stopIds = stopIds
 
         await api?.routes.updateRoute(orgId, route.id, route)
+    },
+    addRiderToRoute: async (route: RouteType, riderId: string) => {
+        const api = useApiStore.getState().api
+        let riderIds = route.riderIds
+
+        if (!riderIds || riderIds.length < 1) {
+            riderIds = []
+        }
+
+        riderIds.push(riderId)
+        route.riderIds = riderIds
+
+        await api?.routes.updateRoute(route.orgId, route.id, route)
     }
 }))

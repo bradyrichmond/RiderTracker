@@ -57,7 +57,7 @@ const Guardians = () => {
             { field: 'firstName',  headerName: 'First Name', flex: 1, align: 'center', headerAlign: 'center' },
             { field: 'lastName',  headerName: 'Last Name', flex: 1, align: 'center', headerAlign: 'center' },
             { field: 'riderIds',  headerName: 'Riders', flex: 1, align: 'center', headerAlign: 'center', valueFormatter: (value: string[] | null) => {
-                return Array.isArray(value) ? value.length : 0
+                return Array.isArray(value) ? value.filter((v) => v !== '').length : 0
             } },
             { field: 'viewDetails', headerName: '', flex: 1, align: 'center', headerAlign: 'center', renderCell: (params) => {
                 return (

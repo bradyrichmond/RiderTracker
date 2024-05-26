@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useOrgStore } from '@/store/OrgStore'
 import { useUserStore } from '@/store/UserStore'
+import { useRiderStore } from '@/store/RiderStore'
 
 interface RouteDrawerProps {
     open: boolean
@@ -24,10 +25,11 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
     const [isAddingStop, setIsAddingStop] = useState(false)
     const [routeNumber, setRouteNumber] = useState('')
     const [stops, setStops] = useState<OptionsType[]>([])
-    const [riders, setRiders] = useState<OptionsType[]>([])
+    const [localRiders, setLocalRiders] = useState<OptionsType[]>([])
     const { api } = useApiStore()
     const { orgId } = useOrgStore()
     const { heaviestRole } = useUserStore()
+    const { getRiders, riders } = useRiderStore()
     const navigate = useNavigate()
     const { t } = useTranslation('routes')
 
@@ -63,12 +65,8 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
     }
 
     const getRidersForRoute = async (riderIds: string[]) => {
-        const fechedRiders = await api?.riders.getBulkRidersByIds(orgId, riderIds)
-
-        if (fechedRiders) {
-            const mappedRiders: OptionsType[] = fechedRiders.map((s) => ({ id: s.id, label: `${s.firstName} ${s.lastName}` }))
-            setRiders(mappedRiders)
-        }
+        await getRiders(riderIds)
+        setLocalRiders(riders.map((r) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` })))
     }
 
     const toggleAddingStop = () => {
@@ -134,7 +132,7 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
                         <Typography variant='h5'>{t('riders')}</Typography>
                         <Paper sx={{ width: '100%', flex: 1 }}>
                             <Box sx={{ height: '100%', width: '100%' }}>
-                                <RouteDrawerDetailList items={riders} action={viewRiderDetail} />
+                                <RouteDrawerDetailList items={localRiders} action={viewRiderDetail} />
                             </Box>
                         </Paper>
                     </Stack>

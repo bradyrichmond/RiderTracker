@@ -13,6 +13,7 @@ interface GuardianStore {
     changeSearchArg(searchArg: string): Promise<void>
     guardiansFilter(g: GuardianType): boolean
     addRiderToGuardian: (guardian: GuardianType, rider: RiderType) => Promise<void>
+    removeRiderFromGuardian: (guardianId: string, riderId: string) => Promise<void>
     getGuardianById: (guardianId: string) => Promise<GuardianType>
 }
 
@@ -102,6 +103,19 @@ export const useGuardianStore = create<GuardianStore>((set, get) => ({
         }
 
         riderIds.push(rider.id)
+
+        await api?.users.updateUser(orgId, guardian.id, { riderIds })
+    },
+    removeRiderFromGuardian: async (guardianId: string, riderId: string) => {
+        const api = useApiStore.getState().api
+        const orgId = useOrgStore.getState().orgId
+        const guardian = await get().getGuardianById(guardianId)
+
+        let riderIds: string[] = guardian.riderIds.filter((r) => r !== riderId)
+
+        if (!riderIds || riderIds.length < 1) {
+            riderIds = [""]
+        }
 
         await api?.users.updateUser(orgId, guardian.id, { riderIds })
     }

@@ -29,7 +29,7 @@ export class RouteApis {
 
     updateRoute = async (orgId: string, id: string, route: RouteType) => {
         const updatedRoute = {
-            stopIds: route.stopIds
+            riderIds: route.riderIds
         }
         const updateRouteResponse = await this.client.organizationsOrgIdRoutesIdPut({ orgId, id }, updatedRoute)
 

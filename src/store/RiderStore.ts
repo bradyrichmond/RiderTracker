@@ -4,13 +4,14 @@ import { useApiStore } from './ApiStore'
 import { useOrgStore } from './OrgStore'
 import { useGuardianStore } from './GuardianStore'
 import { useStopStore } from './StopStore'
+import { useRouteStore } from './RouteStore'
 
 interface RiderStore {
     riders: RiderType[]
     getRiders(riderIds?: string[]): Promise<void>
     getRiderById(riderId: string): Promise<RiderType>
     createRider(rider: RiderType): Promise<void>
-    deleteRider(riderId: string): Promise<void>
+    deleteRider(rider: RiderType): Promise<void>
     searchArg: string
     changeSearchArg(searchArg: string): Promise<void>
     ridersFilter(r: RiderType): boolean
@@ -68,18 +69,38 @@ export const useRiderStore = create<RiderStore>((set, get) => ({
             }
         }
 
+        const routeIds = []
+
         const stopIds = rider.stopIds
         if (stopIds) {
             for (const stopId of stopIds) {
                 const stop = await useStopStore.getState().getStopById(stopId)
+                routeIds.push(stop.routeId)
                 await useStopStore.getState().addRiderToStop(rider, stop)
             }
         }
+
+        if (routeIds) {
+            for (const routeId of routeIds) {
+                const route = await useRouteStore.getState().getRouteById(routeId)
+                await useRouteStore.getState().addRiderToRoute(route, rider.id)
+            }
+        }
+
+        await get().getRiders()
     },
-    deleteRider: async (riderId: string) => {
+    deleteRider: async (rider: RiderType) => {
         const orgId = useOrgStore.getState().orgId
         const api = useApiStore.getState().api
-        await api?.riders.deleteRider(orgId, riderId)
+        const removeRiderFromGuardian = useGuardianStore.getState().removeRiderFromGuardian
+        await api?.riders.deleteRider(orgId, rider.id)
+
+        if (rider.guardianIds) {
+            for (const guardianId of rider.guardianIds) {
+                await removeRiderFromGuardian(guardianId, rider.id)
+            }
+        }
+
         await get().getRiders()
     },
     searchArg: '',
@@ -101,6 +122,10 @@ export const useRiderStore = create<RiderStore>((set, get) => ({
         const { firstName, lastName } = r
         const record = `${firstName} ${lastName}`.toLowerCase()
 
+        if (!r) {
+            return false
+        }
+
         if (record.includes(standardizedArg)) {
             return true
         }
@@ -111,7 +136,7 @@ export const useRiderStore = create<RiderStore>((set, get) => ({
         const rider = await get().getRiderById(riderId)
         const api = useApiStore.getState().api
         const newGuardianIds = rider.guardianIds?.filter((g: string) => g !== guardianId)
-        rider.guardianIds = newGuardianIds ?? ['']
+        rider.guardianIds = newGuardianIds && newGuardianIds.length > 0 ? newGuardianIds : ['']
 
         await api?.riders.updateRider(rider.orgId, rider.id, rider)
     }

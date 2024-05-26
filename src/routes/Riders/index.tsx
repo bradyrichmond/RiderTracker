@@ -20,7 +20,7 @@ import { useTranslation } from 'react-i18next'
 import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 
 const Riders = () => {
-    const { createRider, getRiders, riders } = useRiderStore()
+    const { createRider, deleteRider, getRiders, riders } = useRiderStore()
     const { showErrorSnackbar } = useContext(SnackbarContext)
     const [allSchools, setAllSchools] = useState<OptionsType[]>([])
     const [allGuardians, setAllGuardians] = useState<OptionsType[]>([])
@@ -32,7 +32,7 @@ const Riders = () => {
     const { api } = useApiStore()
     const { heaviestRole, userId } = useUserStore()
     const { orgId } = useOrgStore()
-    const { t } = useTranslation('riders')
+    const { t } = useTranslation(['riders', 'common'])
 
     useEffect(() => {
         if (orgId) {
@@ -93,8 +93,12 @@ const Riders = () => {
         navigate(`/riders/${riderId}`)
     }
 
-    const deleteRiderAction = async (riderId: string) => {
-        await api?.riders.deleteRider(orgId, riderId)
+    const deleteRiderAction = async (rider: RiderType) => {
+        setDisableButtons(true)
+
+        await deleteRider(rider)
+
+        setDisableButtons(false)
     }
 
     const handleCreateRider = async (newRider: RiderType) => {
@@ -133,7 +137,7 @@ const Riders = () => {
                                 size="small"
                                 onClick={() => viewRiderDetails(params.row.id)}
                             >
-                                <Tooltip title='View Details'>
+                                <Tooltip title={t('viewDetails', { ns: 'common' })}>
                                     <InfoIcon />
                                 </Tooltip>
                             </Button>
@@ -143,9 +147,9 @@ const Riders = () => {
                             <Button
                                 variant="contained"
                                 size="small"
-                                onClick={() => deleteRiderAction(params.row.id)}
+                                onClick={() => deleteRiderAction(params.row)}
                             >
-                                <Tooltip title='Delete Rider?'>
+                                <Tooltip title={disableButtons ? t('actionDisabled', { ns: 'common' }) : t('deleteRider')}>
                                     <PersonRemoveIcon />
                                 </Tooltip>
                             </Button>

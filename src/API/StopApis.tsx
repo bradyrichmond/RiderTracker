@@ -22,8 +22,8 @@ export class StopApis {
         return handleApiResponse<StopType>(getStopResponse)
     }
 
-    updateStop = async (orgId: string, id: string, stop: StopType) => {
-        const updateStopResponse = await this.client.organizationsOrgIdStopsGet({ orgId, id }, stop)
+    updateStop = async (orgId: string, id: string, stop: object) => {
+        const updateStopResponse = await this.client.organizationsOrgIdStopsIdPut({ orgId, id }, stop)
 
         return handleApiResponse<object>(updateStopResponse)
     }
@@ -64,7 +64,7 @@ export interface StopApiFunctionTypes {
     getStops(orgId: string): Promise<StopType[]>,
     getBulkStopsByIds(orgId: string, stopIds: string[]): Promise<StopType[]>,
     getStopById(orgId: string, id: string): Promise<StopType>,
-    updateStop(orgId: string, id: string, stop: StopType): Promise<object>,
+    updateStop(orgId: string, id: string, stop: object): Promise<object>,
     createStop(orgId: string, stop: StopType): Promise<object>,
     deleteStop(orgId: string, id: string): Promise<object>
 }
