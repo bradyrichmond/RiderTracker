@@ -8,7 +8,8 @@ import { useRouteStore } from './RouteStore'
 
 interface RiderStore {
     riders: RiderType[]
-    getRiders(riderIds?: string[]): Promise<void>
+    getRiders(): Promise<void>
+    getBulkRidersById(riderIds: string[]): Promise<RiderType[]>
     getRiderById(riderId: string): Promise<RiderType>
     createRider(rider: RiderType): Promise<void>
     deleteRider(rider: RiderType): Promise<void>
@@ -20,25 +21,22 @@ interface RiderStore {
 
 export const useRiderStore = create<RiderStore>((set, get) => ({
     riders: [],
-    getRiders: async (riderIds?: string[]) => {
+    getRiders: async () => {
         const orgId = useOrgStore.getState().orgId
         const api = useApiStore.getState().api
-
-        if (riderIds) {
-            const fetchedRiders = await api?.riders.getBulkRidersByIds(orgId, riderIds)
-
-            if (fetchedRiders) {
-                set({ riders: fetchedRiders })
-            }
-
-            return
-        }
 
         const fetchedRiders = await api?.riders.getRiders(orgId)
 
         if (fetchedRiders) {
             set(() => ({ riders: fetchedRiders.filter(get().ridersFilter) }))
         }
+    },
+    getBulkRidersById: async (riderIds: string[]) => {
+        const orgId = useOrgStore.getState().orgId
+        const api = useApiStore.getState().api
+
+        const fetchedRiders = await api?.riders.getBulkRidersByIds(orgId, riderIds)
+        return fetchedRiders ?? []
     },
     getRiderById: async (riderId: string) => {
         const orgId = useOrgStore.getState().orgId

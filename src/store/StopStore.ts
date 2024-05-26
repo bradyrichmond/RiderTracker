@@ -7,7 +7,8 @@ import { RiderType } from '@/types/RiderType'
 
 interface StopStore {
     stops: StopType[]
-    getStops(stopIds?: string[]): Promise<void>
+    getStops(): Promise<void>
+    getBulkStopsById(stopIds: string[]): Promise<StopType[]>
     getStopById(stopId: string): Promise<StopType>
     createStop(stop: StopType): Promise<void>
     deleteStop(stopId: string): Promise<void>
@@ -17,25 +18,22 @@ interface StopStore {
 
 export const useStopStore = create<StopStore>((set, get) => ({
     stops: [],
-    getStops: async (stopIds?: string[]) => {
+    getStops: async () => {
         const orgId = useOrgStore.getState().orgId
         const api = useApiStore.getState().api
-
-        if (stopIds) {
-            const fetchedStops = await api?.stops.getBulkStopsByIds(orgId, stopIds)
-
-            if (fetchedStops) {
-                set({ stops: fetchedStops })
-            }
-
-            return
-        }
 
         const fetchedStops = await api?.stops.getStops(orgId)
 
         if (fetchedStops) {
             set(() => ({ stops: fetchedStops }))
         }
+    },
+    getBulkStopsById: async (stopIds: string[]) => {
+        const orgId = useOrgStore.getState().orgId
+        const api = useApiStore.getState().api
+
+        const fetchedStops = await api?.stops.getBulkStopsByIds(orgId, stopIds)
+        return fetchedStops ?? []
     },
     getStopById: async (stopId: string) => {
         const orgId = useOrgStore.getState().orgId

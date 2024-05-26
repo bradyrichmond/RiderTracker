@@ -1,20 +1,19 @@
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
-import { useApiStore } from '@/store/ApiStore'
-import { Box, Button, Divider, Drawer, Fab, Paper, Stack, Tooltip, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import AddLocationIcon from '@mui/icons-material/AddLocation'
 import CreateStopForRouteDialog from './CreateStopForRouteDialog'
 import { StopType } from '@/types/StopType'
-import { v4 as uuid } from 'uuid'
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import { OptionsType } from '@/types/FormTypes'
-import RouteDrawerDetailList from './RouteDrawerDetailList'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useOrgStore } from '@/store/OrgStore'
 import { useUserStore } from '@/store/UserStore'
 import { useRiderStore } from '@/store/RiderStore'
+import EntityDrawer, { DrawerListActionProps, DrawerListItem } from '@/components/EntityDrawer'
+import { useStopStore } from '@/store/StopStore'
+import { useRouteStore } from '@/store/RouteStore'
+import { useAddressStore } from '@/store/AddressStore'
 
 interface RouteDrawerProps {
     open: boolean
@@ -24,12 +23,16 @@ interface RouteDrawerProps {
 const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
     const [isAddingStop, setIsAddingStop] = useState(false)
     const [routeNumber, setRouteNumber] = useState('')
+    const [lists, setLists] = useState<DrawerListItem[]>([])
+    const [actionItems, setActionItems] = useState<DrawerListActionProps[]>([])
     const [stops, setStops] = useState<OptionsType[]>([])
     const [localRiders, setLocalRiders] = useState<OptionsType[]>([])
-    const { api } = useApiStore()
     const { orgId } = useOrgStore()
+    const { getRouteById, deleteRoute } = useRouteStore()
     const { heaviestRole } = useUserStore()
-    const { getRiders, riders } = useRiderStore()
+    const { getBulkRidersById } = useRiderStore()
+    const { createAddress } = useAddressStore()
+    const { createStop, getBulkStopsById } = useStopStore()
     const navigate = useNavigate()
     const { t } = useTranslation('routes')
 
@@ -39,8 +42,12 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
         }
     }, [routeId, orgId])
 
+    useEffect(() => {
+        buildLists()
+    }, [localRiders, actionItems])
+
     const getRouteData = async () => {
-        const fetchedRoute = await api?.routes.getRouteById(orgId, routeId)
+        const fetchedRoute = await getRouteById(routeId)
 
         if (fetchedRoute) {
             setRouteNumber(fetchedRoute.routeNumber)
@@ -52,11 +59,53 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
             if (fetchedRoute.riderIds) {
                 getRidersForRoute(fetchedRoute.riderIds)
             }
+
+            buildActionItems()
         }
     }
 
+    const buildActionItems = () => {
+        const builtActionItems: DrawerListActionProps[] = []
+        const userPermissions = RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole]
+
+        if (userPermissions.includes(permissions.CREATE_STOP)) {
+            builtActionItems.push({
+                handleClick: toggleAddingStop,
+                tooltipTitle: t('createStop'),
+                Icon: AddLocationIcon
+            })
+        }
+
+        if (userPermissions.includes(permissions.DELETE_ROUTE)) {
+            builtActionItems.push({
+                handleClick: deleteRouteAction,
+                tooltipTitle: t('deleteRoute'),
+                Icon: DeleteForeverIcon
+            })
+        }
+
+        setActionItems(builtActionItems)
+    }
+
+    const buildLists = () => {
+        const builtLists = [
+            {
+                title: t('stops'),
+                action: viewStopDetail,
+                items: stops
+            },
+            {
+                title: t('riders'),
+                action: viewRiderDetail,
+                items: localRiders
+            }
+        ]
+
+        setLists(builtLists)
+    }
+
     const getStopsForRoute = async (stopIds: string[]) => {
-        const fetchedStops = await api?.stops.getBulkStopsByIds(orgId, stopIds)
+        const fetchedStops = await getBulkStopsById(stopIds)
 
         if (fetchedStops) {
             const mappedStops: OptionsType[] = fetchedStops.map((s) => ({ id: s.id, label: s.stopName }))
@@ -65,7 +114,7 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
     }
 
     const getRidersForRoute = async (riderIds: string[]) => {
-        await getRiders(riderIds)
+        const riders = await getBulkRidersById(riderIds)
         setLocalRiders(riders.map((r) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` })))
     }
 
@@ -74,28 +123,16 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
     }
 
     const deleteRouteAction = async () => {
-        await api?.routes.deleteRoute(orgId, routeId)
+        await deleteRoute(routeId)
     }
 
     const createStopAction = async (newStop: StopType) => {
-        newStop.routeId = routeId
         const newAddressId = await createAddress(newStop.address)
+        newStop.routeId = routeId
         newStop.address = newAddressId
 
-        await api?.stops.createStop(orgId, newStop)
+        await createStop(newStop)
         toggleAddingStop()
-    }
-
-    const createAddress = async (address: string) => {
-        const validatedAddress = await api?.addresses.validateAddress(address)
-
-        if (validatedAddress) {
-            const newAddressId = uuid()
-            await api?.addresses.createAddress(orgId, validatedAddress)
-            return newAddressId
-        } else {
-            throw 'Unable to validate address'
-        }
     }
 
     const viewStopDetail = (stopId: string) => {
@@ -106,71 +143,21 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
         navigate(`/app/riders/${riderId}`)
     }
 
-    const toggleDrawer = () => {
+    const handleBack = () => {
         navigate('/app/routes')
     }
 
     return (
-        <Drawer open={open} onClose={toggleDrawer} anchor='right' variant="temporary">
-            <CreateStopForRouteDialog createStop={createStopAction} cancelAction={toggleAddingStop} isAddingStop={isAddingStop} />
-            <Box sx={{ ml: '1rem', mt: '1rem', mb: '1rem', display: 'flex', flexDirection: 'row' }}>
-                <Fab onClick={toggleDrawer}><ArrowForwardIcon /></Fab>
-                <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <Typography variant='h3'>Route {routeNumber}</Typography>
-                </Box>
-            </Box>
-            <Divider />
-            <Box sx={{ margin: '1rem', width: '20vw', display: 'flex', flexDirection: 'column', height: '100%' }}>
-                <Box sx={{ flex: 1 }}>
-                    <Stack direction='column' justifyContent='' alignItems='center' spacing={2} sx={{ height: '100%' }}>
-                        <Typography variant='h5'>{t('stops')}</Typography>
-                        <Paper sx={{ width: '100%', flex: 1 }}>
-                            <Box sx={{ height: '100%', width: '100%' }}>
-                                <RouteDrawerDetailList items={stops} action={viewStopDetail} />
-                            </Box>
-                        </Paper>
-                        <Typography variant='h5'>{t('riders')}</Typography>
-                        <Paper sx={{ width: '100%', flex: 1 }}>
-                            <Box sx={{ height: '100%', width: '100%' }}>
-                                <RouteDrawerDetailList items={localRiders} action={viewRiderDetail} />
-                            </Box>
-                        </Paper>
-                    </Stack>
-                </Box>
-                <Box sx={{ pt: '1rem' }}>
-                    <Stack direction='row' justifyContent='center' alignItems='center' spacing={8}>
-                        {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_STOP) ?
-                            <Button
-                                variant="contained"
-                                size="small"
-                                onClick={() => toggleAddingStop()}
-                                sx={{ padding: '2rem' }}
-                            >
-                                <Tooltip title='Create Stop'>
-                                    <AddLocationIcon />
-                                </Tooltip>
-                            </Button>
-                            :
-                            null
-                        }
-                        {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.DELETE_ROUTE) ?
-                            <Button
-                                variant="contained"
-                                size="small"
-                                onClick={() => deleteRouteAction()}
-                                sx={{ padding: '2rem' }}
-                            >
-                                <Tooltip title='Delete Route?'>
-                                    <DeleteForeverIcon />
-                                </Tooltip>
-                            </Button>
-                            :
-                            null
-                        }
-                    </Stack>
-                </Box>
-            </Box>
-        </Drawer>
+        <>
+            <CreateStopForRouteDialog isAddingStop={isAddingStop} createStop={createStopAction} cancelAction={toggleAddingStop} />
+            <EntityDrawer
+                actionItems={actionItems}
+                back={handleBack}
+                lists={lists}
+                open={open}
+                title={`Route ${routeNumber}`}
+            />
+        </>
     )
 }
 
