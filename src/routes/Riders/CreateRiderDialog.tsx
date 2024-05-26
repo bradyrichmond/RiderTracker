@@ -1,10 +1,12 @@
 import { Transition } from '@/components/AddEntityModal'
+import { useOrgStore } from '@/store/OrgStore'
 import { OptionsType } from '@/types/FormTypes'
 import { RiderType } from '@/types/RiderType'
 import { Autocomplete, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, TextField } from '@mui/material'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { v4 as uuid } from 'uuid'
 
 interface CreateRiderDialogProps {
     allGuardians: OptionsType[]
@@ -13,19 +15,18 @@ interface CreateRiderDialogProps {
     cancelAction(): void
     createRider(data: RiderType): Promise<void>
     disableButtons: boolean
+    guardianId?: string
     isAddingRider: boolean
-    newRiderId: string
-    orgId: string
-    startAddingRider(): void
 }
 
-const CreateRiderDialog = ({ allGuardians, allSchools, allStops, cancelAction, createRider, disableButtons, isAddingRider, newRiderId, orgId }: CreateRiderDialogProps) => {
+const CreateRiderDialog = ({ allGuardians, allSchools, allStops, cancelAction, createRider, disableButtons, guardianId, isAddingRider }: CreateRiderDialogProps) => {
     const [schoolIdInput, setSchoolIdInput] = useState<string>('')
     const { t } = useTranslation(['riders','common'])
+    const { orgId } = useOrgStore()
     const { handleSubmit, register, reset, resetField, setValue } = useForm<RiderType>()
 
     const handleCreateRider = async (newRider: RiderType) => {
-        newRider.id = newRiderId
+        newRider.id = uuid()
         newRider.schoolId = schoolIdInput
         await createRider(newRider)
         resetForm()
@@ -77,23 +78,27 @@ const CreateRiderDialog = ({ allGuardians, allSchools, allStops, cancelAction, c
                         )}
                     />
                 </FormControl>
-                <FormControl fullWidth>
-                    <Autocomplete
-                        multiple
-                        id='GuardianAutoComplete'
-                        options={allGuardians}
-                        getOptionLabel={(option: OptionsType) => option.label}
-                        filterSelectedOptions
-                        onChange={(_e, values: OptionsType[]) => setValue('guardianIds', values.map((v: OptionsType) => v.id))}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label='Guardian'
-                                id='GuardianLabel'
-                            />
-                        )}
-                    />
-                </FormControl>
+                {!guardianId ?
+                    <FormControl fullWidth>
+                        <Autocomplete
+                            multiple
+                            id='GuardianAutoComplete'
+                            options={allGuardians}
+                            getOptionLabel={(option: OptionsType) => option.label}
+                            filterSelectedOptions
+                            onChange={(_e, values: OptionsType[]) => setValue('guardianIds', values.map((v: OptionsType) => v.id))}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    label='Guardian'
+                                    id='GuardianLabel'
+                                />
+                            )}
+                        />
+                    </FormControl>
+                    :
+                    null
+                }
                 <FormControl fullWidth>
                     <Autocomplete
                         multiple
@@ -117,7 +122,7 @@ const CreateRiderDialog = ({ allGuardians, allSchools, allStops, cancelAction, c
                         fullWidth {...register('orgId')}
                     />
                     <TextField
-                        value={newRiderId}
+                        value={'temp'}
                         fullWidth {...register('id')}
                     />
                 </Box>

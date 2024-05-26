@@ -114,7 +114,7 @@ export const useGuardianStore = create<GuardianStore>((set, get) => ({
         let riderIds: string[] = guardian.riderIds.filter((r) => r !== riderId)
 
         if (!riderIds || riderIds.length < 1) {
-            riderIds = [""]
+            riderIds = ['']
         }
 
         await api?.users.updateUser(orgId, guardian.id, { riderIds })

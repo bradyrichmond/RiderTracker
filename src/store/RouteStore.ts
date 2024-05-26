@@ -51,7 +51,7 @@ export const useRouteStore = create<RouteStore>((set, get) => ({
 
         await api?.routes.deleteRoute(orgId, routeId)
         await get().getRoutes()
-        // TODOS: 
+        // TODOS:
         // Delete all stops on route
         // remove stops from riders, maybe done automatically by delete stop?
     },

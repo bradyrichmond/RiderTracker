@@ -9,7 +9,6 @@ import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { OptionsType } from '@/types/FormTypes'
 import { GuardianType } from '@/types/UserType'
-import { v4 as uuid } from 'uuid'
 import CreateRiderDialog from './CreateRiderDialog'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import SyncIcon from '@mui/icons-material/Sync'
@@ -27,7 +26,6 @@ const Riders = () => {
     const [allStops, setAllStops] = useState<OptionsType[]>([])
     const [isAddingRider, setIsAddingRider] = useState(false)
     const [disableButtons, setDisableButtons] = useState(false)
-    const [newRiderId, setNewRiderId] = useState('')
     const navigate = useNavigate()
     const { api } = useApiStore()
     const { heaviestRole, userId } = useUserStore()
@@ -170,8 +168,6 @@ const Riders = () => {
     }
 
     const startAddingRider = () => {
-        const newUuid = uuid()
-        setNewRiderId(newUuid)
         setIsAddingRider(true)
     }
 
@@ -189,9 +185,6 @@ const Riders = () => {
                 createRider={handleCreateRider}
                 disableButtons={disableButtons}
                 isAddingRider={isAddingRider}
-                newRiderId={newRiderId}
-                orgId={orgId}
-                startAddingRider={startAddingRider}
             />
             <Box marginBottom='2rem' display='flex' flexDirection='row'>
                 <Box display='flex' justifyContent='center' alignItems='center'>

@@ -1,17 +1,16 @@
 import { useNavigate } from 'react-router-dom'
-import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
-import InfoIcon from '@mui/icons-material/Info'
+import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { useEffect, useState } from 'react'
-import { Button, Tooltip } from '@mui/material'
+import { Box, Button, Typography } from '@mui/material'
 import { useApiStore } from '@/store/ApiStore'
-import { GridColDef } from '@mui/x-data-grid'
-import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
-import { GuardianType, UserType } from '@/types/UserType'
-import NewEntityViewer from '@/components/NewEntityViewer'
+import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import { UserType } from '@/types/UserType'
 import CreateGuardianDialog from './CreateGuardianDialog'
 import { useOrgStore } from '@/store/OrgStore'
-import { useUserStore } from '@/store/UserStore'
 import { useGuardianStore } from '@/store/GuardianStore'
+import { useTranslation } from 'react-i18next'
+import SearchBar from '@/components/SearchBar'
+import GuardianDrawer from './GuardianDrawer'
 
 export interface CreateGuardianInput {
     given_name: string
@@ -20,26 +19,21 @@ export interface CreateGuardianInput {
     address: string
 }
 
-const Guardians = () => {
+interface GuardiansProps {
+    activeGuardian?: string
+}
+
+const Guardians = ({ activeGuardian }: GuardiansProps) => {
     const { guardians, getGuardians, changeSearchArg } = useGuardianStore()
     const { api } = useApiStore()
-    const { heaviestRole } = useUserStore()
     const { orgId } = useOrgStore()
-    const { deleteGuardian } = useGuardianStore()
     const navigate = useNavigate()
     const [isAddingGuardian, setIsAddingGuardian] = useState<boolean>(false)
+    const { t } = useTranslation('guardians')
 
     useEffect(() => {
         getGuardians()
     }, [])
-
-    const deleteGuardianAction = async (guardian: GuardianType) => {
-        await deleteGuardian(guardian)
-    }
-
-    const viewGuardianDetails = (guardianId: string) => {
-        navigate(`/guardians/${guardianId}`)
-    }
 
     const createGuardian = async (guardian: CreateGuardianInput) => {
         const { given_name, family_name, email, address } = guardian
@@ -58,39 +52,8 @@ const Guardians = () => {
             { field: 'lastName',  headerName: 'Last Name', flex: 1, align: 'center', headerAlign: 'center' },
             { field: 'riderIds',  headerName: 'Riders', flex: 1, align: 'center', headerAlign: 'center', valueFormatter: (value: string[] | null) => {
                 return Array.isArray(value) ? value.filter((v) => v !== '').length : 0
-            } },
-            { field: 'viewDetails', headerName: '', flex: 1, align: 'center', headerAlign: 'center', renderCell: (params) => {
-                return (
-                    <Button
-                        variant="contained"
-                        size="small"
-                        onClick={() => viewGuardianDetails(params.row.id)}
-                    >
-                        <Tooltip title='View Details'>
-                            <InfoIcon />
-                        </Tooltip>
-                    </Button>
-                )
             } }
         ]
-
-        if (RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.DELETE_GUARDIAN)) {
-            initialGridColumns.push({
-                field: 'delete', headerName: '', flex: 1, align: 'center', headerAlign: 'center', renderCell: (params) => {
-                    return (
-                        <Button
-                            variant="contained"
-                            size="small"
-                            onClick={() => deleteGuardianAction(params.row)}
-                        >
-                            <Tooltip title='Delete Guardian'>
-                                <PersonRemoveIcon />
-                            </Tooltip>
-                        </Button>
-                    )
-                }
-            })
-        }
 
         return initialGridColumns
     }
@@ -103,18 +66,50 @@ const Guardians = () => {
         setIsAddingGuardian((cur) => !cur)
     }
 
+    const handleRowClick = (id: string) => {
+        navigate(`/app/guardians/${id}`)
+    }
+
     return (
-        <NewEntityViewer<UserType>
-            entities={guardians}
-            gridColumns={generateGridColumns()}
-            titleSingular='Guardian'
-            titlePlural='Guardians'
-            processRowUpdate={processRowUpdate}
-            toggleShowModal={toggleShowModal}
-            Modal={() => <CreateGuardianDialog cancel={toggleShowModal} createGuardian={createGuardian} isAddingGuardian={isAddingGuardian} />}
-            searchAction={changeSearchArg}
-            refreshAction={getGuardians}
-        />
+        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <Box marginBottom='2rem' display='flex' flexDirection='row'>
+                <Box display='flex' justifyContent='center' alignItems='center'>
+                    <Typography variant='h2'>
+                        {t('guardians')}
+                    </Typography>
+                </Box>
+                <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
+                    <Button variant='contained' onClick={toggleShowModal}>
+                        <Box display='flex' flexDirection='row'>
+                            <AddCircleIcon />
+                            <Box flex='1' marginLeft='1rem'>
+                                <Typography>{t('addGuardian')}</Typography>
+                            </Box>
+                        </Box>
+                    </Button>
+                </Box>
+            </Box>
+            <GuardianDrawer open={!!activeGuardian} guardianId={activeGuardian ?? ''} />
+            <CreateGuardianDialog createGuardian={createGuardian} isAddingGuardian={isAddingGuardian} cancel={toggleShowModal} />
+            <Box sx={{ mb: '2rem' }}>
+                <SearchBar onChange={changeSearchArg} fullWidth />
+            </Box>
+            <Box flex='1'>
+                <Box sx={{ height: '100%', width: '100%' }}>
+                    {guardians ?
+                        <DataGrid
+                            rows={guardians}
+                            columns={generateGridColumns()}
+                            rowHeight={100}
+                            processRowUpdate={processRowUpdate}
+                            onRowClick={(params) => handleRowClick(params.row.id)}
+                        />
+                        :
+                        null
+                    }
+                </Box>
+            </Box>
+        </Box>
     )
 }
 
