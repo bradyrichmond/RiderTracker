@@ -7,8 +7,6 @@ import Drivers from '@/routes/Drivers'
 import Home from '@/routes/Root/Home'
 import Scans from '@/routes/Scans'
 import ProtectedRoute from '@/routes/Protected/ProtectedRoute'
-import Rider from '@/routes/Riders/Rider'
-import Riders from '@/routes/Riders'
 import Root from '@/routes/Root'
 import Unauthorized from '@/routes/Protected/Unauthorized'
 import Scan from '@/routes/Scans/Scan'
@@ -22,6 +20,7 @@ import { fetchAuthSession } from 'aws-amplify/auth'
 import RouteStop from '@/routes/Routes/RouteStop'
 import RoutesWrapper from '@/routes/Routes/RoutesWrapper'
 import GuardianWrapper from '@/routes/Guardians/GuardianWrapper'
+import RiderWrapper from '@/routes/Riders/RiderWrapper'
 
 export const createRouterObject = () => {
     return createBrowserRouter([{
@@ -65,11 +64,11 @@ export const createRouterObject = () => {
                     },
                     {
                         path: '/app/riders',
-                        element: <ProtectedRoute route='/app/riders'><Riders /></ProtectedRoute>
+                        element: <ProtectedRoute route='/app/riders'><RiderWrapper /></ProtectedRoute>
                     },
                     {
                         path: '/app/riders/:id',
-                        element: <ProtectedRoute route='/app/riders/:id'><Rider /></ProtectedRoute>
+                        element: <ProtectedRoute route='/app/riders/:id'><RiderWrapper /></ProtectedRoute>
                     },
                     {
                         path: '/app/routes',

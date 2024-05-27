@@ -1,34 +1,35 @@
 import { useNavigate } from 'react-router-dom'
 import { RiderType } from '@/types/RiderType'
-import { Box, Button, Tooltip, Typography } from '@mui/material'
-import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
-import InfoIcon from '@mui/icons-material/Info'
+import { Box, Button, Typography } from '@mui/material'
 import { useContext, useEffect, useMemo, useState } from 'react'
 import { useApiStore } from '@/store/ApiStore'
-import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { OptionsType } from '@/types/FormTypes'
 import { GuardianType } from '@/types/UserType'
 import CreateRiderDialog from './CreateRiderDialog'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
-import SyncIcon from '@mui/icons-material/Sync'
 import { useOrgStore } from '@/store/OrgStore'
 import { useUserStore } from '@/store/UserStore'
 import { useRiderStore } from '@/store/RiderStore'
 import { useTranslation } from 'react-i18next'
 import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
+import RiderDrawer from './RiderDrawer'
+import SearchBar from '@/components/SearchBar'
 
-const Riders = () => {
-    const { createRider, deleteRider, getRiders, riders } = useRiderStore()
+interface RidersProps {
+    activeRider?: string
+}
+
+const Riders = ({ activeRider }: RidersProps) => {
+    const { createRider, getRiders, riders, changeSearchArg } = useRiderStore()
     const { showErrorSnackbar } = useContext(SnackbarContext)
     const [allSchools, setAllSchools] = useState<OptionsType[]>([])
     const [allGuardians, setAllGuardians] = useState<OptionsType[]>([])
     const [allStops, setAllStops] = useState<OptionsType[]>([])
     const [isAddingRider, setIsAddingRider] = useState(false)
-    const [disableButtons, setDisableButtons] = useState(false)
     const navigate = useNavigate()
     const { api } = useApiStore()
-    const { heaviestRole, userId } = useUserStore()
+    const { userId } = useUserStore()
     const { orgId } = useOrgStore()
     const { t } = useTranslation(['riders', 'common'])
 
@@ -87,28 +88,11 @@ const Riders = () => {
         }
     }
 
-    const viewRiderDetails = (riderId: string) => {
-        navigate(`/riders/${riderId}`)
-    }
-
-    const deleteRiderAction = async (rider: RiderType) => {
-        setDisableButtons(true)
-
-        await deleteRider(rider)
-
-        setDisableButtons(false)
-    }
-
     const handleCreateRider = async (newRider: RiderType) => {
-        setDisableButtons(true)
-
         try {
             await createRider(newRider)
-
-            setDisableButtons(false)
             setIsAddingRider(false)
         } catch {
-            setDisableButtons(false)
             showErrorSnackbar('Failed to create rider.')
         }
     }
@@ -123,41 +107,7 @@ const Riders = () => {
         const initialGridColumns: GridColDef[] = [
             { field: 'firstName',  headerName: 'First Name', flex: 1, align: 'center', headerAlign: 'center' },
             { field: 'lastName',  headerName: 'Last Name', flex: 1, align: 'center', headerAlign: 'center' },
-            { field: 'schoolId',  headerName: 'School', flex: 1, align: 'center', headerAlign: 'center', valueGetter: (value) => getSchoolNameById(value) },
-            { field: 'stopIds',  headerName: 'Stops', flex: 1, align: 'center', headerAlign: 'center', valueFormatter: (value: string[]) => Array.isArray(value) ? value.length : 0 },
-            { field: 'guardianIds',  headerName: 'Guardians', flex: 1, align: 'center', headerAlign: 'center', valueFormatter: (value: string[]) => Array.isArray(value) ? value.length : 0 },
-            { field: 'viewDetails', headerName: 'Actions', flex: 1, align: 'center', headerAlign: 'center', renderCell: (params) => {
-                return (
-                    <Box sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center' }}>
-                        <Box>
-                            <Button
-                                variant="contained"
-                                size="small"
-                                onClick={() => viewRiderDetails(params.row.id)}
-                            >
-                                <Tooltip title={t('viewDetails', { ns: 'common' })}>
-                                    <InfoIcon />
-                                </Tooltip>
-                            </Button>
-                        </Box>
-                        {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.DELETE_RIDER) ?
-                        <Box sx={{ ml: '1rem' }}>
-                            <Button
-                                variant="contained"
-                                size="small"
-                                onClick={() => deleteRiderAction(params.row)}
-                            >
-                                <Tooltip title={disableButtons ? t('actionDisabled', { ns: 'common' }) : t('deleteRider')}>
-                                    <PersonRemoveIcon />
-                                </Tooltip>
-                            </Button>
-                        </Box>
-                            :
-                            null
-                        }
-                    </Box>
-                )
-            } }
+            { field: 'schoolId',  headerName: 'School', flex: 1, align: 'center', headerAlign: 'center', valueGetter: (value) => getSchoolNameById(value) }
         ]
 
         return initialGridColumns
@@ -175,17 +125,12 @@ const Riders = () => {
         setIsAddingRider(false)
     }
 
+    const handleRowClick = (id: string) => {
+        navigate(`/app/riders/${id}`)
+    }
+
     return (
         <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <CreateRiderDialog
-                allGuardians={allGuardians}
-                allSchools={allSchools}
-                allStops={allStops}
-                cancelAction={cancelAction}
-                createRider={handleCreateRider}
-                disableButtons={disableButtons}
-                isAddingRider={isAddingRider}
-            />
             <Box marginBottom='2rem' display='flex' flexDirection='row'>
                 <Box display='flex' justifyContent='center' alignItems='center'>
                     <Typography variant='h2'>
@@ -193,9 +138,6 @@ const Riders = () => {
                     </Typography>
                 </Box>
                 <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
-                    <Box sx={{ mr: '2rem', ml: '2rem' }}>
-                        <Button variant='contained' onClick={() => getRiders()}><SyncIcon fontSize='large' /></Button>
-                    </Box>
                     <Button variant='contained' onClick={startAddingRider}>
                         <Box display='flex' flexDirection='row'>
                             <AddCircleIcon />
@@ -206,8 +148,32 @@ const Riders = () => {
                     </Button>
                 </Box>
             </Box>
+            <RiderDrawer open={!!activeRider} riderId={activeRider ?? ''} />
+            <CreateRiderDialog
+                createRider={handleCreateRider}
+                isAddingRider={isAddingRider}
+                allGuardians={allGuardians}
+                allSchools={allSchools}
+                allStops={allStops}
+                cancelAction={cancelAction}
+            />
+            <Box sx={{ mb: '2rem' }}>
+                <SearchBar onChange={changeSearchArg} fullWidth />
+            </Box>
             <Box flex='1'>
-                <DataGrid rows={riders} columns={columns} rowHeight={100} processRowUpdate={processRowUpdate} />
+                <Box sx={{ height: '100%', width: '100%' }}>
+                    {riders ?
+                        <DataGrid
+                            rows={riders}
+                            columns={columns}
+                            rowHeight={100}
+                            processRowUpdate={processRowUpdate}
+                            onRowClick={(params) => handleRowClick(params.row.id)}
+                        />
+                        :
+                        null
+                    }
+                </Box>
             </Box>
         </Box>
     )

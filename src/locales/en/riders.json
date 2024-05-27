@@ -1,5 +1,7 @@
 {
     "riders": "Riders",
     "addRider": "Add Rider",
-    "createRider": "Create Rider"
+    "createRider": "Create Rider",
+    "stops": "Stops",
+    "deleteRider": "Delete Rider"
 }
