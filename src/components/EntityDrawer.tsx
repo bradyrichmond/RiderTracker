@@ -27,7 +27,7 @@ const EntityDrawer = ({ actionItems, back, lists, open, title }: EntityDrawerPro
                         <Box sx={{ width: '4vw' }}>
                             <Fab onClick={back}><ArrowForwardIcon /></Fab>
                         </Box>
-                        <Typography variant='h4' noWrap>{title}</Typography>
+                        <Typography variant='h5' noWrap>{title}</Typography>
                     </Box>
                     <Divider />
                     <Box sx={{ margin: '1rem', width: '20vw', display: 'flex', flexDirection: 'column', height: '100%' }}>

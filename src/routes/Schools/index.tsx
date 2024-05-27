@@ -1,13 +1,10 @@
-import EntityViewer from '@/components/EntityViewer'
 import { useApiStore } from '@/store/ApiStore'
 import { SchoolType } from '@/types/SchoolType'
 import { useContext, useEffect, useState } from 'react'
-import { schoolFactory } from './SchoolFactory'
-import { GridColDef } from '@mui/x-data-grid'
-import { Button, Tooltip } from '@mui/material'
-import InfoIcon from '@mui/icons-material/Info'
+import AddCircleIcon from '@mui/icons-material/AddCircle'
+import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import { Box, Button, Typography } from '@mui/material'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
-import IndeterminateCheckBoxIcon from '@mui/icons-material/IndeterminateCheckBox'
 import { useNavigate } from 'react-router-dom'
 import { v4 as uuidv4 } from 'uuid'
 import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
@@ -15,8 +12,15 @@ import { useTranslation } from 'react-i18next'
 import { AddressType } from '@/types/AddressType'
 import { useOrgStore } from '@/store/OrgStore'
 import { useUserStore } from '@/store/UserStore'
+import SchoolDrawer from './SchoolDrawer'
+import CreateSchoolDialog from './CreateSchoolDialog'
 
-const Schools = () => {
+interface SchoolsProps {
+    activeSchool?: string
+}
+
+const Schools = ({ activeSchool }: SchoolsProps) => {
+    const [isAddingSchool, setIsAddingSchool] = useState<boolean>(false)
     const [schools, setSchools] = useState<SchoolType[]>([])
     const [addresses, setAddresses] = useState<AddressType[]>([])
     const { api } = useApiStore()
@@ -69,15 +73,6 @@ const Schools = () => {
         return addresses.find((a) => a.id === addressId)?.formatted
     }
 
-    const viewSchoolDetails = (schoolId: string) => {
-        navigate(`/schools/${schoolId}`)
-    }
-
-    const deleteSchoolAction = async (schoolId: string) => {
-        await api?.schools.deleteSchool(orgId, schoolId)
-        updateSchools()
-    }
-
     const generateGridColumns = (): GridColDef[] => {
         const initialGridColumns: GridColDef[] = [
             {
@@ -93,39 +88,9 @@ const Schools = () => {
                 headerName: 'Address',
                 flex: 1, align: 'center',
                 headerAlign: 'center',
-                valueGetter: (value: string) => getFormattedAddressById(value) },
-            { field: 'viewDetails', headerName: '', flex: 1, align: 'center', headerAlign: 'center', renderCell: (params) => {
-                return (
-                    <Button
-                        variant="contained"
-                        size="small"
-                        onClick={() => viewSchoolDetails(params.row.id)}
-                    >
-                        <Tooltip title='View Details'>
-                            <InfoIcon />
-                        </Tooltip>
-                    </Button>
-                )
-            } }
+                valueGetter: (value: string) => getFormattedAddressById(value)
+            }
         ]
-
-        if (RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.DELETE_SCHOOL)) {
-            initialGridColumns.push({
-                field: 'delete', headerName: '', flex: 1, align: 'center', headerAlign: 'center', renderCell: (params) => {
-                    return (
-                        <Button
-                            variant="contained"
-                            size="small"
-                            onClick={() => deleteSchoolAction(params.row.id)}
-                        >
-                            <Tooltip title='Delete School?'>
-                                <IndeterminateCheckBoxIcon />
-                            </Tooltip>
-                        </Button>
-                    )
-                }
-            })
-        }
 
         return initialGridColumns
     }
@@ -148,28 +113,51 @@ const Schools = () => {
         showErrorSnackbar(t('schoolUpdateError'))
     }
 
+    const handleRowClick = (id: string) => {
+        navigate(`/app/schools/${id}`)
+    }
+
+    const toggleAddingSchool = () => {
+        setIsAddingSchool((current) => !current)
+    }
+
     return (
-        <EntityViewer<SchoolType>
-            createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_SCHOOL) ? createSchoolAction : undefined}
-            entities={schools}
-            entityFactory={schoolFactory}
-            getEntities={updateSchools}
-            gridColumns={generateGridColumns()}
-            processRowUpdate={processRowUpdate}
-            modalFormInputs={{
-                inputs: [
-                    {
-                        name: 'School Name'
-                    },
-                    {
-                        name: 'Address',
-                        inputType: 'address'
+        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <Box marginBottom='2rem' display='flex' flexDirection='row'>
+                <Box display='flex' justifyContent='center' alignItems='center'>
+                    <Typography variant='h2'>
+                        {t('schools')}
+                    </Typography>
+                </Box>
+                <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
+                    <Button variant='contained' onClick={toggleAddingSchool}>
+                        <Box display='flex' flexDirection='row'>
+                            <AddCircleIcon />
+                            <Box flex='1' marginLeft='1rem'>
+                                <Typography>{t('addSchool')}</Typography>
+                            </Box>
+                        </Box>
+                    </Button>
+                </Box>
+            </Box>
+            <SchoolDrawer open={!!activeSchool} schoolId={activeSchool ?? ''} />
+            <CreateSchoolDialog createSchool={createSchoolAction} cancelAction={toggleAddingSchool} open={isAddingSchool} />
+            <Box flex='1'>
+                <Box sx={{ height: '100%', width: '100%' }}>
+                    {schools ?
+                        <DataGrid
+                            rows={schools}
+                            columns={generateGridColumns()}
+                            rowHeight={100}
+                            processRowUpdate={processRowUpdate}
+                            onRowClick={(params) => handleRowClick(params.row.id)}
+                        />
+                        :
+                        null
                     }
-                ]
-            }}
-            titleSingular="School"
-            titlePlural="Schools"
-        />
+                </Box>
+            </Box>
+        </Box>
     )
 }
 

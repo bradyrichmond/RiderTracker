@@ -34,16 +34,33 @@ const EntityDrawerDetailList = ({ items, action, title }: EntityDrawerDetailList
                     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', height: '100%', width: '100%' }}>
                         <Box sx={{ flex: 1 }}>
                             <AutoSizer>
-                                {({ height, width }) => (
-                                    <List
-                                        itemCount={items.length}
-                                        width={width}
-                                        height={height}
-                                        itemSize={getItemSize}
-                                    >
-                                        {row}
-                                    </List>
-                                )}
+                                {({ height, width }) => {
+                                    if (items.length > 0) {
+                                        return (
+                                            <List
+                                                itemCount={items.length}
+                                                width={width}
+                                                height={height}
+                                                itemSize={getItemSize}
+                                            >
+                                                {row}
+                                            </List>
+                                        )
+                                    }
+
+                                    return (
+                                        <List
+                                            itemCount={1}
+                                            width={width}
+                                            height={height}
+                                            itemSize={getItemSize}
+                                        >
+                                            {() => <Box sx={{ padding: '1rem' }}>
+                                                <Typography>{t('noItemsFound')}</Typography>
+                                            </Box>}
+                                        </List>
+                                    )
+                                }}
                             </AutoSizer>
                         </Box>
                     </Box>

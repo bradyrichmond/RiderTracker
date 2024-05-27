@@ -5,6 +5,7 @@ import guardians from './guardians.json'
 import onboarding from './onboarding.json'
 import riders from './riders.json'
 import routes from './routes.json'
+import schools from './schools.json'
 import settings from './settings.json'
 
 export default {
@@ -15,5 +16,6 @@ export default {
     onboarding,
     riders,
     routes,
+    schools,
     settings
 }

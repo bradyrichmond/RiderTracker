@@ -10,8 +10,6 @@ import ProtectedRoute from '@/routes/Protected/ProtectedRoute'
 import Root from '@/routes/Root'
 import Unauthorized from '@/routes/Protected/Unauthorized'
 import Scan from '@/routes/Scans/Scan'
-import Schools from '@/routes/Schools'
-import School from '@/routes/Schools/School'
 import Settings from '@/routes/Settings'
 import Logout from '@/routes/Auth/Logout'
 import Auth from '@/routes/Auth'
@@ -21,6 +19,7 @@ import RouteStop from '@/routes/Routes/RouteStop'
 import RoutesWrapper from '@/routes/Routes/RoutesWrapper'
 import GuardianWrapper from '@/routes/Guardians/GuardianWrapper'
 import RiderWrapper from '@/routes/Riders/RiderWrapper'
+import SchoolWrapper from '@/routes/Schools/SchoolsWrapper'
 
 export const createRouterObject = () => {
     return createBrowserRouter([{
@@ -92,11 +91,11 @@ export const createRouterObject = () => {
                     },
                     {
                         path: '/app/schools',
-                        element: <ProtectedRoute route='/app/schools'><Schools /></ProtectedRoute>
+                        element: <ProtectedRoute route='/app/schools'><SchoolWrapper /></ProtectedRoute>
                     },
                     {
                         path: '/app/schools/:id',
-                        element: <ProtectedRoute route='/app/schools/:id'><School /></ProtectedRoute>
+                        element: <ProtectedRoute route='/app/schools/:id'><SchoolWrapper /></ProtectedRoute>
                     },
                     {
                         path: '/app/unauthorized',

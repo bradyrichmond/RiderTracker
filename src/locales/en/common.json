@@ -21,6 +21,7 @@
     "newPassword": "New Password",
     "next": "Next",
     "noFileSelected": "No File Selected",
+    "noItemsFound": "No Items Found",
     "orgName": "Organization Name",
     "orgSlug": "Organiztion Unique Identifier",
     "passwordChangeFailed": "Password change failed",

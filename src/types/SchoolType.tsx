@@ -3,4 +3,5 @@ export interface SchoolType {
     schoolName: string
     orgId: string
     address: string
+    riderIds?: string[]
 }
