@@ -25,7 +25,6 @@ interface GuardianDrawerProps {
 
 const GuardianDrawer = ({ open, guardianId }: GuardianDrawerProps) => {
     const [isAddingRider, setIsAddingRider] = useState(false)
-    const [disableButtons, setDisableButtons] = useState(false)
     const [guardian, setGuardian] = useState<GuardianType>()
     const [lists, setLists] = useState<DrawerListItem[]>([])
     const [actionItems, setActionItems] = useState<DrawerListActionProps[]>([])
@@ -119,10 +118,8 @@ const GuardianDrawer = ({ open, guardianId }: GuardianDrawerProps) => {
     }
 
     const createRiderAction = async (newRider: RiderType) => {
-        setDisableButtons(true)
         await createRider(newRider)
         toggleAddingRider()
-        setDisableButtons(false)
         getGuardians()
     }
 
@@ -144,7 +141,6 @@ const GuardianDrawer = ({ open, guardianId }: GuardianDrawerProps) => {
                 allSchools={allSchools}
                 createRider={createRiderAction}
                 cancelAction={toggleAddingRider}
-                disableButtons={disableButtons}
             />
             <EntityDrawer
                 actionItems={actionItems}

@@ -96,15 +96,13 @@ const RiderDrawer = ({ open, riderId }: RiderDrawerProps) => {
     }
 
     return (
-        <>
-            <EntityDrawer
+        <EntityDrawer
                 actionItems={actionItems}
                 back={handleBack}
                 lists={lists}
                 open={open}
                 title={`${rider?.firstName} ${rider?.lastName}`}
             />
-        </>
     )
 }
 

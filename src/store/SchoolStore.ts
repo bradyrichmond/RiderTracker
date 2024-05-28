@@ -29,7 +29,7 @@ export const useSchoolStore = create<SchoolStore>((set) => ({
         const orgId = useOrgStore.getState().orgId
 
         const school = await api?.schools.getSchoolById(orgId, schoolId)
-        
+
         if (!school) {
             throw 'Could not find school by id'
         }
@@ -40,7 +40,7 @@ export const useSchoolStore = create<SchoolStore>((set) => ({
         const orgId = useOrgStore.getState().orgId
         const api = useApiStore.getState().api
         const createAddress = useAddressStore.getState().createAddress
-        
+
         const addressId = await createAddress(address)
         school.address = addressId
 
@@ -75,7 +75,7 @@ export const useSchoolStore = create<SchoolStore>((set) => ({
         let riderIds = school.riderIds?.filter((s) => s !== riderId)
 
         if (!riderIds || riderIds.length < 1) {
-            riderIds = [""]
+            riderIds = ['']
         }
 
         school.riderIds = riderIds
