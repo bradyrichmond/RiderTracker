@@ -44,7 +44,6 @@ const ProfileSettings = () => {
                     </Box>
                 </Box>
                 <FileUpload />
-                {userPictureUrl}
                 <Box sx={{ pt: '1rem' }}>
                     <UpdateProfileDataForm />
                 </Box>
