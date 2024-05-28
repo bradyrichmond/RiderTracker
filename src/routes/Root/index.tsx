@@ -9,9 +9,9 @@ import { Hub } from 'aws-amplify/utils'
 
 const Root = () => {
     const [isInitialized, setIsInitialized] = useState<boolean>(false)
-    const { updateUserData } = useUserStore()
+    const { updateUserData, updateUserPictureUrl, userId } = useUserStore()
     const { updateApi } = useApiStore()
-    const { updateOrgData, organizationOverride } = useOrgStore()
+    const { updateOrgData, organizationOverride, orgId } = useOrgStore()
 
     useEffect(() => {
         initialize()
@@ -33,9 +33,15 @@ const Root = () => {
         }
     }, [])
 
+    useEffect(() => {
+        if (userId && orgId) {
+            updateUserPictureUrl()
+        }
+    }, [userId, orgId])
+
     const initialize = async () => {
-        await updateUserData()
         await updateApi()
+        await updateUserData()
         await updateOrgData()
         setIsInitialized(true)
     }

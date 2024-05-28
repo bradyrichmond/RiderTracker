@@ -2,6 +2,8 @@ import { RiderTrackerRole, isRiderTrackerRole } from '@/constants/Roles'
 import { getHeaviestRole } from '@/helpers/GetHeaviestRole'
 import { fetchAuthSession, signOut } from 'aws-amplify/auth'
 import { create } from 'zustand'
+import { useApiStore } from './ApiStore'
+import { useOrgStore } from './OrgStore'
 
 interface UserStore {
     heaviestRole: string
@@ -13,7 +15,7 @@ interface UserStore {
     userId: string
     setUserId(id: string): void
     userPictureUrl: string
-    setUserPictureUrl(url: string): void
+    updateUserPictureUrl(): Promise<void>
     updateUserData: () => Promise<void>
 }
 
@@ -24,7 +26,7 @@ interface StateUpdate {
     userFullName?: string
 }
 
-export const useUserStore = create<UserStore>((set) => ({
+export const useUserStore = create<UserStore>((set, get) => ({
     heaviestRole: '',
     setHeaviestRole: (role: string) => {
         set({ heaviestRole: role })
@@ -42,8 +44,13 @@ export const useUserStore = create<UserStore>((set) => ({
         set({ userId: id })
     },
     userPictureUrl: '',
-    setUserPictureUrl: (url: string) => {
-        set({ userPictureUrl: url })
+    updateUserPictureUrl: async () => {
+        const api = useApiStore.getState().api
+        const orgId = useOrgStore.getState().orgId
+        const userId = get().userId
+
+        const user = await api?.users.getUserById(orgId, userId)
+        set({ userPictureUrl: `https://s3.us-west-2.amazonaws.com/${user?.profileImageKey}` })
     },
     updateUserData: async () => {
         const stateUpdate: StateUpdate = {}
