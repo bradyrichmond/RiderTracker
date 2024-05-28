@@ -15,7 +15,7 @@ interface SchoolStore {
     removeRiderFromSchool(school: SchoolType, riderId: string): Promise<void>
 }
 
-export const useSchoolStore = create<SchoolStore>((set) => ({
+export const useSchoolStore = create<SchoolStore>((set, get) => ({
     schools: [],
     getSchools: async () => {
         const api = useApiStore.getState().api
@@ -48,6 +48,7 @@ export const useSchoolStore = create<SchoolStore>((set) => ({
         school.id = newSchoolId
 
         await api?.schools.createSchool(orgId, school)
+        await get().getSchools()
     },
     deleteSchool: async (schoolId: string) => {
         const api = useApiStore.getState().api
@@ -67,6 +68,7 @@ export const useSchoolStore = create<SchoolStore>((set) => ({
 
         riderIds.push(riderId)
         await api?.schools.updateSchool(orgId, school.id, school)
+        await get().getSchools()
     },
     removeRiderFromSchool: async (school: SchoolType, riderId: string) => {
         const api = useApiStore.getState().api

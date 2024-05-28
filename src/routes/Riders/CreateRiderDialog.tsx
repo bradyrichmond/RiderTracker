@@ -1,4 +1,4 @@
-import { Transition } from '@/components/AddEntityModal'
+import { Transition } from '@/components/Transition'
 import { useOrgStore } from '@/store/OrgStore'
 import { OptionsType } from '@/types/FormTypes'
 import { RiderType } from '@/types/RiderType'

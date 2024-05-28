@@ -1,60 +1,30 @@
-import EntityViewer from '@/components/EntityViewer'
 import { BusType } from '@/types/BusType'
-import { useNavigate } from 'react-router-dom'
-import { busFactory } from './BusFactory'
-import { useState } from 'react'
-import { Button, Tooltip } from '@mui/material'
-import InfoIcon from '@mui/icons-material/Info'
+import { Box, Button, Tooltip, Typography } from '@mui/material'
 import NoTransferIcon from '@mui/icons-material/NoTransfer'
-import { useApiStore } from '@/store/ApiStore'
-import { GridColDef } from '@mui/x-data-grid'
+import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
 import { useTranslation } from 'react-i18next'
-import { useOrgStore } from '@/store/OrgStore'
 import { useUserStore } from '@/store/UserStore'
+import AddCircleIcon from '@mui/icons-material/AddCircle'
+import { useBusStore } from '@/store/BusStore'
 
 const Buses = () => {
-    const [buses, setBuses] = useState<BusType[]>([])
-    const { api } = useApiStore()
     const { heaviestRole } = useUserStore()
-    const { orgId } = useOrgStore()
-    const navigate = useNavigate()
+    const { buses, updateBuses, deleteBus, createBus } = useBusStore()
     const { t } = useTranslation(['buses', 'common'])
 
-    const updateBusesAction = async () => {
-        const buses = await api?.buses.getBuses(orgId)
-        setBuses(buses ?? [])
-    }
-
-    const viewBusDetails = (busId: string) => {
-        navigate(`/buses/${busId}`)
-    }
-
     const deleteBusAction = async (busId: string) => {
-        await api?.buses.deleteBus(orgId, busId)
-        updateBusesAction()
+        await deleteBus(busId)
+        await updateBuses()
     }
 
-    const createBusAction = async (newBus: BusType) => {
-        await api?.buses.createBus(orgId, newBus)
+    const createBusAction = async () => {
+        await createBus()
     }
 
     const generateGridColumns = (): GridColDef[] => {
         const initialGridColumns: GridColDef[] = [
-            { field: 'id',  headerName: 'ID', flex: 1, align: 'center', headerAlign: 'center' },
-            { field: 'viewDetails', headerName: '', flex: 1, align: 'center', headerAlign: 'center', renderCell: (params) => {
-                return (
-                    <Button
-                        variant="contained"
-                        size="small"
-                        onClick={() => viewBusDetails(params.row.id)}
-                    >
-                        <Tooltip title={t('viewDetails', { ns: 'common' })}>
-                            <InfoIcon />
-                        </Tooltip>
-                    </Button>
-                )
-            } }
+            { field: 'id',  headerName: 'ID', flex: 1, align: 'center', headerAlign: 'center' }
         ]
 
         if (RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.DELETE_BUS)) {
@@ -87,19 +57,39 @@ const Buses = () => {
     }
 
     return (
-        <EntityViewer<BusType>
-            createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_BUS) ? createBusAction : undefined}
-            entityFactory={busFactory}
-            getEntities={updateBusesAction}
-            entities={buses}
-            modalFormInputs={{ inputs: [
-                { name: 'Bus Number' }
-            ] }}
-            gridColumns={generateGridColumns()}
-            titleSingular='Bus'
-            titlePlural={t('buses')}
-            processRowUpdate={processRowUpdate}
-        />
+        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <Box marginBottom='2rem' display='flex' flexDirection='row'>
+                <Box display='flex' justifyContent='center' alignItems='center'>
+                    <Typography variant='h2'>
+                        {t('drivers')}
+                    </Typography>
+                </Box>
+                <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
+                    <Button variant='contained' onClick={createBusAction}>
+                        <Box display='flex' flexDirection='row'>
+                            <AddCircleIcon />
+                            <Box flex='1' marginLeft='1rem'>
+                                <Typography>{t('addDriver')}</Typography>
+                            </Box>
+                        </Box>
+                    </Button>
+                </Box>
+            </Box>
+            <Box flex='1'>
+                <Box sx={{ height: '100%', width: '100%' }}>
+                    {buses ?
+                        <DataGrid
+                            rows={buses}
+                            columns={generateGridColumns()}
+                            rowHeight={100}
+                            processRowUpdate={processRowUpdate}
+                        />
+                        :
+                        null
+                    }
+                </Box>
+            </Box>
+        </Box>
     )
 }
 

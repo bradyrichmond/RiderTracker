@@ -25,7 +25,7 @@ const UserManagement = () => {
     const fetchUsers = async () => {
         const fetchedUsers = await api?.users.getUsers(orgId)
 
-        setUsers(fetchedUsers?.items ?? [])
+        setUsers(fetchedUsers ?? [])
     }
 
     const updateListAfterDelete = (userId: string) => {

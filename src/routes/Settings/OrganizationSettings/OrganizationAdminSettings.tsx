@@ -1,24 +1,17 @@
-import { useApiStore } from '@/store/ApiStore'
 import { Box, Button, Card, Typography } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
-import { useContext, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import OrganizationAdminCard from './OrganizationAdminCard'
-import AddEntityModal from '@/components/AddEntityModal'
-import { userFactory } from '../UserSettings/UserFactory'
-import { FormDataType } from '@/types/FormTypes'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
-import { RIDER_TRACKER_ROLES } from '@/constants/Roles'
-import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
-import { UserType } from '@/types/UserType'
-import { AWSUserType } from '@/API/AdminApis'
+import { CreateCognitoUserParams } from '@/API/AdminApis'
 import { useTranslation } from 'react-i18next'
 import { useOrgStore } from '@/store/OrgStore'
+import CreateAdminDialog from './CreateAdminDialog'
+import { useAdminStore } from '@/store/AdminStore'
 
 const OrganizationAdminSettings = () => {
     const { orgId } = useOrgStore()
-    const { api } = useApiStore()
-    const { showErrorSnackbar } = useContext(SnackbarContext)
-    const [ admins, setAdmins ] = useState<UserType[]>([])
+    const { admins, updateAdmins, createAdmin } = useAdminStore()
     const [ showModal, setShowModal ] = useState(false)
     const { t } = useTranslation('settings')
 
@@ -27,84 +20,20 @@ const OrganizationAdminSettings = () => {
     }, [orgId])
 
     const getAdmins = async () => {
-        try {
-            const org = await api?.organizations.getOrganizationById(orgId)
-
-            if (org?.adminIds) {
-                const orgAdmins = await api?.users.getBulkUsersByIds(orgId, org.adminIds)
-                setAdmins(orgAdmins ?? [])
-            }
-        } catch {
-            console.error('getadmins failed')
-        }
+        await updateAdmins()
     }
 
     const toggleShowModal = () => {
         setShowModal((cur) => !cur)
     }
 
-    const modalFormInputs: FormDataType = {
-        inputs: [
-            { name: 'First Name' },
-            { name: 'Last Name' },
-            { name: 'Email' },
-            { name: 'Title' }
-        ]
-    }
-
-    const createNewAdmin = async (newAdmin: UserType) => {
-        try {
-            // TODO: Needs finer error management
-            const cognitoUser: AWSUserType | undefined = await api?.admin.createCognitoUser({
-                given_name: newAdmin.firstName,
-                family_name: newAdmin.lastName,
-                email: newAdmin.email
-            })
-            const cognitoUsername = cognitoUser?.User.Username
-
-            if (cognitoUsername) {
-                await api?.admin.addUserToGroup(cognitoUsername, RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN)
-
-                newAdmin.id = cognitoUsername
-                const org = await api?.organizations.getOrganizationById(orgId)
-
-                if (org?.adminIds) {
-                    org.adminIds.push(cognitoUsername)
-                }
-
-                const admins = org?.adminIds || [cognitoUsername]
-
-                await api?.organizations.updateOrganization(orgId, { adminIds: admins })
-
-                await api?.admin.createUser(orgId, { ...newAdmin, orgId: orgId })
-
-                getAdmins()
-                toggleShowModal()
-            }
-        } catch (e) {
-            console.error(e)
-            showCreateAdminErrorSnackbar()
-        }
-    }
-
-    const showCreateAdminErrorSnackbar = () => {
-        showErrorSnackbar(t('createAdminError'))
+    const createNewAdmin = async (newAdmin: CreateCognitoUserParams) => {
+        await createAdmin(newAdmin)
     }
 
     return (
         <Grid xs={12} marginBottom='2rem'>
-            {modalFormInputs ?
-                <AddEntityModal<UserType>
-                    cancelAction={toggleShowModal}
-                    entityFactory={userFactory}
-                    submitAction={createNewAdmin}
-                    titleSingular={'Organization Admin'}
-                    formDefaultValues={modalFormInputs}
-                    open={showModal}
-                />
-                :
-                null
-            }
+            <CreateAdminDialog isAddingAdmin={showModal} cancel={toggleShowModal} createAdmin={createNewAdmin} />
             <Card sx={{ p: '2rem' }}>
                 <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                     <Typography variant='h4' sx={{ pb: '.5rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

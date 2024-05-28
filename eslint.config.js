@@ -6,6 +6,7 @@ import tseslint from 'typescript-eslint'
 import parser from '@typescript-eslint/parser'
 import stylistic from '@stylistic/eslint-plugin'
 import jsxA11y from 'eslint-plugin-jsx-a11y'
+import reactHooks from 'eslint-plugin-react-hooks'
 
 export default [
   pluginJs.configs.recommended,
@@ -20,7 +21,9 @@ export default [
     plugins: {
       'jsx-a11y': jsxA11y,
       'react-refresh': reactRefresh,
-      '@stylistic': stylistic
+      '@stylistic': stylistic,
+      'tseslint': tseslint,
+      'react-hooks': reactHooks
     },
     rules: {
       'react-refresh/only-export-components': [
@@ -111,7 +114,9 @@ export default [
       'jsx-a11y/role-has-required-aria-props': 'error',
       'jsx-a11y/role-supports-aria-props': 'error',
       'jsx-a11y/scope': 'error',
-      'jsx-a11y/tabindex-no-positive': 'error'
+      'jsx-a11y/tabindex-no-positive': 'error',
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn"
     }
   }
 ]

@@ -1,94 +1,66 @@
-import EntityViewer from '@/components/EntityViewer'
-import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
-import { useApiStore } from '@/store/ApiStore'
 import { ScanType } from '@/types/ScanType'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { scanFactory } from './ScanFactory'
-import { GridColDef } from '@mui/x-data-grid'
-import { Box, Button, Tooltip } from '@mui/material'
-import InfoIcon from '@mui/icons-material/Info'
-import PlaylistRemoveIcon from '@mui/icons-material/PlaylistRemove'
+import AddCircleIcon from '@mui/icons-material/AddCircle'
+import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import { Box, Button, Tooltip, Typography } from '@mui/material'
 import { OptionsType } from '@/types/FormTypes'
-import { RiderType } from '@/types/RiderType'
 import { useDeviceLocation } from '@/hooks/useDeviceLocation'
 import { locationFactory } from './LocationFactory'
 import { AppShortcut } from '@mui/icons-material'
-import { UserType } from '@/types/UserType'
 import { useOrgStore } from '@/store/OrgStore'
-import { useUserStore } from '@/store/UserStore'
+import { useTranslation } from 'react-i18next'
+import CreateScanDialog from './CreateScanDialog'
+import { useRiderStore } from '@/store/RiderStore'
+import { useStopStore } from '@/store/StopStore'
+import { useGuardianStore } from '@/store/GuardianStore'
+import { RiderType } from '@/types/RiderType'
+import { StopType } from '@/types/StopType'
+import { GuardianType } from '@/types/UserType'
+import { useScanStore } from '@/store/ScanStore'
 
 const Scans = () => {
-    const [scans, setScans] = useState<ScanType[]>([])
-    const [riders, setRiders] = useState<OptionsType[]>([])
-    const [drivers, setDrivers] = useState<OptionsType[]>([])
-    const { api } = useApiStore()
-    const { heaviestRole } = useUserStore()
+    const [isAddingScan, setIsAddingScan] = useState(false)
+    const [allGuardians, setAllGuardians] = useState<OptionsType[]>([])
+    const [allRiders, setAllRiders] = useState<OptionsType[]>([])
+    const [allStops, setAllStops] = useState<OptionsType[]>([])
     const { orgId } = useOrgStore()
+    const { scans, updateScans, createScan } = useScanStore()
+    const { riders, getRiders } = useRiderStore()
+    const { stops, getStops } = useStopStore()
+    const { guardians, getGuardians } = useGuardianStore()
     const navigate = useNavigate()
     const { getCurrentPosition } = useDeviceLocation()
+    const { t } = useTranslation()
 
     useEffect(() => {
-        updateAllRiders()
-        updateAllDrivers()
-        getScansAction()
+        updateData()
     }, [orgId])
 
-    const updateAllRiders = async () => {
-        const riderData = await api?.riders.getRiders(orgId)
-
-        try {
-            const mapped = riderData?.map((r: RiderType) => {
-                return { label: `${r.firstName} ${r.lastName}`, id: r.id }
-            })
-
-            setRiders(mapped ?? [])
-        } catch {
-            setRiders([])
-        }
+    const updateData = async () => {
+        await updateScans()
+        await getRiders()
+        await getStops()
+        await getGuardians()
+        transformData()
     }
 
-    const updateAllDrivers = async () => {
-        try {
-            const org = await api?.organizations.getOrganizationById(orgId)
-
-            if (org?.driverIds) {
-                const driverData = await api?.users.getBulkUsersByIds(orgId, org.driverIds)
-
-                try {
-                    const mapped = driverData?.map((r: UserType) => {
-                        return { label: `${r.firstName} ${r.lastName}`, id: r.id }
-                    })
-
-                    setDrivers(mapped ?? [])
-                } catch {
-                    setDrivers([])
-                }
-            }
-        } catch {
-            console.error('update all drivers failed')
-        }
+    const transformData = () => {
+        setAllRiders(riders.map((r: RiderType) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` })))
+        setAllStops(stops.map((s: StopType) => ({ id: s.id, label: s.stopName })))
+        setAllGuardians(guardians.map((g: GuardianType) => ({ id: g.id, label: `${g.firstName} ${g.lastName}` })))
     }
 
-    const getScansAction = async () => {
-        const scans = await api?.scans.getScans(orgId)
-        setScans(scans ?? [])
-    }
-
-    const viewScanDetails = (scanId: string) => {
+    const handleRowClick = (scanId: string) => {
         navigate(`/scans/${scanId}`)
     }
 
-    const deleteScanAction = async (scanId: string) => {
-        await api?.scans.deleteScan(orgId, scanId)
-    }
-
-    const createScan = async (newScan: ScanType) => {
+    const createScanAction = async (newScan: ScanType) => {
         try {
             const fetchedLocation = await getCurrentPosition()
             const generatedLocation = locationFactory(fetchedLocation)
             const scanWithLocation = { ...newScan, deviceLocationOnSubmit: generatedLocation, manualScan: true }
-            await api?.scans.createScan(orgId, scanWithLocation)
+            await createScan(scanWithLocation)
         } catch (e) {
             console.log(e)
         }
@@ -122,41 +94,14 @@ const Scans = () => {
                 const { lat, lon } = params.row.deviceLocationOnSubmit ?? { lat: '', lon: '' }
 
                 return (!lat || !lon) ? 'Unknown' : `(${lat}, ${lon})`
-            } },
-            { field: 'viewDetails', headerName: '', align: 'center', headerAlign: 'center', renderCell: (params) => {
-                return (
-                    <Button
-                        variant="contained"
-                        size="small"
-                        onClick={() => viewScanDetails(params.row.id)}
-                    >
-                        <Tooltip title='View Details'>
-                            <InfoIcon />
-                        </Tooltip>
-                    </Button>
-                )
             } }
         ]
 
-        if (RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.DELETE_SCAN)) {
-            initialGridColumns.push({
-                field: 'delete', headerName: '', align: 'center', headerAlign: 'center', renderCell: (params) => {
-                    return (
-                        <Button
-                            variant="contained"
-                            size="small"
-                            onClick={() => deleteScanAction(params.row.id)}
-                        >
-                            <Tooltip title='Delete Scan?'>
-                                <PlaylistRemoveIcon />
-                            </Tooltip>
-                        </Button>
-                    )
-                }
-            })
-        }
-
         return initialGridColumns
+    }
+
+    const toggleAddingScan = () => {
+        setIsAddingScan((current) => !current)
     }
 
     const processRowUpdate = async (updatedRow: ScanType) => {
@@ -164,21 +109,48 @@ const Scans = () => {
     }
 
     return (
-        <EntityViewer<ScanType>
-                createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_SCAN) ? createScan : undefined}
-                entityFactory={scanFactory}
-                getEntities={getScansAction}
-                modalFormInputs={{ inputs: [
-                    { name: 'Driver', inputType: 'select', options: drivers },
-                    { name: 'Rider', inputType: 'select', options: riders },
-                    { name: 'Stop Id' }
-                ] }}
-                entities={scans}
-                gridColumns={generateGridColumns()}
-                titleSingular='Scan'
-                titlePlural='Scans'
-                processRowUpdate={processRowUpdate}
+        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <Box marginBottom='2rem' display='flex' flexDirection='row'>
+                <Box display='flex' justifyContent='center' alignItems='center'>
+                    <Typography variant='h2'>
+                        {t('scans')}
+                    </Typography>
+                </Box>
+                <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
+                    <Button variant='contained' onClick={toggleAddingScan}>
+                        <Box display='flex' flexDirection='row'>
+                            <AddCircleIcon />
+                            <Box flex='1' marginLeft='1rem'>
+                                <Typography>{t('addScan')}</Typography>
+                            </Box>
+                        </Box>
+                    </Button>
+                </Box>
+            </Box>
+            <CreateScanDialog
+                cancel={toggleAddingScan}
+                isAddingScan={isAddingScan}
+                createScan={createScanAction}
+                allStops={allStops}
+                allGuardians={allGuardians}
+                allRiders={allRiders}
             />
+            <Box flex='1'>
+                <Box sx={{ height: '100%', width: '100%' }}>
+                    {scans ?
+                        <DataGrid
+                            rows={scans}
+                            columns={generateGridColumns()}
+                            rowHeight={100}
+                            processRowUpdate={processRowUpdate}
+                            onRowClick={(params) => handleRowClick(params.row.id)}
+                        />
+                        :
+                        null
+                    }
+                </Box>
+            </Box>
+        </Box>
     )
 }
 

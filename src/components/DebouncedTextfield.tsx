@@ -11,7 +11,10 @@ export interface DebouncedTextfieldProps extends Omit<StandardTextFieldProps, 'o
 const DebouncedTextField = (props: DebouncedTextfieldProps) => {
     const { debounceMs, onChange, ...rest } = props
 
-    const debouncedChangeHandler = useCallback(debounce(onChange, debounceMs), [])
+    const debouncedChangeHandler = useCallback((value: string) => {
+        const func = debounce<string>(onChange, debounceMs)
+        func(value)
+    }, [onChange, debounceMs])
 
     const handleChange = ({ target }: ChangeEvent<HTMLInputElement>) => {
         debouncedChangeHandler(target.value)

@@ -1,6 +1,6 @@
 export interface UserType {
     id: string
-    orgId: string | string[]
+    orgId: string
     firstName: string
     lastName: string
     email: string

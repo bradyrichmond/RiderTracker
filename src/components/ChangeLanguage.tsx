@@ -1,5 +1,4 @@
 import { Autocomplete, Box, Button, Dialog, DialogTitle, TextField } from '@mui/material'
-import { Transition } from './AddEntityModal'
 import Flag from 'react-flagkit'
 import { SyntheticEvent, useState } from 'react'
 import { MenuItem } from '@mui/material'
@@ -8,6 +7,7 @@ import { useTranslation } from 'react-i18next'
 import LanguageIcon from '@mui/icons-material/Language'
 import { SupportedLangs } from '@/constants/SupportedLangs'
 import { useI18nStore } from '@/store/I18nStore'
+import { Transition } from './Transition'
 
 interface LanguageOptionsType {
     label: string

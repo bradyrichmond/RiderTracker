@@ -1,4 +1,4 @@
-import { Transition } from '@/components/AddEntityModal'
+import { Transition } from '@/components/Transition'
 import { useOrgStore } from '@/store/OrgStore'
 import { RouteType } from '@/types/RouteType'
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'

@@ -2,8 +2,6 @@ import { createBrowserRouter, redirect } from 'react-router-dom'
 
 import Bus from '@/routes/Buses/Bus'
 import Buses from '@/routes/Buses'
-import Driver from '@/routes/Drivers/Driver'
-import Drivers from '@/routes/Drivers'
 import Home from '@/routes/Root/Home'
 import Scans from '@/routes/Scans'
 import ProtectedRoute from '@/routes/Protected/ProtectedRoute'
@@ -20,6 +18,7 @@ import RoutesWrapper from '@/routes/Routes/RoutesWrapper'
 import GuardianWrapper from '@/routes/Guardians/GuardianWrapper'
 import RiderWrapper from '@/routes/Riders/RiderWrapper'
 import SchoolWrapper from '@/routes/Schools/SchoolsWrapper'
+import DriversWrapper from '@/routes/Drivers/DriversWrapper'
 
 export const createRouterObject = () => {
     return createBrowserRouter([{
@@ -43,11 +42,11 @@ export const createRouterObject = () => {
                     },
                     {
                         path: '/app/drivers',
-                        element: <ProtectedRoute route='/app/drivers'><Drivers /></ProtectedRoute>
+                        element: <ProtectedRoute route='/app/drivers'><DriversWrapper /></ProtectedRoute>
                     },
                     {
                         path: '/app/drivers/:id',
-                        element: <ProtectedRoute route='/app/drivers/:id'><Driver /></ProtectedRoute>
+                        element: <ProtectedRoute route='/app/drivers/:id'><DriversWrapper /></ProtectedRoute>
                     },
                     {
                         path: '/app/guardians',

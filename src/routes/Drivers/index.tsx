@@ -1,49 +1,25 @@
-import EntityViewer from '@/components/EntityViewer'
 import { useNavigate } from 'react-router-dom'
-import { useState } from 'react'
-import { Button, Tooltip } from '@mui/material'
-import PersonRemoveIcon from '@mui/icons-material/PersonRemove'
-import InfoIcon from '@mui/icons-material/Info'
-import { useApiStore } from '@/store/ApiStore'
-import { GridColDef } from '@mui/x-data-grid'
-import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
+import { Box, Button, Typography } from '@mui/material'
+import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { UserType } from '@/types/UserType'
-import { userFactory } from '../Settings/UserSettings/UserFactory'
-import { useOrgStore } from '@/store/OrgStore'
-import { useUserStore } from '@/store/UserStore'
+import AddCircleIcon from '@mui/icons-material/AddCircle'
+import { useTranslation } from 'react-i18next'
+import { useEffect } from 'react'
+import { useDriverStore } from '@/store/DriverStore'
+import DriverDrawer from './DriverDrawer'
 
-const Drivers = () => {
-    const [drivers, setDrivers] = useState<UserType[]>([])
+interface DriversProps {
+    activeDriver?: string
+}
+
+const Drivers = ({ activeDriver }: DriversProps) => {
+    const { drivers, updateDrivers } = useDriverStore()
     const navigate = useNavigate()
-    const { api } = useApiStore()
-    const { heaviestRole } = useUserStore()
-    const { orgId } = useOrgStore()
+    const { t } = useTranslation('drivers')
 
-    const updateDriversAction = async () => {
-        try {
-            const org = await api?.organizations.getOrganizationById(orgId)
-            if (org?.driverIds) {
-                const drivers = await api?.users.getBulkUsersByIds(orgId, org.driverIds)
-                setDrivers(drivers ?? [])
-            }
-        } catch {
-            console.error('updateDriversAction failed')
-        }
-    }
-
-    const viewDriverDetails = (driverId: string) => {
-        navigate(`/drivers/${driverId}`)
-    }
-
-    const deleteDriverAction = async (driverId: string) => {
-        await api?.users.deleteUser(orgId, driverId)
-
-        try {
-            updateDriversAction()
-        } catch (e) {
-            console.error(e as string)
-        }
-    }
+    useEffect(() => {
+        updateDrivers()
+    }, [])
 
     const createDriverAction = async () => {
         return
@@ -52,39 +28,8 @@ const Drivers = () => {
     const generateGridColumns = (): GridColDef[] => {
         const initialGridColumns: GridColDef[] = [
             { field: 'firstName',  headerName: 'First Name', flex: 1, align: 'center', headerAlign: 'center' },
-            { field: 'lastName',  headerName: 'Last Name', flex: 1, align: 'center', headerAlign: 'center' },
-            { field: 'viewDetails', headerName: '', flex: 1, align: 'center', headerAlign: 'center', renderCell: (params) => {
-                return (
-                    <Button
-                        variant="contained"
-                        size="small"
-                        onClick={() => viewDriverDetails(params.row.id)}
-                    >
-                        <Tooltip title='View Details'>
-                            <InfoIcon />
-                        </Tooltip>
-                    </Button>
-                )
-            } }
+            { field: 'lastName',  headerName: 'Last Name', flex: 1, align: 'center', headerAlign: 'center' }
         ]
-
-        if (RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.DELETE_DRIVER)) {
-            initialGridColumns.push({
-                field: 'delete', headerName: '', flex: 1, renderCell: (params) => {
-                    return (
-                        <Button
-                            variant="contained"
-                            size="small"
-                            onClick={() => deleteDriverAction(params.row.id)}
-                        >
-                            <Tooltip title='Delete Driver'>
-                                <PersonRemoveIcon />
-                            </Tooltip>
-                        </Button>
-                    )
-                }
-            })
-        }
 
         return initialGridColumns
     }
@@ -93,22 +38,48 @@ const Drivers = () => {
         return updatedRow
     }
 
+    const handleRowClick = (driverId: string) => {
+        navigate(`/app/drivers/${driverId}`)
+    }
+
     return (
-        <EntityViewer<UserType>
-            createEntity={RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_DRIVER) ? createDriverAction : undefined}
-            entityFactory={userFactory}
-            getEntities={updateDriversAction}
-            entities={drivers}
-            modalFormInputs={{ inputs: [
-                { name: 'First Name' },
-                { name: 'Last Name' },
-                { name: 'Email', inputType: 'email' }
-            ] }}
-            gridColumns={generateGridColumns()}
-            titleSingular='Driver'
-            titlePlural='Drivers'
-            processRowUpdate={processRowUpdate}
-        />
+        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <Box marginBottom='2rem' display='flex' flexDirection='row'>
+                <Box display='flex' justifyContent='center' alignItems='center'>
+                    <Typography variant='h2'>
+                        {t('drivers')}
+                    </Typography>
+                </Box>
+                <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
+                    <Button variant='contained' onClick={createDriverAction}>
+                        <Box display='flex' flexDirection='row'>
+                            <AddCircleIcon />
+                            <Box flex='1' marginLeft='1rem'>
+                                <Typography>{t('addDrivers')}</Typography>
+                            </Box>
+                        </Box>
+                    </Button>
+                </Box>
+            </Box>
+            <DriverDrawer open={!!activeDriver} driverId={activeDriver ?? ''} />
+            <Box flex='1'>
+                <Box sx={{ height: '100%', width: '100%' }}>
+                    {drivers ?
+                        <DataGrid
+                            rows={drivers}
+                            columns={generateGridColumns()}
+                            rowHeight={100}
+                            processRowUpdate={processRowUpdate}
+                            onRowClick={(params) => handleRowClick(params.row.id)}
+                        />
+                        :
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+
+                        </Box>
+                    }
+                </Box>
+            </Box>
+        </Box>
     )
 }
 

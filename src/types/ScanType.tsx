@@ -8,5 +8,6 @@ export interface ScanType {
     driverId: string
     deviceLocationOnSubmit?: LocationType
     createdAt: number,
-    manualScan?: boolean
+    manualScan?: boolean,
+    guardianIds?: string[]
 }

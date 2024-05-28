@@ -74,6 +74,32 @@ export class AdminApis {
         return handleApiResponse<object>(createUserResponse)
     }
 
+    createAdmin = async (admin: CreateCognitoUserParams, orgId: string) => {
+
+        try {
+            // First, create the cognito user
+            const newCognitoUser = await this.createCognitoUser(admin)
+            const id = newCognitoUser.User.Username
+
+            // Second, create add the new user to the db
+            await this.createUser(orgId, {
+                id,
+                orgId,
+                firstName: admin.given_name,
+                lastName: admin.family_name,
+                email: admin.email,
+                address: ''
+            })
+
+            // Third, add the user to the org admins group
+            const addUserToGroupResponse = await this.addUserToGroup(id, RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN)
+
+            return addUserToGroupResponse
+        } catch (e) {
+            throw e as string
+        }
+    }
+
     createGuardian = async (guardian: CreateCognitoUserParams, address: AddressType, orgId: string) => {
 
         try {
@@ -162,6 +188,7 @@ export class AdminApis {
 export interface AdminApiFunctionTypes {
     createCognitoUser(body: CreateCognitoUserParams): Promise<AWSUserType>
     createUser(orgId: string, body: CreateUserParams, options?: Record<string, boolean>): Promise<object>
+    createAdmin(guardian: CreateCognitoUserParams, orgId: string): Promise<object>
     createGuardian(guardian: CreateCognitoUserParams, address: AddressType, orgId: string): Promise<object>
     updateUserProfileImage(orgId: string, userId: string, body: File, key: string): Promise<object>
     updateUserAttributes(body: AttributeType[], username: string): Promise<object>

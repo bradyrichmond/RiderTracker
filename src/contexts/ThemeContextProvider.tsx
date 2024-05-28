@@ -46,8 +46,7 @@ const ThemeContextProvider = ({
             toggleColorMode: () => {
                 setValue((prevValue: PaletteMode) => { return prevValue === 'light' ? 'dark' : 'light' } )
             },
-        }),
-        []
+        }), [setValue]
     )
 
     const theme = useMemo(

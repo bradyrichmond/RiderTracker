@@ -33,9 +33,7 @@ export const useGuardianStore = create<GuardianStore>((set, get) => ({
             return
         }
 
-        const fetchedGuardianResponse = await api?.users.getGuardians(orgId)
-
-        const fetchedGuardians = fetchedGuardianResponse?.items
+        const fetchedGuardians = await api?.users.getGuardians(orgId)
 
         if (fetchedGuardians) {
             set(() => ({ guardians: fetchedGuardians.filter(get().guardiansFilter) }))

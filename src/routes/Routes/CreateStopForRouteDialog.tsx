@@ -1,4 +1,4 @@
-import { Transition } from '@/components/AddEntityModal'
+import { Transition } from '@/components/Transition'
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Tooltip } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import ShuffleOnIcon from '@mui/icons-material/ShuffleOn'
