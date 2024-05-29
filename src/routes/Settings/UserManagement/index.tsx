@@ -1,41 +1,17 @@
-import { useApiStore } from '@/store/ApiStore'
-import { UserType } from '@/types/UserType'
 import { Box } from '@mui/material'
-import { CSSProperties, useEffect, useState } from 'react'
+import { CSSProperties } from 'react'
 import { VariableSizeList as List } from 'react-window'
 import AutoSizer from 'react-virtualized-auto-sizer'
 import UserCard from './UserCard'
 import SearchBar from '@/components/SearchBar'
-import { useOrgStore } from '@/store/OrgStore'
+import { useUserStore } from '@/store/UserStore'
 
 const UserManagement = () => {
-    const [users, setUsers] = useState<UserType[]>([])
-    const [searchArg, setSearchArg] = useState('')
-    const { api } = useApiStore()
-    const { orgId } = useOrgStore()
-
-    useEffect(() => {
-        fetchUsers()
-
-        return () => {
-            setUsers([])
-        }
-    }, [searchArg])
-
-    const fetchUsers = async () => {
-        const fetchedUsers = await api?.users.getUsers(orgId)
-
-        setUsers(fetchedUsers ?? [])
-    }
-
-    const updateListAfterDelete = (userId: string) => {
-        const updatedUserList = users.filter((u) => u.id !== userId)
-        setUsers(updatedUserList)
-    }
+    const { users, changeSearchArg } = useUserStore()
 
     const row = ({ index, style }: { index: number, style: CSSProperties }) => {
         const user = users[index]
-        return <UserCard user={user} updateUsers={updateListAfterDelete} style={style} />
+        return <UserCard user={user} style={style} />
     }
 
     const getItemSize = () => {
@@ -43,7 +19,7 @@ const UserManagement = () => {
     }
 
     const handleSearchChange = (val: string) => {
-        setSearchArg(val)
+        changeSearchArg(val)
     }
 
     return (

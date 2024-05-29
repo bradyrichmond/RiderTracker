@@ -5,15 +5,15 @@ export const useDeviceLocation = () => {
     const [locationPermissionGranted, setLocationPermissionGranted] = useState<boolean>(false)
 
     useEffect(() => {
+        const watchDeviceLocationAccess = async () => {
+            const permissionStatus = await navigator.permissions.query({ name: 'geolocation' })
+            permissionStatus.onchange = () => {
+                setLocationPermissionGranted(permissionStatus.state === 'granted')
+            }
+        }
+
         watchDeviceLocationAccess()
     }, [])
-
-    const watchDeviceLocationAccess = async () => {
-        const permissionStatus = await navigator.permissions.query({ name: 'geolocation' })
-        permissionStatus.onchange = () => {
-            setLocationPermissionGranted(permissionStatus.state === 'granted')
-        }
-    }
 
     const getCurrentPositionProxy = async (): Promise<number[]> => {
         return new Promise<number[]>((resolve, reject) => {

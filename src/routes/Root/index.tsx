@@ -4,7 +4,7 @@ import NavigationContainer from '@/components/NavigationContainer'
 import { useOrgStore } from '@/store/OrgStore'
 import { useApiStore } from '@/store/ApiStore'
 import { useUserStore } from '@/store/UserStore'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { Hub } from 'aws-amplify/utils'
 
 const Root = () => {
@@ -12,6 +12,13 @@ const Root = () => {
     const { updateUserData, updateUserPictureUrl, userId } = useUserStore()
     const { updateApi } = useApiStore()
     const { updateOrgData, organizationOverride, orgId } = useOrgStore()
+
+    const initialize = useCallback(async () => {
+        await updateApi()
+        await updateUserData()
+        await updateOrgData()
+        setIsInitialized(true)
+    }, [updateApi, updateUserData, updateOrgData])
 
     useEffect(() => {
         initialize()
@@ -31,20 +38,13 @@ const Root = () => {
         return () => {
             cleanup()
         }
-    }, [])
+    }, [initialize])
 
     useEffect(() => {
         if (userId && orgId) {
             updateUserPictureUrl()
         }
-    }, [userId, orgId])
-
-    const initialize = async () => {
-        await updateApi()
-        await updateUserData()
-        await updateOrgData()
-        setIsInitialized(true)
-    }
+    }, [userId, orgId, updateUserPictureUrl])
 
     return (
         <Box display='flex' flexDirection='column' height='100%' bgcolor='background.paper' color='text.primary' overflow='auto'>

@@ -2,25 +2,23 @@ import { Box, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { ScanType } from '@/types/ScanType'
 import { useParams } from 'react-router-dom'
-import { useApiStore } from '@/store/ApiStore'
-import { useOrgStore } from '@/store/OrgStore'
+import { useScanStore } from '@/store/ScanStore'
 
 const Scan = () => {
-    const { orgId } = useOrgStore()
+    const { getScanById } = useScanStore()
     const [scan, setScan] = useState<ScanType>()
     const { id } = useParams()
-    const { api } = useApiStore()
 
     useEffect(() => {
-        getScanData()
-    }, [id])
-
-    const getScanData = async () => {
-        if (id) {
-            const scanData = await api?.scans.getScanById(orgId, id)
-            setScan(scanData)
+        const getScanData = async () => {
+            if (id) {
+                const scanData = await getScanById(id)
+                setScan(scanData)
+            }
         }
-    }
+
+        getScanData()
+    }, [id, getScanById])
 
     return (
         <Box height='100%'>

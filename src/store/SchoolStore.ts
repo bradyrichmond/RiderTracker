@@ -9,7 +9,7 @@ interface SchoolStore {
     schools: SchoolType[]
     getSchools(): Promise<void>
     getSchoolById(schoolId: string): Promise<SchoolType>
-    createSchool(school: SchoolType, address: string): Promise<void>
+    createSchool(school: SchoolType): Promise<void>
     deleteSchool(schoolId: string): Promise<void>
     addRiderToSchool(school: SchoolType, riderId: string): Promise<void>
     removeRiderFromSchool(school: SchoolType, riderId: string): Promise<void>
@@ -36,13 +36,13 @@ export const useSchoolStore = create<SchoolStore>((set, get) => ({
 
         return school
     },
-    createSchool: async (school: SchoolType, address: string) => {
+    createSchool: async (school: SchoolType) => {
         const orgId = useOrgStore.getState().orgId
         const api = useApiStore.getState().api
         const createAddress = useAddressStore.getState().createAddress
 
-        const addressId = await createAddress(address)
-        school.address = addressId
+        const address = await createAddress(school.address)
+        school.address = address.id
 
         const newSchoolId = uuid()
         school.id = newSchoolId

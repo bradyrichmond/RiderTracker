@@ -19,7 +19,7 @@ const Drivers = ({ activeDriver }: DriversProps) => {
 
     useEffect(() => {
         updateDrivers()
-    }, [])
+    }, [updateDrivers])
 
     const createDriverAction = async () => {
         return

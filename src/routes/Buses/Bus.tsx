@@ -2,27 +2,25 @@ import { Box, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { BusType } from '@/types/BusType'
 import { useParams } from 'react-router-dom'
-import { useApiStore } from '@/store/ApiStore'
 import { Trans, useTranslation } from 'react-i18next'
-import { useOrgStore } from '@/store/OrgStore'
+import { useBusStore } from '@/store/BusStore'
 
 const Bus = () => {
     const [bus, setBus] = useState<BusType>()
     const { id } = useParams()
-    const { api } = useApiStore()
-    const { orgId } = useOrgStore()
+    const { getBusById } = useBusStore()
     const { t } = useTranslation()
 
     useEffect(() => {
-        getBusData()
-    }, [id])
-
-    const getBusData = async () => {
-        if (id) {
-            const busData = await api?.buses.getBusById(orgId, id)
-            setBus(busData)
+        const getBusData = async () => {
+            if (id) {
+                const busData = await getBusById(id)
+                setBus(busData)
+            }
         }
-    }
+
+        getBusData()
+    }, [id, getBusById])
 
     return (
         <Box height='100%'>

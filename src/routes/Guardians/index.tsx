@@ -2,15 +2,14 @@ import { useNavigate } from 'react-router-dom'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { useEffect, useState } from 'react'
 import { Box, Button, Typography } from '@mui/material'
-import { useApiStore } from '@/store/ApiStore'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { UserType } from '@/types/UserType'
 import CreateGuardianDialog from './CreateGuardianDialog'
-import { useOrgStore } from '@/store/OrgStore'
 import { useGuardianStore } from '@/store/GuardianStore'
 import { useTranslation } from 'react-i18next'
 import SearchBar from '@/components/SearchBar'
 import GuardianDrawer from './GuardianDrawer'
+import { useAdminStore } from '@/store/AdminStore'
 
 export interface CreateGuardianInput {
     given_name: string
@@ -25,23 +24,18 @@ interface GuardiansProps {
 
 const Guardians = ({ activeGuardian }: GuardiansProps) => {
     const { guardians, getGuardians, changeSearchArg } = useGuardianStore()
-    const { api } = useApiStore()
-    const { orgId } = useOrgStore()
+    const { createGuardian } = useAdminStore()
     const navigate = useNavigate()
     const [isAddingGuardian, setIsAddingGuardian] = useState<boolean>(false)
     const { t } = useTranslation('guardians')
 
     useEffect(() => {
         getGuardians()
-    }, [])
+    }, [getGuardians])
 
-    const createGuardian = async (guardian: CreateGuardianInput) => {
-        const { given_name, family_name, email, address } = guardian
-        const validatedAddress = await api?.addresses.validateAddress(address)
+    const createGuardianAction = async (guardian: CreateGuardianInput) => {
 
-        if (validatedAddress) {
-            await api?.admin.createGuardian({ given_name, family_name, email }, validatedAddress, orgId)
-        }
+        await createGuardian(guardian)
 
         toggleShowModal()
     }
@@ -90,7 +84,7 @@ const Guardians = ({ activeGuardian }: GuardiansProps) => {
                 </Box>
             </Box>
             <GuardianDrawer open={!!activeGuardian} guardianId={activeGuardian ?? ''} />
-            <CreateGuardianDialog createGuardian={createGuardian} isAddingGuardian={isAddingGuardian} cancel={toggleShowModal} />
+            <CreateGuardianDialog createGuardian={createGuardianAction} isAddingGuardian={isAddingGuardian} cancel={toggleShowModal} />
             <Box sx={{ mb: '2rem' }}>
                 <SearchBar onChange={changeSearchArg} fullWidth />
             </Box>

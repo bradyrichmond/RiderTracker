@@ -31,7 +31,7 @@ export const AsRole = ({ children, userRole }: PropsWithChildren<AsRole>) => {
 
     useEffect(() => {
         setHeaviestRole(userRole ?? 'RiderTracker_Wizard')
-    }, [])
+    }, [userRole, setHeaviestRole])
 
     return (
         <>

@@ -1,20 +1,20 @@
 import { useNavigate } from 'react-router-dom'
 import { RiderType } from '@/types/RiderType'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, Typography } from '@mui/material'
 import { useContext, useEffect, useMemo, useState } from 'react'
-import { useApiStore } from '@/store/ApiStore'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { OptionsType } from '@/types/FormTypes'
 import { GuardianType } from '@/types/UserType'
 import CreateRiderDialog from './CreateRiderDialog'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
-import { useOrgStore } from '@/store/OrgStore'
-import { useUserStore } from '@/store/UserStore'
 import { useRiderStore } from '@/store/RiderStore'
 import { useTranslation } from 'react-i18next'
 import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 import RiderDrawer from './RiderDrawer'
 import SearchBar from '@/components/SearchBar'
+import { useSchoolStore } from '@/store/SchoolStore'
+import { useStopStore } from '@/store/StopStore'
+import { useGuardianStore } from '@/store/GuardianStore'
 
 interface RidersProps {
     activeRider?: string
@@ -22,71 +22,49 @@ interface RidersProps {
 
 const Riders = ({ activeRider }: RidersProps) => {
     const { createRider, getRiders, riders, changeSearchArg } = useRiderStore()
+    const { schools, getSchools } = useSchoolStore()
+    const { stops, getStops } = useStopStore()
+    const { guardians, getGuardians } = useGuardianStore()
     const { showErrorSnackbar } = useContext(SnackbarContext)
-    const [allSchools, setAllSchools] = useState<OptionsType[]>([])
-    const [allGuardians, setAllGuardians] = useState<OptionsType[]>([])
-    const [allStops, setAllStops] = useState<OptionsType[]>([])
     const [isAddingRider, setIsAddingRider] = useState(false)
     const navigate = useNavigate()
-    const { api } = useApiStore()
-    const { userId } = useUserStore()
-    const { orgId } = useOrgStore()
     const { t } = useTranslation(['riders', 'common'])
 
     useEffect(() => {
-        if (orgId) {
-            getData()
-        }
-    }, [orgId])
-
-    const getData = async () => {
-        await getAllSchools()
-        await getAllStops()
-        await getAllGuardians()
-        await getRiders()
-    }
-
-    const getAllSchools = async () => {
-        const fetchedSchools = await api?.schools.getSchools(orgId)
-
-        if (fetchedSchools) {
-            const mappedSchools = fetchedSchools.map((s) => ({
-                label: s.schoolName,
-                id: s.id
-            }))
-            setAllSchools(mappedSchools)
-        }
-    }
-
-    const getAllStops = async () => {
-        const fetchedStops = await api?.stops.getStops(orgId)
-
-        if (fetchedStops) {
-            const mappedStops = fetchedStops.map((s) => ({
-                label: s.stopName,
-                id: s.id
-            }))
-
-            setAllStops(mappedStops)
-        }
-    }
-
-    const getAllGuardians = async () => {
-        const org = await api?.organizations.getOrganizationById(orgId)
-        const orgGuardianIds = org?.guardianIds
-
-        if (orgGuardianIds) {
-            const fetchedGuardians: GuardianType[] | undefined = await api?.users.getBulkGuardiansByIds(orgId, orgGuardianIds)
-
-            if (fetchedGuardians) {
-                const mappedGuardians = fetchedGuardians.map((g: GuardianType) => ({
-                    label: `${g.firstName} ${g.lastName}`,
-                    id: g.id
-                }))
-                setAllGuardians(mappedGuardians)
+        const getData = async () => {
+            try {
+                await getSchools()
+                await getStops()
+                await getGuardians()
+                await getRiders()
+            } catch {
+                showErrorSnackbar('Failed to get all data')
             }
         }
-    }
+
+        getData()
+    }, [getGuardians, getRiders, getSchools, getStops, showErrorSnackbar])
+
+    const allSchools: OptionsType[] = useMemo(() => {
+        return schools.map((s) => ({
+            label: s.schoolName,
+            id: s.id
+        }))
+    }, [schools])
+
+    const allStops: OptionsType[] = useMemo(() => {
+        return stops.map((s) => ({
+            label: s.stopName,
+            id: s.id
+        }))
+    }, [stops])
+
+    const allGuardians: OptionsType[] = useMemo(() => {
+        return guardians.map((g: GuardianType) => ({
+            label: `${g.firstName} ${g.lastName}`,
+            id: g.id
+        }))
+    }, [guardians])
 
     const handleCreateRider = async (newRider: RiderType) => {
         try {
@@ -97,13 +75,13 @@ const Riders = ({ activeRider }: RidersProps) => {
         }
     }
 
-    const getSchoolNameById = (schoolId: string) => {
-        if (schoolId) {
-            return allSchools.find((s) => s.id === schoolId)?.label
-        }
-    }
-
     const columns = useMemo((): GridColDef[] => {
+        const getSchoolNameById = (schoolId: string) => {
+            if (schoolId) {
+                return allSchools.find((s) => s.id === schoolId)?.label
+            }
+        }
+
         const initialGridColumns: GridColDef[] = [
             { field: 'firstName',  headerName: 'First Name', flex: 1, align: 'center', headerAlign: 'center' },
             { field: 'lastName',  headerName: 'Last Name', flex: 1, align: 'center', headerAlign: 'center' },
@@ -111,7 +89,7 @@ const Riders = ({ activeRider }: RidersProps) => {
         ]
 
         return initialGridColumns
-    }, [riders, userId])
+    }, [allSchools])
 
     const processRowUpdate = async (updatedRow: RiderType) => {
         return updatedRow
@@ -171,7 +149,7 @@ const Riders = ({ activeRider }: RidersProps) => {
                             onRowClick={(params) => handleRowClick(params.row.id)}
                         />
                         :
-                        null
+                        <CircularProgress />
                     }
                 </Box>
             </Box>

@@ -1,5 +1,4 @@
-import { useApiStore } from '@/store/ApiStore'
-import { useOrgStore } from '@/store/OrgStore'
+import { useSchoolStore } from '@/store/SchoolStore'
 import { SchoolType } from '@/types/SchoolType'
 import { Box, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
@@ -8,19 +7,18 @@ import { useParams } from 'react-router-dom'
 const School = () => {
     const [school, setSchool] = useState<SchoolType>()
     const { id } = useParams()
-    const { api } = useApiStore()
-    const { orgId } = useOrgStore()
+    const { getSchoolById } = useSchoolStore()
 
     useEffect(() => {
-        getSchoolData()
-    }, [id])
-
-    const getSchoolData = async () => {
-        if (id) {
-            const school = await api?.schools.getSchoolById(orgId, id)
-            setSchool(school)
+        const getSchoolData = async () => {
+            if (id) {
+                const school = await getSchoolById(id)
+                setSchool(school)
+            }
         }
-    }
+
+        getSchoolData()
+    }, [id, getSchoolById])
 
     return (
         <Box height='100%'>

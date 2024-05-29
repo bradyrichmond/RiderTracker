@@ -2,13 +2,13 @@ import { Box, Chip, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { RiderType } from '@/types/RiderType'
-import { useApiStore } from '@/store/ApiStore'
 import { StopType } from '@/types/StopType'
-import { useOrgStore } from '@/store/OrgStore'
+import { useRiderStore } from '@/store/RiderStore'
+import { useStopStore } from '@/store/StopStore'
 
 const Rider = () => {
-    const { orgId } = useOrgStore()
-    const { api } = useApiStore()
+    const { getRiderById } = useRiderStore()
+    const { getBulkStopsById } = useStopStore()
     const [rider, setRider] = useState<RiderType>()
     const [stops, setStops] = useState<StopType[]>([])
     const navigate = useNavigate()
@@ -16,28 +16,28 @@ const Rider = () => {
     const { id } = useParams()
 
     useEffect(() => {
-        getRiderData()
-    }, [id])
+        const getRiderData = async () => {
+            if (id) {
+                const riderData = await getRiderById(id)
+                setRider(riderData)
+            }
+        }
 
-    useEffect(() => {
+        const getStopData = async () => {
+            if (rider) {
+                const fetchedStops = await getBulkStopsById(rider?.stopIds ?? [])
+                setStops(fetchedStops ?? [])
+            }
+        }
+
+        getRiderData()
         getStopData()
-    }, [rider])
+    }, [id, rider, getRiderById, getBulkStopsById])
 
     const handleChipClick = (stopId: string) => {
         navigate(`/stops/${stopId}`)
     }
 
-    const getRiderData = async () => {
-        if (id) {
-            const riderData = await api?.riders.getRiderById(orgId, id)
-            setRider(riderData)
-        }
-    }
-
-    const getStopData = async () => {
-        const fetchedStops = await api?.stops.getBulkStopsByIds(orgId, rider?.stopIds ?? [])
-        setStops(fetchedStops ?? [])
-    }
 
     return (
         <Box height='100%'>

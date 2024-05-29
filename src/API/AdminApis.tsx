@@ -100,6 +100,10 @@ export class AdminApis {
         }
     }
 
+    disableUser = async (username: string) => {
+        await this.client.adminProxyProxyAny(VERBS.POST, { proxy: 'disableUser' }, { username }, { ['Content-Type']: 'application/json' })
+    }
+
     createGuardian = async (guardian: CreateCognitoUserParams, address: AddressType, orgId: string) => {
 
         try {
@@ -188,8 +192,9 @@ export class AdminApis {
 export interface AdminApiFunctionTypes {
     createCognitoUser(body: CreateCognitoUserParams): Promise<AWSUserType>
     createUser(orgId: string, body: CreateUserParams, options?: Record<string, boolean>): Promise<object>
-    createAdmin(guardian: CreateCognitoUserParams, orgId: string): Promise<object>
+    createAdmin(admin: CreateCognitoUserParams, orgId: string): Promise<object>
     createGuardian(guardian: CreateCognitoUserParams, address: AddressType, orgId: string): Promise<object>
+    disableUser(username: string): Promise<void>
     updateUserProfileImage(orgId: string, userId: string, body: File, key: string): Promise<object>
     updateUserAttributes(body: AttributeType[], username: string): Promise<object>
     addUserToGroup(username: string, groupname: string): Promise<object>

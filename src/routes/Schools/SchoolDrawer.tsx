@@ -1,5 +1,5 @@
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import { OptionsType } from '@/types/FormTypes'
 import { useNavigate } from 'react-router-dom'
@@ -27,23 +27,15 @@ const RouteDrawer = ({ open, schoolId }: RouteDrawerProps) => {
     const navigate = useNavigate()
     const { t } = useTranslation('routes')
 
-    useEffect(() => {
-        if (schoolId) {
-            getSchoolData()
-        }
-    }, [schoolId])
+    const deleteSchoolAction = useCallback(async () => {
+        await deleteSchool(schoolId)
+    }, [deleteSchool, schoolId])
 
-    const getSchoolData = async () => {
-        const fetchedSchool = await getSchoolById(schoolId)
+    const viewRiderDetail = useCallback((riderId: string) => {
+        navigate(`/app/riders/${riderId}`)
+    }, [navigate])
 
-        if (fetchedSchool) {
-            setSchoolName(fetchedSchool.schoolName)
-            await getRidersForSchool(fetchedSchool.riderIds ?? [])
-            buildActionItems()
-        }
-    }
-
-    const buildActionItems = () => {
+    const buildActionItems = useCallback(() => {
         const builtActionItems: DrawerListActionProps[] = []
         const userPermissions = RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole]
 
@@ -56,9 +48,9 @@ const RouteDrawer = ({ open, schoolId }: RouteDrawerProps) => {
         }
 
         setActionItems(builtActionItems)
-    }
+    }, [deleteSchoolAction, heaviestRole, t])
 
-    const buildLists = (localRiders: OptionsType[]) => {
+    const buildLists = useCallback((localRiders: OptionsType[]) => {
         const builtLists = [
             {
                 title: t('riders'),
@@ -68,29 +60,33 @@ const RouteDrawer = ({ open, schoolId }: RouteDrawerProps) => {
         ]
 
         setLists(builtLists)
-    }
+    }, [t, viewRiderDetail])
 
-    const getRidersForSchool = async (riderIds: string[]) => {
-        const riders = await getBulkRidersById(riderIds)
-        const mappedRiders = riders.map((r) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` }))
-        buildLists(mappedRiders)
-    }
+    useEffect(() => {
+        const getSchoolData = async () => {
+            const fetchedSchool = await getSchoolById(schoolId)
+
+            if (fetchedSchool) {
+                setSchoolName(fetchedSchool.schoolName)
+                const riderIds = fetchedSchool.riderIds
+                const riders = await getBulkRidersById(riderIds ?? [])
+                buildLists(riders.map((r) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` })))
+                buildActionItems()
+            }
+        }
+
+        if (schoolId) {
+            getSchoolData()
+        }
+    }, [schoolId, buildActionItems, buildLists, getBulkRidersById, getSchoolById])
 
     const toggleAddingSchool = () => {
         setIsAddingSchool((current) => !current)
     }
 
-    const deleteSchoolAction = async () => {
-        await deleteSchool(schoolId)
-    }
-
     const createSchoolAction = async (newSchool: SchoolType) => {
-        await createSchool(newSchool, newSchool.address)
+        await createSchool(newSchool)
         toggleAddingSchool()
-    }
-
-    const viewRiderDetail = (riderId: string) => {
-        navigate(`/app/riders/${riderId}`)
     }
 
     const handleBack = () => {

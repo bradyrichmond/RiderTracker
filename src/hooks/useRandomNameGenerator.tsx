@@ -1,30 +1,22 @@
 import Haikunator from 'haikunator'
-import { useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { animals } from '@/constants/Animals'
 import { adjectives } from '@/constants/Adjectives'
 
 export const useRandomNameGenerator = (seed: string = 'default') => {
     const [randomName, setRandomName] = useState<string>('')
 
-    const initialize = () => {
-        const haikunator = new Haikunator({ adjectives, nouns: animals, defaults: { tokenLength: 0, delimiter: ' ' } })
-        return haikunator
-    }
+    const generator = useMemo(() => new Haikunator({ adjectives, nouns: animals, defaults: { tokenLength: 0, delimiter: ' ' }, seed }), [seed])
 
-    // only initialize when seed changes, which it shouldn't
-    const generator = useMemo(() => {
-        return initialize()
-    }, [seed])
-
-    const generateRandomName = () => {
+    const generateRandomName = useCallback(() => {
         const newRandomName = generator.haikunate()
         setRandomName(newRandomName)
-    }
+    }, [generator])
 
     // generate a new random name when the generator is initialized
-    useMemo(() => {
+    useEffect(() => {
         generateRandomName()
-    }, [generator])
+    }, [generator, generateRandomName])
 
     return {
         generateRandomName,

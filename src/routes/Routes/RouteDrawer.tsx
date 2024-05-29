@@ -1,5 +1,5 @@
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import AddLocationIcon from '@mui/icons-material/AddLocation'
 import CreateStopForRouteDialog from './CreateStopForRouteDialog'
@@ -7,7 +7,6 @@ import { StopType } from '@/types/StopType'
 import { OptionsType } from '@/types/FormTypes'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useOrgStore } from '@/store/OrgStore'
 import { useUserStore } from '@/store/UserStore'
 import { useRiderStore } from '@/store/RiderStore'
 import EntityDrawer, { DrawerListActionProps, DrawerListItem } from '@/components/EntityDrawer'
@@ -27,7 +26,6 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
     const [actionItems, setActionItems] = useState<DrawerListActionProps[]>([])
     const [stops, setStops] = useState<OptionsType[]>([])
     const [localRiders, setLocalRiders] = useState<OptionsType[]>([])
-    const { orgId } = useOrgStore()
     const { getRouteById, deleteRoute } = useRouteStore()
     const { heaviestRole } = useUserStore()
     const { getBulkRidersById } = useRiderStore()
@@ -36,35 +34,19 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
     const navigate = useNavigate()
     const { t } = useTranslation('routes')
 
-    useEffect(() => {
-        if (routeId) {
-            getRouteData()
-        }
-    }, [routeId, orgId])
+    const viewStopDetail = useCallback((stopId: string) => {
+        navigate(`/app/stops/${stopId}`)
+    }, [navigate])
 
-    useEffect(() => {
-        buildLists()
-    }, [localRiders, actionItems])
+    const viewRiderDetail = useCallback((riderId: string) => {
+        navigate(`/app/riders/${riderId}`)
+    }, [navigate])
 
-    const getRouteData = async () => {
-        const fetchedRoute = await getRouteById(routeId)
+    const deleteRouteAction = useCallback(async () => {
+        await deleteRoute(routeId)
+    }, [deleteRoute, routeId])
 
-        if (fetchedRoute) {
-            setRouteNumber(fetchedRoute.routeNumber)
-
-            if (fetchedRoute.stopIds) {
-                getStopsForRoute(fetchedRoute.stopIds)
-            }
-
-            if (fetchedRoute.riderIds) {
-                getRidersForRoute(fetchedRoute.riderIds)
-            }
-
-            buildActionItems()
-        }
-    }
-
-    const buildActionItems = () => {
+    const buildActionItems = useCallback(() => {
         const builtActionItems: DrawerListActionProps[] = []
         const userPermissions = RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole]
 
@@ -85,9 +67,9 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
         }
 
         setActionItems(builtActionItems)
-    }
+    }, [deleteRouteAction, heaviestRole, t])
 
-    const buildLists = () => {
+    const buildLists = useCallback(() => {
         const builtLists = [
             {
                 title: t('stops'),
@@ -102,45 +84,54 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
         ]
 
         setLists(builtLists)
-    }
+    }, [localRiders, stops, t, viewRiderDetail, viewStopDetail])
 
-    const getStopsForRoute = async (stopIds: string[]) => {
-        const fetchedStops = await getBulkStopsById(stopIds)
+    useEffect(() => {
+        const getRouteData = async () => {
+            const fetchedRoute = await getRouteById(routeId)
 
-        if (fetchedStops) {
-            const mappedStops: OptionsType[] = fetchedStops.map((s) => ({ id: s.id, label: s.stopName }))
-            setStops(mappedStops)
+            if (fetchedRoute) {
+                setRouteNumber(fetchedRoute.routeNumber)
+
+                const stopIds = fetchedRoute.stopIds
+                if (stopIds) {
+                    const fetchedStops = await getBulkStopsById(stopIds)
+
+                    if (fetchedStops) {
+                        setStops(fetchedStops.map((s) => ({ id: s.id, label: s.stopName })))
+                    }
+                }
+
+                const riderIds = fetchedRoute.riderIds
+                if (riderIds) {
+                    const riders = await getBulkRidersById(riderIds)
+                    setLocalRiders(riders.map((r) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` })))
+                }
+
+                buildActionItems()
+            }
         }
-    }
 
-    const getRidersForRoute = async (riderIds: string[]) => {
-        const riders = await getBulkRidersById(riderIds)
-        setLocalRiders(riders.map((r) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` })))
-    }
+        if (routeId) {
+            getRouteData()
+        }
+    }, [routeId, buildActionItems, getBulkRidersById, getBulkStopsById, getRouteById ])
+
+    useEffect(() => {
+        buildLists()
+    }, [localRiders, actionItems, buildLists])
 
     const toggleAddingStop = () => {
         setIsAddingStop((current) => !current)
     }
 
-    const deleteRouteAction = async () => {
-        await deleteRoute(routeId)
-    }
-
     const createStopAction = async (newStop: StopType) => {
         const newAddressId = await createAddress(newStop.address)
         newStop.routeId = routeId
-        newStop.address = newAddressId
+        newStop.address = newAddressId.id
 
         await createStop(newStop)
         toggleAddingStop()
-    }
-
-    const viewStopDetail = (stopId: string) => {
-        navigate(`/app/stops/${stopId}`)
-    }
-
-    const viewRiderDetail = (riderId: string) => {
-        navigate(`/app/riders/${riderId}`)
     }
 
     const handleBack = () => {

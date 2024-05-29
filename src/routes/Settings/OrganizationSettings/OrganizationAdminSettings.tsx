@@ -5,23 +5,21 @@ import OrganizationAdminCard from './OrganizationAdminCard'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { CreateCognitoUserParams } from '@/API/AdminApis'
 import { useTranslation } from 'react-i18next'
-import { useOrgStore } from '@/store/OrgStore'
 import CreateAdminDialog from './CreateAdminDialog'
 import { useAdminStore } from '@/store/AdminStore'
 
 const OrganizationAdminSettings = () => {
-    const { orgId } = useOrgStore()
     const { admins, updateAdmins, createAdmin } = useAdminStore()
     const [ showModal, setShowModal ] = useState(false)
     const { t } = useTranslation('settings')
 
     useEffect(() => {
-        getAdmins()
-    }, [orgId])
+        const getAdmins = async () => {
+            await updateAdmins()
+        }
 
-    const getAdmins = async () => {
-        await updateAdmins()
-    }
+        getAdmins()
+    }, [updateAdmins])
 
     const toggleShowModal = () => {
         setShowModal((cur) => !cur)
@@ -60,7 +58,6 @@ const OrganizationAdminSettings = () => {
                                 email={a.email}
                                 title={a.title}
                                 index={idx}
-                                refreshAdmins={getAdmins}
                             />)
                         :
                         null

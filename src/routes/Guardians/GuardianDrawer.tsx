@@ -1,11 +1,10 @@
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import { OptionsType } from '@/types/FormTypes'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useOrgStore } from '@/store/OrgStore'
 import { useUserStore } from '@/store/UserStore'
 import { useRiderStore } from '@/store/RiderStore'
 import EntityDrawer, { DrawerListActionProps, DrawerListItem } from '@/components/EntityDrawer'
@@ -30,7 +29,6 @@ const GuardianDrawer = ({ open, guardianId }: GuardianDrawerProps) => {
     const [actionItems, setActionItems] = useState<DrawerListActionProps[]>([])
     const [allStops, setAllStops] = useState<OptionsType[]>([])
     const [allSchools, setAllSchools] = useState<OptionsType[]>([])
-    const { orgId } = useOrgStore()
     const { heaviestRole } = useUserStore()
     const { getGuardianById, getGuardians, deleteGuardian } = useGuardianStore()
     const { getBulkRidersById, createRider } = useRiderStore()
@@ -39,33 +37,18 @@ const GuardianDrawer = ({ open, guardianId }: GuardianDrawerProps) => {
     const navigate = useNavigate()
     const { t } = useTranslation('guardians')
 
-    useEffect(() => {
-        if (guardianId) {
-            getGuardianData()
+    const deleteGuardianAction = useCallback(async () => {
+        if (guardian) {
+            await deleteGuardian(guardian)
+            return
         }
-    }, [guardianId, orgId])
+    }, [guardian, deleteGuardian])
 
-    const getGuardianData = async () => {
-        const fetchedGuardian = await getGuardianById(guardianId)
-        setGuardian(fetchedGuardian)
+    const viewRiderDetail = useCallback((riderId: string) => {
+        navigate(`/app/riders/${riderId}`)
+    }, [navigate])
 
-        if (fetchedGuardian) {
-
-            if (fetchedGuardian.riderIds) {
-                getRidersForGuardian(fetchedGuardian.riderIds)
-            }
-
-            await getStops()
-            setAllStops(stops.map((s: StopType) => ({ id: s.id, label: s.stopName })))
-
-            await getSchools()
-            setAllSchools(schools.map((s: SchoolType) => ({ id: s.id, label: s.schoolName })))
-
-            buildActionItems()
-        }
-    }
-
-    const buildActionItems = () => {
+    const buildActionItems = useCallback(() => {
         const builtActionItems: DrawerListActionProps[] = []
         const userPermissions = RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole]
 
@@ -86,9 +69,9 @@ const GuardianDrawer = ({ open, guardianId }: GuardianDrawerProps) => {
         }
 
         setActionItems(builtActionItems)
-    }
+    }, [deleteGuardianAction, heaviestRole, t])
 
-    const buildLists = (riders: RiderType[]) => {
+    const buildLists = useCallback((riders: RiderType[]) => {
         const mappedRiders = riders.map((r: RiderType) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` }))
         const builtLists = [
             {
@@ -99,32 +82,45 @@ const GuardianDrawer = ({ open, guardianId }: GuardianDrawerProps) => {
         ]
 
         setLists(builtLists)
-    }
+    }, [t, viewRiderDetail])
 
-    const getRidersForGuardian = async (riderIds: string[]) => {
-        const riders = await getBulkRidersById(riderIds)
-        buildLists(riders)
-    }
+    useEffect(() => {
+        const getGuardianData = async () => {
+            const fetchedGuardian = await getGuardianById(guardianId)
+            setGuardian(fetchedGuardian)
+
+            if (fetchedGuardian) {
+
+                const riderIds = fetchedGuardian.riderIds
+
+                if (riderIds) {
+                    const riders = await getBulkRidersById(riderIds)
+                    buildLists(riders)
+                }
+
+                await getStops()
+                setAllStops(stops.map((s: StopType) => ({ id: s.id, label: s.stopName })))
+
+                await getSchools()
+                setAllSchools(schools.map((s: SchoolType) => ({ id: s.id, label: s.schoolName })))
+
+                buildActionItems()
+            }
+        }
+
+        if (guardianId) {
+            getGuardianData()
+        }
+    }, [guardianId, getGuardianById, getBulkRidersById, buildActionItems, buildLists, getSchools, getStops, schools, stops])
 
     const toggleAddingRider = () => {
         setIsAddingRider((current) => !current)
-    }
-
-    const deleteGuardianAction = async () => {
-        if (guardian) {
-            await deleteGuardian(guardian)
-            return
-        }
     }
 
     const createRiderAction = async (newRider: RiderType) => {
         await createRider(newRider)
         toggleAddingRider()
         getGuardians()
-    }
-
-    const viewRiderDetail = (riderId: string) => {
-        navigate(`/app/riders/${riderId}`)
     }
 
     const handleBack = () => {

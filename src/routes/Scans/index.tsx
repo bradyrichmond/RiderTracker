@@ -8,7 +8,6 @@ import { OptionsType } from '@/types/FormTypes'
 import { useDeviceLocation } from '@/hooks/useDeviceLocation'
 import { locationFactory } from './LocationFactory'
 import { AppShortcut } from '@mui/icons-material'
-import { useOrgStore } from '@/store/OrgStore'
 import { useTranslation } from 'react-i18next'
 import CreateScanDialog from './CreateScanDialog'
 import { useRiderStore } from '@/store/RiderStore'
@@ -24,7 +23,6 @@ const Scans = () => {
     const [allGuardians, setAllGuardians] = useState<OptionsType[]>([])
     const [allRiders, setAllRiders] = useState<OptionsType[]>([])
     const [allStops, setAllStops] = useState<OptionsType[]>([])
-    const { orgId } = useOrgStore()
     const { scans, updateScans, createScan } = useScanStore()
     const { riders, getRiders } = useRiderStore()
     const { stops, getStops } = useStopStore()
@@ -32,28 +30,6 @@ const Scans = () => {
     const navigate = useNavigate()
     const { getCurrentPosition } = useDeviceLocation()
     const { t } = useTranslation()
-
-    useEffect(() => {
-        updateData()
-    }, [orgId])
-
-    const updateData = async () => {
-        await updateScans()
-        await getRiders()
-        await getStops()
-        await getGuardians()
-        transformData()
-    }
-
-    const transformData = () => {
-        setAllRiders(riders.map((r: RiderType) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` })))
-        setAllStops(stops.map((s: StopType) => ({ id: s.id, label: s.stopName })))
-        setAllGuardians(guardians.map((g: GuardianType) => ({ id: g.id, label: `${g.firstName} ${g.lastName}` })))
-    }
-
-    const handleRowClick = (scanId: string) => {
-        navigate(`/scans/${scanId}`)
-    }
 
     const createScanAction = async (newScan: ScanType) => {
         try {
@@ -99,6 +75,30 @@ const Scans = () => {
 
         return initialGridColumns
     }
+
+    useEffect(() => {
+        const transformData = () => {
+            setAllRiders(riders.map((r: RiderType) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` })))
+            setAllStops(stops.map((s: StopType) => ({ id: s.id, label: s.stopName })))
+            setAllGuardians(guardians.map((g: GuardianType) => ({ id: g.id, label: `${g.firstName} ${g.lastName}` })))
+        }
+
+        const updateData = async () => {
+            await updateScans()
+            await getRiders()
+            await getStops()
+            await getGuardians()
+            transformData()
+        }
+
+        updateData()
+    }, [updateScans, getRiders, getStops, getGuardians, guardians, riders, stops])
+
+    const handleRowClick = (scanId: string) => {
+        navigate(`/scans/${scanId}`)
+    }
+
+
 
     const toggleAddingScan = () => {
         setIsAddingScan((current) => !current)

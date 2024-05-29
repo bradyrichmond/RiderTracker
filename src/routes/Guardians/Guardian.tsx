@@ -1,30 +1,28 @@
 import { Box, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { useApiStore } from '@/store/ApiStore'
 import { GuardianType } from '@/types/UserType'
-import { useOrgStore } from '@/store/OrgStore'
+import { useGuardianStore } from '@/store/GuardianStore'
 
 const Guardian = () => {
     const [guardian, setGuardian] = useState<GuardianType>()
     const { id } = useParams()
-    const { api } = useApiStore()
-    const { orgId } = useOrgStore()
+    const { getGuardianById } = useGuardianStore()
 
     useEffect(() => {
-        getGuardianData()
-    }, [id])
-
-    const getGuardianData = async () => {
-        if (id) {
-            try {
-                const guardianData = await api?.users.getGuardianById(orgId, id)
-                setGuardian(guardianData)
-            } catch {
-                console.error('Error setting guardian')
+        const getGuardianData = async () => {
+            if (id) {
+                try {
+                    const guardianData = await getGuardianById(id)
+                    setGuardian(guardianData)
+                } catch {
+                    console.error('Error setting guardian')
+                }
             }
         }
-    }
+
+        getGuardianData()
+    }, [id, getGuardianById])
 
     return (
         <Box height='100%'>

@@ -1,37 +1,33 @@
 import { Avatar, Box, Paper, SvgIconProps, Tooltip, Typography } from '@mui/material'
-import { ComponentType, useEffect, useMemo, useRef, useState } from 'react'
+import { ComponentType, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import PersonIcon from '@mui/icons-material/Person'
 import EmailIcon from '@mui/icons-material/Email'
 import { UserType } from '@/types/UserType'
 import { useHover } from 'usehooks-ts'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { useApiStore } from '@/store/ApiStore'
-import { RIDER_TRACKER_ROLES } from '@/constants/Roles'
 import { useTranslation } from 'react-i18next'
-import { useOrgStore } from '@/store/OrgStore'
 import { useUserStore } from '@/store/UserStore'
+import { useAdminStore } from '@/store/AdminStore'
 
 interface OrganizationAdminCardProps extends UserType {
     index: number
-    refreshAdmins(): Promise<void>
 }
 
-const OrganizationAdminCard = ({ id, firstName, lastName, title, email, index, refreshAdmins }: OrganizationAdminCardProps) => {
+const OrganizationAdminCard = ({ id, firstName, lastName, title, email, index }: OrganizationAdminCardProps) => {
     const [actions, setActions] = useState<OrganizationAdminActionProps[]>([])
     const userFullName = `${firstName} ${lastName}`
     const profileUrl = useMemo(() => `https://s3.us-west-2.amazonaws.com/ridertracker.profileimages/${id}.jpg`, [id])
     const ref = useRef(null)
     const hovering = useHover<HTMLDivElement>(ref)
     const { userId } = useUserStore()
-    const { orgId } = useOrgStore()
-    const { api } = useApiStore()
+    const { deleteAdmin } = useAdminStore()
     const { t } = useTranslation('settings')
 
-    useEffect(() => {
-        buildActions()
-    }, [])
+    const deleteAdminAction = useCallback(async (id: string) => {
+        await deleteAdmin(id)
+    }, [deleteAdmin])
 
-    const buildActions = () => {
+    const buildActions = useCallback(() => {
         const actionsList: OrganizationAdminActionProps[] = []
 
         if (id !== userId) {
@@ -44,13 +40,11 @@ const OrganizationAdminCard = ({ id, firstName, lastName, title, email, index, r
         }
 
         setActions(actionsList)
-    }
+    }, [deleteAdminAction, id, t, userId])
 
-    const deleteAdminAction = async (id: string) => {
-        await api?.organizations.removeAdminFromOrganization(orgId, id)
-        await api?.admin.removeUserFromGroup(id, RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN)
-        refreshAdmins()
-    }
+    useEffect(() => {
+        buildActions()
+    }, [buildActions])
 
     return (
         <Paper elevation={4} sx={index > 0 ? { mt: '1rem' } : {}} ref={ref}>

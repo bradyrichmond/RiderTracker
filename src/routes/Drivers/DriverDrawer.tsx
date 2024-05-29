@@ -1,10 +1,9 @@
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
-import { useEffect, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useOrgStore } from '@/store/OrgStore'
 import { useUserStore } from '@/store/UserStore'
 import EntityDrawer, { DrawerListActionProps } from '@/components/EntityDrawer'
 import { UserType } from '@/types/UserType'
@@ -21,28 +20,23 @@ const DriverDrawer = ({ open, driverId }: DriverDrawerProps) => {
     const [isAddingDriver, setIsAddingDriver] = useState(false)
     const [driver, setDriver] = useState<UserType>()
     const [actionItems, setActionItems] = useState<DrawerListActionProps[]>([])
-    const { orgId } = useOrgStore()
     const { heaviestRole } = useUserStore()
     const { getDriverById, updateDrivers, createDriver, deleteDriver } = useDriverStore()
     const navigate = useNavigate()
     const { t } = useTranslation('guardians')
 
-    useEffect(() => {
-        if (driverId) {
-            getDriverData()
+    const toggleAddingDriver = useCallback(() => {
+        setIsAddingDriver((current) => !current)
+    }, [setIsAddingDriver])
+
+    const deleteDriverAction = useCallback(async () => {
+        if (driver) {
+            await deleteDriver(driver.id)
+            return
         }
-    }, [driverId, orgId])
+    }, [driver, deleteDriver])
 
-    const getDriverData = async () => {
-        const fetchedDriver = await getDriverById(driverId)
-
-        if (fetchedDriver) {
-            setDriver(fetchedDriver)
-            buildActionItems()
-        }
-    }
-
-    const buildActionItems = () => {
+    const buildActionItems = useCallback(() => {
         const builtActionItems: DrawerListActionProps[] = []
         const userPermissions = RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole]
 
@@ -63,18 +57,22 @@ const DriverDrawer = ({ open, driverId }: DriverDrawerProps) => {
         }
 
         setActionItems(builtActionItems)
-    }
+    }, [setActionItems, deleteDriverAction, toggleAddingDriver, heaviestRole, t])
 
-    const toggleAddingDriver = () => {
-        setIsAddingDriver((current) => !current)
-    }
+    useEffect(() => {
+        const getDriverData = async () => {
+            const fetchedDriver = await getDriverById(driverId)
 
-    const deleteDriverAction = async () => {
-        if (driver) {
-            await deleteDriver(driver.id)
-            return
+            if (fetchedDriver) {
+                setDriver(fetchedDriver)
+                buildActionItems()
+            }
         }
-    }
+
+        if (driverId) {
+            getDriverData()
+        }
+    }, [driverId, buildActionItems, setDriver, getDriverById])
 
     const createDriverAction = async (newDriver: CreateCognitoUserParams) => {
         await createDriver(newDriver)

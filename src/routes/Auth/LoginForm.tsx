@@ -18,8 +18,7 @@ interface LoginFormInputs {
 const LoginForm = () => {
     const { handleSubmit, register } = useForm<LoginFormInputs>()
     const { heaviestRole, updateUserData, userId } = useUserStore()
-    const { orgId, orgName, organizationLoginImageUrl, updateOrgData } = useOrgStore()
-    const { api } = useApiStore()
+    const { orgName, organizationLoginImageUrl, updateOrgData } = useOrgStore()
     const [errorMessage, setErrorMessage] = useState('')
     const [disableButtons, setDisabledButtons] = useState(false)
     const navigate = useNavigate()
@@ -41,20 +40,7 @@ const LoginForm = () => {
         return () => {
             cleanup()
         }
-    }, [])
-
-    useEffect(() => {
-        if (api) {
-            postLoginChecks()
-        }
-    }, [api])
-
-    useEffect(() => {
-        setDisabledButtons(true)
-        if (orgId) {
-            setDisabledButtons(false)
-        }
-    }, [orgId])
+    }, [updateOrgData, updateUserData])
 
     const login = async (data: LoginFormInputs) => {
         setDisabledButtons(true)
@@ -68,6 +54,7 @@ const LoginForm = () => {
 
         try {
             await signIn(data)
+            await postLoginChecks()
         } catch (e) {
             console.error(e)
             signOut()
@@ -77,6 +64,8 @@ const LoginForm = () => {
     }
 
     const postLoginChecks = async () => {
+        const api = useApiStore.getState().api
+
         if (api) {
             const path = window.location.toString().split('//')[1]
             const pathOrgSlug = path.split('.')[0]

@@ -2,27 +2,24 @@ import { UserType } from '@/types/UserType'
 import { CSSProperties, useContext, useRef } from 'react'
 import { useHover } from 'usehooks-ts'
 import { useTranslation } from 'react-i18next'
-import { useApiStore } from '@/store/ApiStore'
 import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 import { Box, Paper, Typography } from '@mui/material'
 import { OrganizationAdminAction } from '../OrganizationSettings/OrganizationAdminCard'
 import DeleteIcon from '@mui/icons-material/Delete'
-import { useOrgStore } from '@/store/OrgStore'
 import { useUserStore } from '@/store/UserStore'
+import { useAdminStore } from '@/store/AdminStore'
 
-const UserCard = ({ user, updateUsers, style }: { user: UserType, updateUsers: (_id: string) => void, style: CSSProperties }) => {
+const UserCard = ({ user, style }: { user: UserType, style: CSSProperties }) => {
     const ref = useRef(null)
     const hovering = useHover(ref)
     const { t } = useTranslation()
-    const { api } = useApiStore()
     const { userId } = useUserStore()
-    const { orgId } = useOrgStore()
+    const { deleteUser } = useAdminStore()
     const { showErrorSnackbar } = useContext(SnackbarContext)
 
     const deleteUserAction = async () => {
         if (user.id !== userId) {
-            await api?.users.deleteUser(orgId, user.id)
-            updateUsers(user.id)
+            await deleteUser(user.id)
         } else {
             showErrorSnackbar('Can\'t delete yourself')
         }

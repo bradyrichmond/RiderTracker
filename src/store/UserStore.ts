@@ -4,6 +4,7 @@ import { fetchAuthSession, signOut } from 'aws-amplify/auth'
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
 import { useOrgStore } from './OrgStore'
+import { UserType } from '@/types/UserType'
 
 interface UserStore {
     heaviestRole: string
@@ -17,6 +18,11 @@ interface UserStore {
     userPictureUrl: string
     updateUserPictureUrl(): Promise<void>
     updateUserData: () => Promise<void>
+    users: UserType[]
+    updateUsers: () => Promise<void>
+    searchArg: string
+    changeSearchArg(searchArg: string): Promise<void>
+    usersFilter(u: UserType): boolean
 }
 
 interface StateUpdate {
@@ -24,6 +30,7 @@ interface StateUpdate {
     userEmail?: string
     heaviestRole?: string
     userFullName?: string
+    searchArg?: string
 }
 
 export const useUserStore = create<UserStore>((set, get) => ({
@@ -78,5 +85,38 @@ export const useUserStore = create<UserStore>((set, get) => ({
         } catch {
             signOut()
         }
-    }
+    },
+    users: [],
+    updateUsers: async () => {
+        const api = useApiStore.getState().api
+        const orgId = useOrgStore.getState().orgId
+
+        const users = await api?.users.getUsers(orgId)
+        set({ users })
+    },
+    searchArg: '',
+    changeSearchArg: async (searchArg: string) => {
+        set({ searchArg })
+
+        if (!searchArg) {
+            get().updateUsers()
+            return
+        }
+
+        const users = get().users.filter(get().usersFilter)
+
+        set({ users })
+    },
+    usersFilter: (u: UserType) => {
+        const searchArg = get().searchArg
+        const standardizedArg = searchArg.toLowerCase()
+        const { firstName, lastName } = u
+        const record = `${firstName} ${lastName}`.toLowerCase()
+
+        if (record.includes(standardizedArg)) {
+            return true
+        }
+
+        return false
+    },
 }))

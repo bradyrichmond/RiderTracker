@@ -32,28 +32,26 @@ const Auth = () => {
     const { t } = useTranslation('auth')
 
     useEffect(() => {
-        const randomImageIndex = Math.floor(Math.random() * bgImages.length)
-        setImage(bgImages[randomImageIndex])
-        checkForLoggedInUser()
-        // magic number for preventing flash of login screen
-        setTimeout(hideLoading, 2000)
-    }, [])
+        const checkForLoggedInUser = async () => {
+            const session = await fetchAuthSession()
+            if (session.userSub) {
+                setUserId(session.userSub)
+                updateUserData()
+                const previousPath = history.state?.usr?.previousPath
 
-    const checkForLoggedInUser = async () => {
-        const session = await fetchAuthSession()
-        if (session.userSub) {
-            setUserId(session.userSub)
-            updateUserData()
-            const previousPath = history.state?.usr?.previousPath
-
-            if (previousPath) {
-                if (previousPath !== location.pathname) {
+                if (previousPath && previousPath !== location.pathname) {
                     console.log(`redirecting from ${location.pathname} to ${previousPath}`)
                     navigate(previousPath)
                 }
             }
         }
-    }
+
+        const randomImageIndex = Math.floor(Math.random() * bgImages.length)
+        setImage(bgImages[randomImageIndex])
+        checkForLoggedInUser()
+        // magic number for preventing flash of login screen
+        setTimeout(hideLoading, 2000)
+    }, [navigate, setUserId, updateUserData])
 
     const hideLoading = () => {
         setIsLoading(false)
