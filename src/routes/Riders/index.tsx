@@ -126,7 +126,7 @@ const Riders = ({ activeRider }: RidersProps) => {
                     </Button>
                 </Box>
             </Box>
-            <RiderDrawer open={!!activeRider} riderId={activeRider ?? ''} />
+            <RiderDrawer open={!!activeRider} rider={riders.find((r: RiderType) => r.id === activeRider)} />
             <CreateRiderDialog
                 createRider={handleCreateRider}
                 isAddingRider={isAddingRider}
