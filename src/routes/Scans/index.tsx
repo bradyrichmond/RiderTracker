@@ -1,10 +1,9 @@
 import { ScanType } from '@/types/ScanType'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { Box, Button, Tooltip, Typography } from '@mui/material'
-import { OptionsType } from '@/types/FormTypes'
 import { useDeviceLocation } from '@/hooks/useDeviceLocation'
 import { locationFactory } from './LocationFactory'
 import { AppShortcut } from '@mui/icons-material'
@@ -20,9 +19,6 @@ import { useScanStore } from '@/store/ScanStore'
 
 const Scans = () => {
     const [isAddingScan, setIsAddingScan] = useState(false)
-    const [allGuardians, setAllGuardians] = useState<OptionsType[]>([])
-    const [allRiders, setAllRiders] = useState<OptionsType[]>([])
-    const [allStops, setAllStops] = useState<OptionsType[]>([])
     const { scans, updateScans, createScan } = useScanStore()
     const { riders, getRiders } = useRiderStore()
     const { stops, getStops } = useStopStore()
@@ -76,29 +72,24 @@ const Scans = () => {
         return initialGridColumns
     }
 
-    useEffect(() => {
-        const transformData = () => {
-            setAllRiders(riders.map((r: RiderType) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` })))
-            setAllStops(stops.map((s: StopType) => ({ id: s.id, label: s.stopName })))
-            setAllGuardians(guardians.map((g: GuardianType) => ({ id: g.id, label: `${g.firstName} ${g.lastName}` })))
-        }
+    const allRiders = useMemo(() => riders.map((r: RiderType) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` })), [riders])
+    const allStops = useMemo(() => stops.map((s: StopType) => ({ id: s.id, label: s.stopName })), [stops])
+    const allGuardians = useMemo(() => guardians.map((g: GuardianType) => ({ id: g.id, label: `${g.firstName} ${g.lastName}` })), [guardians])
 
+    useEffect(() => {
         const updateData = async () => {
             await updateScans()
             await getRiders()
             await getStops()
             await getGuardians()
-            transformData()
         }
 
         updateData()
-    }, [updateScans, getRiders, getStops, getGuardians, guardians, riders, stops])
+    }, [updateScans, getRiders, getStops, getGuardians])
 
     const handleRowClick = (scanId: string) => {
         navigate(`/scans/${scanId}`)
     }
-
-
 
     const toggleAddingScan = () => {
         setIsAddingScan((current) => !current)
