@@ -3,13 +3,14 @@ import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { useEffect, useState } from 'react'
 import { Box, Button, Typography } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import { UserType } from '@/types/UserType'
+import { GuardianType, UserType } from '@/types/UserType'
 import CreateGuardianDialog from './CreateGuardianDialog'
 import { useGuardianStore } from '@/store/GuardianStore'
 import { useTranslation } from 'react-i18next'
 import SearchBar from '@/components/SearchBar'
 import GuardianDrawer from './GuardianDrawer'
 import { useAdminStore } from '@/store/AdminStore'
+import { useRiderStore } from '@/store/RiderStore'
 
 export interface CreateGuardianInput {
     given_name: string
@@ -24,6 +25,7 @@ interface GuardiansProps {
 
 const Guardians = ({ activeGuardian }: GuardiansProps) => {
     const { guardians, getGuardians, changeSearchArg } = useGuardianStore()
+    const getRiders = useRiderStore().getRiders
     const { createGuardian } = useAdminStore()
     const navigate = useNavigate()
     const [isAddingGuardian, setIsAddingGuardian] = useState<boolean>(false)
@@ -31,7 +33,8 @@ const Guardians = ({ activeGuardian }: GuardiansProps) => {
 
     useEffect(() => {
         getGuardians()
-    }, [getGuardians])
+        getRiders()
+    }, [getGuardians, getRiders])
 
     const createGuardianAction = async (guardian: CreateGuardianInput) => {
 
@@ -83,7 +86,7 @@ const Guardians = ({ activeGuardian }: GuardiansProps) => {
                     </Button>
                 </Box>
             </Box>
-            <GuardianDrawer open={!!activeGuardian} guardianId={activeGuardian ?? ''} />
+            <GuardianDrawer open={!!activeGuardian} guardian={guardians.find((g: GuardianType) => g.id === activeGuardian)} />
             <CreateGuardianDialog createGuardian={createGuardianAction} isAddingGuardian={isAddingGuardian} cancel={toggleShowModal} />
             <Box sx={{ mb: '2rem' }}>
                 <SearchBar onChange={changeSearchArg} fullWidth />
