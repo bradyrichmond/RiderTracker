@@ -50,11 +50,13 @@ const RouteDrawer = ({ open, school }: RouteDrawerProps) => {
     }, [deleteSchoolAction, heaviestRole, t])
 
     const lists = useMemo(() => {
+        const filteredRiders = riders.filter((r: RiderType) => r.schoolId === school?.id)
+        const mappedRiders = filteredRiders.map((r: RiderType) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` }))
         const builtLists = [
             {
                 title: t('riders'),
                 action: viewRiderDetail,
-                items: riders.filter((r: RiderType) => school?.riderIds?.includes(r.id)).map((r: RiderType) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` }))
+                items: mappedRiders
             }
         ]
 

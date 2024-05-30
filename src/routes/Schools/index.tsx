@@ -11,6 +11,7 @@ import SchoolDrawer from './SchoolDrawer'
 import CreateSchoolDialog from './CreateSchoolDialog'
 import { useSchoolStore } from '@/store/SchoolStore'
 import { useAddressStore } from '@/store/AddressStore'
+import { useRiderStore } from '@/store/RiderStore'
 
 interface SchoolsProps {
     activeSchool?: string
@@ -22,6 +23,7 @@ const Schools = ({ activeSchool }: SchoolsProps) => {
     const { createSchool, getSchools, schools } = useSchoolStore()
     const addresses = useAddressStore().addresses
     const updateAddresses = useAddressStore().updateAddresses
+    const getRiders = useRiderStore().getRiders
     const canEditSchool = RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.UPDATE_SCHOOL)
     const navigate = useNavigate()
     const { t } = useTranslation('schools')
@@ -29,7 +31,8 @@ const Schools = ({ activeSchool }: SchoolsProps) => {
     useEffect(() => {
         getSchools()
         updateAddresses()
-    }, [])
+        getRiders()
+    }, [getSchools, updateAddresses, getRiders])
 
     const createSchoolAction = async (newSchool: SchoolType) => {
         await createSchool(newSchool)
