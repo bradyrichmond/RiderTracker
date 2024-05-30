@@ -6,7 +6,6 @@ import { Box, Button, Typography } from '@mui/material'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { AddressType } from '@/types/AddressType'
 import { useUserStore } from '@/store/UserStore'
 import SchoolDrawer from './SchoolDrawer'
 import CreateSchoolDialog from './CreateSchoolDialog'
@@ -19,32 +18,24 @@ interface SchoolsProps {
 
 const Schools = ({ activeSchool }: SchoolsProps) => {
     const [isAddingSchool, setIsAddingSchool] = useState<boolean>(false)
-    const [addresses, setAddresses] = useState<AddressType[]>([])
     const { heaviestRole } = useUserStore()
     const { createSchool, getSchools, schools } = useSchoolStore()
-    const { getBulkAddressesById } = useAddressStore()
+    const addresses = useAddressStore().addresses
+    const updateAddresses = useAddressStore().updateAddresses
     const canEditSchool = RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.UPDATE_SCHOOL)
     const navigate = useNavigate()
     const { t } = useTranslation('schools')
 
     useEffect(() => {
-        const updateSchools = async () => {
-            getSchools()
-            const addressIds = schools.map((s: SchoolType) => s.address)
-
-            if (addressIds) {
-                const fetchedAddresses = await getBulkAddressesById(addressIds)
-                setAddresses(fetchedAddresses ?? [])
-            }
-        }
-
-        updateSchools()
-    }, [getBulkAddressesById, getSchools, schools])
+        getSchools()
+        updateAddresses()
+    }, [])
 
     const createSchoolAction = async (newSchool: SchoolType) => {
         await createSchool(newSchool)
 
         getSchools()
+        updateAddresses()
     }
 
     const getFormattedAddressById = (addressId: string) => {
@@ -104,7 +95,7 @@ const Schools = ({ activeSchool }: SchoolsProps) => {
                     </Button>
                 </Box>
             </Box>
-            <SchoolDrawer open={!!activeSchool} schoolId={activeSchool ?? ''} />
+            <SchoolDrawer open={!!activeSchool} school={schools.find((s: SchoolType) => s.id === activeSchool)} />
             <CreateSchoolDialog createSchool={createSchoolAction} cancelAction={toggleAddingSchool} open={isAddingSchool} />
             <Box flex='1'>
                 <Box sx={{ height: '100%', width: '100%' }}>

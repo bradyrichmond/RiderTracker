@@ -5,11 +5,21 @@ import { v4 as uuid } from 'uuid'
 import { AddressType } from '@/types/AddressType'
 
 interface AddressStore {
+    addresses: AddressType[],
+    updateAddresses(): Promise<void>
     createAddress(address: string): Promise<AddressType>
     getBulkAddressesById(addressIds: string[]): Promise<AddressType[]>
 }
 
-export const useAddressStore = create<AddressStore>(() => ({
+export const useAddressStore = create<AddressStore>((set) => ({
+    addresses: [],
+    updateAddresses: async () => {
+        const api = useApiStore.getState().api
+        const orgId = useOrgStore.getState().orgId
+
+        const addresses = await api?.addresses.getAddresses(orgId)
+        set({ addresses })
+    },
     createAddress: async (address: string) => {
         const api = useApiStore.getState().api
         const orgId = useOrgStore.getState().orgId

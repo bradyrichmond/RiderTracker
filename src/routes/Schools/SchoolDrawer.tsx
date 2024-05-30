@@ -1,41 +1,40 @@
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
-import { OptionsType } from '@/types/FormTypes'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useUserStore } from '@/store/UserStore'
 import { useRiderStore } from '@/store/RiderStore'
-import EntityDrawer, { DrawerListActionProps, DrawerListItem } from '@/components/EntityDrawer'
+import EntityDrawer, { DrawerListActionProps } from '@/components/EntityDrawer'
 import { useSchoolStore } from '@/store/SchoolStore'
 import { SchoolType } from '@/types/SchoolType'
 import CreateSchoolDialog from './CreateSchoolDialog'
+import { RiderType } from '@/types/RiderType'
 
 interface RouteDrawerProps {
     open: boolean
-    schoolId: string
+    school?: SchoolType
 }
 
-const RouteDrawer = ({ open, schoolId }: RouteDrawerProps) => {
+const RouteDrawer = ({ open, school }: RouteDrawerProps) => {
     const [isAddingSchool, setIsAddingSchool] = useState<boolean>(false)
-    const [schoolName, setSchoolName] = useState<string>('')
-    const [lists, setLists] = useState<DrawerListItem[]>([])
-    const [actionItems, setActionItems] = useState<DrawerListActionProps[]>([])
-    const { createSchool, deleteSchool, getSchoolById } = useSchoolStore()
-    const { heaviestRole } = useUserStore()
-    const { getBulkRidersById } = useRiderStore()
+    const { createSchool, deleteSchool } = useSchoolStore()
+    const heaviestRole = useUserStore().heaviestRole
+    const riders = useRiderStore().riders
     const navigate = useNavigate()
     const { t } = useTranslation('routes')
 
     const deleteSchoolAction = useCallback(async () => {
-        await deleteSchool(schoolId)
-    }, [deleteSchool, schoolId])
+        if (school) {
+            await deleteSchool(school.id)
+        }
+    }, [deleteSchool, school])
 
     const viewRiderDetail = useCallback((riderId: string) => {
         navigate(`/app/riders/${riderId}`)
     }, [navigate])
 
-    const buildActionItems = useCallback(() => {
+    const actionItems = useMemo(() => {
         const builtActionItems: DrawerListActionProps[] = []
         const userPermissions = RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole]
 
@@ -47,38 +46,20 @@ const RouteDrawer = ({ open, schoolId }: RouteDrawerProps) => {
             })
         }
 
-        setActionItems(builtActionItems)
+        return builtActionItems
     }, [deleteSchoolAction, heaviestRole, t])
 
-    const buildLists = useCallback((localRiders: OptionsType[]) => {
+    const lists = useMemo(() => {
         const builtLists = [
             {
                 title: t('riders'),
                 action: viewRiderDetail,
-                items: localRiders
+                items: riders.filter((r: RiderType) => school?.riderIds?.includes(r.id)).map((r: RiderType) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` }))
             }
         ]
 
-        setLists(builtLists)
-    }, [t, viewRiderDetail])
-
-    useEffect(() => {
-        const getSchoolData = async () => {
-            const fetchedSchool = await getSchoolById(schoolId)
-
-            if (fetchedSchool) {
-                setSchoolName(fetchedSchool.schoolName)
-                const riderIds = fetchedSchool.riderIds
-                const riders = await getBulkRidersById(riderIds ?? [])
-                buildLists(riders.map((r) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` })))
-                buildActionItems()
-            }
-        }
-
-        if (schoolId) {
-            getSchoolData()
-        }
-    }, [schoolId, buildActionItems, buildLists, getBulkRidersById, getSchoolById])
+        return builtLists
+    }, [t, viewRiderDetail, riders, school])
 
     const toggleAddingSchool = () => {
         setIsAddingSchool((current) => !current)
@@ -101,7 +82,7 @@ const RouteDrawer = ({ open, schoolId }: RouteDrawerProps) => {
                 back={handleBack}
                 lists={lists}
                 open={open}
-                title={schoolName}
+                title={school?.schoolName ?? 'loading...'}
             />
         </>
     )
