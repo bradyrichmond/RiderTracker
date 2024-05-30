@@ -61,7 +61,7 @@ const Buses = () => {
             <Box marginBottom='2rem' display='flex' flexDirection='row'>
                 <Box display='flex' justifyContent='center' alignItems='center'>
                     <Typography variant='h2'>
-                        {t('drivers')}
+                        {t('buses')}
                     </Typography>
                 </Box>
                 <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
@@ -69,7 +69,7 @@ const Buses = () => {
                         <Box display='flex' flexDirection='row'>
                             <AddCircleIcon />
                             <Box flex='1' marginLeft='1rem'>
-                                <Typography>{t('addDriver')}</Typography>
+                                <Typography>{t('addBus')}</Typography>
                             </Box>
                         </Box>
                     </Button>
