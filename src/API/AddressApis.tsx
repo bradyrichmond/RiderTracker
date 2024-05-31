@@ -64,7 +64,7 @@ export class AddressApis {
                     id: 'temp',
                     orgId: 'temp',
                     houseNumber: housenumber,
-                    street,
+                    streetName: street,
                     city: city ?? suburb,
                     state,
                     county,

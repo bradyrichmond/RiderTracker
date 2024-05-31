@@ -13,6 +13,7 @@ interface CreateUserParams {
     stopIds?: string[]
     riderIds?: string[]
     address?: string
+    userType?: RIDER_TRACKER_ROLES
 }
 
 export interface CreateCognitoUserParams {
@@ -88,7 +89,8 @@ export class AdminApis {
                 firstName: admin.given_name,
                 lastName: admin.family_name,
                 email: admin.email,
-                address: ''
+                address: '',
+                userType: RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN
             })
 
             // Third, add the user to the org admins group
@@ -121,7 +123,8 @@ export class AdminApis {
                 firstName: guardian.given_name,
                 lastName: guardian.family_name,
                 email: guardian.email,
-                address: address.id
+                address: address.id,
+                userType: RIDER_TRACKER_ROLES.RIDER_TRACKER_GUARDIAN
             })
 
             // Fourth, add user id to org guardian ids

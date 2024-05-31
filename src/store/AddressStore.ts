@@ -29,6 +29,7 @@ export const useAddressStore = create<AddressStore>((set) => ({
         if (validatedAddress) {
             const newAddressId = uuid()
             validatedAddress.id = newAddressId
+            validatedAddress.orgId = orgId
 
             await api?.addresses.createAddress(orgId, validatedAddress)
 

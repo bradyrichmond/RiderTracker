@@ -4,7 +4,7 @@ export interface AddressType {
     id: string
     orgId: string
     houseNumber: string
-    street: string
+    streetName: string
     city: string
     state: string
     county: string

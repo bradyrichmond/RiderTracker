@@ -3,6 +3,7 @@ import { UserType } from '@/types/UserType'
 import { useApiStore } from './ApiStore'
 import { useOrgStore } from './OrgStore'
 import { CreateCognitoUserParams } from '@/API/AdminApis'
+import { RIDER_TRACKER_ROLES } from '@/constants/Roles'
 
 interface DriverStore {
     drivers: UserType[]
@@ -35,7 +36,8 @@ export const useDriverStore = create<DriverStore>((set, get) => ({
                 orgId: orgId,
                 firstName: newUser.given_name,
                 lastName: newUser.family_name,
-                email: newUser.email
+                email: newUser.email,
+                userType: RIDER_TRACKER_ROLES.RIDER_TRACKER_DRIVER
             }
 
             await api?.admin.createUser(orgId, builtUser)

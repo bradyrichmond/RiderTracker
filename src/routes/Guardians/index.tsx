@@ -100,6 +100,11 @@ const Guardians = ({ activeGuardian }: GuardiansProps) => {
                             rowHeight={100}
                             processRowUpdate={processRowUpdate}
                             onRowClick={(params) => handleRowClick(params.row.id)}
+                            initialState={{
+                                sorting: {
+                                  sortModel: [{ field: 'lastName', sort: 'asc' }, { field: 'firstName', sort: 'asc' }],
+                                },
+                            }}
                         />
                         :
                         null

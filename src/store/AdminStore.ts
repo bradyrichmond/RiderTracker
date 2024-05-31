@@ -6,6 +6,7 @@ import { CreateCognitoUserParams } from '@/API/AdminApis'
 import { CreateGuardianInput } from '@/routes/Guardians'
 import { useAddressStore } from './AddressStore'
 import { RIDER_TRACKER_ROLES } from '@/constants/Roles'
+import { useGuardianStore } from './GuardianStore'
 
 interface AdminStore {
     admins: UserType[]
@@ -43,14 +44,14 @@ export const useAdminStore = create<AdminStore>((set, get) => ({
     createGuardian: async (newGuardian: CreateGuardianInput) => {
         const api = useApiStore.getState().api
         const orgId = useOrgStore.getState().orgId
-
+        const getGuardians = useGuardianStore.getState().getGuardians
         const createAddress = useAddressStore.getState().createAddress
 
         const address = await createAddress(newGuardian.address)
 
         if (address) {
             await api?.admin.createGuardian(newGuardian, address, orgId)
-            await get().updateAdmins()
+            await getGuardians()
             return
         }
 

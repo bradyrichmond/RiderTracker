@@ -44,7 +44,7 @@ const getBulkAddressesById = async (schoolIds: string[]) => {
             id: s,
             orgId: '123456',
             houseNumber: '123',
-            street: 'Test Ave',
+            streetName: 'Test Ave',
             city: 'Los Angeles',
             state: 'California',
             county: 'Orange',
