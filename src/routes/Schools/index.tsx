@@ -109,6 +109,11 @@ const Schools = ({ activeSchool }: SchoolsProps) => {
                             rowHeight={100}
                             processRowUpdate={processRowUpdate}
                             onRowClick={(params) => handleRowClick(params.row.id)}
+                            initialState={{
+                                sorting: {
+                                  sortModel: [{ field: 'schoolName', sort: 'asc' }],
+                                },
+                            }}
                         />
                         :
                         null
