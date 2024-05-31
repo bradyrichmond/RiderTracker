@@ -6,7 +6,7 @@ import Scans from '..'
 import { PropsWithChildren } from 'react'
 jest.mock('@/API/ScanApis')
 jest.mock('@/API/RiderApis')
-jest.mock('@/API/DriverApis')
+jest.mock('@/API/UserApis')
 jest.mock('@/API/OrganizationApis')
 jest.mock('@/hooks/useDeviceLocation')
 

@@ -4,7 +4,7 @@ import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-lib
 import { AsRole, ProviderWrapperAsRole } from '@/helpers/ProviderWrapper'
 import Guardians from '..'
 import { PropsWithChildren } from 'react'
-jest.mock('@/API/GuardianApis')
+jest.mock('@/API/UserApis')
 jest.mock('@/API/OrganizationApis')
 
 afterEach(() => {
