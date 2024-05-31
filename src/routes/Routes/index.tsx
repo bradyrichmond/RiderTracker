@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import { DataGrid, GridColDef, GridComparatorFn } from '@mui/x-data-grid'
 import { Box, Button, CircularProgress, Typography } from '@mui/material'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { RouteType } from '@/types/RouteType'
@@ -12,6 +12,9 @@ import { useRouteStore } from '@/store/RouteStore'
 interface RoutesProps {
     activeRoute?: string
 }
+
+const routeNumberComparator: GridComparatorFn<string> = (v1, v2) =>
+    parseInt(v1) - parseInt(v2)
 
 const Routes = ({ activeRoute }: RoutesProps) => {
     const [isAddingRoute, setIsAddingRoute] = useState(false)
@@ -30,7 +33,7 @@ const Routes = ({ activeRoute }: RoutesProps) => {
 
     const generateGridColumns = (): GridColDef[] => {
         const initialGridColumns: GridColDef[] = [
-            { field: 'routeNumber',  headerName: 'Route Number', flex: 1, align: 'center', headerAlign: 'center' },
+            { field: 'routeNumber',  headerName: 'Route Number', flex: 1, align: 'center', headerAlign: 'center', sortComparator: routeNumberComparator },
             { field: 'stopIds', headerName: 'Stops', flex: 1, align: 'center', headerAlign: 'center', valueGetter: (value: string[] | null) => value ? value.length : 0 },
             { field: 'riderIds', headerName: 'Riders', flex: 1, align: 'center', headerAlign: 'center', valueGetter: (value: string[] | null) => value ? value.length : 0 }
         ]
@@ -80,6 +83,11 @@ const Routes = ({ activeRoute }: RoutesProps) => {
                             rowHeight={100}
                             processRowUpdate={processRowUpdate}
                             onRowClick={(params) => handleRowClick(params.row.id)}
+                            initialState={{
+                                sorting: {
+                                  sortModel: [{ field: 'routeNumber', sort: 'asc' }],
+                                },
+                            }}
                         />
                         :
                         <CircularProgress  />
