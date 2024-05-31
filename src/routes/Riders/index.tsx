@@ -147,6 +147,11 @@ const Riders = ({ activeRider }: RidersProps) => {
                             rowHeight={100}
                             processRowUpdate={processRowUpdate}
                             onRowClick={(params) => handleRowClick(params.row.id)}
+                            initialState={{
+                                sorting: {
+                                  sortModel: [{ field: 'lastName', sort: 'asc' }, { field: 'firstName', sort: 'asc' }],
+                                },
+                            }}
                         />
                         :
                         <CircularProgress />
