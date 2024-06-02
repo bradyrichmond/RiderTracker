@@ -34,7 +34,7 @@ const Auth = () => {
     useEffect(() => {
         const checkForLoggedInUser = async () => {
             const session = await fetchAuthSession()
-            if (session.userSub) {
+            if (session?.userSub) {
                 setUserId(session.userSub)
                 updateUserData()
                 const previousPath = history.state?.usr?.previousPath

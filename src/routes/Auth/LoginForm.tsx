@@ -2,7 +2,6 @@ import { Box, Button, TextField, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { signIn, signOut } from '@aws-amplify/auth'
-import { API_BASE_NAME } from '@/API'
 import { useNavigate } from 'react-router-dom'
 import { Hub } from 'aws-amplify/utils'
 import { useTranslation } from 'react-i18next'
@@ -69,8 +68,8 @@ const LoginForm = () => {
         if (api) {
             const path = window.location.toString().split('//')[1]
             const pathOrgSlug = path.split('.')[0]
-            const orgSlugResponse = await fetch(`${API_BASE_NAME}/public/organizations/${pathOrgSlug}`)
-            const { id } = await orgSlugResponse.json()
+            const orgSlugResponse = await api.organizations.getOrganizationLoginDataBySlug(pathOrgSlug)
+            const { id } = orgSlugResponse
             const previousPath = history.state?.usr?.previousPath
             const userOrgIds: string | string[] | undefined = await api?.organizations.getOrgIdForUser(userId, heaviestRole)
 

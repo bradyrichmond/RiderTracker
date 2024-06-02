@@ -1,6 +1,6 @@
 import { OrganizationType } from '@/types/OrganizationType'
 import { create } from 'zustand'
-import { API_BASE_NAME } from '@/API'
+import { useApiStore } from './ApiStore'
 
 interface StateUpdate {
     orgId?: string
@@ -26,11 +26,12 @@ export const useOrgStore = create<OrgStore>((set) => ({
     orgId: '',
     setOrgId: (id: string) => set({ orgId: id }),
     updateOrgData: async () => {
+        const api = await useApiStore.getState().getApi()
         const stateUpdate: StateUpdate = {}
         const path = window.location.toString().split('//')[1]
         const pathOrgSlug = path.split('.')[0]
-        const orgSlugResponse = await fetch(`${API_BASE_NAME}/public/organizations/${pathOrgSlug}`)
-        const { orgName: fetchedOrgName, loginImageKey, id } = await orgSlugResponse.json()
+        const orgSlugResponse = await api?.organizations.getOrganizationLoginDataBySlug(pathOrgSlug)
+        const { orgName: fetchedOrgName, loginImageKey, id } = orgSlugResponse
 
         stateUpdate.orgId = id
         stateUpdate.orgName = fetchedOrgName

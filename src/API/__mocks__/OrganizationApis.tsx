@@ -7,6 +7,8 @@ const mockGetOrganizations = async () => Promise.resolve([
     }
 ])
 
+const mockGetOrganizationLoginDataBySlug = async (orgSlug: string) => Promise.resolve(`TEST_${orgSlug}`)
+
 const mockGetOrganizationById = async (id: string) => Promise.resolve({ id })
 
 const mockCreateOrganization = async () => Promise.resolve({})
@@ -17,5 +19,6 @@ export const OrgApis = jest.fn().mockImplementation(() => ({
     getOrganizations: mockGetOrganizations,
     getOrganizationById: mockGetOrganizationById,
     createOrganization: mockCreateOrganization,
-    deleteOrganization: mockDeleteOrganization
+    deleteOrganization: mockDeleteOrganization,
+    getOrganizationLoginDataBySlug: mockGetOrganizationLoginDataBySlug
 }))
