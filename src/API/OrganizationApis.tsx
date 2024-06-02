@@ -74,7 +74,7 @@ export class OrgApis {
     }
 
     getOrganizationLoginDataBySlug = async (orgSlug: string) => {
-        const response = this.client.publicOrganizationsOrgSlugGet({ orgSlug })
+        const response = await this.client.publicOrganizationsOrgSlugGet({ orgSlug })
         return handleApiResponse<OrganizationType>(response)
     }
 

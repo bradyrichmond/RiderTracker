@@ -7,11 +7,16 @@ import { useTranslation } from 'react-i18next'
 import { useUserStore } from '@/store/UserStore'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { useBusStore } from '@/store/BusStore'
+import { useEffect } from 'react'
 
 const Buses = () => {
     const { heaviestRole } = useUserStore()
     const { buses, updateBuses, deleteBus, createBus } = useBusStore()
     const { t } = useTranslation(['buses', 'common'])
+
+    useEffect(() => {
+        updateBuses()
+    }, [updateBuses])
 
     const deleteBusAction = async (busId: string) => {
         await deleteBus(busId)
@@ -64,16 +69,20 @@ const Buses = () => {
                         {t('buses')}
                     </Typography>
                 </Box>
-                <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
-                    <Button variant='contained' onClick={createBusAction}>
-                        <Box display='flex' flexDirection='row'>
-                            <AddCircleIcon />
-                            <Box flex='1' marginLeft='1rem'>
-                                <Typography>{t('addBus')}</Typography>
+                {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_BUS) ?
+                    <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
+                        <Button variant='contained' onClick={createBusAction}>
+                            <Box display='flex' flexDirection='row'>
+                                <AddCircleIcon />
+                                <Box flex='1' marginLeft='1rem'>
+                                    <Typography>{t('addBus')}</Typography>
+                                </Box>
                             </Box>
-                        </Box>
-                    </Button>
-                </Box>
+                        </Button>
+                    </Box>
+                    :
+                    null
+                }
             </Box>
             <Box flex='1'>
                 <Box sx={{ height: '100%', width: '100%' }}>
