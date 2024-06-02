@@ -13,7 +13,7 @@ interface ScanStore {
 export const useScanStore = create<ScanStore>((set, get) => ({
     scans: [],
     updateScans: async () => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
         const scans = await api?.scans.getScans(orgId)
@@ -21,7 +21,7 @@ export const useScanStore = create<ScanStore>((set, get) => ({
         set({ scans })
     },
     getScanById: async (scanId: string) => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
         const scan = await api?.scans.getScanById(orgId, scanId)
@@ -33,7 +33,7 @@ export const useScanStore = create<ScanStore>((set, get) => ({
         throw 'Failed to find scan by id'
     },
     createScan: async (newScan: ScanType) => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
         await api?.scans.createScan(orgId, newScan)

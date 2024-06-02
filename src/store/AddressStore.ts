@@ -14,14 +14,14 @@ interface AddressStore {
 export const useAddressStore = create<AddressStore>((set) => ({
     addresses: [],
     updateAddresses: async () => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
         const addresses = await api?.addresses.getAddresses(orgId)
         set({ addresses })
     },
     createAddress: async (address: string) => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
         const validatedAddress = await api?.addresses.validateAddress(address)
@@ -39,7 +39,7 @@ export const useAddressStore = create<AddressStore>((set) => ({
         throw 'Failed to create address'
     },
     getBulkAddressesById: async (addressIds: string[]) => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
         const addresses = api?.addresses.getBulkAddressesByIds(orgId, addressIds)

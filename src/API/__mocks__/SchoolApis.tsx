@@ -1,6 +1,6 @@
 import { SchoolType } from '@/types/SchoolType'
 
-const getSchoolById = async (id: string) => Promise.resolve({
+const mockGetSchoolById = async (id: string) => Promise.resolve({
     id: id,
     orgId: '123456',
     schoolName: 'Sunnyside Elementary',
@@ -8,7 +8,7 @@ const getSchoolById = async (id: string) => Promise.resolve({
     address: '123456'
  })
 
-const getSchools = async (orgId: string) => Promise.resolve([
+const mockGetSchools = async (orgId: string) => Promise.resolve([
     {
         id: '123456',
         orgId: orgId,
@@ -18,7 +18,7 @@ const getSchools = async (orgId: string) => Promise.resolve([
      }
 ])
 
-const getBulkSchoolsById = async (schoolIds: string[]) => {
+const mockGetBulkSchoolsById = async (schoolIds: string[]) => {
     const schools: SchoolType[] = []
 
     schoolIds.forEach((s) => schools.push({
@@ -31,26 +31,17 @@ const getBulkSchoolsById = async (schoolIds: string[]) => {
     return schools
 }
 
-const updateSchool = async () => Promise.resolve({})
+const mockUpdateSchool = async () => Promise.resolve({})
 
-const createSchool = async () => Promise.resolve({})
+const mockCreateSchool = async () => Promise.resolve({})
 
-const deleteSchool = async () => Promise.resolve({})
+const mockDeleteSchool = async () => Promise.resolve({})
 
-export interface SchoolApiFunctionTypes {
-    getSchools(orgId: string): Promise<SchoolType[]>,
-    getSchoolById(id: string): Promise<SchoolType>,
-    getBulkSchoolsById(ids: string[]): Promise<SchoolType[]>,
-    updateSchool(scan: SchoolType): Promise<object>,
-    createSchool(scan: SchoolType): Promise<object>,
-    deleteSchool(id: string): Promise<object>
-}
-
-export default {
-    getSchools,
-    getSchoolById,
-    getBulkSchoolsById,
-    updateSchool,
-    createSchool,
-    deleteSchool
-}
+export const SchoolApis = jest.fn().mockImplementation(() => ({
+    getSchools: mockGetSchools,
+    getSchoolById: mockGetSchoolById,
+    getBulkSchoolsById: mockGetBulkSchoolsById,
+    updateSchool: mockUpdateSchool,
+    createSchool: mockCreateSchool,
+    deleteSchool: mockDeleteSchool
+}))

@@ -1,6 +1,6 @@
 import { RiderType } from '@/types/RiderType'
 
-const getRiderById = async (id: string) => Promise.resolve({
+const mockGetRiderById = async (id: string) => Promise.resolve({
     id: id,
     firstName: 'Johnny',
     lastName: 'Tester',
@@ -10,7 +10,7 @@ const getRiderById = async (id: string) => Promise.resolve({
     ]
 })
 
-const getRiders = async (orgId: string) => Promise.resolve([
+const mockGetRiders = async (orgId: string) => Promise.resolve([
     {
         id: '123456',
         firstName: 'Hallie',
@@ -40,7 +40,7 @@ const getRiders = async (orgId: string) => Promise.resolve([
     }
 ])
 
-const getBulkRidersById = async (riderIds: string[]) => {
+const mockGetBulkRidersById = async (riderIds: string[]) => {
     const riders: RiderType[] = []
 
     riderIds.forEach((r) => riders.push({
@@ -55,26 +55,17 @@ const getBulkRidersById = async (riderIds: string[]) => {
     return riders
 }
 
-const updateRider = async () => Promise.resolve({})
+const mockUpdateRider = async () => Promise.resolve({})
 
-const createRider = async () => Promise.resolve({})
+const mockCreateRider = async () => Promise.resolve({})
 
-const deleteRider = async () => Promise.resolve({})
+const mockDeleteRider = async () => Promise.resolve({})
 
-export interface RiderApiFunctionTypes {
-    getRiders(orgId: string): Promise<RiderType[]>,
-    getRiderById(id: string): Promise<RiderType>,
-    getBulkRidersById(ids: string[]): Promise<RiderType[]>,
-    updateRider(rider: RiderType): Promise<object>,
-    createRider(rider: RiderType): Promise<object>,
-    deleteRider(id: string): Promise<object>
-}
-
-export default {
-    getRiders,
-    getRiderById,
-    getBulkRidersById,
-    updateRider,
-    createRider,
-    deleteRider
-}
+export const RiderApis = jest.fn().mockImplementation(() => ({
+    getRiders: mockGetRiders,
+    getRiderById: mockGetRiderById,
+    getBulkRidersById: mockGetBulkRidersById,
+    updateRider: mockUpdateRider,
+    createRider: mockCreateRider,
+    deleteRider: mockDeleteRider
+}))

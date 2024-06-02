@@ -1,4 +1,4 @@
-import { RiderTrackerRole, isRiderTrackerRole } from '@/constants/Roles'
+import { RIDER_TRACKER_ROLES, RiderTrackerRole, isRiderTrackerRole } from '@/constants/Roles'
 import { getHeaviestRole } from '@/helpers/GetHeaviestRole'
 import { fetchAuthSession, signOut } from 'aws-amplify/auth'
 import { create } from 'zustand'
@@ -34,7 +34,7 @@ interface StateUpdate {
 }
 
 export const useUserStore = create<UserStore>((set, get) => ({
-    heaviestRole: '',
+    heaviestRole: RIDER_TRACKER_ROLES.RIDER_TRACKER_WIZARD,
     setHeaviestRole: (role: string) => {
         set({ heaviestRole: role })
     },
@@ -52,7 +52,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
     },
     userPictureUrl: '',
     updateUserPictureUrl: async () => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
         const userId = get().userId
 
@@ -88,7 +88,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
     },
     users: [],
     updateUsers: async () => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
         const users = await api?.users.getUsers(orgId)

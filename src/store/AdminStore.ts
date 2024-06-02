@@ -20,21 +20,21 @@ interface AdminStore {
 export const useAdminStore = create<AdminStore>((set, get) => ({
     admins: [],
     updateAdmins: async () => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
         const admins = await api?.users.getAdmins(orgId)
         set({ admins })
     },
     createAdmin: async (newAdmin: CreateCognitoUserParams) => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
         await api?.admin.createAdmin(newAdmin, orgId)
         await get().updateAdmins()
     },
     deleteAdmin: async (id: string) => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
         await api?.admin.disableUser(id)
@@ -42,7 +42,7 @@ export const useAdminStore = create<AdminStore>((set, get) => ({
         await api?.users.deleteUser(orgId, id)
     },
     createGuardian: async (newGuardian: CreateGuardianInput) => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
         const getGuardians = useGuardianStore.getState().getGuardians
         const createAddress = useAddressStore.getState().createAddress
@@ -58,7 +58,7 @@ export const useAdminStore = create<AdminStore>((set, get) => ({
         throw 'Failed to create Guardian'
     },
     deleteUser: async (userId: string) => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
         await api?.users.deleteUser(orgId, userId)

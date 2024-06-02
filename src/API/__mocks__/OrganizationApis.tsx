@@ -1,6 +1,4 @@
-import { OrganizationType } from '@/types/OrganizationType'
-
-const getOrganizations = async () => Promise.resolve([
+const mockGetOrganizations = async () => Promise.resolve([
     {
         id: '123'
     },
@@ -9,22 +7,15 @@ const getOrganizations = async () => Promise.resolve([
     }
 ])
 
-const getOrganizationById = async (id: string) => Promise.resolve({ id })
+const mockGetOrganizationById = async (id: string) => Promise.resolve({ id })
 
-const createOrganization = async () => Promise.resolve({})
+const mockCreateOrganization = async () => Promise.resolve({})
 
-const deleteOrganization = async () => Promise.resolve({})
+const mockDeleteOrganization = async () => Promise.resolve({})
 
-export interface OrganizationApiFunctionTypes {
-    getOrganizations(): Promise<OrganizationType[]>,
-    getOrganizationById(id: string): Promise<OrganizationType>,
-    createOrganization(organization: OrganizationType): Promise<object>,
-    deleteOrganization(id: string): Promise<object>
-}
-
-export default {
-    getOrganizations,
-    getOrganizationById,
-    createOrganization,
-    deleteOrganization
-}
+export const OrgApis = jest.fn().mockImplementation(() => ({
+    getOrganizations: mockGetOrganizations,
+    getOrganizationById: mockGetOrganizationById,
+    createOrganization: mockCreateOrganization,
+    deleteOrganization: mockDeleteOrganization
+}))

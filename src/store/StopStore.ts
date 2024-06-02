@@ -20,7 +20,7 @@ export const useStopStore = create<StopStore>((set, get) => ({
     stops: [],
     getStops: async () => {
         const orgId = useOrgStore.getState().orgId
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
 
         const fetchedStops = await api?.stops.getStops(orgId)
 
@@ -30,14 +30,14 @@ export const useStopStore = create<StopStore>((set, get) => ({
     },
     getBulkStopsById: async (stopIds: string[]) => {
         const orgId = useOrgStore.getState().orgId
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
 
         const fetchedStops = await api?.stops.getBulkStopsByIds(orgId, stopIds)
         return fetchedStops ?? []
     },
     getStopById: async (stopId: string) => {
         const orgId = useOrgStore.getState().orgId
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
 
         const fetchedStop = await api?.stops.getStopById(orgId, stopId)
 
@@ -49,7 +49,7 @@ export const useStopStore = create<StopStore>((set, get) => ({
     },
     createStop: async (stop: StopType) => {
         const orgId = stop.orgId
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const addStopToRoute = useRouteStore.getState().addStopToRoute
         const getRouteById = useRouteStore.getState().getRouteById
 
@@ -66,12 +66,12 @@ export const useStopStore = create<StopStore>((set, get) => ({
     },
     deleteStop: async (stopId: string) => {
         const orgId = useOrgStore.getState().orgId
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         await api?.stops.deleteStop(orgId, stopId)
         await get().getStops()
     },
     addRiderToStop: async (rider: RiderType, stop: StopType) => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         let riderIds = stop.riderIds
 
         if (!riderIds || riderIds.length < 1) {
@@ -83,7 +83,7 @@ export const useStopStore = create<StopStore>((set, get) => ({
     },
     removeRiderFromStop: async (stopId: string, riderId: string) => {
         const stop = await get().getStopById(stopId)
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const newRiderIds = stop.riderIds?.filter((r: string) => r !== riderId)
         stop.riderIds = newRiderIds && newRiderIds.length > 0 ? newRiderIds : ['']
 

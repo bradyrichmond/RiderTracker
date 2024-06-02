@@ -1,12 +1,10 @@
-import { BusType } from '@/types/BusType'
-
-const getBusById = async (busId: string) => Promise.resolve({
+const mockGetBusById = async (busId: string) => Promise.resolve({
     id: busId,
     busNumber: '420',
     orgId: '123'
 })
 
-const getBuses = async (orgId: string) => Promise.resolve([
+const mockGetBuses = async (orgId: string) => Promise.resolve([
     {
         id: 'b19d7f92-c969-457a-84e0-bf64e986ed6a',
         busNumber: '267',
@@ -39,21 +37,13 @@ const getBuses = async (orgId: string) => Promise.resolve([
     }
 ])
 
-const createBus = async () => Promise.resolve({})
+const mockCreateBus = async () => Promise.resolve({})
 
-const deleteBus = async () => Promise.resolve({})
+const mockDeleteBus = async () => Promise.resolve({})
 
-export interface BusApiFunctionTypes {
-    getBuses(orgId: string): Promise<BusType[]>,
-    getBusById(id: string): Promise<BusType>,
-    createBus(body: BusType): Promise<object>,
-    deleteBus(id: string): Promise<object>
-}
-
-export default {
-    getBuses,
-    getBusById,
-    createBus,
-    deleteBus
-}
-
+export const BusApis = jest.fn().mockImplementation(() => ({
+    getBuses: mockGetBuses,
+    getBusById: mockGetBusById,
+    createBus: mockCreateBus,
+    deleteBus: mockDeleteBus
+}))

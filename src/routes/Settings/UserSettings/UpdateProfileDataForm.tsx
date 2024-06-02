@@ -15,7 +15,7 @@ interface ProfileFormInputs {
 const UpdateProfileDataForm = () => {
     const { userFullName, userEmail, userId, updateUserData } = useUserStore()
     const { showErrorSnackbar } = useContext(SnackbarContext)
-    const { api } = useApiStore()
+    const getApi = useApiStore().getApi
     const { t } = useTranslation('common')
 
     const { firstName, lastName } = useMemo(() => {
@@ -38,6 +38,7 @@ const UpdateProfileDataForm = () => {
 
     const onSubmit = async (data: ProfileFormInputs) => {
         const formattedData = mapFormDataToCognito(data)
+        const api = await getApi()
         await api?.admin.updateUserAttributes(formattedData, userId)
         updateUserData()
         showDataChangeSnackbar()

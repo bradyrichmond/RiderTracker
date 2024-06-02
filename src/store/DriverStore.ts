@@ -16,14 +16,14 @@ interface DriverStore {
 export const useDriverStore = create<DriverStore>((set, get) => ({
     drivers: [],
     updateDrivers: async () => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
         const drivers = await api?.users.getDrivers(orgId)
 
         set({ drivers })
     },
     createDriver: async (newUser: CreateCognitoUserParams) => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
         const cognitoUser = await api?.admin.createCognitoUser(newUser)
@@ -45,14 +45,14 @@ export const useDriverStore = create<DriverStore>((set, get) => ({
         }
     },
     deleteDriver: async (driverId: string) => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
         await api?.users.deleteUser(orgId, driverId)
         await get().updateDrivers()
     },
     getDriverById: async (driverId: string) => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
         const driver = api?.users.getDriverById(orgId, driverId)

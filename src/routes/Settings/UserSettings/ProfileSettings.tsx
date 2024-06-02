@@ -11,12 +11,13 @@ import { useOrgStore } from '@/store/OrgStore'
 import { useUserStore } from '@/store/UserStore'
 
 const ProfileSettings = () => {
-    const { api } = useApiStore()
+    const getApi = useApiStore().getApi
     const { userId, userFullName, userPictureUrl, updateUserData } = useUserStore()
     const { orgId } = useOrgStore()
     const { t } = useTranslation('settings')
 
     const uploadFile = async (file: File) => {
+        const api = await getApi()
         await api?.admin.updateUserProfileImage(orgId, userId, file, userId)
         await updateUserData()
     }

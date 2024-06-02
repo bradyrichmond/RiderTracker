@@ -1,7 +1,7 @@
 export default {
     testEnvironment: "jsdom",
     transform: {
-      "^.+\\.tsx?$": "ts-jest",
+      "^.+\\.(ts|tsx|js)?$": "ts-jest",
     },
   
     moduleNameMapper: {
@@ -9,6 +9,8 @@ export default {
       "^.+\\.svg$": "jest-transformer-svg",
       "^@/(.*)$": "<rootDir>/src/$1",
     },
-  
+
     setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
+
+    collectCoverage: true
   }

@@ -21,7 +21,7 @@ export const useGuardianStore = create<GuardianStore>((set, get) => ({
     guardians: [],
     getGuardians: async (guardianIds?: string[]) => {
         const orgId = useOrgStore.getState().orgId
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
 
         if (guardianIds) {
             const fetchedGuardians = await api?.users.getBulkGuardiansByIds(orgId, guardianIds)
@@ -40,7 +40,7 @@ export const useGuardianStore = create<GuardianStore>((set, get) => ({
         }
     },
     getGuardianById: async (guardianId: string) => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
         const guardian = await api?.users.getGuardianById(orgId, guardianId)
 
@@ -52,7 +52,7 @@ export const useGuardianStore = create<GuardianStore>((set, get) => ({
     },
     deleteGuardian: async (guardian: GuardianType) => {
         const orgId = useOrgStore.getState().orgId
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const removeGuardianFromRider = useRiderStore.getState().removeGuardianFromRider
 
         await api?.users.deleteUser(orgId, guardian.id)
@@ -91,7 +91,7 @@ export const useGuardianStore = create<GuardianStore>((set, get) => ({
         return false
     },
     addRiderToGuardian: async (guardian: GuardianType, rider: RiderType) => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
         let riderIds: string[] = guardian.riderIds
@@ -105,7 +105,7 @@ export const useGuardianStore = create<GuardianStore>((set, get) => ({
         await api?.users.updateUser(orgId, guardian.id, { riderIds })
     },
     removeRiderFromGuardian: async (guardianId: string, riderId: string) => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
         const guardian = await get().getGuardianById(guardianId)
 

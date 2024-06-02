@@ -15,6 +15,8 @@ import SearchBar from '@/components/SearchBar'
 import { useSchoolStore } from '@/store/SchoolStore'
 import { useStopStore } from '@/store/StopStore'
 import { useGuardianStore } from '@/store/GuardianStore'
+import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
+import { useUserStore } from '@/store/UserStore'
 
 interface RidersProps {
     activeRider?: string
@@ -25,6 +27,7 @@ const Riders = ({ activeRider }: RidersProps) => {
     const { schools, getSchools } = useSchoolStore()
     const { stops, getStops } = useStopStore()
     const { guardians, getGuardians } = useGuardianStore()
+    const heaviestRole = useUserStore().heaviestRole
     const { showErrorSnackbar } = useContext(SnackbarContext)
     const [isAddingRider, setIsAddingRider] = useState(false)
     const navigate = useNavigate()
@@ -46,10 +49,14 @@ const Riders = ({ activeRider }: RidersProps) => {
     }, [getGuardians, getRiders, getSchools, getStops, showErrorSnackbar])
 
     const allSchools: OptionsType[] = useMemo(() => {
-        return schools.map((s) => ({
-            label: s.schoolName,
-            id: s.id
-        }))
+        if (schools) {
+            return schools.map((s) => ({
+                label: s.schoolName,
+                id: s.id
+            }))
+        } else {
+            return []
+        }
     }, [schools])
 
     const allStops: OptionsType[] = useMemo(() => {
@@ -115,16 +122,20 @@ const Riders = ({ activeRider }: RidersProps) => {
                         {t('riders')}
                     </Typography>
                 </Box>
-                <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
-                    <Button variant='contained' onClick={startAddingRider}>
-                        <Box display='flex' flexDirection='row'>
-                            <AddCircleIcon />
-                            <Box flex='1' marginLeft='1rem'>
-                                <Typography>{t('addRider')}</Typography>
+                {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_RIDER) ?
+                    <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
+                        <Button variant='contained' onClick={startAddingRider}>
+                            <Box display='flex' flexDirection='row'>
+                                <AddCircleIcon />
+                                <Box flex='1' marginLeft='1rem'>
+                                    <Typography>{t('addRider')}</Typography>
+                                </Box>
                             </Box>
-                        </Box>
-                    </Button>
-                </Box>
+                        </Button>
+                    </Box>
+                    :
+                    null
+                }
             </Box>
             <RiderDrawer open={!!activeRider} rider={riders.find((r: RiderType) => r.id === activeRider)} />
             <CreateRiderDialog
@@ -149,7 +160,7 @@ const Riders = ({ activeRider }: RidersProps) => {
                             onRowClick={(params) => handleRowClick(params.row.id)}
                             initialState={{
                                 sorting: {
-                                  sortModel: [{ field: 'lastName', sort: 'asc' }, { field: 'firstName', sort: 'asc' }],
+                                  sortModel: [{ field: 'lastName', sort: 'asc' }],
                                 },
                             }}
                         />

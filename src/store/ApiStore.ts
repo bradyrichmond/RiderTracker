@@ -3,13 +3,25 @@ import { create } from 'zustand'
 
 interface ApiStore {
     api: RiderTrackerAPI | undefined
-    updateApi(): Promise<void>
+    getApi(): Promise<RiderTrackerAPI>
+    updateApi(): Promise<RiderTrackerAPI>
 }
 
-export const useApiStore = create<ApiStore>((set) => ({
+export const useApiStore = create<ApiStore>((set, get) => ({
     api: undefined,
+    getApi: async () => {
+        const api = get().api
+
+        if (!api) {
+            const newApi = await get().updateApi()
+            set({ api: newApi })
+            return newApi
+        }
+
+        return api
+    },
     updateApi: async () => {
         const newClient = await RiderTrackerAPI.getClient()
-        set({ api: newClient })
+        return newClient
     }
 }))

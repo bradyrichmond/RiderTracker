@@ -1,6 +1,14 @@
 import { AddressType } from '@/types/AddressType'
 
-const getSchoolById = async (id: string) => Promise.resolve({
+// import SoundPlayer from './sound-player';
+// const fakePlaySoundFile = jest.fn();
+// jest.mock('./sound-player', () => {
+//   return jest.fn().mockImplementation(() => {
+//     return {playSoundFile: fakePlaySoundFile};
+//   });
+// });
+
+const mockGetAddressById = async (id: string) => Promise.resolve({
     id: id,
     orgId: '123456',
     houseNumber: '123',
@@ -17,7 +25,7 @@ const getSchoolById = async (id: string) => Promise.resolve({
     }
 })
 
-const getAddresses = async (orgId: string) => Promise.resolve([
+const mockGetAddresses = async (orgId: string) => Promise.resolve([
     {
         id: '123456',
         orgId: orgId,
@@ -36,7 +44,7 @@ const getAddresses = async (orgId: string) => Promise.resolve([
     }
 ])
 
-const getBulkAddressesById = async (schoolIds: string[]) => {
+const mockGetBulkAddressesById = async (schoolIds: string[]) => {
     const Addresses: AddressType[] = []
 
     schoolIds.forEach((s) => Addresses.push(
@@ -63,26 +71,17 @@ const getBulkAddressesById = async (schoolIds: string[]) => {
     return Addresses
 }
 
-const updateAddress = async () => Promise.resolve({})
+const mockUpdateAddress = async () => Promise.resolve({})
 
-const createAddress = async () => Promise.resolve({})
+const mockCreateAddress = async () => Promise.resolve({})
 
-const deleteAddress = async () => Promise.resolve({})
+const mockDeleteAddress = async () => Promise.resolve({})
 
-export interface AddressApiFunctionTypes {
-    getAddresss(orgId: string): Promise<AddressType[]>,
-    getAddressById(id: string): Promise<AddressType>,
-    getBulkAddressesById(ids: string[]): Promise<AddressType[]>,
-    updateAddress(scan: AddressType): Promise<object>,
-    createAddress(scan: AddressType): Promise<object>,
-    deleteAddress(id: string): Promise<object>
-}
-
-export default {
-    getAddresses,
-    getSchoolById,
-    getBulkAddressesById,
-    updateAddress,
-    createAddress,
-    deleteAddress
-}
+export const AddressApis = jest.fn().mockImplementation(() => ({
+    getAddresses: mockGetAddresses,
+    getAddressById: mockGetAddressById,
+    getBulkAddressesById: mockGetBulkAddressesById,
+    updateAddress: mockUpdateAddress,
+    createAddress: mockCreateAddress,
+    deleteAddress: mockDeleteAddress,
+}))

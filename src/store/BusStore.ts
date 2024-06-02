@@ -15,14 +15,14 @@ interface BusStore {
 export const useBusStore = create<BusStore>((set, get) => ({
     buses: [],
     updateBuses: async () => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
         const buses = await api?.buses.getBuses(orgId)
 
         set({ buses })
     },
     getBusById: async (busId: string) => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
         const bus = await api?.buses.getBusById(orgId, busId)
@@ -34,7 +34,7 @@ export const useBusStore = create<BusStore>((set, get) => ({
         throw 'Could not find bus by id'
     },
     createBus: async () => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
         const newBusId = uuid()
@@ -47,7 +47,7 @@ export const useBusStore = create<BusStore>((set, get) => ({
         await get().updateBuses()
     },
     deleteBus: async (busId: string) => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
         await api?.buses.deleteBus(orgId, busId)

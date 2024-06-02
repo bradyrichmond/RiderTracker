@@ -64,7 +64,7 @@ const LoginForm = () => {
     }
 
     const postLoginChecks = async () => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
 
         if (api) {
             const path = window.location.toString().split('//')[1]

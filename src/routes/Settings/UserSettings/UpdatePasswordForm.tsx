@@ -14,7 +14,7 @@ interface PasswordFormInput {
 const UpdatePasswordForm = () => {
     const { handleSubmit, register } = useForm<PasswordFormInput>()
     const { showErrorSnackbar } = useContext(SnackbarContext)
-    const { api } = useApiStore()
+    const getApi = useApiStore().getApi
     const { t } = useTranslation(['settings', 'common'])
 
     const onSubmit = (data: PasswordFormInput) => {
@@ -31,6 +31,7 @@ const UpdatePasswordForm = () => {
 
     const submitPasswordChangeRequest = async (oldPassword: string, newPassword: string) => {
         try {
+            const api = await getApi()
             await api?.users.changeUserPassword(oldPassword, newPassword)
         } catch {
             showPasswordSetFailureSnackbar()

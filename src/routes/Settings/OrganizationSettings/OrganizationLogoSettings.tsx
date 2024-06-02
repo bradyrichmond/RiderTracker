@@ -10,12 +10,13 @@ import { useOrgStore } from '@/store/OrgStore'
 import { useUserStore } from '@/store/UserStore'
 
 const OrganizationLogoSettings = () => {
-    const { api } = useApiStore()
+    const getApi = useApiStore().getApi
     const { updateUserData } = useUserStore()
     const { orgId, organizationLoginImageUrl } = useOrgStore()
     const { t } = useTranslation(['settings', 'common'])
 
     const uploadAction = async (file: File) => {
+        const api = await getApi()
         await api?.organizations.updateOrganizationLoginImage(file, orgId)
         await updateUserData()
     }

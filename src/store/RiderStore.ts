@@ -23,7 +23,7 @@ export const useRiderStore = create<RiderStore>((set, get) => ({
     riders: [],
     getRiders: async () => {
         const orgId = useOrgStore.getState().orgId
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
 
         const fetchedRiders = await api?.riders.getRiders(orgId)
 
@@ -33,14 +33,14 @@ export const useRiderStore = create<RiderStore>((set, get) => ({
     },
     getBulkRidersById: async (riderIds: string[]) => {
         const orgId = useOrgStore.getState().orgId
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
 
         const fetchedRiders = await api?.riders.getBulkRidersByIds(orgId, riderIds)
         return fetchedRiders ?? []
     },
     getRiderById: async (riderId: string) => {
         const orgId = useOrgStore.getState().orgId
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
 
         const fetchedRider = await api?.riders.getRiderById(orgId, riderId)
 
@@ -51,7 +51,7 @@ export const useRiderStore = create<RiderStore>((set, get) => ({
         throw 'Could not get rider by id'
     },
     createRider: async (rider: RiderType) => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
         const addRiderToGuardian = useGuardianStore.getState().addRiderToGuardian
         const getGuardianById = useGuardianStore.getState().getGuardianById
@@ -89,7 +89,7 @@ export const useRiderStore = create<RiderStore>((set, get) => ({
     },
     deleteRider: async (rider: RiderType) => {
         const orgId = useOrgStore.getState().orgId
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const removeRiderFromGuardian = useGuardianStore.getState().removeRiderFromGuardian
         await api?.riders.deleteRider(orgId, rider.id)
 
@@ -132,7 +132,7 @@ export const useRiderStore = create<RiderStore>((set, get) => ({
     },
     removeGuardianFromRider: async (guardianId: string, riderId: string) => {
         const rider = await get().getRiderById(riderId)
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const newGuardianIds = rider.guardianIds?.filter((g: string) => g !== guardianId)
         rider.guardianIds = newGuardianIds && newGuardianIds.length > 0 ? newGuardianIds : ['']
 

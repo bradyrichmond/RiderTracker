@@ -18,14 +18,14 @@ interface SchoolStore {
 export const useSchoolStore = create<SchoolStore>((set, get) => ({
     schools: [],
     getSchools: async () => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
         const schools = await api?.schools.getSchools(orgId)
         set({ schools })
     },
     getSchoolById: async (schoolId: string) => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
         const school = await api?.schools.getSchoolById(orgId, schoolId)
@@ -38,7 +38,7 @@ export const useSchoolStore = create<SchoolStore>((set, get) => ({
     },
     createSchool: async (school: SchoolType) => {
         const orgId = useOrgStore.getState().orgId
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const createAddress = useAddressStore.getState().createAddress
 
         const address = await createAddress(school.address)
@@ -51,13 +51,13 @@ export const useSchoolStore = create<SchoolStore>((set, get) => ({
         await get().getSchools()
     },
     deleteSchool: async (schoolId: string) => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
         await api?.schools.deleteSchool(orgId, schoolId)
     },
     addRiderToSchool: async (school: SchoolType, riderId: string) => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
         let riderIds = school.riderIds
@@ -71,7 +71,7 @@ export const useSchoolStore = create<SchoolStore>((set, get) => ({
         await get().getSchools()
     },
     removeRiderFromSchool: async (school: SchoolType, riderId: string) => {
-        const api = useApiStore.getState().api
+        const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
         let riderIds = school.riderIds?.filter((s) => s !== riderId)

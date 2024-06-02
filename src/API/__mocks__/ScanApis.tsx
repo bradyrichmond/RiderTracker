@@ -1,6 +1,6 @@
 import { ScanType } from '@/types/ScanType'
 
-const getScans = async (orgId: string) => Promise.resolve([
+const mockGetScans = async (orgId: string) => Promise.resolve([
     {
        id: '0c3dfca8-13eb-4df7-a194-883f0294d49b',
        orgId: orgId,
@@ -11,7 +11,7 @@ const getScans = async (orgId: string) => Promise.resolve([
     }
 ])
 
-const getScanById = async (id: string) => Promise.resolve({
+const mockGetScanById = async (id: string) => Promise.resolve({
     id: id,
     orgId: '123456',
     stopId: 'ec427081-7a41-4248-88ed-9ea7b1a3341f',
@@ -20,7 +20,7 @@ const getScanById = async (id: string) => Promise.resolve({
     deviceLocationOnSubmit: { lat: 47.5831326, lon: -122.0313254 }
 })
 
-const getBulkScansById = async (scanIds: string[]) => {
+const mockGetBulkScansById = async (scanIds: string[]) => {
     const scans: ScanType[] = []
 
     scanIds.forEach((r) => scans.push({
@@ -39,26 +39,17 @@ const getBulkScansById = async (scanIds: string[]) => {
     return scans
 }
 
-const updateScan = async () => Promise.resolve({})
+const mockUpdateScan = async () => Promise.resolve({})
 
-const createScan = async () => Promise.resolve({})
+const mockCreateScan = async () => Promise.resolve({})
 
-const deleteScan = async () => Promise.resolve({})
+const mockDeleteScan = async () => Promise.resolve({})
 
-export interface ScanApiFunctionTypes {
-    getScans(orgId: string): Promise<ScanType[]>,
-    getScanById(id: string): Promise<ScanType>,
-    getBulkScansById(ids: string[]): Promise<ScanType[]>,
-    updateScan(scan: ScanType): Promise<object>,
-    createScan(scan: ScanType): Promise<object>,
-    deleteScan(id: string): Promise<object>
-}
-
-export default {
-    getScans,
-    getScanById,
-    getBulkScansById,
-    updateScan,
-    createScan,
-    deleteScan
-}
+export const ScanApis = jest.fn().mockImplementation(() => ({
+    getScans: mockGetScans,
+    getScanById: mockGetScanById,
+    getBulkScansById: mockGetBulkScansById,
+    updateScan: mockUpdateScan,
+    createScan: mockCreateScan,
+    deleteScan: mockDeleteScan
+}))
