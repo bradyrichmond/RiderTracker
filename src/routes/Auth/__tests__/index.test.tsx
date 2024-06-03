@@ -14,7 +14,7 @@ afterEach(() => {
 describe('Riders Tests', () => {
     it('shows loading screen', async () => {
         render(<Auth />, { wrapper: ProviderWrapperAsRole })
-    
+
         await waitFor(() => {
             expect(screen.getByText(/gatheringLocalData/i, { selector: 'h4' })).toBeInTheDocument()
         })
@@ -22,7 +22,7 @@ describe('Riders Tests', () => {
 
     it('shows login form', async () => {
         render(<LoginForm />, { wrapper: ProviderWrapperAsRole })
-    
+
         await waitFor(() => {
             expect(screen.getByText(/signin/i)).toBeInTheDocument()
         })
@@ -30,7 +30,7 @@ describe('Riders Tests', () => {
 
     it('shows logout page', async () => {
         render(<Logout />, { wrapper: ProviderWrapperAsRole })
-    
+
         await waitFor(() => {
             expect(screen.getByText(/loggingOut/i)).toBeInTheDocument()
         })

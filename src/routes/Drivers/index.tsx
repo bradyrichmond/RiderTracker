@@ -4,16 +4,24 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { UserType } from '@/types/UserType'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { useTranslation } from 'react-i18next'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useDriverStore } from '@/store/DriverStore'
 import DriverDrawer from './DriverDrawer'
+import CreateDriverDialog from './CreateDriverDialog'
+import { CreateCognitoUserParams } from '@/API/AdminApis'
+import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
+import { useUserStore } from '@/store/UserStore'
+import { useAdminStore } from '@/store/AdminStore'
 
 interface DriversProps {
     activeDriver?: string
 }
 
 const Drivers = ({ activeDriver }: DriversProps) => {
+    const [isAddingDriver, setIsAddingDriver] = useState(false)
     const { drivers, updateDrivers } = useDriverStore()
+    const createDriver = useAdminStore().createDriver
+    const heaviestRole = useUserStore().heaviestRole
     const navigate = useNavigate()
     const { t } = useTranslation('drivers')
 
@@ -21,8 +29,13 @@ const Drivers = ({ activeDriver }: DriversProps) => {
         updateDrivers()
     }, [updateDrivers])
 
-    const createDriverAction = async () => {
-        return
+    const createDriverAction = async (newDriver: CreateCognitoUserParams) => {
+        await createDriver(newDriver)
+        toggleAddingDriver()
+    }
+
+    const toggleAddingDriver = () => {
+        setIsAddingDriver((current) => !current)
     }
 
     const generateGridColumns = (): GridColDef[] => {
@@ -50,18 +63,27 @@ const Drivers = ({ activeDriver }: DriversProps) => {
                         {t('drivers')}
                     </Typography>
                 </Box>
-                <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
-                    <Button variant='contained' onClick={createDriverAction}>
-                        <Box display='flex' flexDirection='row'>
-                            <AddCircleIcon />
-                            <Box flex='1' marginLeft='1rem'>
-                                <Typography>{t('addDrivers')}</Typography>
+                {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_DRIVER) ?
+                    <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
+                        <Button variant='contained' onClick={toggleAddingDriver}>
+                            <Box display='flex' flexDirection='row'>
+                                <AddCircleIcon />
+                                <Box flex='1' marginLeft='1rem'>
+                                    <Typography>{t('addDriver')}</Typography>
+                                </Box>
                             </Box>
-                        </Box>
-                    </Button>
-                </Box>
+                        </Button>
+                    </Box>
+                    :
+                    null
+                }
             </Box>
             <DriverDrawer open={!!activeDriver} driverId={activeDriver ?? ''} />
+            <CreateDriverDialog
+                isAddingDriver={isAddingDriver}
+                cancel={toggleAddingDriver}
+                createDriver={createDriverAction}
+            />
             <Box flex='1'>
                 <Box sx={{ height: '100%', width: '100%' }}>
                     {drivers ?

@@ -7,6 +7,7 @@ import { CreateGuardianInput } from '@/routes/Guardians'
 import { useAddressStore } from './AddressStore'
 import { RIDER_TRACKER_ROLES } from '@/constants/Roles'
 import { useGuardianStore } from './GuardianStore'
+import { useDriverStore } from './DriverStore'
 
 interface AdminStore {
     admins: UserType[]
@@ -14,6 +15,7 @@ interface AdminStore {
     createAdmin(newAdmin: CreateCognitoUserParams): Promise<void>
     deleteAdmin(adminId: string): Promise<void>
     createGuardian(newAdmin: CreateGuardianInput): Promise<void>
+    createDriver(newDriver: CreateCognitoUserParams): Promise<void>
     deleteUser(userId: string): Promise<void>
 }
 
@@ -52,10 +54,17 @@ export const useAdminStore = create<AdminStore>((set, get) => ({
         if (address) {
             await api?.admin.createGuardian(newGuardian, address, orgId)
             await getGuardians()
-            return
         }
 
         throw 'Failed to create Guardian'
+    },
+    createDriver: async (newDriver: CreateCognitoUserParams) => {
+        const api = await useApiStore.getState().getApi()
+        const orgId = useOrgStore.getState().orgId
+        const updateDrivers = useDriverStore.getState().updateDrivers
+
+        await api?.admin.createDriver(newDriver, orgId)
+        await updateDrivers()
     },
     deleteUser: async (userId: string) => {
         const api = await useApiStore.getState().getApi()

@@ -78,11 +78,9 @@ export class AdminApis {
     createAdmin = async (admin: CreateCognitoUserParams, orgId: string) => {
 
         try {
-            // First, create the cognito user
             const newCognitoUser = await this.createCognitoUser(admin)
             const id = newCognitoUser.User.Username
 
-            // Second, create add the new user to the db
             await this.createUser(orgId, {
                 id,
                 orgId,
@@ -93,7 +91,6 @@ export class AdminApis {
                 userType: RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN
             })
 
-            // Third, add the user to the org admins group
             const addUserToGroupResponse = await this.addUserToGroup(id, RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN)
 
             return addUserToGroupResponse
@@ -109,14 +106,11 @@ export class AdminApis {
     createGuardian = async (guardian: CreateCognitoUserParams, address: AddressType, orgId: string) => {
 
         try {
-            // First, create the cognito user
             const newCognitoUser = await this.createCognitoUser(guardian)
             const id = newCognitoUser.User.Username
 
-            // Second, create the new address
             await this.client.organizationsOrgIdAddressesPost({ orgId }, address)
 
-            // Third, create add the new user to the db
             await this.createUser(orgId, {
                 id,
                 orgId,
@@ -127,7 +121,6 @@ export class AdminApis {
                 userType: RIDER_TRACKER_ROLES.RIDER_TRACKER_GUARDIAN
             })
 
-            // Fourth, add user id to org guardian ids
             const getOrgResponse = await this.client.organizationsOrgIdGet({ orgId })
             const org: OrganizationType = handleApiResponse(getOrgResponse)
             let newGuardianIds: string[]
@@ -141,8 +134,41 @@ export class AdminApis {
 
             await this.client.organizationsOrgIdPut({ orgId }, { guardianIds: newGuardianIds })
 
-            // Fifth, add the user to the org guardians group
             const addUserToGroupResponse = await this.addUserToGroup(id, RIDER_TRACKER_ROLES.RIDER_TRACKER_GUARDIAN)
+
+            return addUserToGroupResponse
+        } catch (e) {
+            throw e as string
+        }
+    }
+
+    createDriver = async (driver: CreateCognitoUserParams, orgId: string) => {
+        try {
+            const newCognitoUser = await this.createCognitoUser(driver)
+            const id = newCognitoUser.User.Username
+
+            await this.createUser(orgId, {
+                id,
+                orgId,
+                firstName: driver.given_name,
+                lastName: driver.family_name,
+                email: driver.email,
+                userType: RIDER_TRACKER_ROLES.RIDER_TRACKER_DRIVER
+            })
+
+            const getOrgResponse = await this.client.organizationsOrgIdGet({ orgId })
+            const org: OrganizationType = handleApiResponse(getOrgResponse)
+            let newDriverIds: string[] | undefined = org.driverIds?.filter((g: string) => g !== '')
+
+            if (!org.guardianIds) {
+                newDriverIds = []
+            }
+
+            newDriverIds?.push(id)
+
+            await this.client.organizationsOrgIdPut({ orgId }, { driverIds: newDriverIds })
+
+            const addUserToGroupResponse = await this.addUserToGroup(id, RIDER_TRACKER_ROLES.RIDER_TRACKER_DRIVER)
 
             return addUserToGroupResponse
         } catch (e) {
@@ -197,6 +223,7 @@ export interface AdminApiFunctionTypes {
     createUser(orgId: string, body: CreateUserParams, options?: Record<string, boolean>): Promise<object>
     createAdmin(admin: CreateCognitoUserParams, orgId: string): Promise<object>
     createGuardian(guardian: CreateCognitoUserParams, address: AddressType, orgId: string): Promise<object>
+    createDriver(driver: CreateCognitoUserParams, orgId: string): Promise<object>
     disableUser(username: string): Promise<void>
     updateUserProfileImage(orgId: string, userId: string, body: File, key: string): Promise<object>
     updateUserAttributes(body: AttributeType[], username: string): Promise<object>
