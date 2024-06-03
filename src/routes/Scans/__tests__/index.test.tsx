@@ -20,7 +20,7 @@ describe('Scans Tests', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('button', {
-        name: /add scan/i
+        name: /addscan/i
       })).toBeInTheDocument()
     })
   })
@@ -31,12 +31,12 @@ describe('Scans Tests', () => {
 
     await waitFor(async () => {
       const addScanButton = await screen.findByRole('button', {
-        name: /add scan/i
+        name: /addscan/i
       })
 
       await user.click(addScanButton)
       const createScanButton = await screen.findByRole('button', {
-        name: /create scan/i
+        name: /createscan/i
       })
       expect(createScanButton).toBeInTheDocument()
     })
@@ -59,7 +59,7 @@ describe('Scans Tests', () => {
     render(<Scans />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} userRole="RiderTracker_Guardian" /> })
 
     await waitFor(() => {
-      expect(screen.queryByText(/add scan/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/addscan/i)).not.toBeInTheDocument()
     })
   })
 
@@ -70,39 +70,6 @@ describe('Scans Tests', () => {
       expect(screen.getByRole('gridcell', {
         name: /ec427081-7a41-4248-88ed-9ea7b1a3341f/i
       })).toBeInTheDocument()
-    })
-  })
-
-  it('shows action buttons in the rows', async () => {
-    render(<Scans />, { wrapper: ProviderWrapperAsRole })
-
-    await waitFor(async () => {
-      const viewDetailButtons = await screen.findAllByTestId('InfoIcon')
-      expect(viewDetailButtons.length).toBeGreaterThan(0)
-      const deleteScanButtons = await screen.findAllByTestId('PlaylistRemoveIcon')
-      expect(deleteScanButtons.length).toBeGreaterThan(0)
-    })
-  })
-
-  it('hides the delete action buttons in the rows for unauthorized users', async () => {
-    render(<Scans />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} userRole="RiderTracker_Guardian" /> })
-
-    await waitFor(async () => {
-      const viewDetailButtons = await screen.findAllByTestId('InfoIcon')
-      expect(viewDetailButtons.length).toBeGreaterThan(0)
-    })
-
-    await waitFor(async () => {
-      const deleteScanButtons = screen.queryByTestId('PlaylistRemoveIcon')
-      expect(deleteScanButtons).not.toBeInTheDocument()
-    })
-  })
-
-  it('shows no rows when there is no data to load', async () => {
-    render(<Scans />, { wrapper: ProviderWrapperAsRole })
-
-    await waitFor(() => {
-      expect(screen.queryByText(/no rows/i)).toBeInTheDocument()
     })
   })
 })

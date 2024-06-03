@@ -16,6 +16,8 @@ import { RiderType } from '@/types/RiderType'
 import { StopType } from '@/types/StopType'
 import { GuardianType } from '@/types/UserType'
 import { useScanStore } from '@/store/ScanStore'
+import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
+import { useUserStore } from '@/store/UserStore'
 
 const Scans = () => {
     const [isAddingScan, setIsAddingScan] = useState(false)
@@ -23,6 +25,7 @@ const Scans = () => {
     const { riders, getRiders } = useRiderStore()
     const { stops, getStops } = useStopStore()
     const { guardians, getGuardians } = useGuardianStore()
+    const heaviestRole = useUserStore().heaviestRole
     const navigate = useNavigate()
     const { getCurrentPosition } = useDeviceLocation()
     const { t } = useTranslation()
@@ -107,16 +110,20 @@ const Scans = () => {
                         {t('scans')}
                     </Typography>
                 </Box>
-                <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
-                    <Button variant='contained' onClick={toggleAddingScan}>
-                        <Box display='flex' flexDirection='row'>
-                            <AddCircleIcon />
-                            <Box flex='1' marginLeft='1rem'>
-                                <Typography>{t('addScan')}</Typography>
+                {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_SCAN) ?
+                    <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
+                        <Button variant='contained' onClick={toggleAddingScan}>
+                            <Box display='flex' flexDirection='row'>
+                                <AddCircleIcon />
+                                <Box flex='1' marginLeft='1rem'>
+                                    <Typography>{t('addScan')}</Typography>
+                                </Box>
                             </Box>
-                        </Box>
-                    </Button>
-                </Box>
+                        </Button>
+                    </Box>
+                    :
+                    null
+                }
             </Box>
             <CreateScanDialog
                 cancel={toggleAddingScan}
