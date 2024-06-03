@@ -2,6 +2,7 @@
     "emailConfirmationCode": "The Organization Admin will receive an email shortly with a confirmation code. Please enter it in the field below.",
     "createFirstAdmin": "Create your first Administrator.",
     "createOrgAdmin": "Create an Organization Administrator",
+    "confirmAdmin": "Confirm Administrator Account",
     "confirmationCode": "Confirmation Code",
     "confirmOrgAdmin": "Confirm Administrator Account",
     "finishOnboarding": "Click the Finish button to proceed to the application.",

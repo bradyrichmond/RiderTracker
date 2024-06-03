@@ -24,6 +24,7 @@
     "noItemsFound": "No Items Found",
     "orgName": "Organization Name",
     "orgSlug": "Organiztion Unique Identifier",
+    "password": "Password",
     "passwordChangeFailed": "Password change failed",
     "passwordNoMatchError": "New password fields do not match!",
     "profile": "Profile",
