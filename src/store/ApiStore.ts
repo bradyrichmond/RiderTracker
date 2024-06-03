@@ -3,16 +3,16 @@ import { create } from 'zustand'
 
 interface ApiStore {
     api: RiderTrackerAPI | undefined
-    getApi(): Promise<RiderTrackerAPI>
+    getApi(updateCredentials?: boolean): Promise<RiderTrackerAPI>
     updateApi(): Promise<RiderTrackerAPI>
 }
 
 export const useApiStore = create<ApiStore>((set, get) => ({
     api: undefined,
-    getApi: async () => {
+    getApi: async (updateCredentials?: boolean) => {
         const api = get().api
 
-        if (!api) {
+        if (!api || updateCredentials) {
             const newApi = await get().updateApi()
             set({ api: newApi })
             return newApi

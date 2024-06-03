@@ -2,7 +2,6 @@ import '@testing-library/jest-dom'
 import { render, waitFor, screen } from '@testing-library/react'
 import Onboarding from '..'
 import userEvent from '@testing-library/user-event'
-// import { PropsWithChildren } from 'react'
 
 jest.mock('aws-amplify/auth', () => ({
     signUp: () => ({
@@ -14,7 +13,7 @@ afterEach(() => {
   jest.restoreAllMocks()
 })
 
-describe('Guardians Tests', () => {
+describe('Onboarding Tests', () => {
     it('starts onboarding at create administrator', async () => {
         render(<Onboarding />)
 

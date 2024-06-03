@@ -1,5 +1,5 @@
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import AddLocationIcon from '@mui/icons-material/AddLocation'
 import CreateStopForRouteDialog from './CreateStopForRouteDialog'
@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useUserStore } from '@/store/UserStore'
 import { useRiderStore } from '@/store/RiderStore'
-import EntityDrawer, { DrawerListActionProps, DrawerListItem } from '@/components/EntityDrawer'
+import EntityDrawer, { DrawerListActionProps } from '@/components/EntityDrawer'
 import { useStopStore } from '@/store/StopStore'
 import { useRouteStore } from '@/store/RouteStore'
 import { useAddressStore } from '@/store/AddressStore'
@@ -22,7 +22,6 @@ interface RouteDrawerProps {
 const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
     const [isAddingStop, setIsAddingStop] = useState(false)
     const [routeNumber, setRouteNumber] = useState('')
-    const [lists, setLists] = useState<DrawerListItem[]>([])
     const [actionItems, setActionItems] = useState<DrawerListActionProps[]>([])
     const [stops, setStops] = useState<OptionsType[]>([])
     const [localRiders, setLocalRiders] = useState<OptionsType[]>([])
@@ -69,8 +68,7 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
         setActionItems(builtActionItems)
     }, [deleteRouteAction, heaviestRole, t])
 
-    const buildLists = useCallback(() => {
-        const builtLists = [
+    const lists = useMemo(() => [
             {
                 title: t('stops'),
                 action: viewStopDetail,
@@ -81,10 +79,7 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
                 action: viewRiderDetail,
                 items: localRiders
             }
-        ]
-
-        setLists(builtLists)
-    }, [localRiders, stops, t, viewRiderDetail, viewStopDetail])
+        ], [localRiders, stops, t, viewRiderDetail, viewStopDetail])
 
     useEffect(() => {
         const getRouteData = async () => {
@@ -116,10 +111,6 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
             getRouteData()
         }
     }, [routeId, buildActionItems, getBulkRidersById, getBulkStopsById, getRouteById ])
-
-    useEffect(() => {
-        buildLists()
-    }, [localRiders, actionItems, buildLists])
 
     const toggleAddingStop = () => {
         setIsAddingStop((current) => !current)

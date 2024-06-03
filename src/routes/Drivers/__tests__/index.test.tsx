@@ -64,7 +64,6 @@ describe('Drivers Tests', () => {
     render(<Drivers />, { wrapper: ProviderWrapperAsRole })
 
     await waitFor(() => {
-      screen.logTestingPlaygroundURL()
       expect(screen.getByRole('gridcell', {
         name: /emily/i
       })).toBeInTheDocument()

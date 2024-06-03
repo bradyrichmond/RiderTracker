@@ -8,6 +8,8 @@ import CreateRouteDialog from './CreateRouteDialog'
 import RouteDrawer from './RouteDrawer'
 import { useNavigate } from 'react-router-dom'
 import { useRouteStore } from '@/store/RouteStore'
+import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
+import { useUserStore } from '@/store/UserStore'
 
 interface RoutesProps {
     activeRoute?: string
@@ -19,6 +21,7 @@ const routeNumberComparator: GridComparatorFn<string> = (v1, v2) =>
 const Routes = ({ activeRoute }: RoutesProps) => {
     const [isAddingRoute, setIsAddingRoute] = useState(false)
     const { routes, getRoutes, createRoute } = useRouteStore()
+    const heaviestRole = useUserStore().heaviestRole
     const { t } = useTranslation('routes')
     const navigate = useNavigate()
 
@@ -61,16 +64,21 @@ const Routes = ({ activeRoute }: RoutesProps) => {
                         {t('routes')}
                     </Typography>
                 </Box>
-                <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
-                    <Button variant='contained' onClick={toggleIsAddingRoute}>
-                        <Box display='flex' flexDirection='row'>
-                            <AddCircleIcon />
-                            <Box flex='1' marginLeft='1rem'>
-                                <Typography>{t('addRoute')}</Typography>
+                {
+                    RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_ROUTE) ?
+                    <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
+                        <Button variant='contained' onClick={toggleIsAddingRoute}>
+                            <Box display='flex' flexDirection='row'>
+                                <AddCircleIcon />
+                                <Box flex='1' marginLeft='1rem'>
+                                    <Typography>{t('addRoute')}</Typography>
+                                </Box>
                             </Box>
-                        </Box>
-                    </Button>
-                </Box>
+                        </Button>
+                    </Box>
+                    :
+                    null
+                }
             </Box>
             <RouteDrawer open={!!activeRoute} routeId={activeRoute ?? ''} />
             <CreateRouteDialog createRoute={createRouteAction} cancelAction={toggleIsAddingRoute} isAddingRoute={isAddingRoute} />
