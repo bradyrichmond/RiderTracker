@@ -1,5 +1,5 @@
 import { Avatar, Box, Paper, SvgIconProps, Tooltip, Typography } from '@mui/material'
-import { ComponentType, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ComponentType, useCallback, useMemo, useRef } from 'react'
 import PersonIcon from '@mui/icons-material/Person'
 import EmailIcon from '@mui/icons-material/Email'
 import { UserType } from '@/types/UserType'
@@ -14,20 +14,19 @@ interface OrganizationAdminCardProps extends UserType {
 }
 
 const OrganizationAdminCard = ({ id, firstName, lastName, title, email, index }: OrganizationAdminCardProps) => {
-    const [actions, setActions] = useState<OrganizationAdminActionProps[]>([])
     const userFullName = `${firstName} ${lastName}`
     const profileUrl = useMemo(() => `https://s3.us-west-2.amazonaws.com/ridertracker.profileimages/${id}.jpg`, [id])
     const ref = useRef(null)
     const hovering = useHover<HTMLDivElement>(ref)
     const { userId } = useUserStore()
-    const { deleteAdmin } = useAdminStore()
+    const deleteAdmin = useAdminStore().deleteAdmin
     const { t } = useTranslation('settings')
 
     const deleteAdminAction = useCallback(async (id: string) => {
         await deleteAdmin(id)
     }, [deleteAdmin])
 
-    const buildActions = useCallback(() => {
+    const actions = useMemo(() => {
         const actionsList: OrganizationAdminActionProps[] = []
 
         if (id !== userId) {
@@ -39,12 +38,9 @@ const OrganizationAdminCard = ({ id, firstName, lastName, title, email, index }:
             })
         }
 
-        setActions(actionsList)
+        return actionsList
     }, [deleteAdminAction, id, t, userId])
 
-    useEffect(() => {
-        buildActions()
-    }, [buildActions])
 
     return (
         <Paper elevation={4} sx={index > 0 ? { mt: '1rem' } : {}} ref={ref}>

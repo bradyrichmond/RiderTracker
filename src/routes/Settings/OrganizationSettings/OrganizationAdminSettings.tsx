@@ -14,11 +14,7 @@ const OrganizationAdminSettings = () => {
     const { t } = useTranslation('settings')
 
     useEffect(() => {
-        const getAdmins = async () => {
-            await updateAdmins()
-        }
-
-        getAdmins()
+        updateAdmins()
     }, [updateAdmins])
 
     const toggleShowModal = () => {

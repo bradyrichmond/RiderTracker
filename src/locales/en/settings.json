@@ -1,5 +1,7 @@
 {
+    "addAdmin": "Add Organization Admin",
     "addOrgAdmin": "Add Organization Admin",
+    "createAdmin": "Create Admin",
     "createAdminError": "Error creating new admin.",
     "deleteAdminTooltip": "Delete this admin?",
     "deleteUserTooltip": "Delete this user?",
