@@ -87,16 +87,20 @@ const Schools = ({ activeSchool }: SchoolsProps) => {
                         {t('schools')}
                     </Typography>
                 </Box>
-                <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
-                    <Button variant='contained' onClick={toggleAddingSchool}>
-                        <Box display='flex' flexDirection='row'>
-                            <AddCircleIcon />
-                            <Box flex='1' marginLeft='1rem'>
-                                <Typography>{t('addSchool')}</Typography>
+                {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_SCHOOL) ?
+                    <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
+                        <Button variant='contained' onClick={toggleAddingSchool}>
+                            <Box display='flex' flexDirection='row'>
+                                <AddCircleIcon />
+                                <Box flex='1' marginLeft='1rem'>
+                                    <Typography>{t('addSchool')}</Typography>
+                                </Box>
                             </Box>
-                        </Box>
-                    </Button>
-                </Box>
+                        </Button>
+                    </Box>
+                    :
+                    null
+                }
             </Box>
             <SchoolDrawer open={!!activeSchool} school={schools.find((s: SchoolType) => s.id === activeSchool)} />
             <CreateSchoolDialog createSchool={createSchoolAction} cancelAction={toggleAddingSchool} open={isAddingSchool} />
