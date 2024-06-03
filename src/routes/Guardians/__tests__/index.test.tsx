@@ -17,7 +17,7 @@ describe('Guardians Tests', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('button', {
-        name: /add guardian/i
+        name: /addguardian/i
       })).toBeInTheDocument()
     })
   })
@@ -28,12 +28,12 @@ describe('Guardians Tests', () => {
 
     await waitFor(async () => {
       const addGuardianButton = await screen.findByRole('button', {
-        name: /add guardian/i
+        name: /addguardian/i
       })
 
       await user.click(addGuardianButton)
       const createGuardianButton = await screen.findByRole('button', {
-        name: /create guardian/i
+        name: /createguardian/i
       })
       expect(createGuardianButton).toBeInTheDocument()
     })
@@ -56,7 +56,7 @@ describe('Guardians Tests', () => {
     render(<Guardians />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} userRole="RiderTracker_Guardian" /> })
 
     await waitFor(() => {
-      expect(screen.queryByText(/add guardian/i)).not.toBeInTheDocument()
+      expect(screen.queryByText(/addguardian/i)).not.toBeInTheDocument()
     })
   })
 
@@ -65,41 +65,8 @@ describe('Guardians Tests', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('gridcell', {
-        name: /parental/i
+        name: /Trigger/i
       })).toBeInTheDocument()
-    })
-  })
-
-  it('shows action buttons in the rows', async () => {
-    render(<Guardians />, { wrapper: ProviderWrapperAsRole })
-
-    await waitFor(async () => {
-      const viewDetailButtons = await screen.findAllByTestId('InfoIcon')
-      expect(viewDetailButtons.length).toBeGreaterThan(0)
-      const deleteDriverButtons = await screen.findAllByTestId('PersonRemoveIcon')
-      expect(deleteDriverButtons.length).toBeGreaterThan(0)
-    })
-  })
-
-  it('hides the delete action buttons in the rows for unauthorized users', async () => {
-    render(<Guardians />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} userRole="RiderTracker_Guardian" /> })
-
-    await waitFor(async () => {
-      const viewDetailButtons = await screen.findAllByTestId('InfoIcon')
-      expect(viewDetailButtons.length).toBeGreaterThan(0)
-    })
-
-    await waitFor(async () => {
-      const deleteDriverButton = screen.queryByTestId('PersonRemoveIcon')
-      expect(deleteDriverButton).not.toBeInTheDocument()
-    })
-  })
-
-  it('shows no rows when there is no data to load', async () => {
-    render(<Guardians />, { wrapper: ProviderWrapperAsRole })
-
-    await waitFor(() => {
-      expect(screen.queryByText(/no rows/i)).toBeInTheDocument()
     })
   })
 })

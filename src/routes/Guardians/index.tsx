@@ -11,6 +11,8 @@ import SearchBar from '@/components/SearchBar'
 import GuardianDrawer from './GuardianDrawer'
 import { useAdminStore } from '@/store/AdminStore'
 import { useRiderStore } from '@/store/RiderStore'
+import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
+import { useUserStore } from '@/store/UserStore'
 
 export interface CreateGuardianInput {
     given_name: string
@@ -27,6 +29,7 @@ const Guardians = ({ activeGuardian }: GuardiansProps) => {
     const { guardians, getGuardians, changeSearchArg } = useGuardianStore()
     const getRiders = useRiderStore().getRiders
     const { createGuardian } = useAdminStore()
+    const heaviestRole = useUserStore().heaviestRole
     const navigate = useNavigate()
     const [isAddingGuardian, setIsAddingGuardian] = useState<boolean>(false)
     const { t } = useTranslation('guardians')
@@ -75,16 +78,20 @@ const Guardians = ({ activeGuardian }: GuardiansProps) => {
                         {t('guardians')}
                     </Typography>
                 </Box>
-                <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
-                    <Button variant='contained' onClick={toggleShowModal}>
-                        <Box display='flex' flexDirection='row'>
-                            <AddCircleIcon />
-                            <Box flex='1' marginLeft='1rem'>
-                                <Typography>{t('addGuardian')}</Typography>
+                {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_GUARDIAN) ?
+                    <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
+                        <Button variant='contained' onClick={toggleShowModal}>
+                            <Box display='flex' flexDirection='row'>
+                                <AddCircleIcon />
+                                <Box flex='1' marginLeft='1rem'>
+                                    <Typography>{t('addGuardian')}</Typography>
+                                </Box>
                             </Box>
-                        </Box>
-                    </Button>
-                </Box>
+                        </Button>
+                    </Box>
+                    :
+                    null
+                }
             </Box>
             <GuardianDrawer open={!!activeGuardian} guardian={guardians.find((g: GuardianType) => g.id === activeGuardian)} />
             <CreateGuardianDialog createGuardian={createGuardianAction} isAddingGuardian={isAddingGuardian} cancel={toggleShowModal} />
@@ -102,7 +109,7 @@ const Guardians = ({ activeGuardian }: GuardiansProps) => {
                             onRowClick={(params) => handleRowClick(params.row.id)}
                             initialState={{
                                 sorting: {
-                                  sortModel: [{ field: 'lastName', sort: 'asc' }, { field: 'firstName', sort: 'asc' }],
+                                  sortModel: [{ field: 'lastName', sort: 'asc' }],
                                 },
                             }}
                         />
