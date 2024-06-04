@@ -5,9 +5,10 @@ import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useUserStore } from '@/store/UserStore'
+import { RIDER_TRACKER_ROLES } from '@/constants/Roles'
 
 const Logout = () => {
-    const { setUserId } = useUserStore()
+    const { setUserId, setHeaviestRole } = useUserStore()
     const navigate = useNavigate()
     const { t } = useTranslation('common')
 
@@ -16,6 +17,7 @@ const Logout = () => {
             console.log(`root router heard ${event}`)
             if (event === 'signedOut') {
                 setUserId('')
+                setHeaviestRole(RIDER_TRACKER_ROLES.RIDER_TRACKER_UNAUTHENTICATED)
                 navigate('/login')
             }
         })

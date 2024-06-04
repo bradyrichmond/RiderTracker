@@ -34,7 +34,7 @@ interface StateUpdate {
 }
 
 export const useUserStore = create<UserStore>((set, get) => ({
-    heaviestRole: RIDER_TRACKER_ROLES.RIDER_TRACKER_WIZARD,
+    heaviestRole: RIDER_TRACKER_ROLES.RIDER_TRACKER_UNAUTHENTICATED,
     setHeaviestRole: (role: string) => {
         set({ heaviestRole: role })
     },
