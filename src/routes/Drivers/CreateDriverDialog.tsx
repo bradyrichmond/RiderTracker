@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next'
 import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 import { Transition } from '@/components/Transition'
 import { CreateCognitoUserParams } from '@/API/AdminApis'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { awsCognitoUserSchema } from '@/validation/awsCognitoUserSchema'
 
 interface CreateDriverDialogProps {
     cancel(): void
@@ -19,8 +21,12 @@ const CreateDriverDialog = ({ cancel, createDriver, isAddingDriver }: CreateDriv
     const {
         handleSubmit,
         register,
-        reset
-    } = useForm<CreateCognitoUserParams>()
+        reset,
+        formState: {
+            errors,
+            touchedFields
+        }
+    } = useForm<CreateCognitoUserParams>({ resolver: yupResolver(awsCognitoUserSchema) })
 
     const createDriverAction = async (data: CreateCognitoUserParams) => {
         try {
@@ -49,9 +55,27 @@ const CreateDriverDialog = ({ cancel, createDriver, isAddingDriver }: CreateDriv
         >
             <DialogTitle textAlign='center'>{t('addDriver')}</DialogTitle>
             <DialogContent>
-                <TextField fullWidth label='First Name' {...register('given_name')} />
-                <TextField fullWidth label='Last Name' {...register('family_name')} />
-                <TextField fullWidth label='Email' {...register('email')} />
+                <TextField
+                    fullWidth
+                    label='First Name'
+                    {...register('given_name')}
+                    error={!!errors.given_name && touchedFields.given_name}
+                    helperText={errors.given_name?.message ? t(errors.given_name.message, { ns: 'common' }) : ''}
+                />
+                <TextField
+                    fullWidth
+                    label='Last Name'
+                    {...register('family_name')}
+                    error={!!errors.family_name && touchedFields.family_name}
+                    helperText={errors.family_name?.message ? t(errors.family_name.message, { ns: 'common' }) : ''}
+                />
+                <TextField
+                    fullWidth
+                    label='Email'
+                    {...register('email')}
+                    error={!!errors.email && touchedFields.email}
+                    helperText={errors.email?.message ? t(errors.email.message, { ns: 'common' }) : ''}
+                />
             </DialogContent>
             <DialogActions sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
                 <Button disabled={disableButtons} variant='contained' onClick={cancel}>{t('cancel', { ns: 'common' })}</Button>

@@ -6,6 +6,8 @@ import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 import { Transition } from '@/components/Transition'
 import { ScanType } from '@/types/ScanType'
 import { OptionsType } from '@/types/FormTypes'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { scanSchema } from '@/validation/scanSchema'
 
 interface CreateScanDialogProps {
     cancel(): void
@@ -23,8 +25,11 @@ const CreateScanDialog = ({ cancel, createScan, isAddingScan, allStops, allRider
     const {
         handleSubmit,
         setValue,
-        reset
-    } = useForm<ScanType>()
+        reset,
+        formState: {
+            errors
+        }
+    } = useForm<ScanType>({ resolver: yupResolver(scanSchema) })
 
     const createScanAction = async (scan: ScanType) => {
         try {
@@ -66,6 +71,8 @@ const CreateScanDialog = ({ cancel, createScan, isAddingScan, allStops, allRider
                                 {...params}
                                 label={t('riders', { ns: 'common' })}
                                 id='RidersLabel'
+                                error={!!errors.riderIds?.message}
+                                helperText={errors.riderIds?.message ? t(errors.riderIds.message, { ns: 'common' }) : ''}
                             />
                         )}
                     />
@@ -82,6 +89,8 @@ const CreateScanDialog = ({ cancel, createScan, isAddingScan, allStops, allRider
                                 {...params}
                                 label={t('stop', { ns: 'common' })}
                                 id='StopLabel'
+                                error={!!errors.stopId?.message}
+                                helperText={errors.stopId?.message ? t(errors.stopId.message, { ns: 'common' }) : ''}
                             />
                         )}
                     />
@@ -99,6 +108,8 @@ const CreateScanDialog = ({ cancel, createScan, isAddingScan, allStops, allRider
                                 {...params}
                                 label={t('guardians', { ns: 'common' })}
                                 id='GuardiansLabel'
+                                error={!!errors.guardianIds?.message}
+                                helperText={errors.guardianIds?.message ? t(errors.guardianIds.message, { ns: 'common' }) : ''}
                             />
                         )}
                     />

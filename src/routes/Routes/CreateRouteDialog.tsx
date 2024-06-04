@@ -1,6 +1,8 @@
 import { Transition } from '@/components/Transition'
 import { useOrgStore } from '@/store/OrgStore'
 import { RouteType } from '@/types/RouteType'
+import { routeSchema } from '@/validation/routeSchema'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -17,7 +19,7 @@ const CreateRouteDialog = ({ createRoute, cancelAction, isAddingRoute }: CreateR
     const [disableButtons, setDisableButtons] = useState<boolean>(false)
     const [newRouteId, setNewRouteId] = useState('')
     const { t } = useTranslation(['routes', 'common'])
-    const { handleSubmit, register, reset } = useForm<RouteType>()
+    const { handleSubmit, register, reset, formState: { errors, touchedFields } } = useForm<RouteType>({ resolver: yupResolver(routeSchema) })
     const { orgId } = useOrgStore()
 
     useEffect(() => {
@@ -51,6 +53,8 @@ const CreateRouteDialog = ({ createRoute, cancelAction, isAddingRoute }: CreateR
                     label='Route Number'
                     autoComplete='off'
                     fullWidth {...register('routeNumber')}
+                    error={!!errors.routeNumber?.message && touchedFields.routeNumber}
+                    helperText={errors.routeNumber?.message ? t(errors.routeNumber.message, { ns: 'common' }) : ''}
                 />
                 <Box sx={{ height: 0, overflow: 'hidden' }}>
                     <TextField

@@ -2,6 +2,8 @@ import { Transition } from '@/components/Transition'
 import { useOrgStore } from '@/store/OrgStore'
 import { OptionsType } from '@/types/FormTypes'
 import { RiderType } from '@/types/RiderType'
+import { riderSchema } from '@/validation/riderSchema'
+import { yupResolver } from '@hookform/resolvers/yup'
 import { Autocomplete, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, TextField } from '@mui/material'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
@@ -23,7 +25,7 @@ const CreateRiderDialog = ({ allGuardians, allSchools, allStops, cancelAction, c
     const [schoolIdInput, setSchoolIdInput] = useState<string>('')
     const { t } = useTranslation(['riders','common'])
     const { orgId } = useOrgStore()
-    const { handleSubmit, register, reset, resetField, setValue } = useForm<RiderType>()
+    const { handleSubmit, register, reset, resetField, setValue, formState: { errors, touchedFields } } = useForm<RiderType>({ resolver: yupResolver(riderSchema) })
 
     const handleCreateRider = async (newRider: RiderType) => {
         setDisableButtons(true)
@@ -58,11 +60,15 @@ const CreateRiderDialog = ({ allGuardians, allSchools, allStops, cancelAction, c
                     label='First Name'
                     autoComplete='off'
                     fullWidth {...register('firstName')}
+                    error={!!errors.firstName?.message && touchedFields.firstName}
+                    helperText={errors.firstName?.message ? t(errors.firstName.message) : ''}
                 />
                 <TextField
                     label='Last Name'
                     autoComplete='off'
                     fullWidth {...register('lastName')}
+                    error={!!errors.lastName?.message && touchedFields.lastName}
+                    helperText={errors.lastName?.message ? t(errors.lastName.message) : ''}
                 />
                 <FormControl fullWidth>
                     <Autocomplete
@@ -76,6 +82,8 @@ const CreateRiderDialog = ({ allGuardians, allSchools, allStops, cancelAction, c
                                 {...params}
                                 label='School'
                                 id='SchoolLabel'
+                                error={!!errors.schoolId?.message && touchedFields.schoolId}
+                                helperText={errors.schoolId?.message ? t(errors.schoolId.message) : ''}
                             />
                         )}
                     />
@@ -94,6 +102,8 @@ const CreateRiderDialog = ({ allGuardians, allSchools, allStops, cancelAction, c
                                     {...params}
                                     label='Guardian'
                                     id='GuardianLabel'
+                                    error={!!errors.guardianIds?.message}
+                                    helperText={errors.guardianIds?.message ? t(errors.guardianIds.message) : ''}
                                 />
                             )}
                         />
@@ -114,6 +124,8 @@ const CreateRiderDialog = ({ allGuardians, allSchools, allStops, cancelAction, c
                                 {...params}
                                 label='Stop'
                                 id='StopLabel'
+                                error={!!errors.stopIds?.message}
+                                helperText={errors.stopIds?.message ? t(errors.stopIds.message) : ''}
                             />
                         )}
                     />

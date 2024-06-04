@@ -5,6 +5,8 @@ import { Transition } from '@/components/Transition'
 import { useTranslation } from 'react-i18next'
 import { CreateGuardianInput } from '.'
 import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { guardianSchema } from '@/validation/guardianSchema'
 
 interface CreateGuardianDialogProps {
     cancel(): void
@@ -19,8 +21,12 @@ const CreateGuardianDialog = ({ cancel, createGuardian, isAddingGuardian }: Crea
     const {
         handleSubmit,
         register,
-        reset
-    } = useForm<CreateGuardianInput>()
+        reset,
+        formState: {
+            errors,
+            touchedFields
+        }
+    } = useForm<CreateGuardianInput>({ resolver: yupResolver(guardianSchema) })
 
     const createGuardianAction = async (data: CreateGuardianInput) => {
         try {
@@ -49,10 +55,34 @@ const CreateGuardianDialog = ({ cancel, createGuardian, isAddingGuardian }: Crea
         >
             <DialogTitle textAlign='center'>{t('addGuardian')}</DialogTitle>
             <DialogContent>
-                <TextField fullWidth label='First Name' {...register('given_name')} />
-                <TextField fullWidth label='Last Name' {...register('family_name')} />
-                <TextField fullWidth label='Email' {...register('email')} />
-                <TextField fullWidth label='Address' {...register('address')} />
+                <TextField
+                    fullWidth
+                    label='First Name'
+                    {...register('given_name')}
+                    error={!!errors.given_name?.message && touchedFields.given_name}
+                    helperText={errors.given_name?.message ? t(errors.given_name.message, { ns: 'common' }) : ''}
+                />
+                <TextField
+                    fullWidth
+                    label='Last Name'
+                    {...register('family_name')}
+                    error={!!errors.family_name?.message && touchedFields.family_name}
+                    helperText={errors.family_name?.message ? t(errors.family_name.message, { ns: 'common' }) : ''}
+                />
+                <TextField
+                    fullWidth
+                    label='Email'
+                    {...register('email')}
+                    error={!!errors.email?.message && touchedFields.email}
+                    helperText={errors.email?.message ? t(errors.email.message, { ns: 'common' }) : ''}
+                />
+                <TextField
+                    fullWidth
+                    label='Address'
+                    {...register('address')}
+                    error={!!errors.address?.message && touchedFields.address}
+                    helperText={errors.address?.message ? t(errors.address.message, { ns: 'common' }) : ''}
+                />
             </DialogContent>
             <DialogActions sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
                 <Button disabled={disableButtons} variant='contained' onClick={cancel}>{t('cancel', { ns: 'common' })}</Button>

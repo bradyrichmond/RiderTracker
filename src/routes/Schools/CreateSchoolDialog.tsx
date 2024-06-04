@@ -5,6 +5,8 @@ import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextFie
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { schoolSchema } from '@/validation/schoolSchema'
 
 interface CreateSchoolDialogProps {
     cancelAction(): void
@@ -15,7 +17,7 @@ interface CreateSchoolDialogProps {
 const CreateSchoolDialog = ({ createSchool, cancelAction, open }: CreateSchoolDialogProps) => {
     const [disableButtons, setDisableButtons] = useState<boolean>(false)
     const { t } = useTranslation(['schools', 'common'])
-    const { handleSubmit, register, reset } = useForm<SchoolType>()
+    const { handleSubmit, register, reset, formState: { errors, touchedFields } } = useForm<SchoolType>({ resolver: yupResolver(schoolSchema) })
     const { orgId } = useOrgStore()
 
     const handleCreate = async (newRoute: SchoolType) => {
@@ -42,11 +44,15 @@ const CreateSchoolDialog = ({ createSchool, cancelAction, open }: CreateSchoolDi
                     label='School Name'
                     autoComplete='off'
                     fullWidth {...register('schoolName')}
+                    error={!!errors.schoolName && touchedFields.schoolName}
+                    helperText={errors.schoolName?.message ? t('fieldRequired', { ns: 'common' }) : ''}
                 />
                 <TextField
                     label='Address'
                     autoComplete='off'
                     fullWidth {...register('address')}
+                    error={!!errors.address && touchedFields.address}
+                    helperText={errors.address?.message ? t('fieldRequired', { ns: 'common' }) : ''}
                 />
                 <Box sx={{ height: 0, overflow: 'hidden' }}>
                     <TextField
