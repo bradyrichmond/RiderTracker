@@ -27,7 +27,7 @@ const Logout = () => {
         return () => {
             cleanup()
         }
-    }, [navigate, setUserId])
+    }, [navigate, setUserId, setHeaviestRole])
 
     return (
         <Box sx={{ height: '100%', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

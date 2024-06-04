@@ -10,6 +10,7 @@ import { useApiStore } from '@/store/ApiStore'
 import { useUserStore } from '@/store/UserStore'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { loginSchema } from '@/validation/loginSchema'
+import { ERROR_NAMES } from '@/constants/ErrorNames'
 
 interface LoginFormInputs {
     username: string
@@ -18,7 +19,7 @@ interface LoginFormInputs {
 
 const LoginForm = () => {
     const { handleSubmit, register, formState: { errors, touchedFields } } = useForm<LoginFormInputs>({ resolver: yupResolver(loginSchema) })
-    const { heaviestRole, updateUserData, userId } = useUserStore()
+    const { heaviestRole, updateUserData } = useUserStore()
     const { orgName, organizationLoginImageUrl, updateOrgData } = useOrgStore()
     const [errorMessage, setErrorMessage] = useState('')
     const [disableButtons, setDisabledButtons] = useState(false)
@@ -51,8 +52,16 @@ const LoginForm = () => {
             await signIn(data)
             await postLoginChecks()
         } catch (e) {
-            console.error(e)
-            signOut()
+            if (e instanceof Error) {
+                console.error(`${e.name} ${e.message}`)
+
+                if (e.name === ERROR_NAMES.UserAlreadyAuthenticated) {
+                    await signOut()
+                    await login(data)
+                    return
+                }
+            }
+
             setErrorMessage(t('authFailed'))
             setDisabledButtons(false)
         }
@@ -66,6 +75,9 @@ const LoginForm = () => {
             const pathOrgSlug = path.split('.')[0]
             const orgSlugResponse = await api.organizations.getOrganizationLoginDataBySlug(pathOrgSlug)
             const { id } = orgSlugResponse
+
+            const userId = await useUserStore.getState().getUserId()
+
             const previousPath = history.state?.usr?.previousPath
             const userOrgIds: string | string[] | undefined = await api?.organizations.getOrgIdForUser(userId, heaviestRole)
 

@@ -15,6 +15,7 @@ interface UserStore {
     setUserEmail(email: string): void
     userId: string
     setUserId(id: string): void
+    getUserId(forceUpdate?: boolean): Promise<string>
     userPictureUrl: string
     updateUserPictureUrl(): Promise<void>
     updateUserData: () => Promise<void>
@@ -49,6 +50,22 @@ export const useUserStore = create<UserStore>((set, get) => ({
     userId: '',
     setUserId: (id: string) => {
         set({ userId: id })
+    },
+    getUserId: async (forceUpdate?: boolean) => {
+        let userId: string | undefined = get().userId
+
+        if (!userId || forceUpdate) {
+            const session = await fetchAuthSession()
+            const id = session.userSub
+            set({ userId: id })
+            userId = id
+        }
+
+        if (userId) {
+            return userId
+        }
+
+        throw 'Unable to find user id. Is user authenticated?'
     },
     userPictureUrl: '',
     updateUserPictureUrl: async () => {
