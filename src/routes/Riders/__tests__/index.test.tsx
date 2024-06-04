@@ -70,7 +70,7 @@ describe('Riders Tests', () => {
   })
 
   it('opens the drawer when url path has an id', async () => {
-    
+
     render(<Riders activeRider='123456' />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} userRole="RiderTracker_OrgAdmin" /> })
 
     await waitFor(() => {
