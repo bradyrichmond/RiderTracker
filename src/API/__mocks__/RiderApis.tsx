@@ -18,6 +18,9 @@ const mockGetRiders = async (orgId: string) => Promise.resolve([
         orgId: orgId,
         guardianRiderLinks: [
             '123456'
+        ],
+        stopIds: [
+            '0c3dfca8-13eb-4df7-a194-883f0294d49b'
         ]
     },
     {

@@ -14,5 +14,9 @@ export default {
 
     setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
 
-    collectCoverage: true
+    collectCoverage: true,
+    coveragePathIgnorePatterns: [
+      "/node_modules/",
+      "/lib/"
+    ]
   }

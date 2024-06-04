@@ -10,7 +10,6 @@ export class RiderApis {
     }
 
     getRiders = async (orgId: string) => {
-        console.log('calling regular riders api')
         const getRidersResponse = await this.client.organizationsOrgIdRidersGet({ orgId })
 
         return handleApiResponse<RiderType[]>(getRidersResponse)

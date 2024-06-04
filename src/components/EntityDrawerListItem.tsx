@@ -12,6 +12,7 @@ const EntityDrawerDetailListItem = ({ id, action, label, tooltipTitle }: EntityD
     const handleInfoClick = () => {
         action(id)
     }
+    
     return (
         <Box sx={{ display: 'flex', flexDirection: 'row', m: '1rem' }}>
             <Box sx={{ flex: 1, display: 'flex', alignItems: 'center' }}>

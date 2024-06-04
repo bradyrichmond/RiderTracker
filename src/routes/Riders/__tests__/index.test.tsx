@@ -4,6 +4,7 @@ import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-lib
 import { AsRole, ProviderWrapperAsRole } from '@/helpers/ProviderWrapper'
 import { PropsWithChildren } from 'react'
 import RiderWrapper from '../RiderWrapper'
+import Riders from '..'
 
 afterEach(() => {
   jest.restoreAllMocks()
@@ -65,6 +66,16 @@ describe('Riders Tests', () => {
       expect(screen.getByRole('gridcell', {
         name: /hallie/i
       })).toBeInTheDocument()
+    })
+  })
+
+  it('opens the drawer when url path has an id', async () => {
+    
+    render(<Riders activeRider='123456' />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} userRole="RiderTracker_OrgAdmin" /> })
+
+    await waitFor(() => {
+      screen.logTestingPlaygroundURL()
+      expect(screen.getByLabelText('deleteRider')).toBeInTheDocument()
     })
   })
 })

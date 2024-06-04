@@ -1,5 +1,5 @@
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
-import { useCallback, useMemo } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
@@ -17,10 +17,15 @@ interface RiderDrawerProps {
 
 const RiderDrawer = ({ open, rider }: RiderDrawerProps) => {
     const stops = useStopStore().stops
+    const getStops = useStopStore().getStops
     const heaviestRole = useUserStore().heaviestRole
     const { deleteRider } = useRiderStore()
     const navigate = useNavigate()
     const { t } = useTranslation('riders')
+
+    useEffect(() => {
+        getStops()
+    }, [getStops])
 
     const viewStopDetail = useCallback((riderId: string) => {
         navigate(`/app/stops/${riderId}`)
@@ -72,12 +77,12 @@ const RiderDrawer = ({ open, rider }: RiderDrawerProps) => {
 
     return (
         <EntityDrawer
-                actionItems={actionItems}
-                back={handleBack}
-                lists={lists}
-                open={open}
-                title={`${rider?.firstName} ${rider?.lastName}`}
-            />
+            actionItems={actionItems}
+            back={handleBack}
+            lists={lists}
+            open={open}
+            title={`${rider?.firstName} ${rider?.lastName}`}
+        />
     )
 }
 
