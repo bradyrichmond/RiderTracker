@@ -74,7 +74,6 @@ describe('Riders Tests', () => {
     render(<Riders activeRider='123456' />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} userRole="RiderTracker_OrgAdmin" /> })
 
     await waitFor(() => {
-      screen.logTestingPlaygroundURL()
       expect(screen.getByLabelText('deleteRider')).toBeInTheDocument()
     })
   })
