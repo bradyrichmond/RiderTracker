@@ -4,4 +4,8 @@ export interface SchoolType {
     orgId: string
     address: string
     riderIds?: string[]
+    createdBy: string
+    createdDate: Date
+    lastEditedBy: string
+    lastEditDate: Date
 }

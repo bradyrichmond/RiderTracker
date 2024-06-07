@@ -1,7 +1,6 @@
 import { Transition } from '@/components/Transition'
-import { useOrgStore } from '@/store/OrgStore'
 import { SchoolType } from '@/types/SchoolType'
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -10,17 +9,16 @@ import { schoolSchema } from '@/validation/schoolSchema'
 
 interface CreateSchoolDialogProps {
     cancelAction(): void
-    createSchool(school: SchoolType): Promise<void>
+    createSchool(school: Partial<SchoolType>): Promise<void>
     open: boolean
 }
 
 const CreateSchoolDialog = ({ createSchool, cancelAction, open }: CreateSchoolDialogProps) => {
     const [disableButtons, setDisableButtons] = useState<boolean>(false)
     const { t } = useTranslation(['schools', 'common'])
-    const { handleSubmit, register, reset, formState: { errors, touchedFields } } = useForm<SchoolType>({ resolver: yupResolver(schoolSchema) })
-    const { orgId } = useOrgStore()
+    const { handleSubmit, register, reset, formState: { errors, touchedFields } } = useForm({ resolver: yupResolver(schoolSchema) })
 
-    const handleCreate = async (newRoute: SchoolType) => {
+    const handleCreate = async (newRoute: Partial<SchoolType>) => {
         setDisableButtons(false)
         await createSchool(newRoute)
         setDisableButtons(false)
@@ -54,16 +52,6 @@ const CreateSchoolDialog = ({ createSchool, cancelAction, open }: CreateSchoolDi
                     error={!!errors.address && touchedFields.address}
                     helperText={errors.address?.message ? t('fieldRequired', { ns: 'common' }) : ''}
                 />
-                <Box sx={{ height: 0, overflow: 'hidden' }}>
-                    <TextField
-                        value={orgId}
-                        fullWidth {...register('orgId')}
-                    />
-                    <TextField
-                        value='temp'
-                        fullWidth {...register('id')}
-                    />
-                </Box>
             </DialogContent>
             <DialogActions sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
                 <Button disabled={disableButtons} variant='contained' onClick={cancelAction}>{t('cancel', { ns: 'common' })}</Button>

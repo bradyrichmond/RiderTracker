@@ -1,6 +1,7 @@
 import { AddressApiFunctionTypes, AddressApis } from './AddressApis'
 import { AdminApis, AdminApiFunctionTypes } from './AdminApis'
 import { BusApis, BusApiFunctionTypes } from './BusApis'
+import { ExceptionApiFunctionTypes, ExceptionApis } from './ExceptionApis'
 import { OrgApis, OrgApiFunctionTypes } from './OrganizationApis'
 import { RiderApis, RiderApiFunctionTypes } from './RiderApis'
 import { RouteApis, RouteApiFunctionTypes } from './RouteApis'
@@ -17,6 +18,7 @@ class RiderTrackerAPI {
     addresses: AddressApiFunctionTypes
     admin: AdminApiFunctionTypes
     buses: BusApiFunctionTypes
+    exceptions: ExceptionApiFunctionTypes
     organizations: OrgApiFunctionTypes
     riders: RiderApiFunctionTypes
     routes: RouteApiFunctionTypes
@@ -30,6 +32,7 @@ class RiderTrackerAPI {
         this.addresses = new AddressApis(newClient)
         this.admin = new AdminApis(newClient)
         this.buses = new BusApis(newClient)
+        this.exceptions = new ExceptionApis(newClient)
         this.organizations = new OrgApis(newClient)
         this.riders = new RiderApis(newClient)
         this.routes = new RouteApis(newClient)

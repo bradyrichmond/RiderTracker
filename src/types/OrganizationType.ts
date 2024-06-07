@@ -6,4 +6,8 @@ export interface OrganizationType {
     adminIds?: string[]
     driverIds?: string[]
     guardianIds?: string[]
+    createdBy: string
+    createdDate: Date
+    lastEditedBy: string
+    lastEditDate: Date
 }

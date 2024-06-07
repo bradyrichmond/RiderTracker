@@ -6,4 +6,8 @@ export interface RiderType {
     schoolId: string
     stopIds: string[]
     guardianIds?: string[]
+    createdBy: string
+    createdDate: Date
+    lastEditedBy: string
+    lastEditDate: Date
 }

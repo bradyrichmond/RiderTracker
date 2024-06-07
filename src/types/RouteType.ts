@@ -4,4 +4,8 @@ export interface RouteType {
     stopIds?: string[]
     riderIds?: string[]
     routeNumber: string
+    createdBy: string
+    createdDate: Date
+    lastEditedBy: string
+    lastEditDate: Date
 }

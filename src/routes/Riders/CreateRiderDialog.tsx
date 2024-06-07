@@ -1,10 +1,9 @@
 import { Transition } from '@/components/Transition'
-import { useOrgStore } from '@/store/OrgStore'
 import { OptionsType } from '@/types/FormTypes'
 import { RiderType } from '@/types/RiderType'
 import { riderSchema } from '@/validation/riderSchema'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Autocomplete, Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, TextField } from '@mui/material'
+import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, TextField } from '@mui/material'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
@@ -15,7 +14,7 @@ interface CreateRiderDialogProps {
     allSchools: OptionsType[]
     allStops: OptionsType[]
     cancelAction(): void
-    createRider(data: RiderType): Promise<void>
+    createRider(data: Partial<RiderType>): Promise<void>
     guardianId?: string
     isAddingRider: boolean
 }
@@ -24,10 +23,9 @@ const CreateRiderDialog = ({ allGuardians, allSchools, allStops, cancelAction, c
     const [disableButtons, setDisableButtons] = useState(false)
     const [schoolIdInput, setSchoolIdInput] = useState<string>('')
     const { t } = useTranslation(['riders','common'])
-    const { orgId } = useOrgStore()
-    const { handleSubmit, register, reset, resetField, setValue, formState: { errors, touchedFields } } = useForm<RiderType>({ resolver: yupResolver(riderSchema) })
+    const { handleSubmit, register, reset, resetField, setValue, formState: { errors, touchedFields } } = useForm({ resolver: yupResolver(riderSchema) })
 
-    const handleCreateRider = async (newRider: RiderType) => {
+    const handleCreateRider = async (newRider: Partial<RiderType>) => {
         setDisableButtons(true)
         newRider.id = uuid()
         newRider.schoolId = schoolIdInput
@@ -130,16 +128,6 @@ const CreateRiderDialog = ({ allGuardians, allSchools, allStops, cancelAction, c
                         )}
                     />
                 </FormControl>
-                <Box sx={{ height: 0, overflow: 'hidden' }}>
-                    <TextField
-                        value={orgId}
-                        fullWidth {...register('orgId')}
-                    />
-                    <TextField
-                        value={'temp'}
-                        fullWidth {...register('id')}
-                    />
-                </Box>
             </DialogContent>
             <DialogActions sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
                 <Button disabled={disableButtons} variant='contained' onClick={cancelAction}>{t('cancel', { ns: 'common' })}</Button>

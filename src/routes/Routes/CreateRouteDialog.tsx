@@ -11,7 +11,7 @@ import { v4 as uuid } from 'uuid'
 
 interface CreateRouteDialogProps {
     cancelAction(): void
-    createRoute(route: RouteType): Promise<void>
+    createRoute(route: Partial<RouteType>): Promise<void>
     isAddingRoute: boolean
 }
 
@@ -19,7 +19,7 @@ const CreateRouteDialog = ({ createRoute, cancelAction, isAddingRoute }: CreateR
     const [disableButtons, setDisableButtons] = useState<boolean>(false)
     const [newRouteId, setNewRouteId] = useState('')
     const { t } = useTranslation(['routes', 'common'])
-    const { handleSubmit, register, reset, formState: { errors, touchedFields } } = useForm<RouteType>({ resolver: yupResolver(routeSchema) })
+    const { handleSubmit, register, reset, formState: { errors, touchedFields } } = useForm({ resolver: yupResolver(routeSchema) })
     const { orgId } = useOrgStore()
 
     useEffect(() => {
@@ -27,7 +27,7 @@ const CreateRouteDialog = ({ createRoute, cancelAction, isAddingRoute }: CreateR
         setNewRouteId(nextRouteId)
     }, [])
 
-    const handleCreate = async (newRoute: RouteType) => {
+    const handleCreate = async (newRoute: Partial<RouteType>) => {
         setDisableButtons(false)
         await createRoute(newRoute)
         setDisableButtons(false)

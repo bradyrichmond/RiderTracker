@@ -31,6 +31,7 @@ const ALL_ROUTES: string[] = [
     '/app/settings',
     '/app/riders',
     '/app/riders/:id',
+    '/app/riders/:id/detail',
     '/app/routes',
     '/app/routes/:id',
     '/app/scans',
@@ -52,6 +53,7 @@ const ORG_ADMIN_ROUTES: string[] = [
     '/app/settings',
     '/app/riders',
     '/app/riders/:id',
+    '/app/riders/:id/detail',
     '/app/routes',
     '/app/routes/:id',
     '/app/scans',
@@ -68,6 +70,7 @@ const DRIVER_ROUTES: string[] = [
     '/app/buses/:id',
     '/app/drivers/:id',
     '/app/riders/:id',
+    '/app/riders/:id/detail',
     '/app/routes',
     '/app/routes/:id',
     '/app/settings'
@@ -79,7 +82,8 @@ const GUARDIAN_ROUTES: string[] = [
     '/app/drivers/:id',
     '/app/riders',
     '/app/settings',
-    '/app/riders/:id'
+    '/app/riders/:id',
+    '/app/riders/:id/detail'
 ]
 
 const UNAUTH_ROUTES: string[] = [

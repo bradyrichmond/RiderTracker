@@ -2,6 +2,13 @@
     "riders": "Riders",
     "addRider": "Add Rider",
     "createRider": "Create Rider",
+    "exceptions": "Exceptions",
+    "guardian": "Guardian",
+    "guardians": "Guardians",
+    "noExceptionsAssigned": "No Exceptions assigned",
+    "noGuardiansAssigned": "No Guardians assigned",
+    "noStopsAssigned": "No Stops assigned",
+    "stop": "Stop",
     "stops": "Stops",
     "deleteRider": "Delete Rider"
 }

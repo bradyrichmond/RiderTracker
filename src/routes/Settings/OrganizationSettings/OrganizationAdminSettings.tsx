@@ -53,6 +53,10 @@ const OrganizationAdminSettings = () => {
                                 lastName={a.lastName}
                                 email={a.email}
                                 title={a.title}
+                                createdBy={a.createdBy}
+                                createdDate={a.createdDate}
+                                lastEditedBy={a.lastEditedBy}
+                                lastEditDate={a.lastEditDate}
                                 index={idx}
                             />)
                         :

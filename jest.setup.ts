@@ -3,6 +3,7 @@ import '@testing-library/jest-dom'
 jest.mock('@/API/AddressApis')
 jest.mock('@/API/AdminApis')
 jest.mock('@/API/BusApis')
+jest.mock('@/API/ExceptionApis')
 jest.mock('@/API/OrganizationApis')
 jest.mock('@/API/RiderApis')
 jest.mock('@/API/RouteApis')

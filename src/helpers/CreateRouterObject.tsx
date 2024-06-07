@@ -19,6 +19,8 @@ import GuardianWrapper from '@/routes/Guardians/GuardianWrapper'
 import RiderWrapper from '@/routes/Riders/RiderWrapper'
 import SchoolWrapper from '@/routes/Schools/SchoolsWrapper'
 import DriversWrapper from '@/routes/Drivers/DriversWrapper'
+import Rider from '@/routes/Riders/Rider'
+import Riders from '@/routes/Riders'
 
 export const createRouterObject = () => {
     return createBrowserRouter([{
@@ -62,11 +64,15 @@ export const createRouterObject = () => {
                     },
                     {
                         path: '/app/riders',
-                        element: <ProtectedRoute route='/app/riders'><RiderWrapper /></ProtectedRoute>
+                        element: <ProtectedRoute route='/app/riders'><RiderWrapper><Riders /></RiderWrapper></ProtectedRoute>
+                    },
+                    {
+                        path: '/app/riders/:id/detail',
+                        element: <ProtectedRoute route='/app/riders/:id/detail'><RiderWrapper><Rider /></RiderWrapper></ProtectedRoute>
                     },
                     {
                         path: '/app/riders/:id',
-                        element: <ProtectedRoute route='/app/riders/:id'><RiderWrapper /></ProtectedRoute>
+                        element: <ProtectedRoute route='/app/riders/:id'><RiderWrapper><Riders /></RiderWrapper></ProtectedRoute>
                     },
                     {
                         path: '/app/routes',

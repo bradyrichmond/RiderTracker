@@ -5,9 +5,11 @@ export interface ScanType {
     orgId: string
     stopId: string
     riderIds: string[]
-    driverId: string
     deviceLocationOnSubmit?: LocationType
-    createdAt: number,
-    manualScan?: boolean,
+    createdBy: string
+    createdDate: Date
+    lastEditedBy: string
+    lastEditDate: Date
+    manualScan?: boolean
     guardianIds?: string[]
 }

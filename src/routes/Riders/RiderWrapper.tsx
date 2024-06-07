@@ -1,11 +1,21 @@
 import { useParams } from 'react-router-dom'
-import Riders from '.'
+import { Children, PropsWithChildren, ReactElement, cloneElement, isValidElement, useMemo } from 'react'
 
-const RiderWrapper = () => {
+const RiderWrapper = ({ children }: PropsWithChildren) => {
     const { id: riderId } = useParams()
 
+    const childrenWithProps = useMemo(() => {
+        return Children.map(children as ReactElement<{ activeRider?: string }>, (child => {
+            if (isValidElement(child)) {
+                return cloneElement(child, { activeRider: riderId })
+            }
+        }))
+    }, [riderId, children])
+
     return (
-        <Riders activeRider={riderId} />
+        <>
+            {childrenWithProps}
+        </>
     )
 }
 

@@ -3,8 +3,8 @@ import userEvent from '@testing-library/user-event'
 import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-library/react'
 import { AsRole, ProviderWrapperAsRole } from '@/helpers/ProviderWrapper'
 import { PropsWithChildren } from 'react'
-import RiderWrapper from '../RiderWrapper'
 import Riders from '..'
+import Rider from '../Rider'
 
 afterEach(() => {
   jest.restoreAllMocks()
@@ -12,7 +12,7 @@ afterEach(() => {
 
 describe('Riders Tests', () => {
   it('shows add rider button when authorized to add riders', async () => {
-    render(<RiderWrapper />, { wrapper: ProviderWrapperAsRole })
+    render(<Riders />, { wrapper: ProviderWrapperAsRole })
 
     await waitFor(() => {
       expect(screen.getByRole('button', {
@@ -23,7 +23,7 @@ describe('Riders Tests', () => {
 
   it('opens add rider modal when add rider button clicked, and closes on cancel click', async () => {
     const user = userEvent.setup()
-    render(<RiderWrapper />, { wrapper: ProviderWrapperAsRole })
+    render(<Riders />, { wrapper: ProviderWrapperAsRole })
 
     await waitFor(async () => {
       const addRiderButton = await screen.findByRole('button', {
@@ -52,7 +52,7 @@ describe('Riders Tests', () => {
   })
 
   it('hides add rider button when not authorized to add riders', async () => {
-    render(<RiderWrapper />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} userRole="RiderTracker_Guardian" /> })
+    render(<Riders />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} userRole="RiderTracker_Guardian" /> })
 
     await waitFor(() => {
       expect(screen.queryByText(/addRider/i)).not.toBeInTheDocument()
@@ -60,7 +60,7 @@ describe('Riders Tests', () => {
   })
 
   it('loads rows into data grid when there is data', async () => {
-    render(<RiderWrapper />, { wrapper: ProviderWrapperAsRole })
+    render(<Riders />, { wrapper: ProviderWrapperAsRole })
 
     await waitFor(() => {
       expect(screen.getByRole('gridcell', {
@@ -75,6 +75,14 @@ describe('Riders Tests', () => {
 
     await waitFor(() => {
       expect(screen.getByLabelText('deleteRider')).toBeInTheDocument()
+    })
+  })
+
+  it('renders rider details page', async () => {
+    render(<Rider activeRider='123456' />, { wrapper: ProviderWrapperAsRole })
+
+    await waitFor(() => {
+      expect(screen.getByText('exceptions')).toBeInTheDocument()
     })
   })
 })

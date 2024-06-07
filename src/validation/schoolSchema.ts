@@ -1,7 +1,6 @@
-import { SchoolType } from '@/types/SchoolType'
-import { ObjectSchema, array, object, string } from 'yup'
+import { array, object, string } from 'yup'
 
-export const schoolSchema: ObjectSchema<SchoolType> = object({
+export const schoolSchema = object({
     address: string().uuid().required('fieldRequired'),
     id: string().uuid().required(),
     orgId: string().uuid().required(),

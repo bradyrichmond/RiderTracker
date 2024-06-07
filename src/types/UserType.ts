@@ -9,6 +9,10 @@ export interface UserType {
     title?: string
     profileImageKey?: string
     userType?: RIDER_TRACKER_ROLES
+    createdBy: string
+    createdDate: Date
+    lastEditedBy: string
+    lastEditDate: Date
 }
 
 export interface GuardianType extends UserType {

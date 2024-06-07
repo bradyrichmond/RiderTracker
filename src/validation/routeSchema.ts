@@ -1,7 +1,6 @@
-import { RouteType } from '@/types/RouteType'
-import { ObjectSchema, array, object, string } from 'yup'
+import { array, object, string } from 'yup'
 
-export const routeSchema: ObjectSchema<RouteType> = object({
+export const routeSchema = object({
     id: string().uuid().required(),
     orgId: string().uuid().required(),
     riderIds: array(),

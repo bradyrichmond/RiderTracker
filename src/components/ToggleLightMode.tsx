@@ -11,7 +11,7 @@ const ToggleLightMode = () => {
 
     return (
         <MenuItem onClick={themeContext.toggleColorMode}>
-            <MenuItemWithIcon Icon={themeContext.value === 'light' ? DarkModeIcon : LightModeIcon} label={themeContext.value === 'light' ? 'Enable Dark Mode' : 'Enable Light Mode'} color={theme.palette.text.primary} />
+            <MenuItemWithIcon Icon={themeContext.mode === 'light' ? DarkModeIcon : LightModeIcon} label={themeContext.mode === 'light' ? 'Enable Dark Mode' : 'Enable Light Mode'} color={theme.palette.text.primary} />
         </MenuItem>
     )
 }

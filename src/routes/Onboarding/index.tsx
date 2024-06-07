@@ -160,7 +160,11 @@ const Onboarding = () => {
             orgName,
             orgSlug: newOrgSlug,
             loginImageKey: '',
-            adminIds: [newUserId]
+            adminIds: [newUserId],
+            createdBy: newUserId,
+            createdDate: new Date(),
+            lastEditedBy: newUserId,
+            lastEditDate: new Date()
         })
 
         await createNewOrganizationUser(newOrgId)

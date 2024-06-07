@@ -1,57 +1,90 @@
-import { Box, Chip, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { Box, Divider, Paper, Typography } from '@mui/material'
+import { useEffect, useMemo } from 'react'
 import { RiderType } from '@/types/RiderType'
-import { StopType } from '@/types/StopType'
 import { useRiderStore } from '@/store/RiderStore'
+import Grid from '@mui/material/Unstable_Grid2'
 import { useStopStore } from '@/store/StopStore'
+import { StopType } from '@/types/StopType'
+import { useTranslation } from 'react-i18next'
+import { useGuardianStore } from '@/store/GuardianStore'
+import { GuardianType } from '@/types/UserType'
+import { useExceptionStore } from '@/store/ExceptionStore'
+import { ExceptionType } from '@/types/ExceptionType'
 
-const Rider = () => {
-    const { getRiderById } = useRiderStore()
-    const { getBulkStopsById } = useStopStore()
-    const [rider, setRider] = useState<RiderType>()
-    const [stops, setStops] = useState<StopType[]>([])
-    const navigate = useNavigate()
+interface RiderProps {
+    activeRider?: string
+}
 
-    const { id } = useParams()
+const Rider = ({ activeRider: riderId }: RiderProps) => {
+    const riders = useRiderStore().riders
+    const getRiders = useRiderStore().getRiders
+    const stops = useStopStore().stops
+    const getStops = useStopStore().getStops
+    const guardians = useGuardianStore().guardians
+    const getGuardians = useGuardianStore().getGuardians
+    const exceptions = useExceptionStore().exceptions
+    const getExceptions = useExceptionStore().getExceptions
+    const { t } = useTranslation('riders')
 
     useEffect(() => {
-        const getRiderData = async () => {
-            if (id) {
-                const riderData = await getRiderById(id)
-                setRider(riderData)
-            }
-        }
+        getRiders()
+        getStops()
+        getGuardians()
+        getExceptions()
+    }, [getRiders, getStops, getGuardians, getExceptions])
 
-        const getStopData = async () => {
-            if (rider) {
-                const fetchedStops = await getBulkStopsById(rider?.stopIds ?? [])
-                setStops(fetchedStops ?? [])
-            }
-        }
+    const rider = useMemo(() => {
+        return riders.find((r: RiderType) => r.id === riderId)
+    }, [riders, riderId])
 
-        getRiderData()
-        getStopData()
-    }, [id, rider, getRiderById, getBulkStopsById])
+    const riderStops = useMemo(() => {
+        return stops.filter((s: StopType) => rider?.stopIds.includes(s.id))
+    }, [stops, rider])
 
-    const handleChipClick = (stopId: string) => {
-        navigate(`/stops/${stopId}`)
-    }
+    const riderGuardians = useMemo(() => {
+        return guardians.filter((g: GuardianType) => rider?.guardianIds?.includes(g.id))
+    }, [guardians, rider])
 
+    const riderExceptions = useMemo(() => {
+        return exceptions.filter((e: ExceptionType) => e.riderId === riderId)
+    }, [exceptions, riderId])
 
     return (
-        <Box height='100%'>
-            <Typography>Rider Name: {rider?.firstName} {rider?.lastName}</Typography>
-            <Typography>Organization: {rider?.orgId}</Typography>
-            <Box sx={{ mt: '1rem', mb: '1rem' }}>
-                {
-                    stops.map((s) => {
-                        return (
-                            <Chip key={s.id} label={s.stopName} onClick={() => handleChipClick(s.id)} />
-                        )
-                    })
-                }
-            </Box>
+        <Box sx={{ height: '100%' }}>
+            <Grid container spacing={2}>
+                <Grid xs={12}>
+                    <Paper sx={{ padding: '1rem' }}>
+                        <Typography variant='h2'>{rider?.firstName} {rider?.lastName}</Typography>
+                    </Paper>
+                </Grid>
+                <Grid xs={12} md={6}>
+                    <Paper sx={{ height: '100%' }}>
+                        <Box sx={{ padding: '1rem' }}>
+                            <Typography variant='h3' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{riderStops.length === 1 ? t('stop') : t('stops')}</Typography>
+                            <Divider sx={{ mt: '1rem', mb: '1rem' }} />
+                            {riderStops.length > 0 ? riderStops.map((s: StopType) => <Typography key={s.id}>{s.stopName}</Typography>) : t('noStopsAssigned')}
+                        </Box>
+                    </Paper>
+                </Grid>
+                <Grid xs={12} md={6}>
+                    <Paper sx={{ height: '100%' }}>
+                        <Box sx={{ padding: '1rem' }}>
+                            <Typography variant='h3' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{riderGuardians.length === 1 ? t('guardian') : t('guardians')}</Typography>
+                            <Divider sx={{ mt: '1rem', mb: '1rem' }} />
+                            {riderGuardians.length > 0 ? riderGuardians.map((g: GuardianType) => <Typography key={g.id}>{`${g.firstName} ${g.lastName}`}</Typography>) : t('noGuardiansAssigned')}
+                        </Box>
+                    </Paper>
+                </Grid>
+                <Grid xs={12}>
+                    <Paper sx={{ padding: '1rem', height: '100%'  }}>
+                        <Box sx={{ padding: '1rem' }}>
+                            <Typography variant='h3' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{t('exceptions')}</Typography>
+                            <Divider sx={{ mt: '1rem', mb: '1rem' }} />
+                            {riderExceptions.length > 0 ? riderExceptions.map((e: ExceptionType) => <Typography key={e.id}>{e.id}</Typography>) : t('noExceptionsAssigned')}
+                        </Box>
+                    </Paper>
+                </Grid>
+            </Grid>
         </Box>
     )
 }

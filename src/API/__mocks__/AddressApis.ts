@@ -1,13 +1,5 @@
 import { AddressType } from '@/types/AddressType'
 
-// import SoundPlayer from './sound-player';
-// const fakePlaySoundFile = jest.fn();
-// jest.mock('./sound-player', () => {
-//   return jest.fn().mockImplementation(() => {
-//     return {playSoundFile: fakePlaySoundFile};
-//   });
-// });
-
 const mockGetAddressById = async (id: string) => Promise.resolve({
     id: id,
     orgId: '123456',

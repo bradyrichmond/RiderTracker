@@ -147,5 +147,6 @@ export const RIDERTRACKER_PERMISSIONS_BY_ROLE: Record<RiderTrackerRole, RiderTra
     ],
     RiderTracker_Guardian: [
         permissions.UPDATE_RIDER
-    ]
+    ],
+    RiderTracker_Unauthenticated: []
 };
