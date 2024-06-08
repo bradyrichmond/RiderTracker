@@ -19,7 +19,7 @@ const EntityDrawerDetailList = ({ items, action, title }: EntityDrawerDetailList
         <>
             <Typography variant='h5'>{title}</Typography>
             <Paper sx={{ width: '100%', flex: 1 }}>
-                {items.map((item) => <EntityDrawerListItem label={item.label} action={handleAction} id={item.id} tooltipTitle={t('viewDetails')} />)}
+                {items.map((item) => <EntityDrawerListItem key={item.id} label={item.label} action={handleAction} id={item.id} tooltipTitle={t('viewDetails')} />)}
             </Paper>
         </>
     )

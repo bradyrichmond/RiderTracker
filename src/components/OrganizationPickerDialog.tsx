@@ -41,7 +41,7 @@ const OrganizationPickerDialog = ({ open, handleSelectOrganization, organization
             PaperProps={{
                 component: 'form',
                 onSubmit: onSubmit,
-                sx: { padding: '2rem', minWidth: '25%' }
+                sx: { padding: 4, minWidth: '25%' }
             }}
         >
             <DialogTitle textAlign='center'>Select Organization</DialogTitle>

@@ -61,10 +61,10 @@ const Auth = () => {
         <>
             {isLoading ?
                 <>
-                    <Box sx={{ ml: '5rem', mr: '5rem', mt: '2rem', mb: '3rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <Box sx={{ ml: 10, mr: 10, mt: 4, mb: 6, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <Typography variant='h4'>{t('gatheringLocalData')}</Typography>
                     </Box>
-                    <LinearProgress sx={{ height: '1rem', ml: '5rem', mr: '5rem', borderRadius: '1rem' }} />
+                    <LinearProgress sx={{ height: 2, ml: 10, mr: 10, borderRadius: 2 }} />
                 </>
                 :
                 <Grid container spacing={0} sx={{ height: '100%' }}>

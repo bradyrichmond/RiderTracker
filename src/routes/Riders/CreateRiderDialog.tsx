@@ -49,7 +49,7 @@ const CreateRiderDialog = ({ allGuardians, allSchools, allStops, cancelAction, c
             PaperProps={{
                 component: 'form',
                 onSubmit: handleSubmit(handleCreateRider),
-                sx: { padding: '2rem', minWidth: '25%' }
+                sx: { padding: 4, minWidth: '25%' }
             }}
         >
             <DialogTitle textAlign='center'>{t('addRider')}</DialogTitle>

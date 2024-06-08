@@ -33,7 +33,7 @@ const CreateSchoolDialog = ({ createSchool, cancelAction, open }: CreateSchoolDi
             PaperProps={{
                 component: 'form',
                 onSubmit: handleSubmit(handleCreate),
-                sx: { padding: '2rem', minWidth: '25%' }
+                sx: { padding: 4, minWidth: '25%' }
             }}
         >
             <DialogTitle textAlign='center'>{t('addSchool')}</DialogTitle>

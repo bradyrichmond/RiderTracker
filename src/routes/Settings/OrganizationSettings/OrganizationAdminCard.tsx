@@ -48,7 +48,7 @@ const OrganizationAdminCard = ({ id, firstName, lastName, title, email, index }:
             <Grid xs={12} sx={{ padding: 0 }}>
                 <Grid xs={12} md={4} sx={{ padding: 0 }}>
                     <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
-                        <Avatar sx={{ height: 150, width: 150, fontSize: '3rem' }} src={profileUrl} alt={userFullName}>
+                        <Avatar sx={{ height: 150, width: 150, fontSize: 6 }} src={profileUrl} alt={userFullName}>
                             <PersonIcon fontSize='inherit' />
                         </Avatar>
                     </Box>

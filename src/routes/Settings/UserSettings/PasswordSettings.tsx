@@ -7,8 +7,8 @@ const PasswordSettings = () => {
     const { t } = useTranslation('settings')
     return (
         <Grid sm={12} md={6}>
-            <Card sx={{ p: '2rem' }}>
-                <Typography variant='h4' sx={{ pb: '.5rem' }}>
+            <Card sx={{ p: 4 }}>
+                <Typography variant='h4' sx={{ pb: 1 }}>
                     {t('updatePassword')}
                 </Typography>
                 <UpdatePasswordForm />

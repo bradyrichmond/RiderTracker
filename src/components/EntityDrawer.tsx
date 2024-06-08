@@ -53,7 +53,7 @@ const EntityDrawer = ({ actionItems, back, lists, open, title }: EntityDrawerPro
                 </Box>
                 :
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <LinearProgress sx={{ height: '1rem', ml: '5rem', mr: '5rem', borderRadius: '1rem' }} />
+                    <LinearProgress sx={{ height: 2, ml: 10, mr: 10, borderRadius: 2 }} />
                 </Box>
             }
         </Drawer>
@@ -72,7 +72,7 @@ const EntityDrawerListAction = ({ handleClick, tooltipTitle, Icon }: DrawerListA
             variant="contained"
             size="small"
             onClick={handleClick}
-            sx={{ padding: '2rem' }}
+            sx={{ padding: 4 }}
         >
             <Tooltip title={tooltipTitle}>
                 <Icon />

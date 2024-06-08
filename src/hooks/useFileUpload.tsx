@@ -65,7 +65,7 @@ const useFileUpload = ({ uploadAction, sizeLimitInBytes }: UseFileUploadArgs) =>
     const FileUpload = () => {
         return (
             <>
-                <Box display='flex' height='100%' flexDirection='column' sx={{ pt: '2rem' }}>
+                <Box display='flex' height='100%' flexDirection='column' sx={{ pt: 4 }}>
                     <Box flex='1' display='flex'  flexDirection='column' justifyContent='center' alignItems='center'>
                     <input
                         type="file"
@@ -79,7 +79,7 @@ const useFileUpload = ({ uploadAction, sizeLimitInBytes }: UseFileUploadArgs) =>
                         </Button>
                     </Box>
                 </Box>
-                <Box paddingTop='.5rem' display='flex' justifyContent='center' alignItems='center'>
+                <Box sx={{ paddingTop: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <Typography variant='caption'>
                         {fileName ? t('selectedFileName', { fileName }) : t('acceptableFileTypes')}
                     </Typography>

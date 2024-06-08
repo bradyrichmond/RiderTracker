@@ -26,12 +26,12 @@ const OrganizationAdminSettings = () => {
     }
 
     return (
-        <Grid xs={12} marginBottom='2rem'>
+        <Grid xs={12} sx={{ mb: 4 }}>
             <CreateAdminDialog isAddingAdmin={showModal} cancel={toggleShowModal} createAdmin={createNewAdmin} />
-            <Card sx={{ p: '2rem' }}>
+            <Card sx={{ p: 4 }}>
                 <Grid container spacing={2}>
                     <Grid xs={12} md={6}>
-                        <Typography variant='h4' sx={{ pb: '.5rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <Typography variant='h4' sx={{ pb: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                             {t('orgAdmins')}
                         </Typography>
                     </Grid>

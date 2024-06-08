@@ -54,7 +54,7 @@ const Root = () => {
             {organizationOverride ?
                 <Box sx={{
                     width: '100%',
-                    padding: '2rem',
+                    padding: 4,
                     background: '#ff0000',
                     color: '#fff',
                     display: 'flex',
@@ -68,13 +68,13 @@ const Root = () => {
                 :
                 null
             }
-            <Container sx={{ mb: '2rem', flex: 1 }}>
+            <Container sx={{ mb: 4, flex: 1 }}>
                 {isInitialized ?
                     <Outlet />
                     :
                     <Box sx={{ height: '100%', width: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         <Box sx={{ width: '100%' }}>
-                            <LinearProgress sx={{ height: '1rem', borderRadius: '1rem' }} />
+                            <LinearProgress sx={{ height: 2, borderRadius: 2 }} />
                         </Box>
                     </Box>
                 }

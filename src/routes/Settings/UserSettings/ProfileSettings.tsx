@@ -26,17 +26,17 @@ const ProfileSettings = () => {
 
     return (
         <Grid xs={12} md={6}>
-            <Card sx={{ p: '2rem' }}>
-                <Typography variant='h4' sx={{ pb: '.5rem' }}>
+            <Card sx={{ p: 4 }}>
+                <Typography variant='h4' sx={{ pb: 1 }}>
                     {t('profileSettings')}
                 </Typography>
                 <Typography variant='subtitle1'>
                     {t('personalDetails')}
                 </Typography>
-                <Box display='flex' height='100%' flexDirection='column' sx={{ pt: '2rem' }}>
-                    <Box sx={{ pb: '2rem' }} display='flex' justifyContent='center' alignItems='center' >
+                <Box display='flex' height='100%' flexDirection='column' sx={{ pt: 4 }}>
+                    <Box sx={{ pb: 4 }} display='flex' justifyContent='center' alignItems='center' >
                         <Tooltip title={temporaryFileUrl ? t('fileNotUploaded', { ns: 'common' }) : t('changeProfilePicture', { ns: 'common' })}>
-                            <Badge badgeContent={<PriorityHighIcon fontSize='large' />} invisible={!temporaryFileUrl} color='error' sx={{ '& .MuiBadge-badge': { padding: '0.5rem', borderRadius: '2rem', height: 'fit-content', width: 'fit-content' } }}>
+                            <Badge badgeContent={<PriorityHighIcon fontSize='large' />} invisible={!temporaryFileUrl} color='error' sx={{ '& .MuiBadge-badge': { padding: 1, borderRadius: 4, height: 'fit-content', width: 'fit-content' } }}>
                                 <Avatar sx={{ height: 200, width: 200 }} onClick={openFileDialog} src={temporaryFileUrl || userPictureUrl} alt={userFullName}>
                                     <FolderIcon fontSize='large' />
                                 </Avatar>
@@ -45,7 +45,7 @@ const ProfileSettings = () => {
                     </Box>
                 </Box>
                 <FileUpload />
-                <Box sx={{ pt: '1rem' }}>
+                <Box sx={{ pt: 2 }}>
                     <UpdateProfileDataForm />
                 </Box>
             </Card>

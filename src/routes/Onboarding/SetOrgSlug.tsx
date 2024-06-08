@@ -14,7 +14,7 @@ const SetOrgSlug = ({ slugSuggestion, currentSlug }: SetOrgSlugProps) => {
     return (
         <Box>
             <Typography variant='h5'>{t('setOrgSlugDescription')}</Typography>
-            <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', pt: '.5rem', pb: '.5rem' }}>
+            <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center', pt: 1, pb: 1 }}>
                 <Typography>{currentSlug ?? slugSuggestion}.ridertracker.com</Typography>
             </Box>
             <TextField label={t('orgSlug', { ns: 'common' })} {...register('orgSlug')} fullWidth />

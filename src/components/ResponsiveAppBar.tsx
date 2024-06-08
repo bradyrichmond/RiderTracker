@@ -27,11 +27,11 @@ interface MenuItemWithIconProps {
 
 export const MenuItemWithIcon = ({ Icon, label, color }: MenuItemWithIconProps) => {
     return (
-        <Box width='100%' display='flex' padding='1rem' color={color}>
-            <Box marginRight='1rem' display='flex' justifyContent='center' alignItems='center'>
+        <Box sx={{ width: '100%', display: 'flex', padding: 2, color }}>
+            <Box sx={{ mr: 2, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <Icon />
             </Box>
-            <Box flex='1' display='flex' justifyContent='flex-start' alignItems='center'>
+            <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                 <Typography textAlign="left">{label}</Typography>
             </Box>
         </Box>
@@ -205,7 +205,7 @@ const ResponsiveAppBar = () => {
                 </Container>
             </AppBar>
             {/* vvvvv MUI recommended hack for fixed position appbars vvvvv */}
-            <Box sx={{ padding: { s: '0', md: '2rem' } }}>
+            <Box sx={{ padding: { s: '0', md: 4 } }}>
                 <Toolbar />
             </Box>
         </>

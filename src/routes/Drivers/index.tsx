@@ -57,18 +57,18 @@ const Drivers = ({ activeDriver }: DriversProps) => {
 
     return (
         <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <Box marginBottom='2rem' display='flex' flexDirection='row'>
-                <Box display='flex' justifyContent='center' alignItems='center'>
+            <Box sx={{ marginBottom: 4, display: 'flex', flexDirection: 'row' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <Typography variant='h2'>
                         {t('drivers')}
                     </Typography>
                 </Box>
                 {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_DRIVER) ?
-                    <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
+                    <Box sx={{ padding: 4, flex: 1, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
                         <Button variant='contained' onClick={toggleAddingDriver}>
                             <Box display='flex' flexDirection='row'>
                                 <AddCircleIcon />
-                                <Box flex='1' marginLeft='1rem'>
+                                <Box sx={{ flex: 1, ml: 2 }}>
                                     <Typography>{t('addDriver')}</Typography>
                                 </Box>
                             </Box>
@@ -84,7 +84,7 @@ const Drivers = ({ activeDriver }: DriversProps) => {
                 cancel={toggleAddingDriver}
                 createDriver={createDriverAction}
             />
-            <Box flex='1'>
+            <Box sx={{ flex: 1 }}>
                 <Box sx={{ height: '100%', width: '100%' }}>
                     {drivers ?
                         <DataGrid

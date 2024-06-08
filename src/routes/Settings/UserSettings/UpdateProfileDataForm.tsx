@@ -63,7 +63,7 @@ const UpdateProfileDataForm = () => {
                 <TextField fullWidth label={t('firstName')} disabled {...register('firstName')} />
                 <TextField fullWidth label={t('lastName')} disabled {...register('lastName')} />
                 <TextField fullWidth label={t('email')} {...register('email', { required: true })} />
-                <Button type='submit' variant='contained' disabled={!isDirty} fullWidth sx={{ mt: '1rem' }}>{t('submitChanges')}</Button>
+                <Button type='submit' variant='contained' disabled={!isDirty} fullWidth sx={{ mt: 2 }}>{t('submitChanges')}</Button>
             </form>
         </Box>
     )

@@ -127,7 +127,7 @@ const Riders = ({ activeRider }: RidersProps) => {
             />
             <RiderDrawer open={!!activeRider} rider={riders.find((r: RiderType) => r.id === activeRider)} />
             <Grid xs={12} md={6}>
-                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: '1rem' }}>
+                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
                     <Typography variant='h2'>
                         {t('riders')}
                     </Typography>
@@ -140,7 +140,7 @@ const Riders = ({ activeRider }: RidersProps) => {
                             <Button variant='contained' onClick={startAddingRider}>
                                 <Box display='flex' flexDirection='row'>
                                     <AddCircleIcon />
-                                    <Box flex='1' marginLeft='1rem'>
+                                    <Box sx={{ flex: 1, ml: 2 }}>
                                         <Typography>{t('addRider')}</Typography>
                                     </Box>
                                 </Box>
@@ -152,7 +152,7 @@ const Riders = ({ activeRider }: RidersProps) => {
                 </Box>
             </Grid>
             <Grid xs={12}>
-                <Box sx={{ mb: '1rem' }}>
+                <Box sx={{ mb: 2 }}>
                     <SearchBar onChange={changeSearchArg} fullWidth />
                 </Box>
             </Grid>

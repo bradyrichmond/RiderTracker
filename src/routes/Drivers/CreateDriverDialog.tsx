@@ -50,7 +50,7 @@ const CreateDriverDialog = ({ cancel, createDriver, isAddingDriver }: CreateDriv
             PaperProps={{
                 component: 'form',
                 onSubmit: handleSubmit(createDriverAction),
-                sx: { padding: '2rem', minWidth: '25%' }
+                sx: { padding: 4, minWidth: '25%' }
             }}
         >
             <DialogTitle textAlign='center'>{t('addDriver')}</DialogTitle>

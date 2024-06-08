@@ -45,7 +45,7 @@ const AddStopToRiderDialog = ({ cancelAction, isAddingStop }: AddStopToRiderDial
             PaperProps={{
                 component: 'form',
                 onSubmit: handleSubmit(updateRiderStops),
-                sx: { padding: '2rem', minWidth: '25%' }
+                sx: { padding: 4, minWidth: '25%' }
             }}
         >
             <DialogTitle textAlign='center'>{t('addStopToRider')}</DialogTitle>

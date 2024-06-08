@@ -48,7 +48,7 @@ const CreateStopForRouteDialog = ({ cancelAction, createStop, isAddingStop }: Cr
             PaperProps={{
                 component: 'form',
                 onSubmit: handleSubmit(handleCreateStop),
-                sx: { padding: '2rem', minWidth: '25%' }
+                sx: { padding: 4, minWidth: '25%' }
             }}
         >
             <DialogTitle textAlign='center'>{t('addStop')}</DialogTitle>
@@ -62,8 +62,8 @@ const CreateStopForRouteDialog = ({ cancelAction, createStop, isAddingStop }: Cr
                         }
                         value={randomName ?? ''}
                     />
-                    <Box paddingLeft='1rem' paddingTop='1rem'>
-                        <Button variant='contained' sx={{ padding: '1rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }} onClick={generateRandomName}>
+                    <Box sx={{ pt: 2, pl: 2 }}>
+                        <Button variant='contained' sx={{ padding: 2, display: 'flex', justifyContent: 'center', alignItems: 'center' }} onClick={generateRandomName}>
                             <Tooltip title='Generate a new random name'>
                                 <ShuffleOnIcon />
                             </Tooltip>

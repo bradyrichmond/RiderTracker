@@ -57,7 +57,7 @@ const AddExceptionToRiderDialog = ({ cancelAction, isAddingException }: AddExcep
             PaperProps={{
                 component: 'form',
                 onSubmit: handleSubmit(createExceptionAction),
-                sx: { padding: '2rem', minWidth: '25%' }
+                sx: { padding: 4, minWidth: '25%' }
             }}
         >
             <DialogTitle textAlign='center'>{t('createRouteException')}</DialogTitle>
@@ -80,7 +80,7 @@ const AddExceptionToRiderDialog = ({ cancelAction, isAddingException }: AddExcep
                         }}
                     />
                 </FormControl>
-                <FormGroup aria-label="position" row sx={{ display: 'flex', justifyContent: 'space-evenly', mt: '1rem' }}>
+                <FormGroup aria-label="position" row sx={{ display: 'flex', justifyContent: 'space-evenly', mt: 2 }}>
                     <FormControlLabel control={<Switch onChange={(_e, value: boolean) => setValue('pickup', value ?? false)} />} label={t('pickup')} labelPlacement='top' />
                     <FormControlLabel control={<Switch onChange={(_e, value: boolean) => setValue('dropoff', value ?? false)} />} label={t('dropoff')} labelPlacement='top' />
                 </FormGroup>

@@ -85,7 +85,7 @@ const Schools = ({ activeSchool }: SchoolsProps) => {
             <SchoolDrawer open={!!activeSchool} school={schools.find((s: SchoolType) => s.id === activeSchool)} />
             <CreateSchoolDialog createSchool={createSchoolAction} cancelAction={toggleAddingSchool} open={isAddingSchool} />
             <Grid xs={12} md={6}>
-                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: '1rem' }}>
+                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
                     <Typography variant='h2'>
                         {t('schools')}
                     </Typography>
@@ -98,7 +98,7 @@ const Schools = ({ activeSchool }: SchoolsProps) => {
                             <Button variant='contained' onClick={toggleAddingSchool}>
                                 <Box display='flex' flexDirection='row'>
                                     <AddCircleIcon />
-                                    <Box flex='1' marginLeft='1rem'>
+                                    <Box sx={{ flex: 1, ml: 2 }}>
                                         <Typography>{t('addSchool')}</Typography>
                                     </Box>
                                 </Box>

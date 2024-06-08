@@ -61,7 +61,7 @@ const UpdatePasswordForm = () => {
                     label={t('retypePassword', { ns: 'common' })}
                     {...register('verifyNewPassword')}
                 />
-                <Button type='submit' variant='contained' fullWidth sx={{ mt: '1rem' }}>{t('changePassword', { ns: 'common' })}</Button>
+                <Button type='submit' variant='contained' fullWidth sx={{ mt: 2 }}>{t('changePassword', { ns: 'common' })}</Button>
             </form>
         </Box>
     )

@@ -63,18 +63,18 @@ const Buses = () => {
 
     return (
         <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <Box marginBottom='2rem' display='flex' flexDirection='row'>
-                <Box display='flex' justifyContent='center' alignItems='center'>
+            <Box sx={{ mb: 4, display: 'flex', flexDirection: 'row' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <Typography variant='h2'>
                         {t('buses')}
                     </Typography>
                 </Box>
                 {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_BUS) ?
-                    <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
+                    <Box sx={{ p: 4, flex: 1, display: 'flex', justifyContent: 'flex-end', flexDirection: 'row' }}>
                         <Button variant='contained' onClick={createBusAction}>
-                            <Box display='flex' flexDirection='row'>
+                            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                                 <AddCircleIcon />
-                                <Box flex='1' marginLeft='1rem'>
+                                <Box sx={{ flex: 1, ml: 2 }}>
                                     <Typography>{t('addBus')}</Typography>
                                 </Box>
                             </Box>

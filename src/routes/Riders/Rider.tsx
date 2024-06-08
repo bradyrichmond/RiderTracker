@@ -55,7 +55,7 @@ const Rider = ({ activeRider: riderId }: RiderProps) => {
         <Box sx={{ height: '100%' }}>
             <Grid container spacing={2}>
                 <Grid xs={12}>
-                    <Paper sx={{ padding: '1rem' }}>
+                    <Paper sx={{ padding: 2 }}>
                         <Grid container spacing={2} sx={{ height: '100%' }}>
                             <Grid xs={11}>
                                 <Typography variant='h2'>{rider?.firstName} {rider?.lastName}</Typography>
@@ -68,27 +68,27 @@ const Rider = ({ activeRider: riderId }: RiderProps) => {
                 </Grid>
                 <Grid xs={12} md={6}>
                     <Paper sx={{ height: '100%' }}>
-                        <Box sx={{ padding: '1rem' }}>
+                        <Box sx={{ padding: 2 }}>
                             <Typography variant='h3' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{riderStops.length === 1 ? t('stop') : t('stops')}</Typography>
-                            <Divider sx={{ mt: '1rem', mb: '1rem' }} />
+                            <Divider sx={{ mt: 2, mb: 2 }} />
                             {riderStops.length > 0 ? riderStops.map((s: StopType) => <Typography key={s.id}>{s.stopName}</Typography>) : t('noStopsAssigned')}
                         </Box>
                     </Paper>
                 </Grid>
                 <Grid xs={12} md={6}>
                     <Paper sx={{ height: '100%' }}>
-                        <Box sx={{ padding: '1rem' }}>
+                        <Box sx={{ padding: 2 }}>
                             <Typography variant='h3' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{riderGuardians.length === 1 ? t('guardian') : t('guardians')}</Typography>
-                            <Divider sx={{ mt: '1rem', mb: '1rem' }} />
+                            <Divider sx={{ mt: 2, mb: 2 }} />
                             {riderGuardians.length > 0 ? riderGuardians.map((g: GuardianType) => <Typography key={g.id}>{`${g.firstName} ${g.lastName}`}</Typography>) : t('noGuardiansAssigned')}
                         </Box>
                     </Paper>
                 </Grid>
                 <Grid xs={12}>
                     <Paper sx={{ height: '100%'  }}>
-                        <Box sx={{ padding: '1rem' }}>
+                        <Box sx={{ padding: 2 }}>
                             <Typography variant='h3' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{t('exceptions')}</Typography>
-                            <Divider sx={{ mt: '1rem', mb: '1rem' }} />
+                            <Divider sx={{ mt: 2, mb: 2 }} />
                             {riderExceptions.length > 0 ? riderExceptions.map((e: ExceptionType) => <Exception key={e.id} exceptionId={e.id} />) : t('noExceptionsAssigned')}
                         </Box>
                     </Paper>

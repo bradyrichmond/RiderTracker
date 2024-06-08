@@ -25,17 +25,17 @@ const OrganizationLogoSettings = () => {
 
     return (
         <Grid xs={12}>
-            <Card sx={{ p: '2rem' }}>
+            <Card sx={{ p: 4 }}>
                 <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                    <Typography variant='h4' sx={{ pb: '.5rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    <Typography variant='h4' sx={{ pb: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                         {t('orgLogos', { ns: 'settings' })}
                     </Typography>
                 </Box>
                 <Box>
-                    <Box display='flex' height='100%' flexDirection='column' sx={{ pt: '2rem' }}>
-                        <Box sx={{ pb: '2rem' }} display='flex' justifyContent='center' alignItems='center' onClick={openFileDialog} >
+                    <Box display='flex' height='100%' flexDirection='column' sx={{ pt: 4 }}>
+                        <Box sx={{ pb: 4 }} display='flex' justifyContent='center' alignItems='center' onClick={openFileDialog} >
                             <Tooltip title={temporaryFileUrl ? t('fileNotUploaded', { ns: 'common' }) : t('changeProfilePicture', { ns: 'common' })}>
-                                <Badge badgeContent={<PriorityHighIcon fontSize='large' />} invisible={!temporaryFileUrl} color='error' sx={{ '& .MuiBadge-badge': { padding: '0.5rem', borderRadius: '2rem', height: 'fit-content', width: 'fit-content' } }}>
+                                <Badge badgeContent={<PriorityHighIcon fontSize='large' />} invisible={!temporaryFileUrl} color='error' sx={{ '& .MuiBadge-badge': { padding: 1, borderRadius: 4, height: 'fit-content', width: 'fit-content' } }}>
                                     {!temporaryFileUrl && !organizationLoginImageUrl ? <FolderIcon fontSize='large' /> : null}
                                     {temporaryFileUrl ? <img src={temporaryFileUrl} alt={temporaryFileUrl} /> : null}
                                     {organizationLoginImageUrl && !temporaryFileUrl ? <img src={organizationLoginImageUrl} alt={organizationLoginImageUrl} width='auto' /> : null}

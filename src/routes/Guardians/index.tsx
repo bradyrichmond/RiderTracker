@@ -78,7 +78,7 @@ const Guardians = ({ activeGuardian }: GuardiansProps) => {
             <GuardianDrawer open={!!activeGuardian} guardian={guardians.find((g: GuardianType) => g.id === activeGuardian)} />
             <CreateGuardianDialog createGuardian={createGuardianAction} isAddingGuardian={isAddingGuardian} cancel={toggleShowModal} />
             <Grid xs={12} md={6}>
-                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: '1rem' }}>
+                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
                     <Typography variant='h2'>
                         {t('guardians')}
                     </Typography>
@@ -91,7 +91,7 @@ const Guardians = ({ activeGuardian }: GuardiansProps) => {
                             <Button variant='contained' onClick={toggleShowModal}>
                                 <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                                     <AddCircleIcon />
-                                    <Box flex='1' marginLeft='1rem'>
+                                    <Box sx={{ flex: 1, ml: 2 }}>
                                         <Typography>{t('addGuardian')}</Typography>
                                     </Box>
                                 </Box>
@@ -103,7 +103,7 @@ const Guardians = ({ activeGuardian }: GuardiansProps) => {
                 </Box>
             </Grid>
             <Grid xs={12}>
-                <Box sx={{ mb: '1rem' }}>
+                <Box sx={{ mb: 2 }}>
                     <SearchBar onChange={changeSearchArg} fullWidth />
                 </Box>
             </Grid>

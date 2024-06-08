@@ -60,7 +60,7 @@ const ChangeLanguage = () => {
                 PaperProps={{
                     component: 'form',
                     onSubmit: handleSubmit,
-                    sx: { padding: '2rem', minWidth: '25%' }
+                    sx: { padding: 4, minWidth: '25%' }
                 }}
             >
                 <DialogTitle>Change Site Language</DialogTitle>
@@ -84,7 +84,7 @@ const ChangeLanguage = () => {
                         />
                     )}
                 />
-                <Button variant='contained' sx={{ mt: '2rem' }} onClick={handleSubmit}>{t('submitChanges')}</Button>
+                <Button variant='contained' sx={{ mt: 4 }} onClick={handleSubmit}>{t('submitChanges')}</Button>
             </Dialog>
             <MenuItem onClick={() => setOpen(true)}>
                 <MenuItemWithIcon Icon={LanguageIcon} label={t('changeLanguage')} color='primary' />

@@ -48,9 +48,9 @@ const Exception = ({ exceptionId }: ExceptionProps) => {
     return (
         <>
             {exception ?
-                <Grid container spacing={2} sx={{ mb: '2rem', mt: '2rem' }}>
+                <Grid container spacing={2} sx={{ mb: 4, mt: 4 }}>
                     <Grid xs={12}>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: '1rem' }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
                             <Typography variant='h3'>{dayjs(exception?.date).format('dddd MMM DD YYYY')}</Typography>
                         </Box>
                     </Grid>
@@ -76,7 +76,7 @@ const ExceptionStop = ({ title, guardianLabel, pickupStopName }: ExceptionStopPr
 
     return (
         <Grid xs={12} md={6}>
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: '1rem' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
                 <Typography variant='h4'>{title}</Typography>
             </Box>
             <Typography>{t('guardian')}: {guardianLabel}</Typography>
@@ -88,7 +88,7 @@ const ExceptionStop = ({ title, guardianLabel, pickupStopName }: ExceptionStopPr
 const ExceptionStopSkeleton = () => {
     return (
         <Grid xs={12} md={6}>
-            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: '1rem' }}>
+            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
                 <Skeleton variant='text' height={40} />
             </Box>
             <Skeleton variant='text' height={40} />

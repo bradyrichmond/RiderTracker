@@ -62,7 +62,7 @@ const Routes = ({ activeRoute }: RoutesProps) => {
             <RouteDrawer open={!!activeRoute} routeId={activeRoute ?? ''} />
             <CreateRouteDialog createRoute={createRouteAction} cancelAction={toggleIsAddingRoute} isAddingRoute={isAddingRoute} />
             <Grid xs={12} md={6}>
-                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: '1rem' }}>
+                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
                     <Typography variant='h2'>
                         {t('routes')}
                     </Typography>
@@ -76,7 +76,7 @@ const Routes = ({ activeRoute }: RoutesProps) => {
                             <Button variant='contained' onClick={toggleIsAddingRoute}>
                                 <Box display='flex' flexDirection='row'>
                                     <AddCircleIcon />
-                                    <Box flex='1' marginLeft='1rem'>
+                                    <Box sx={{ flex: 1, ml: 2 }}>
                                         <Typography>{t('addRoute')}</Typography>
                                     </Box>
                                 </Box>

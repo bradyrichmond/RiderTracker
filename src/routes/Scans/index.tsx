@@ -114,7 +114,7 @@ const Scans = () => {
                 allRiders={allRiders}
             />
             <Grid xs={12} md={6}>
-                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: '1rem' }}>
+                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
                     <Typography variant='h2'>
                         {t('scans')}
                     </Typography>
@@ -127,7 +127,7 @@ const Scans = () => {
                             <Button variant='contained' onClick={toggleAddingScan}>
                                 <Box display='flex' flexDirection='row'>
                                     <AddCircleIcon />
-                                    <Box flex='1' marginLeft='1rem'>
+                                    <Box sx={{ flex: 1, ml: 2 }}>
                                         <Typography>{t('addScan')}</Typography>
                                     </Box>
                                 </Box>

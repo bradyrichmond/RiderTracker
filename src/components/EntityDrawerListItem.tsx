@@ -14,7 +14,7 @@ const EntityDrawerDetailListItem = ({ id, action, label, tooltipTitle }: EntityD
     }
 
     return (
-        <Box sx={{ display: 'flex', flexDirection: 'row', m: '1rem' }}>
+        <Box sx={{ display: 'flex', flexDirection: 'row', m: 2 }}>
             <Box sx={{ flex: 1, display: 'flex', alignItems: 'center' }}>
                 <Typography>{label}</Typography>
             </Box>

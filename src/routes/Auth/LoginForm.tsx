@@ -92,7 +92,7 @@ const LoginForm = () => {
 
     return (
         <Box sx={{ flex: 1 }}>
-            <Box sx={{ pl: '2rem', pr: '2rem' }}>
+            <Box sx={{ pl: 4, pr: 4 }}>
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     {organizationLoginImageUrl ?
                         <img src={organizationLoginImageUrl} alt={`${orgName}`} />
@@ -102,7 +102,7 @@ const LoginForm = () => {
                         </Typography>
                     }
                 </Box>
-                <Box sx={{ mt: '2rem' }}>
+                <Box sx={{ mt: 4 }}>
                     <form onSubmit={handleSubmit(login)}>
                         <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                             <TextField
@@ -120,7 +120,7 @@ const LoginForm = () => {
                             />
                         </Box>
                         <Typography sx={{ color: 'red' }}>{errorMessage ?? ' '}</Typography>
-                        <Button type='submit' variant='contained' disabled={disableButtons} sx={{ mt: '2rem' }} fullWidth>{t('signIn')}</Button>
+                        <Button type='submit' variant='contained' disabled={disableButtons} sx={{ mt: 4 }} fullWidth>{t('signIn')}</Button>
                     </form>
                 </Box>
             </Box>

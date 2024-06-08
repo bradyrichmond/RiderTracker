@@ -46,7 +46,7 @@ const AddGuardianToRiderDialog = ({ cancelAction, isAddingGuardian }: AddGuardia
             PaperProps={{
                 component: 'form',
                 onSubmit: handleSubmit(updateRiderGuardians),
-                sx: { padding: '2rem', minWidth: '25%' }
+                sx: { padding: 4, minWidth: '25%' }
             }}
         >
             <DialogTitle textAlign='center'>{t('addGuardianToRider')}</DialogTitle>
