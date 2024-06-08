@@ -106,7 +106,7 @@ export class UserApis {
         return handleApiResponse<object>(deleteUserResponse)
     }
 
-    updateUser = async (orgId: string, id: string, body: Record<string, string | string[]>) => {
+    updateUser = async (orgId: string, id: string, body: Partial<UserType | GuardianType>) => {
         const updateUserResponse = await this.client.organizationsOrgIdUsersIdPut({ orgId, id }, body)
 
         return handleApiResponse<object>(updateUserResponse)
@@ -127,5 +127,5 @@ export interface UserApiFunctionTypes {
     getBulkUsersByIds(orgId: string, userIds: string[]): Promise<UserType[]>
     getBulkGuardiansByIds(orgId: string, userIds: string[]): Promise<GuardianType[]>
     deleteUser(orgId: string, id: string): Promise<object>
-    updateUser(orgId: string, id: string, body: Record<string, string[]>): Promise<object>
+    updateUser(orgId: string, id: string, body: Partial<UserType | GuardianType>): Promise<object>
 }

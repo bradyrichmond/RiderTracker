@@ -10,6 +10,7 @@ import { useGuardianStore } from '@/store/GuardianStore'
 import { GuardianType } from '@/types/UserType'
 import { useExceptionStore } from '@/store/ExceptionStore'
 import { ExceptionType } from '@/types/ExceptionType'
+import RiderSpeedDial from './RiderSpeedDial'
 
 interface RiderProps {
     activeRider?: string
@@ -54,7 +55,14 @@ const Rider = ({ activeRider: riderId }: RiderProps) => {
             <Grid container spacing={2}>
                 <Grid xs={12}>
                     <Paper sx={{ padding: '1rem' }}>
-                        <Typography variant='h2'>{rider?.firstName} {rider?.lastName}</Typography>
+                        <Grid container spacing={2} sx={{ height: '100%' }}>
+                            <Grid xs={11}>
+                                <Typography variant='h2'>{rider?.firstName} {rider?.lastName}</Typography>
+                            </Grid>
+                            <Grid xs={1} sx={{ alignItems: 'center', justifyContent: 'center' }}>
+                                <RiderSpeedDial />
+                            </Grid>
+                        </Grid>
                     </Paper>
                 </Grid>
                 <Grid xs={12} md={6}>
@@ -76,7 +84,7 @@ const Rider = ({ activeRider: riderId }: RiderProps) => {
                     </Paper>
                 </Grid>
                 <Grid xs={12}>
-                    <Paper sx={{ padding: '1rem', height: '100%'  }}>
+                    <Paper sx={{ height: '100%'  }}>
                         <Box sx={{ padding: '1rem' }}>
                             <Typography variant='h3' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{t('exceptions')}</Typography>
                             <Divider sx={{ mt: '1rem', mb: '1rem' }} />

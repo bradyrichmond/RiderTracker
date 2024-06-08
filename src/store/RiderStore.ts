@@ -16,6 +16,8 @@ interface RiderStore {
     searchArg: string
     changeSearchArg(searchArg: string): Promise<void>
     ridersFilter(r: RiderType): boolean
+    addStopToRider(stopId: string, riderId: string): Promise<void>
+    addGuardiansToRider(guardianIds: string[], riderId: string): Promise<void>
     removeGuardianFromRider(guardianId: string, riderId: string): Promise<void>
 }
 
@@ -90,6 +92,7 @@ export const useRiderStore = create<RiderStore>((set, get) => ({
     deleteRider: async (rider: RiderType) => {
         const orgId = useOrgStore.getState().orgId
         const api = await useApiStore.getState().getApi()
+
         const removeRiderFromGuardian = useGuardianStore.getState().removeRiderFromGuardian
         await api?.riders.deleteRider(orgId, rider.id)
 
@@ -129,6 +132,29 @@ export const useRiderStore = create<RiderStore>((set, get) => ({
         }
 
         return false
+    },
+    addStopToRider: async (stopId: string, riderId: string) => {
+        const api = await useApiStore.getState().getApi()
+        const orgId = useOrgStore.getState().orgId
+
+        const rider = await get().getRiderById(riderId)
+
+        const currentStops = rider.stopIds ?? []
+        currentStops.push(stopId)
+        rider.stopIds = currentStops
+
+        await api?.riders.updateRider(orgId, rider.id, rider)
+    },
+    addGuardiansToRider: async (guardianIds: string[], riderId: string) => {
+        const api = await useApiStore.getState().getApi()
+        const orgId = useOrgStore.getState().orgId
+
+        const rider = await get().getRiderById(riderId)
+        const currentGuardians = rider.guardianIds ?? []
+        const newGuardians = [...currentGuardians, ...guardianIds]
+        rider.guardianIds = newGuardians
+
+        await api?.riders.updateRider(orgId, rider.id, rider)
     },
     removeGuardianFromRider: async (guardianId: string, riderId: string) => {
         const rider = await get().getRiderById(riderId)

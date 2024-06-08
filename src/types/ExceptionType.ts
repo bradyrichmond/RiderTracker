@@ -3,9 +3,9 @@ export interface ExceptionType {
     orgId: string
     riderId: string
     date: Date
-    pickupStopId: string
+    pickupStopId?: string
     guardianId: string
-    dropOffStopId: string
+    dropOffStopId?: string
     createdBy: string
     createdDate: Date
     lastEditedBy: string

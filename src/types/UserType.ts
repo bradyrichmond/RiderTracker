@@ -16,5 +16,6 @@ export interface UserType {
 }
 
 export interface GuardianType extends UserType {
-    riderIds: string[]
+    riderIds?: string[]
+    stopId?: string
 }

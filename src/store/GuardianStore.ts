@@ -12,6 +12,7 @@ interface GuardianStore {
     searchArg: string
     changeSearchArg(searchArg: string): Promise<void>
     guardiansFilter(g: GuardianType): boolean
+    setGuardianStop(guardian: GuardianType, stopId: string): Promise<void>
     addRiderToGuardian: (guardian: GuardianType, rider: RiderType) => Promise<void>
     removeRiderFromGuardian: (guardianId: string, riderId: string) => Promise<void>
     getGuardianById: (guardianId: string) => Promise<GuardianType>
@@ -90,15 +91,17 @@ export const useGuardianStore = create<GuardianStore>((set, get) => ({
 
         return false
     },
+    setGuardianStop: async (guardian: GuardianType, stopId: string) => {
+        const api = await useApiStore.getState().getApi()
+        const orgId = useOrgStore.getState().orgId
+
+        await api?.users.updateUser(orgId, guardian.id, { stopId })
+    },
     addRiderToGuardian: async (guardian: GuardianType, rider: RiderType) => {
         const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
-        let riderIds: string[] = guardian.riderIds
-
-        if (!riderIds) {
-            riderIds = []
-        }
+        const riderIds: string[] = guardian.riderIds ?? []
 
         riderIds.push(rider.id)
 
@@ -109,7 +112,7 @@ export const useGuardianStore = create<GuardianStore>((set, get) => ({
         const orgId = useOrgStore.getState().orgId
         const guardian = await get().getGuardianById(guardianId)
 
-        let riderIds: string[] = guardian.riderIds.filter((r) => r !== riderId)
+        let riderIds: string[] = guardian?.riderIds?.filter((r) => r !== riderId) ?? []
 
         if (!riderIds || riderIds.length < 1) {
             riderIds = ['']

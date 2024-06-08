@@ -67,7 +67,7 @@ const GuardianDrawer = ({ open, guardian }: GuardianDrawerProps) => {
     }, [deleteGuardianAction, heaviestRole, t])
 
     const lists = useMemo(() => {
-        const filteredRiders = riders.filter((r: RiderType) => guardian?.riderIds.includes(r.id))
+        const filteredRiders = riders.filter((r: RiderType) => guardian?.riderIds?.includes(r.id)) ?? []
         const mappedRiders = filteredRiders.map((r: RiderType) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` }))
         return [
             {
