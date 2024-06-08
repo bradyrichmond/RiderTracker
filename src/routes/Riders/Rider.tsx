@@ -11,6 +11,7 @@ import { GuardianType } from '@/types/UserType'
 import { useExceptionStore } from '@/store/ExceptionStore'
 import { ExceptionType } from '@/types/ExceptionType'
 import RiderSpeedDial from './RiderSpeedDial'
+import Exception from './Exception'
 
 interface RiderProps {
     activeRider?: string
@@ -88,7 +89,7 @@ const Rider = ({ activeRider: riderId }: RiderProps) => {
                         <Box sx={{ padding: '1rem' }}>
                             <Typography variant='h3' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{t('exceptions')}</Typography>
                             <Divider sx={{ mt: '1rem', mb: '1rem' }} />
-                            {riderExceptions.length > 0 ? riderExceptions.map((e: ExceptionType) => <Typography key={e.id}>{e.id}</Typography>) : t('noExceptionsAssigned')}
+                            {riderExceptions.length > 0 ? riderExceptions.map((e: ExceptionType) => <Exception key={e.id} exceptionId={e.id} />) : t('noExceptionsAssigned')}
                         </Box>
                     </Paper>
                 </Grid>

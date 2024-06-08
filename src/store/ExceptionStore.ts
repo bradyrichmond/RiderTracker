@@ -8,7 +8,8 @@ import { useGuardianStore } from './GuardianStore'
 
 export interface CreateExceptionInput {
     date: Date
-    guardianId: string
+    pickupGuardianId?: string
+    dropoffGuardianId?: string
     pickup?: boolean
     dropoff?: boolean
 }
@@ -21,13 +22,18 @@ interface ExceptionStore {
     deleteException(exceptionId: string): Promise<void>
 }
 
+const dateCompare = (a: ExceptionType, b: ExceptionType) => {
+    return new Date(a.date).getTime() - new Date(b.date).getTime()
+}
+
 export const useExceptionStore = create<ExceptionStore>((set) => ({
     exceptions: [],
     getExceptions: async () => {
         const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
-        const exceptions = await api?.exceptions.getExceptions(orgId)
+        const initialExceptions: ExceptionType[] = await api?.exceptions.getExceptions(orgId)
+        const exceptions = initialExceptions.sort(dateCompare)
         set({ exceptions })
     },
     getExceptionById: async (exceptionId: string) => {
@@ -47,33 +53,32 @@ export const useExceptionStore = create<ExceptionStore>((set) => ({
         const orgId = useOrgStore.getState().orgId
         const userId = useUserStore.getState().userId
 
-        const guardian = await useGuardianStore.getState().getGuardianById(newException.guardianId)
+        const exceptionId = uuid()
 
-        if (guardian) {
-            const exceptionId = uuid()
-
-            const exception: ExceptionType = {
-                id: exceptionId,
-                orgId,
-                riderId: riderId,
-                date: newException.date,
-                guardianId: newException.guardianId,
-                createdBy: userId,
-                createdDate:  new Date(),
-                lastEditedBy: userId,
-                lastEditDate:  new Date()
-            }
-
-            if (newException.pickup) {
-                exception.pickupStopId = guardian.stopId
-            }
-
-            if (newException.dropoff) {
-                exception.dropOffStopId = guardian.stopId
-            }
-
-            await api?.exceptions.createException(orgId, exception)
+        const exception: ExceptionType = {
+            id: exceptionId,
+            orgId,
+            riderId: riderId,
+            date: newException.date,
+            createdBy: userId,
+            createdDate:  new Date(),
+            lastEditedBy: userId,
+            lastEditDate:  new Date()
         }
+
+        if (newException.pickup && newException.pickupGuardianId) {
+            const pickupGuardian = await useGuardianStore.getState().getGuardianById(newException.pickupGuardianId)
+            exception.pickupStopId = pickupGuardian.stopId
+            exception.pickupGuardianId = pickupGuardian.id
+        }
+
+        if (newException.dropoff && newException.dropoffGuardianId) {
+            const dropoffGuardian = await useGuardianStore.getState().getGuardianById(newException.dropoffGuardianId)
+            exception.dropoffStopId = dropoffGuardian.stopId
+            exception.dropoffGuardianId = dropoffGuardian.id
+        }
+
+        await api?.exceptions.createException(orgId, exception)
     },
     deleteException: async (exceptionId: string) => {
         const api = await useApiStore.getState().getApi()

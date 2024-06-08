@@ -23,10 +23,12 @@ const AddExceptionToRiderDialog = ({ cancelAction, isAddingException }: AddExcep
     const guardians = useGuardianStore().guardians
     const getExceptions = useExceptionStore().getExceptions
     const { t } = useTranslation(['riders', 'common'])
-    const { control, handleSubmit, reset, resetField, setValue, formState: { errors } } = useForm({ resolver: yupResolver(exceptionSchema) })
+    const { control, handleSubmit, reset, resetField, setValue, formState: { errors }, watch } = useForm({ resolver: yupResolver(exceptionSchema) })
     const { id: riderId } = useParams()
 
     const allGuardians = useMemo(() => guardians.map((g: GuardianType) => ({ id: g.id, label: `${g.firstName} ${g.lastName}` })), [guardians])
+
+    const { pickup, dropoff } = watch()
 
     const createExceptionAction = async (data: CreateExceptionInput) => {
         if (!riderId) {
@@ -43,7 +45,8 @@ const AddExceptionToRiderDialog = ({ cancelAction, isAddingException }: AddExcep
 
     const resetForm = () => {
         reset()
-        resetField('guardianId')
+        resetField('pickupGuardianId')
+        resetField('dropoffGuardianId')
     }
 
     return (
@@ -77,28 +80,48 @@ const AddExceptionToRiderDialog = ({ cancelAction, isAddingException }: AddExcep
                         }}
                     />
                 </FormControl>
-                <FormControl fullWidth>
-                    <Autocomplete
-                        id='GuardianAutoComplete'
-                        options={allGuardians}
-                        getOptionLabel={(option: OptionsType) => option.label}
-                        filterSelectedOptions
-                        onChange={(_e, value: OptionsType | null) => setValue('guardianId', value?.id ?? '')}
-                        renderInput={(params) => (
-                            <TextField
-                                {...params}
-                                label='Guardian'
-                                id='GuardianLabel'
-                                error={!!errors.guardianId?.message}
-                                helperText={errors.guardianId?.message ? t(errors.guardianId.message, { ns: 'common' }) : ''}
-                            />
-                        )}
-                    />
-                </FormControl>
                 <FormGroup aria-label="position" row sx={{ display: 'flex', justifyContent: 'space-evenly', mt: '1rem' }}>
                     <FormControlLabel control={<Switch onChange={(_e, value: boolean) => setValue('pickup', value ?? false)} />} label={t('pickup')} labelPlacement='top' />
                     <FormControlLabel control={<Switch onChange={(_e, value: boolean) => setValue('dropoff', value ?? false)} />} label={t('dropoff')} labelPlacement='top' />
                 </FormGroup>
+                <FormControl fullWidth>
+                    <Autocomplete
+                        id='PickupGuardianAutoComplete'
+                        options={allGuardians}
+                        getOptionLabel={(option: OptionsType) => option.label}
+                        filterSelectedOptions
+                        onChange={(_e, value: OptionsType | null) => setValue('pickupGuardianId', value?.id ?? '')}
+                        disabled={!pickup}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                label='Pick-Up Guardian'
+                                id='PickupGuardianLabel'
+                                error={!!errors.pickupGuardianId?.message}
+                                helperText={errors.pickupGuardianId?.message ? t(errors.pickupGuardianId.message, { ns: 'common' }) : ''}
+                            />
+                        )}
+                    />
+                </FormControl>
+                <FormControl fullWidth>
+                    <Autocomplete
+                        id='DropoffGuardianAutoComplete'
+                        options={allGuardians}
+                        getOptionLabel={(option: OptionsType) => option.label}
+                        filterSelectedOptions
+                        onChange={(_e, value: OptionsType | null) => setValue('dropoffGuardianId', value?.id ?? '')}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                label='Drop-Off Guardian'
+                                id='DropoffGuardianLabel'
+                                error={!!errors.dropoffGuardianId?.message}
+                                helperText={errors.dropoffGuardianId?.message ? t(errors.dropoffGuardianId.message, { ns: 'common' }) : ''}
+                            />
+                        )}
+                        disabled={!dropoff}
+                    />
+                </FormControl>
             </DialogContent>
             <DialogActions sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
                 <Button disabled={disableButtons} variant='contained' onClick={cancelAction}>{t('cancel', { ns: 'common' })}</Button>
