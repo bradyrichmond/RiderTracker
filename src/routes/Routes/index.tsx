@@ -10,6 +10,7 @@ import { useNavigate } from 'react-router-dom'
 import { useRouteStore } from '@/store/RouteStore'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
 import { useUserStore } from '@/store/UserStore'
+import Grid from '@mui/material/Unstable_Grid2'
 
 interface RoutesProps {
     activeRoute?: string
@@ -57,32 +58,36 @@ const Routes = ({ activeRoute }: RoutesProps) => {
     }
 
     return (
-        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <Box marginBottom='2rem' display='flex' flexDirection='row'>
-                <Box display='flex' justifyContent='center' alignItems='center'>
+        <Grid container spacing={2}>
+            <RouteDrawer open={!!activeRoute} routeId={activeRoute ?? ''} />
+            <CreateRouteDialog createRoute={createRouteAction} cancelAction={toggleIsAddingRoute} isAddingRoute={isAddingRoute} />
+            <Grid xs={12} md={6}>
+                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: '1rem' }}>
                     <Typography variant='h2'>
                         {t('routes')}
                     </Typography>
                 </Box>
-                {
-                    RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_ROUTE) ?
-                    <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
-                        <Button variant='contained' onClick={toggleIsAddingRoute}>
-                            <Box display='flex' flexDirection='row'>
-                                <AddCircleIcon />
-                                <Box flex='1' marginLeft='1rem'>
-                                    <Typography>{t('addRoute')}</Typography>
+            </Grid>
+            <Grid xs={12} md={6}>
+                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    {
+                        RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_ROUTE) ?
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <Button variant='contained' onClick={toggleIsAddingRoute}>
+                                <Box display='flex' flexDirection='row'>
+                                    <AddCircleIcon />
+                                    <Box flex='1' marginLeft='1rem'>
+                                        <Typography>{t('addRoute')}</Typography>
+                                    </Box>
                                 </Box>
-                            </Box>
-                        </Button>
-                    </Box>
-                    :
-                    null
-                }
-            </Box>
-            <RouteDrawer open={!!activeRoute} routeId={activeRoute ?? ''} />
-            <CreateRouteDialog createRoute={createRouteAction} cancelAction={toggleIsAddingRoute} isAddingRoute={isAddingRoute} />
-            <Box flex='1'>
+                            </Button>
+                        </Box>
+                        :
+                        null
+                    }
+                </Box>
+            </Grid>
+            <Grid xs>
                 <Box sx={{ height: '100%', width: '100%' }}>
                     {routes ?
                         <DataGrid
@@ -101,8 +106,8 @@ const Routes = ({ activeRoute }: RoutesProps) => {
                         <CircularProgress  />
                     }
                 </Box>
-            </Box>
-        </Box>
+            </Grid>
+        </Grid>
     )
 }
 

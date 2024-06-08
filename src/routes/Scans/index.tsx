@@ -18,6 +18,7 @@ import { GuardianType } from '@/types/UserType'
 import { useScanStore } from '@/store/ScanStore'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
 import { useUserStore } from '@/store/UserStore'
+import Grid from '@mui/material/Unstable_Grid2'
 
 const Scans = () => {
     const [isAddingScan, setIsAddingScan] = useState(false)
@@ -28,7 +29,7 @@ const Scans = () => {
     const heaviestRole = useUserStore().heaviestRole
     const navigate = useNavigate()
     const { getCurrentPosition } = useDeviceLocation()
-    const { t } = useTranslation()
+    const { t } = useTranslation('scans')
 
     const createScanAction = async (newScan: ScanType) => {
         try {
@@ -103,28 +104,7 @@ const Scans = () => {
     }
 
     return (
-        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <Box marginBottom='2rem' display='flex' flexDirection='row'>
-                <Box display='flex' justifyContent='center' alignItems='center'>
-                    <Typography variant='h2'>
-                        {t('scans')}
-                    </Typography>
-                </Box>
-                {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_SCAN) ?
-                    <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
-                        <Button variant='contained' onClick={toggleAddingScan}>
-                            <Box display='flex' flexDirection='row'>
-                                <AddCircleIcon />
-                                <Box flex='1' marginLeft='1rem'>
-                                    <Typography>{t('addScan')}</Typography>
-                                </Box>
-                            </Box>
-                        </Button>
-                    </Box>
-                    :
-                    null
-                }
-            </Box>
+        <Grid container spacing={2}>
             <CreateScanDialog
                 cancel={toggleAddingScan}
                 isAddingScan={isAddingScan}
@@ -133,7 +113,32 @@ const Scans = () => {
                 allGuardians={allGuardians}
                 allRiders={allRiders}
             />
-            <Box flex='1'>
+            <Grid xs={12} md={6}>
+                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: '1rem' }}>
+                    <Typography variant='h2'>
+                        {t('scans')}
+                    </Typography>
+                </Box>
+            </Grid>
+            <Grid xs={12} md={6}>
+                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_SCAN) ?
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <Button variant='contained' onClick={toggleAddingScan}>
+                                <Box display='flex' flexDirection='row'>
+                                    <AddCircleIcon />
+                                    <Box flex='1' marginLeft='1rem'>
+                                        <Typography>{t('addScan')}</Typography>
+                                    </Box>
+                                </Box>
+                            </Button>
+                        </Box>
+                        :
+                        null
+                    }
+                </Box>
+            </Grid>
+            <Grid xs>
                 <Box sx={{ height: '100%', width: '100%' }}>
                     {scans ?
                         <DataGrid
@@ -147,8 +152,8 @@ const Scans = () => {
                         null
                     }
                 </Box>
-            </Box>
-        </Box>
+            </Grid>
+        </Grid>
     )
 }
 

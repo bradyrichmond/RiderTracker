@@ -13,6 +13,7 @@ import { useAdminStore } from '@/store/AdminStore'
 import { useRiderStore } from '@/store/RiderStore'
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
 import { useUserStore } from '@/store/UserStore'
+import Grid from '@mui/material/Unstable_Grid2'
 
 export interface CreateGuardianInput {
     given_name: string
@@ -48,11 +49,13 @@ const Guardians = ({ activeGuardian }: GuardiansProps) => {
 
     const generateGridColumns = (): GridColDef[] => {
         const initialGridColumns: GridColDef[] = [
-            { field: 'firstName',  headerName: 'First Name', flex: 1, align: 'center', headerAlign: 'center' },
-            { field: 'lastName',  headerName: 'Last Name', flex: 1, align: 'center', headerAlign: 'center' },
-            { field: 'riderIds',  headerName: 'Riders', flex: 1, align: 'center', headerAlign: 'center', valueFormatter: (value: string[] | null) => {
-                return Array.isArray(value) ? value.filter((v) => v !== '').length : 0
-            } }
+            { field: 'firstName', headerName: 'First Name', flex: 1, align: 'center', headerAlign: 'center' },
+            { field: 'lastName', headerName: 'Last Name', flex: 1, align: 'center', headerAlign: 'center' },
+            {
+                field: 'riderIds', headerName: 'Riders', flex: 1, align: 'center', headerAlign: 'center', valueFormatter: (value: string[] | null) => {
+                    return Array.isArray(value) ? value.filter((v) => v !== '').length : 0
+                }
+            }
         ]
 
         return initialGridColumns
@@ -71,34 +74,40 @@ const Guardians = ({ activeGuardian }: GuardiansProps) => {
     }
 
     return (
-        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <Box marginBottom='2rem' display='flex' flexDirection='row'>
-                <Box display='flex' justifyContent='center' alignItems='center'>
+        <Grid container spacing={2}>
+            <GuardianDrawer open={!!activeGuardian} guardian={guardians.find((g: GuardianType) => g.id === activeGuardian)} />
+            <CreateGuardianDialog createGuardian={createGuardianAction} isAddingGuardian={isAddingGuardian} cancel={toggleShowModal} />
+            <Grid xs={12} md={6}>
+                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: '1rem' }}>
                     <Typography variant='h2'>
                         {t('guardians')}
                     </Typography>
                 </Box>
-                {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_GUARDIAN) ?
-                    <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
-                        <Button variant='contained' onClick={toggleShowModal}>
-                            <Box display='flex' flexDirection='row'>
-                                <AddCircleIcon />
-                                <Box flex='1' marginLeft='1rem'>
-                                    <Typography>{t('addGuardian')}</Typography>
+            </Grid>
+            <Grid xs={12} md={6}>
+                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_GUARDIAN) ?
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <Button variant='contained' onClick={toggleShowModal}>
+                                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                    <AddCircleIcon />
+                                    <Box flex='1' marginLeft='1rem'>
+                                        <Typography>{t('addGuardian')}</Typography>
+                                    </Box>
                                 </Box>
-                            </Box>
-                        </Button>
-                    </Box>
-                    :
-                    null
-                }
-            </Box>
-            <GuardianDrawer open={!!activeGuardian} guardian={guardians.find((g: GuardianType) => g.id === activeGuardian)} />
-            <CreateGuardianDialog createGuardian={createGuardianAction} isAddingGuardian={isAddingGuardian} cancel={toggleShowModal} />
-            <Box sx={{ mb: '2rem' }}>
-                <SearchBar onChange={changeSearchArg} fullWidth />
-            </Box>
-            <Box flex='1'>
+                            </Button>
+                        </Box>
+                        :
+                        null
+                    }
+                </Box>
+            </Grid>
+            <Grid xs={12}>
+                <Box sx={{ mb: '1rem' }}>
+                    <SearchBar onChange={changeSearchArg} fullWidth />
+                </Box>
+            </Grid>
+            <Grid xs>
                 <Box sx={{ height: '100%', width: '100%' }}>
                     {guardians ?
                         <DataGrid
@@ -109,7 +118,7 @@ const Guardians = ({ activeGuardian }: GuardiansProps) => {
                             onRowClick={(params) => handleRowClick(params.row.id)}
                             initialState={{
                                 sorting: {
-                                  sortModel: [{ field: 'lastName', sort: 'asc' }],
+                                    sortModel: [{ field: 'lastName', sort: 'asc' }],
                                 },
                             }}
                         />
@@ -117,8 +126,8 @@ const Guardians = ({ activeGuardian }: GuardiansProps) => {
                         null
                     }
                 </Box>
-            </Box>
-        </Box>
+            </Grid>
+        </Grid>
     )
 }
 

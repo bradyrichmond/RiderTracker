@@ -38,7 +38,7 @@ const OrganizationLogoSettings = () => {
                                 <Badge badgeContent={<PriorityHighIcon fontSize='large' />} invisible={!temporaryFileUrl} color='error' sx={{ '& .MuiBadge-badge': { padding: '0.5rem', borderRadius: '2rem', height: 'fit-content', width: 'fit-content' } }}>
                                     {!temporaryFileUrl && !organizationLoginImageUrl ? <FolderIcon fontSize='large' /> : null}
                                     {temporaryFileUrl ? <img src={temporaryFileUrl} alt={temporaryFileUrl} /> : null}
-                                    {organizationLoginImageUrl && !temporaryFileUrl ? <img src={organizationLoginImageUrl} alt={organizationLoginImageUrl} /> : null}
+                                    {organizationLoginImageUrl && !temporaryFileUrl ? <img src={organizationLoginImageUrl} alt={organizationLoginImageUrl} width='auto' /> : null}
                                 </Badge>
                             </Tooltip>
                         </Box>

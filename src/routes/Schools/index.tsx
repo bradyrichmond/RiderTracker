@@ -12,6 +12,7 @@ import CreateSchoolDialog from './CreateSchoolDialog'
 import { useSchoolStore } from '@/store/SchoolStore'
 import { useAddressStore } from '@/store/AddressStore'
 import { useRiderStore } from '@/store/RiderStore'
+import Grid from '@mui/material/Unstable_Grid2'
 
 interface SchoolsProps {
     activeSchool?: string
@@ -80,31 +81,35 @@ const Schools = ({ activeSchool }: SchoolsProps) => {
     }
 
     return (
-        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-            <Box marginBottom='2rem' display='flex' flexDirection='row'>
-                <Box display='flex' justifyContent='center' alignItems='center'>
+        <Grid container spacing={2}>
+            <SchoolDrawer open={!!activeSchool} school={schools.find((s: SchoolType) => s.id === activeSchool)} />
+            <CreateSchoolDialog createSchool={createSchoolAction} cancelAction={toggleAddingSchool} open={isAddingSchool} />
+            <Grid xs={12} md={6}>
+                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: '1rem' }}>
                     <Typography variant='h2'>
                         {t('schools')}
                     </Typography>
                 </Box>
-                {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_SCHOOL) ?
-                    <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
-                        <Button variant='contained' onClick={toggleAddingSchool}>
-                            <Box display='flex' flexDirection='row'>
-                                <AddCircleIcon />
-                                <Box flex='1' marginLeft='1rem'>
-                                    <Typography>{t('addSchool')}</Typography>
+            </Grid>
+            <Grid xs={12} md={6}>
+                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_SCHOOL) ?
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <Button variant='contained' onClick={toggleAddingSchool}>
+                                <Box display='flex' flexDirection='row'>
+                                    <AddCircleIcon />
+                                    <Box flex='1' marginLeft='1rem'>
+                                        <Typography>{t('addSchool')}</Typography>
+                                    </Box>
                                 </Box>
-                            </Box>
-                        </Button>
-                    </Box>
-                    :
-                    null
-                }
-            </Box>
-            <SchoolDrawer open={!!activeSchool} school={schools.find((s: SchoolType) => s.id === activeSchool)} />
-            <CreateSchoolDialog createSchool={createSchoolAction} cancelAction={toggleAddingSchool} open={isAddingSchool} />
-            <Box flex='1'>
+                            </Button>
+                        </Box>
+                        :
+                        null
+                    }
+                </Box>
+            </Grid>
+            <Grid xs>
                 <Box sx={{ height: '100%', width: '100%' }}>
                     {schools ?
                         <DataGrid
@@ -123,8 +128,8 @@ const Schools = ({ activeSchool }: SchoolsProps) => {
                         null
                     }
                 </Box>
-            </Box>
-        </Box>
+            </Grid>
+        </Grid>
     )
 }
 

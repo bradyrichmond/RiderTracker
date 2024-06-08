@@ -8,6 +8,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import { useTranslation } from 'react-i18next'
 import { useUserStore } from '@/store/UserStore'
 import { useAdminStore } from '@/store/AdminStore'
+import Grid from '@mui/material/Unstable_Grid2'
 
 interface OrganizationAdminCardProps extends UserType {
     index: number
@@ -43,25 +44,27 @@ const OrganizationAdminCard = ({ id, firstName, lastName, title, email, index }:
 
 
     return (
-        <Paper elevation={4} sx={index > 0 ? { mt: '1rem' } : {}} ref={ref}>
-            <Box sx={{ p: '2rem', display: 'flex', flexDirection: 'row' }}>
-                <Box sx={{ mr: '2rem' }}>
-                    <Avatar sx={{ height: 150, width: 150, fontSize: '3rem' }} src={profileUrl} alt={userFullName}>
-                        <PersonIcon fontSize='inherit' />
-                    </Avatar>
-                </Box>
+        <Paper elevation={4} sx={index > 0 ? { mt: 2, p: 2 } : { p: 2 }} ref={ref}>
+            <Grid xs={12} sx={{ padding: 0 }}>
+                <Grid xs={12} md={4} sx={{ padding: 0 }}>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
+                        <Avatar sx={{ height: 150, width: 150, fontSize: '3rem' }} src={profileUrl} alt={userFullName}>
+                            <PersonIcon fontSize='inherit' />
+                        </Avatar>
+                    </Box>
+                </Grid>
                 <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                     <Box>
                         <Typography variant='h4'>{userFullName}</Typography>
                         <Typography variant='subtitle1'>{title}</Typography>
                     </Box>
                     <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
-                        <Typography sx={{ display: 'flex', flexDirection: 'row' }}><EmailIcon sx={{ mr: '1rem' }} /> {email}</Typography>
+                        <Typography sx={{ display: 'flex', flexDirection: 'row' }}><EmailIcon sx={{ mr: 2 }} /> {email}</Typography>
                     </Box>
                 </Box>
-                <Box sx={{ width: '3rem' }}>
+                <Box sx={{ width: 6 }}>
                     {hovering ?
-                        <Box sx={{ width: '3rem', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                        <Box sx={{ width: 6, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
                             {actions.map((a) => <OrganizationAdminAction
                                 id={a.id}
                                 key={a.id}
@@ -74,7 +77,7 @@ const OrganizationAdminCard = ({ id, firstName, lastName, title, email, index }:
                         null
                     }
                 </Box>
-            </Box>
+            </Grid>
         </Paper>
     )
 }

@@ -10,7 +10,7 @@ import { useAdminStore } from '@/store/AdminStore'
 
 const OrganizationAdminSettings = () => {
     const { admins, updateAdmins, createAdmin } = useAdminStore()
-    const [ showModal, setShowModal ] = useState(false)
+    const [showModal, setShowModal] = useState(false)
     const { t } = useTranslation('settings')
 
     useEffect(() => {
@@ -29,23 +29,29 @@ const OrganizationAdminSettings = () => {
         <Grid xs={12} marginBottom='2rem'>
             <CreateAdminDialog isAddingAdmin={showModal} cancel={toggleShowModal} createAdmin={createNewAdmin} />
             <Card sx={{ p: '2rem' }}>
-                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                    <Typography variant='h4' sx={{ pb: '.5rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        {t('orgAdmins')}
-                    </Typography>
-                    <Box padding='2rem' flex='1' display='flex' flexDirection='row' justifyContent='flex-end'>
-                        <Button variant='contained' onClick={toggleShowModal}>
-                            <Box display='flex' flexDirection='row'>
-                                <AddCircleIcon />
-                                <Box flex='1' marginLeft='1rem'>
-                                    <Typography>{t('addOrgAdmin')}</Typography>
+                <Grid container spacing={2}>
+                    <Grid xs={12} md={6}>
+                        <Typography variant='h4' sx={{ pb: '.5rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            {t('orgAdmins')}
+                        </Typography>
+                    </Grid>
+                    <Grid xs={12} md={6}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
+                            <Button variant='contained' onClick={toggleShowModal}>
+                                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                    <AddCircleIcon />
+                                    <Box sx={{ flex: 1, ml: 2 }}>
+                                        <Typography>{t('addOrgAdmin')}</Typography>
+                                    </Box>
                                 </Box>
-                            </Box>
-                        </Button>
-                    </Box>
-                </Box>
-                    {admins.length > 0 ?
-                        admins.map((a, idx) => <OrganizationAdminCard
+                            </Button>
+                        </Box>
+                    </Grid>
+                </Grid>
+                <Grid container spacing={2}>
+                    <Grid xs={12} md={6}>
+                        {admins.length > 0 ?
+                            admins.map((a, idx) => <OrganizationAdminCard
                                 key={a.id}
                                 id={a.id}
                                 orgId={a.orgId}
@@ -59,9 +65,11 @@ const OrganizationAdminSettings = () => {
                                 lastEditDate={a.lastEditDate}
                                 index={idx}
                             />)
-                        :
-                        null
-                    }
+                            :
+                            null
+                        }
+                    </Grid>
+                </Grid>
             </Card>
         </Grid>
     )
