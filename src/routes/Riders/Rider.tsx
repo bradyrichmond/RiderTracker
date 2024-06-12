@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next'
 import { useGuardianStore } from '@/store/GuardianStore'
 import { GuardianType } from '@/types/UserType'
 import { useExceptionStore } from '@/store/ExceptionStore'
-import { ExceptionType } from '@/types/ExceptionType'
+import { ExceptionType, ExceptionTypeType } from '@/types/ExceptionType'
 import RiderSpeedDial from './RiderSpeedDial'
 import Exception from './Exception'
 
@@ -47,8 +47,12 @@ const Rider = ({ activeRider: riderId }: RiderProps) => {
         return guardians.filter((g: GuardianType) => rider?.guardianIds?.includes(g.id))
     }, [guardians, rider])
 
-    const riderExceptions = useMemo(() => {
-        return exceptions.filter((e: ExceptionType) => e.riderId === riderId)
+    const authorizedRiderExceptions = useMemo(() => {
+        return exceptions.filter((e: ExceptionType) => e.riderId === riderId && e.type === ExceptionTypeType.AUTHORIZED)
+    }, [exceptions, riderId])
+
+    const unauthorizedRiderExceptions = useMemo(() => {
+        return exceptions.filter((e: ExceptionType) => e.riderId === riderId && e.type === ExceptionTypeType.UNAUTHORIZED)
     }, [exceptions, riderId])
 
     return (
@@ -87,9 +91,18 @@ const Rider = ({ activeRider: riderId }: RiderProps) => {
                 <Grid xs={12}>
                     <Paper sx={{ height: '100%'  }}>
                         <Box sx={{ padding: 2 }}>
-                            <Typography variant='h3' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{t('exceptions')}</Typography>
+                            <Typography variant='h3' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{t('unauthorizedExceptions')}</Typography>
                             <Divider sx={{ mt: 2, mb: 2 }} />
-                            {riderExceptions.length > 0 ? riderExceptions.map((e: ExceptionType) => <Exception key={e.id} exceptionId={e.id} />) : t('noExceptionsAssigned')}
+                            {unauthorizedRiderExceptions.length > 0 ? unauthorizedRiderExceptions.map((e: ExceptionType) => <Exception key={e.id} exceptionId={e.id} />) : t('noExceptionsAssigned')}
+                        </Box>
+                    </Paper>
+                </Grid>
+                <Grid xs={12}>
+                    <Paper sx={{ height: '100%'  }}>
+                        <Box sx={{ padding: 2 }}>
+                            <Typography variant='h3' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{t('authorizedExceptions')}</Typography>
+                            <Divider sx={{ mt: 2, mb: 2 }} />
+                            {authorizedRiderExceptions.length > 0 ? authorizedRiderExceptions.map((e: ExceptionType) => <Exception key={e.id} exceptionId={e.id} />) : t('noExceptionsAssigned')}
                         </Box>
                     </Paper>
                 </Grid>

@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
 import { useOrgStore } from './OrgStore'
 import { v4 as uuid } from 'uuid'
-import { ExceptionType } from '@/types/ExceptionType'
+import { ExceptionType, ExceptionTypeType } from '@/types/ExceptionType'
 import { useUserStore } from './UserStore'
 import { useGuardianStore } from './GuardianStore'
 
@@ -10,20 +10,20 @@ export interface CreateExceptionInput {
     date: Date
     pickupGuardianId?: string
     dropoffGuardianId?: string
-    pickup?: boolean
-    dropoff?: boolean
+    pickup: string
+    dropoff: string
 }
 
 interface ExceptionStore {
     exceptions: ExceptionType[]
     getExceptions(): Promise<void>
     getExceptionById(exceptionId: string): Promise<ExceptionType>
-    createException(exception: CreateExceptionInput, riderId: string): Promise<void>
+    createException(exception: CreateExceptionInput, type: ExceptionTypeType,  riderId: string): Promise<void>
     deleteException(exceptionId: string): Promise<void>
 }
 
 const dateCompare = (a: ExceptionType, b: ExceptionType) => {
-    return new Date(a.date).getTime() - new Date(b.date).getTime()
+    return a.date - b.date
 }
 
 export const useExceptionStore = create<ExceptionStore>((set) => ({
@@ -48,7 +48,7 @@ export const useExceptionStore = create<ExceptionStore>((set) => ({
 
         throw 'Unable to find exception by id'
     },
-    createException: async (newException: CreateExceptionInput, riderId: string) => {
+    createException: async (newException: CreateExceptionInput, type: ExceptionTypeType, riderId: string) => {
         const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
         const userId = useUserStore.getState().userId
@@ -59,20 +59,23 @@ export const useExceptionStore = create<ExceptionStore>((set) => ({
             id: exceptionId,
             orgId,
             riderId: riderId,
-            date: newException.date,
+            date: newException.date.getTime(),
+            dropoff: newException.dropoff,
             createdBy: userId,
-            createdDate:  new Date(),
+            createdDate:  new Date().getTime(),
             lastEditedBy: userId,
-            lastEditDate:  new Date()
+            lastEditDate:  new Date().getTime(),
+            pickup: newException.pickup,
+            type
         }
 
-        if (newException.pickup && newException.pickupGuardianId) {
+        if (newException.pickup === 'override' && newException.pickupGuardianId) {
             const pickupGuardian = await useGuardianStore.getState().getGuardianById(newException.pickupGuardianId)
             exception.pickupStopId = pickupGuardian.stopId
             exception.pickupGuardianId = pickupGuardian.id
         }
 
-        if (newException.dropoff && newException.dropoffGuardianId) {
+        if (newException.dropoff === 'override' && newException.dropoffGuardianId) {
             const dropoffGuardian = await useGuardianStore.getState().getGuardianById(newException.dropoffGuardianId)
             exception.dropoffStopId = dropoffGuardian.stopId
             exception.dropoffGuardianId = dropoffGuardian.id

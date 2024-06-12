@@ -82,7 +82,7 @@ describe('Riders Tests', () => {
     render(<Rider activeRider='123456' />, { wrapper: ProviderWrapperAsRole })
 
     await waitFor(() => {
-      expect(screen.getByText('exceptions')).toBeInTheDocument()
+      expect(screen.getByText('authorizedExceptions')).toBeInTheDocument()
     })
   })
 })

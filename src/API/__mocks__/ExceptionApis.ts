@@ -1,3 +1,5 @@
+import { ExceptionTypeType } from '@/types/ExceptionType'
+
 const mockGetExceptionById = async (id: string) => Promise.resolve({
     id: id,
     orgId: '00492e30-ab34-44f6-9843-44f47f2cdf27',
@@ -9,7 +11,8 @@ const mockGetExceptionById = async (id: string) => Promise.resolve({
     createdBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
     createdDate: new Date(),
     lastEditedBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
-    lastEditDate: new Date()
+    lastEditDate: new Date(),
+    type: ExceptionTypeType.AUTHORIZED
 })
 
 const mockGetExceptions = async (orgId: string) => Promise.resolve([
@@ -24,7 +27,8 @@ const mockGetExceptions = async (orgId: string) => Promise.resolve([
         createdBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
         createdDate: new Date(),
         lastEditedBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
-        lastEditDate: new Date()
+        lastEditDate: new Date(),
+        type: ExceptionTypeType.AUTHORIZED
     },
     {
         id: '70d242f6-6d30-4421-8511-7aad767a8776',
@@ -37,7 +41,8 @@ const mockGetExceptions = async (orgId: string) => Promise.resolve([
         createdBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
         createdDate: new Date(),
         lastEditedBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
-        lastEditDate: new Date()
+        lastEditDate: new Date(),
+        type: ExceptionTypeType.AUTHORIZED
     },
     {
         id: '123',
@@ -50,7 +55,8 @@ const mockGetExceptions = async (orgId: string) => Promise.resolve([
         createdBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
         createdDate: new Date(),
         lastEditedBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
-        lastEditDate: new Date()
+        lastEditDate: new Date(),
+        type: ExceptionTypeType.UNAUTHORIZED
     }
 ])
 
