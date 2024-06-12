@@ -1,8 +1,10 @@
+import { RIDER_TRACKER_ROLES } from '@/constants/Roles'
 import { useExceptionStore } from '@/store/ExceptionStore'
 import { useGuardianStore } from '@/store/GuardianStore'
 import { useStopStore } from '@/store/StopStore'
+import { useUserStore } from '@/store/UserStore'
 import { StopType } from '@/types/StopType'
-import { GuardianType } from '@/types/UserType'
+import { GuardianType, UserType } from '@/types/UserType'
 import { Box, Divider, Skeleton, Typography } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import dayjs from 'dayjs'
@@ -17,6 +19,7 @@ const Exception = ({ exceptionId }: ExceptionProps) => {
     const { t } = useTranslation('riders')
     const exceptions = useExceptionStore().exceptions
     const guardians = useGuardianStore().guardians
+    const users = useUserStore().users
     const stops = useStopStore().stops
 
     const exception = useMemo(() => {
@@ -52,6 +55,28 @@ const Exception = ({ exceptionId }: ExceptionProps) => {
         return exception?.dropoff
     }, [exception])
 
+    const createdByText = useMemo(() => {
+        const createdById = exception?.createdBy
+        const createdByUser = users.find((u: UserType) => u.id === createdById)
+        const createdByUserType = createdByUser?.userType
+
+        let createdByUserTypeString: string = 'Unknown'
+
+        if (createdByUserType === RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN) {
+            createdByUserTypeString = 'Admin'
+        }
+
+        if (createdByUserType === RIDER_TRACKER_ROLES.RIDER_TRACKER_DRIVER) {
+            createdByUserTypeString = 'Driver'
+        }
+
+        if (createdByUserType === RIDER_TRACKER_ROLES.RIDER_TRACKER_GUARDIAN) {
+            createdByUserTypeString = 'Guardian'
+        }
+
+        return `Created by ${createdByUserTypeString}`
+    }, [exception])
+
     const exceptionDate = useMemo(() => {
         if (exception) {
             return dayjs(Number(exception.date)).format('dddd MMM DD YYYY')
@@ -63,23 +88,28 @@ const Exception = ({ exceptionId }: ExceptionProps) => {
     return (
         <>
             {exception ?
-                <Grid container spacing={2} sx={{ mb: 4, mt: 4 }}>
-                    <Grid xs={12}>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
-                            <Typography variant='h3'>{exceptionDate}</Typography>
-                        </Box>
+                <Box sx={{ mt: 2 }}>
+                    <Divider />
+                    <Grid container spacing={2} sx={{ mb: 2, mt: 2 }}>
+                        <Grid xs={12}>
+                            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', mb: 2 }}>
+                                <Typography variant='h3'>{exceptionDate}</Typography>
+                            </Box>
+                        </Grid>
+                        {pickup === 'override' && pickupGuardian ? <ExceptionStop title={t('pickup')} guardianLabel={`${pickupGuardian?.firstName} ${pickupGuardian?.lastName}`} pickupStopName={pickupStop?.stopName ?? ''} /> : null}
+                        {pickup === 'noChange' ? <ExceptionStop title={t('pickup')} guardianLabel={t('noChange')} pickupStopName={t('noChange')} /> : null}
+                        {pickup === 'cancel' ? <ExceptionStop title={t('pickup')} guardianLabel={t('noPickup')} pickupStopName={t('noPickup')} /> : null}
+                        {dropoff === 'override' && dropoffGuardian ? <ExceptionStop title={t('dropoff')} guardianLabel={`${dropoffGuardian?.firstName} ${dropoffGuardian?.lastName}`} pickupStopName={dropoffStop?.stopName ?? ''} /> : null}
+                        {dropoff === 'noChange' ? <ExceptionStop title={t('dropoff')} guardianLabel={t('noChange')} pickupStopName={t('noChange')} /> : null}
+                        {dropoff === 'cancel' ? <ExceptionStop title={t('dropoff')} guardianLabel={t('noDropoff')} pickupStopName={t('noDropoff')} /> : null}
+                        <Grid xs={12}>
+                            <Typography variant='caption'>{createdByText}</Typography>
+                        </Grid>
                     </Grid>
-                    {pickup === 'override' && pickupGuardian ? <ExceptionStop title={t('pickup')} guardianLabel={`${pickupGuardian?.firstName} ${pickupGuardian?.lastName}`} pickupStopName={pickupStop?.stopName ?? ''} /> : null}
-                    {dropoff === 'override' && dropoffGuardian ? <ExceptionStop title={t('dropoff')} guardianLabel={`${dropoffGuardian?.firstName} ${dropoffGuardian?.lastName}`} pickupStopName={dropoffStop?.stopName ?? ''} /> : null}
-                    {pickup === 'noChange' ? <ExceptionStop title={t('pickup')} guardianLabel={t('noChange')} pickupStopName={t('noChange')} /> : null}
-                    {dropoff === 'noChange' ? <ExceptionStop title={t('dropoff')} guardianLabel={t('noChange')} pickupStopName={t('noChange')} /> : null}
-                    {pickup === 'cancel' ? <ExceptionStop title={t('pickup')} guardianLabel={t('noPickup')} pickupStopName={t('noPickup')} /> : null}
-                    {dropoff === 'cancel' ? <ExceptionStop title={t('dropoff')} guardianLabel={t('noDropoff')} pickupStopName={t('noDropoff')} /> : null}
-                </Grid>
+                </Box>
                 :
                 <ExceptionSkeleton />
             }
-            <Divider />
         </>
     )
 }

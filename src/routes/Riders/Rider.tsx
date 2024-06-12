@@ -101,7 +101,6 @@ const Rider = ({ activeRider: riderId }: RiderProps) => {
                     <Paper sx={{ height: '100%'  }}>
                         <Box sx={{ padding: 2 }}>
                             <Typography variant='h3' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{t('authorizedExceptions')}</Typography>
-                            <Divider sx={{ mt: 2, mb: 2 }} />
                             {authorizedRiderExceptions.length > 0 ? authorizedRiderExceptions.map((e: ExceptionType) => <Exception key={e.id} exceptionId={e.id} />) : t('noExceptionsAssigned')}
                         </Box>
                     </Paper>
