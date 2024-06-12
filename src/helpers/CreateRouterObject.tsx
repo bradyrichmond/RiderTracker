@@ -21,6 +21,8 @@ import SchoolWrapper from '@/routes/Schools/SchoolsWrapper'
 import DriversWrapper from '@/routes/Drivers/DriversWrapper'
 import Rider from '@/routes/Riders/Rider'
 import Riders from '@/routes/Riders'
+import Schools from '@/routes/Schools'
+import School from '@/routes/Schools/School'
 
 export const createRouterObject = () => {
     return createBrowserRouter([{
@@ -96,11 +98,15 @@ export const createRouterObject = () => {
                     },
                     {
                         path: '/app/schools',
-                        element: <ProtectedRoute route='/app/schools'><SchoolWrapper /></ProtectedRoute>
+                        element: <ProtectedRoute route='/app/schools'><SchoolWrapper><Schools /></SchoolWrapper></ProtectedRoute>
+                    },
+                    {
+                        path: '/app/schools/:id/detail',
+                        element: <ProtectedRoute route='/app/schools/:id/detail'><SchoolWrapper><School /></SchoolWrapper></ProtectedRoute>
                     },
                     {
                         path: '/app/schools/:id',
-                        element: <ProtectedRoute route='/app/schools/:id'><SchoolWrapper /></ProtectedRoute>
+                        element: <ProtectedRoute route='/app/schools/:id'><SchoolWrapper><Schools /></SchoolWrapper></ProtectedRoute>
                     },
                     {
                         path: '/app/unauthorized',

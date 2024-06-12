@@ -7,9 +7,9 @@ const mockGetSchoolById = async (id: string) => Promise.resolve({
     riders: ['123456'],
     address: '123456',
     createdBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
-    createdDate: new Date(),
+    createdDate: new Date().getTime(),
     lastEditedBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
-    lastEditDate: new Date()
+    lastEditDate: new Date().getTime()
  })
 
 const mockGetSchools = async (orgId: string) => Promise.resolve([
@@ -35,9 +35,9 @@ const mockGetBulkSchoolsById = async (schoolIds: string[]) => {
         schoolName: 'Sunnyside Elementary',
         address: '123456',
         createdBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
-        createdDate: new Date(),
+        createdDate: new Date().getTime(),
         lastEditedBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
-        lastEditDate: new Date()
+        lastEditDate: new Date().getTime()
      }))
 
     return schools

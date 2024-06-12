@@ -5,7 +5,7 @@ export interface SchoolType {
     address: string
     riderIds?: string[]
     createdBy: string
-    createdDate: Date
+    createdDate: number
     lastEditedBy: string
-    lastEditDate: Date
+    lastEditDate: number
 }

@@ -1,5 +1,16 @@
 {
     "addSchool": "Add School",
     "deleteSchool": "Delete School",
-    "schools": "Schools"
+    "editSchoolHours": "Edit School Hours",
+    "endTime": "End Time",
+    "friday": "Friday",
+    "hour": "Hour",
+    "minute": "Minute",
+    "monday": "Monday",
+    "schools": "Schools",
+    "startTime": "Start Time",
+    "thursday": "Thursday",
+    "tuesday": "Tuesday",
+    "updateHours": "Update Hours",
+    "wednesday": "Wednesday"
 }

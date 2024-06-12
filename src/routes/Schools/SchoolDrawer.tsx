@@ -1,6 +1,7 @@
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
 import { useCallback, useMemo, useState } from 'react'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import InfoIcon from '@mui/icons-material/Info'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useUserStore } from '@/store/UserStore'
@@ -22,7 +23,7 @@ const RouteDrawer = ({ open, school }: RouteDrawerProps) => {
     const heaviestRole = useUserStore().heaviestRole
     const riders = useRiderStore().riders
     const navigate = useNavigate()
-    const { t } = useTranslation('routes')
+    const { t } = useTranslation(['routes', 'common'])
 
     const deleteSchoolAction = useCallback(async () => {
         if (school) {
@@ -33,6 +34,10 @@ const RouteDrawer = ({ open, school }: RouteDrawerProps) => {
     const viewRiderDetail = useCallback((riderId: string) => {
         navigate(`/app/riders/${riderId}`)
     }, [navigate])
+
+    const viewSchoolDetail = useCallback(() => {
+        navigate(`/app/schools/${school?.id}/detail`)
+    }, [navigate, school])
 
     const actionItems = useMemo(() => {
         const builtActionItems: DrawerListActionProps[] = []
@@ -46,8 +51,14 @@ const RouteDrawer = ({ open, school }: RouteDrawerProps) => {
             })
         }
 
+        builtActionItems.push({
+            handleClick: viewSchoolDetail,
+            tooltipTitle: t('viewDetails', { ns: 'common' }),
+            Icon: InfoIcon
+        })
+
         return builtActionItems
-    }, [deleteSchoolAction, heaviestRole, t])
+    }, [deleteSchoolAction, viewSchoolDetail, heaviestRole, t])
 
     const lists = useMemo(() => {
         const filteredRiders = riders.filter((r: RiderType) => r.schoolId === school?.id)
