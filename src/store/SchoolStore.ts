@@ -1,40 +1,36 @@
-import { SchoolType } from '@/types/SchoolType'
+import { SchoolHourType, SchoolType } from '@/types/SchoolType'
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
 import { useOrgStore } from './OrgStore'
 import { useAddressStore } from './AddressStore'
 import { v4 as uuid } from 'uuid'
+import { useUserStore } from './UserStore'
 
 interface SchoolStore {
-    schools: SchoolType[]
-    getSchools(): Promise<void>
-    getSchoolById(schoolId: string): Promise<SchoolType>
+    addRiderToSchool(school: SchoolType, riderId: string): Promise<void>
     createSchool(school: SchoolType): Promise<void>
     deleteSchool(schoolId: string): Promise<void>
-    addRiderToSchool(school: SchoolType, riderId: string): Promise<void>
+    getSchools(): Promise<void>
+    getSchoolById(schoolId: string): Promise<SchoolType>
     removeRiderFromSchool(school: SchoolType, riderId: string): Promise<void>
+    schools: SchoolType[]
+    updateSchoolHours(schoolId: string, hours: SchoolHourType[]): Promise<void>
 }
 
 export const useSchoolStore = create<SchoolStore>((set, get) => ({
-    schools: [],
-    getSchools: async () => {
+    addRiderToSchool: async (school: SchoolType, riderId: string) => {
         const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
-        const schools = await api?.schools.getSchools(orgId)
-        set({ schools })
-    },
-    getSchoolById: async (schoolId: string) => {
-        const api = await useApiStore.getState().getApi()
-        const orgId = useOrgStore.getState().orgId
+        let riderIds = school.riderIds
 
-        const school = await api?.schools.getSchoolById(orgId, schoolId)
-
-        if (!school) {
-            throw 'Could not find school by id'
+        if (!riderIds || riderIds.length < 1) {
+            riderIds = []
         }
 
-        return school
+        riderIds.push(riderId)
+        await api?.schools.updateSchool(orgId, school.id, school)
+        await get().getSchools()
     },
     createSchool: async (school: SchoolType) => {
         const orgId = useOrgStore.getState().orgId
@@ -56,19 +52,24 @@ export const useSchoolStore = create<SchoolStore>((set, get) => ({
 
         await api?.schools.deleteSchool(orgId, schoolId)
     },
-    addRiderToSchool: async (school: SchoolType, riderId: string) => {
+    getSchools: async () => {
         const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
-        let riderIds = school.riderIds
+        const schools = await api?.schools.getSchools(orgId)
+        set({ schools })
+    },
+    getSchoolById: async (schoolId: string) => {
+        const api = await useApiStore.getState().getApi()
+        const orgId = useOrgStore.getState().orgId
 
-        if (!riderIds || riderIds.length < 1) {
-            riderIds = []
+        const school = await api?.schools.getSchoolById(orgId, schoolId)
+
+        if (!school) {
+            throw 'Could not find school by id'
         }
 
-        riderIds.push(riderId)
-        await api?.schools.updateSchool(orgId, school.id, school)
-        await get().getSchools()
+        return school
     },
     removeRiderFromSchool: async (school: SchoolType, riderId: string) => {
         const api = await useApiStore.getState().getApi()
@@ -83,5 +84,21 @@ export const useSchoolStore = create<SchoolStore>((set, get) => ({
         school.riderIds = riderIds
 
         await api?.schools.updateSchool(orgId, school.id, school)
+    },
+    schools: [],
+    updateSchoolHours: async (schoolId: string, hours: SchoolHourType[]) => {
+        const api = await useApiStore.getState().getApi()
+        const orgId = useOrgStore.getState().orgId
+        const userId = useUserStore.getState().userId
+
+        const school = await get().getSchoolById(schoolId)
+
+        if (school) {
+            school.hours = hours
+            school.lastEditedBy = userId
+            school.lastEditDate = new Date().getTime()
+
+            await api?.schools.updateSchool(orgId, school.id, school)
+        }
     }
 }))

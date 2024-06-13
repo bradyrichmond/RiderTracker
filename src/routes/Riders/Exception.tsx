@@ -75,7 +75,7 @@ const Exception = ({ exceptionId }: ExceptionProps) => {
         }
 
         return `Created by ${createdByUserTypeString}`
-    }, [exception])
+    }, [exception, users])
 
     const exceptionDate = useMemo(() => {
         if (exception) {

@@ -8,6 +8,33 @@ const mockGetSchoolById = async (id: string) => Promise.resolve({
     address: '123456',
     createdBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
     createdDate: new Date().getTime(),
+    hours: [
+        {
+            dayName: 'monday',
+            startTime: '1718208000000',
+            endTime: '1718231400000'
+        },
+        {
+            dayName: 'tuesday',
+            startTime: '1718208000000',
+            endTime: '1718231400000'
+        },
+        {
+            dayName: 'wednesday',
+            startTime: '1718208000000',
+            endTime: '1718225100000'
+        },
+        {
+            dayName: 'thursday',
+            startTime: '1718208000000',
+            endTime: '1718231400000'
+        },
+        {
+            dayName: 'friday',
+            startTime: '1718208000000',
+            endTime: '1718231400000'
+        }
+    ],
     lastEditedBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
     lastEditDate: new Date().getTime()
  })
@@ -21,6 +48,33 @@ const mockGetSchools = async (orgId: string) => Promise.resolve([
         address: '123456',
         createdBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
         createdDate: new Date(),
+        hours: [
+            {
+                dayName: 'monday',
+                startTime: '1718208000000',
+                endTime: '1718231400000'
+            },
+            {
+                dayName: 'tuesday',
+                startTime: '1718208000000',
+                endTime: '1718231400000'
+            },
+            {
+                dayName: 'wednesday',
+                startTime: '1718208000000',
+                endTime: '1718225100000'
+            },
+            {
+                dayName: 'thursday',
+                startTime: '1718208000000',
+                endTime: '1718231400000'
+            },
+            {
+                dayName: 'friday',
+                startTime: '1718208000000',
+                endTime: '1718231400000'
+            }
+        ],
         lastEditedBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
         lastEditDate: new Date()
      }
@@ -36,6 +90,33 @@ const mockGetBulkSchoolsById = async (schoolIds: string[]) => {
         address: '123456',
         createdBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
         createdDate: new Date().getTime(),
+        hours: [
+            {
+                dayName: 'monday',
+                startTime: '1718208000000',
+                endTime: '1718231400000'
+            },
+            {
+                dayName: 'tuesday',
+                startTime: '1718208000000',
+                endTime: '1718231400000'
+            },
+            {
+                dayName: 'wednesday',
+                startTime: '1718208000000',
+                endTime: '1718225100000'
+            },
+            {
+                dayName: 'thursday',
+                startTime: '1718208000000',
+                endTime: '1718231400000'
+            },
+            {
+                dayName: 'friday',
+                startTime: '1718208000000',
+                endTime: '1718231400000'
+            }
+        ],
         lastEditedBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
         lastEditDate: new Date().getTime()
      }))
