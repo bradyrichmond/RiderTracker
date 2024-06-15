@@ -1,11 +1,21 @@
 import { useParams } from 'react-router-dom'
-import Drivers from '.'
+import { Children, PropsWithChildren, ReactElement, cloneElement, isValidElement, useMemo } from 'react'
 
-const DriversWrapper = () => {
-    const { id: driverId } = useParams()
+const DriversWrapper = ({ children }: PropsWithChildren) => {
+    const { id: riderId } = useParams()
+
+    const childrenWithProps = useMemo(() => {
+        return Children.map(children as ReactElement<{ activeDriver?: string }>, (child => {
+            if (isValidElement(child)) {
+                return cloneElement(child, { activeDriver: riderId })
+            }
+        }))
+    }, [riderId, children])
 
     return (
-        <Drivers activeDriver={driverId} />
+        <>
+            {childrenWithProps}
+        </>
     )
 }
 

@@ -7,7 +7,7 @@ import Grid from '@mui/material/Unstable_Grid2'
 
 export interface DrawerListItem {
     title: string
-    action: (id: string) => void
+    action?: (id: string) => void
     items: OptionsType[]
 }
 
@@ -36,11 +36,11 @@ const EntityDrawer = ({ actionItems, back, lists, open, title }: EntityDrawerPro
                     <Box sx={{ flex: 1, pt: 2 }}>
                         <Stack direction='column' alignItems='center' spacing={2} sx={{ height: '100%' }}>
                             {lists.map((l: DrawerListItem) => <EntityDrawerList
-                                            title={l.title}
-                                            items={l.items}
-                                            action={l.action}
-                                            key={l.title}
-                                        />
+                                        title={l.title}
+                                        items={l.items}
+                                        action={l.action}
+                                        key={l.title}
+                                    />
                                 )
                             }
                         </Stack>

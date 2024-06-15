@@ -1,4 +1,6 @@
 {
     "addDriver": "Add Driver",
+    "disableDriver": "Disable Driver",
+    "driverActivity": "Driver Activity",
     "drivers": "Drivers"
 }

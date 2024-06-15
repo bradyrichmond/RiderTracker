@@ -1,12 +1,15 @@
 import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
-import { useCallback, useEffect, useState } from 'react'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import BlockIcon from '@mui/icons-material/Block'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useUserStore } from '@/store/UserStore'
 import EntityDrawer, { DrawerListActionProps } from '@/components/EntityDrawer'
 import { UserType } from '@/types/UserType'
 import { useDriverStore } from '@/store/DriverStore'
+import { useRouteActionStore } from '@/store/RouteActionStore'
+import { RouteActionType } from '@/types/RouteActionType'
+import dayjs from 'dayjs'
 
 interface DriverDrawerProps {
     open: boolean
@@ -14,52 +17,77 @@ interface DriverDrawerProps {
 }
 
 const DriverDrawer = ({ open, driverId }: DriverDrawerProps) => {
-    const [driver, setDriver] = useState<UserType>()
-    const [actionItems, setActionItems] = useState<DrawerListActionProps[]>([])
-    const { heaviestRole } = useUserStore()
-    const { getDriverById, deleteDriver } = useDriverStore()
+    const heaviestRole = useUserStore().heaviestRole
+    const deleteDriver = useDriverStore().deleteDriver
+    const drivers = useDriverStore().drivers
+    const updateDrivers = useDriverStore().updateDrivers
+    const [routeActions, setRouteActions] = useState<RouteActionType[]>([])
+    const getRouteActionsByDriverId = useRouteActionStore().getRouteActionsByDriverId
     const navigate = useNavigate()
-    const { t } = useTranslation('guardians')
+    const { t } = useTranslation('drivers')
 
+    useEffect(() => {
+        updateDrivers()
+    }, [driverId, updateDrivers])
 
+    const driver: UserType | undefined = useMemo(() => {
+        const selectedDriver = drivers.find((d: UserType) => d.id === driverId)
 
-    const deleteDriverAction = useCallback(async () => {
-        if (driver) {
+        if (selectedDriver) {
+            return selectedDriver
+        }
+    }, [drivers, driverId])
+
+    const disableDriverAction = useCallback(async () => {
+        if (driver?.id) {
             await deleteDriver(driver.id)
             return
         }
-    }, [driver, deleteDriver])
+    }, [driver?.id, deleteDriver])
 
-    const buildActionItems = useCallback(() => {
+    useEffect(() => {
+        const getRouteActions = async () => {
+            const fetchedRouteActions = await getRouteActionsByDriverId(driverId)
+            setRouteActions(fetchedRouteActions)
+        }
+
+        getRouteActions()
+    }, [driverId, getRouteActionsByDriverId])
+
+    const lists = useMemo(() => {
+        if (driverId && Array.isArray(routeActions)) {
+            const mappedRouteActions = routeActions.map((r: RouteActionType) => {
+                return {
+                    id: r.id,
+                    label: `${r.actionType} ${dayjs(Number(r.createdDate)).format('YYYY-MM-DD HH:mm:sss')}`
+                }
+            })
+
+            return [
+                {
+                    title: t('driverActivity'),
+                    items: mappedRouteActions
+                }
+            ]
+        }
+
+        return []
+    }, [t, driverId, routeActions])
+
+    const actionItems: DrawerListActionProps[] | undefined = useMemo(() => {
         const builtActionItems: DrawerListActionProps[] = []
         const userPermissions = RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole]
 
-        if (userPermissions.includes(permissions.DELETE_GUARDIAN)) {
+        if (userPermissions.includes(permissions.DELETE_DRIVER)) {
             builtActionItems.push({
-                handleClick: deleteDriverAction,
-                tooltipTitle: t('deleteDriver'),
-                Icon: DeleteForeverIcon
+                handleClick: disableDriverAction,
+                tooltipTitle: t('disableDriver'),
+                Icon: BlockIcon
             })
         }
 
-        setActionItems(builtActionItems)
-    }, [setActionItems, deleteDriverAction, heaviestRole, t])
-
-    useEffect(() => {
-        const getDriverData = async () => {
-            const fetchedDriver = await getDriverById(driverId)
-
-            if (fetchedDriver) {
-                setDriver(fetchedDriver)
-                buildActionItems()
-            }
-        }
-
-        if (driverId) {
-            getDriverData()
-        }
-    }, [driverId, buildActionItems, setDriver, getDriverById])
-
+        return builtActionItems
+    }, [disableDriverAction, heaviestRole, t])
 
     const handleBack = () => {
         navigate('/app/drivers')
@@ -67,12 +95,12 @@ const DriverDrawer = ({ open, driverId }: DriverDrawerProps) => {
 
     return (
         <EntityDrawer
-                actionItems={actionItems}
-                back={handleBack}
-                lists={[]}
-                open={open}
-                title={`${driver?.firstName} ${driver?.lastName}`}
-            />
+            actionItems={actionItems}
+            back={handleBack}
+            lists={lists}
+            open={open}
+            title={`${driver?.firstName} ${driver?.lastName}`}
+        />
     )
 }
 

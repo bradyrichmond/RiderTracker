@@ -4,13 +4,15 @@ import InfoIcon from '@mui/icons-material/Info'
 interface EntityDrawerDetailListItemProps {
     id: string
     label: string
-    action(id: string): void
+    action?: (id: string) => void
     tooltipTitle: string
 }
 
 const EntityDrawerDetailListItem = ({ id, action, label, tooltipTitle }: EntityDrawerDetailListItemProps) => {
     const handleInfoClick = () => {
-        action(id)
+        if (action) {
+            action(id)
+        }
     }
 
     return (
@@ -18,13 +20,17 @@ const EntityDrawerDetailListItem = ({ id, action, label, tooltipTitle }: EntityD
             <Box sx={{ flex: 1, display: 'flex', alignItems: 'center' }}>
                 <Typography>{label}</Typography>
             </Box>
-            <Box>
-                <Tooltip title={tooltipTitle}>
-                    <Button variant='contained' onClick={handleInfoClick}>
-                        <InfoIcon />
-                    </Button>
-                </Tooltip>
-            </Box>
+            {action ?
+                <Box>
+                    <Tooltip title={tooltipTitle}>
+                        <Button variant='contained' onClick={handleInfoClick}>
+                            <InfoIcon />
+                        </Button>
+                    </Tooltip>
+                </Box>
+                :
+                null
+            }
         </Box>
     )
 }

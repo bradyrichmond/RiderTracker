@@ -4,6 +4,7 @@ import { BusApis, BusApiFunctionTypes } from './BusApis'
 import { ExceptionApiFunctionTypes, ExceptionApis } from './ExceptionApis'
 import { OrgApis, OrgApiFunctionTypes } from './OrganizationApis'
 import { RiderApis, RiderApiFunctionTypes } from './RiderApis'
+import { RouteActionApiFunctionTypes, RouteActionApis } from './RouteActionApis'
 import { RouteApis, RouteApiFunctionTypes } from './RouteApis'
 import { ScanApis, ScanApiFunctionTypes } from './ScanApis'
 import { SchoolApis, SchoolApiFunctionTypes } from './SchoolApis'
@@ -21,6 +22,7 @@ class RiderTrackerAPI {
     exceptions: ExceptionApiFunctionTypes
     organizations: OrgApiFunctionTypes
     riders: RiderApiFunctionTypes
+    routeActions: RouteActionApiFunctionTypes
     routes: RouteApiFunctionTypes
     scans: ScanApiFunctionTypes
     schools: SchoolApiFunctionTypes
@@ -35,6 +37,7 @@ class RiderTrackerAPI {
         this.exceptions = new ExceptionApis(newClient)
         this.organizations = new OrgApis(newClient)
         this.riders = new RiderApis(newClient)
+        this.routeActions = new RouteActionApis(newClient)
         this.routes = new RouteApis(newClient)
         this.scans = new ScanApis(newClient)
         this.schools = new SchoolApis(newClient)

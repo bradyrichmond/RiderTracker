@@ -69,8 +69,8 @@ const EditSchoolDialog = ({ cancelAction, updateAction, open }: EditSchoolDialog
                 sx: { padding: 4, minWidth: '50%' }
             }}
         >
-            <DialogTitle textAlign='center'>
-                <Typography variant='h4'>{t('editSchoolHours')}</Typography>
+            <DialogTitle textAlign='center' variant='h4'>
+                {t('editSchoolHours')}
             </DialogTitle>
             <DialogContent>
                 <Grid container spacing={2}>
