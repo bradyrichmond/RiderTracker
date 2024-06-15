@@ -23,6 +23,7 @@ import Rider from '@/routes/Riders/Rider'
 import Riders from '@/routes/Riders'
 import Schools from '@/routes/Schools'
 import School from '@/routes/Schools/School'
+import Drivers from '@/routes/Drivers'
 
 export const createRouterObject = () => {
     return createBrowserRouter([{
@@ -46,11 +47,11 @@ export const createRouterObject = () => {
                     },
                     {
                         path: '/app/drivers',
-                        element: <ProtectedRoute route='/app/drivers'><DriversWrapper /></ProtectedRoute>
+                        element: <ProtectedRoute route='/app/drivers'><DriversWrapper><Drivers /></DriversWrapper></ProtectedRoute>
                     },
                     {
                         path: '/app/drivers/:id',
-                        element: <ProtectedRoute route='/app/drivers/:id'><DriversWrapper /></ProtectedRoute>
+                        element: <ProtectedRoute route='/app/drivers/:id'><DriversWrapper><Drivers /></DriversWrapper></ProtectedRoute>
                     },
                     {
                         path: '/app/guardians',
