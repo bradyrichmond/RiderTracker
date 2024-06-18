@@ -18,6 +18,8 @@ interface UserStore {
     getUserId(forceUpdate?: boolean): Promise<string>
     userPictureUrl: string
     updateUserPictureUrl(): Promise<void>
+    userType: string
+    updateUserType(): Promise<void>
     updateUserData: () => Promise<void>
     users: UserType[]
     updateUsers: () => Promise<void>
@@ -75,6 +77,15 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
         const user = await api?.users.getUserById(orgId, userId)
         set({ userPictureUrl: `https://s3.us-west-2.amazonaws.com/${user?.profileImageKey}` })
+    },
+    userType: '',
+    updateUserType: async () => {
+        const api = await useApiStore.getState().getApi()
+        const orgId = useOrgStore.getState().orgId
+        const userId = get().userId
+
+        const user = await api?.users.getUserById(orgId, userId)
+        set({ userType: user.userType })
     },
     updateUserData: async () => {
         const stateUpdate: StateUpdate = {}

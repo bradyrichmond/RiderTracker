@@ -8,6 +8,7 @@ import { useAddressStore } from './AddressStore'
 import { RIDER_TRACKER_ROLES } from '@/constants/Roles'
 import { useGuardianStore } from './GuardianStore'
 import { useDriverStore } from './DriverStore'
+import { useUserStore } from './UserStore'
 
 interface AdminStore {
     admins: UserType[]
@@ -31,8 +32,9 @@ export const useAdminStore = create<AdminStore>((set, get) => ({
     createAdmin: async (newAdmin: CreateCognitoUserParams) => {
         const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
+        const userId = useUserStore.getState().userId
 
-        await api?.admin.createAdmin(newAdmin, orgId)
+        await api?.admin.createAdmin(newAdmin, orgId, userId)
         await get().updateAdmins()
     },
     deleteAdmin: async (id: string) => {
@@ -46,13 +48,14 @@ export const useAdminStore = create<AdminStore>((set, get) => ({
     createGuardian: async (newGuardian: CreateGuardianInput) => {
         const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
+        const userId = useUserStore.getState().userId
         const getGuardians = useGuardianStore.getState().getGuardians
         const createAddress = useAddressStore.getState().createAddress
 
         const address = await createAddress(newGuardian.address)
 
         if (address) {
-            await api?.admin.createGuardian(newGuardian, address, orgId)
+            await api?.admin.createGuardian(newGuardian, address, orgId, userId)
             await getGuardians()
         }
 
@@ -61,9 +64,10 @@ export const useAdminStore = create<AdminStore>((set, get) => ({
     createDriver: async (newDriver: CreateCognitoUserParams) => {
         const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
+        const userId = useUserStore.getState().userId
         const updateDrivers = useDriverStore.getState().updateDrivers
 
-        await api?.admin.createDriver(newDriver, orgId)
+        await api?.admin.createDriver(newDriver, orgId, userId)
         await updateDrivers()
     },
     deleteUser: async (userId: string) => {

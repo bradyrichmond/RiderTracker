@@ -41,17 +41,19 @@ const DriverDrawer = ({ open, driverId }: DriverDrawerProps) => {
     const disableDriverAction = useCallback(async () => {
         if (driver?.id) {
             await deleteDriver(driver.id)
+            handleBack()
             return
         }
     }, [driver?.id, deleteDriver])
 
     useEffect(() => {
-        const getRouteActions = async () => {
+        if (driverId) {
+            const getRouteActions = async () => {
             const fetchedRouteActions = await getRouteActionsByDriverId(driverId)
             setRouteActions(fetchedRouteActions)
         }
 
-        getRouteActions()
+        getRouteActions()}
     }, [driverId, getRouteActionsByDriverId])
 
     const lists = useMemo(() => {

@@ -24,6 +24,7 @@ import Riders from '@/routes/Riders'
 import Schools from '@/routes/Schools'
 import School from '@/routes/Schools/School'
 import Drivers from '@/routes/Drivers'
+import ActiveRoute from '@/routes/Drivers/ActiveRoute'
 
 export const createRouterObject = () => {
     return createBrowserRouter([{
@@ -48,6 +49,10 @@ export const createRouterObject = () => {
                     {
                         path: '/app/drivers',
                         element: <ProtectedRoute route='/app/drivers'><DriversWrapper><Drivers /></DriversWrapper></ProtectedRoute>
+                    },
+                    {
+                        path: '/app/drivers/active-route',
+                        element: <ProtectedRoute route='/app/drivers/active-route'><ActiveRoute /></ProtectedRoute>
                     },
                     {
                         path: '/app/drivers/:id',

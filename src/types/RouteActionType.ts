@@ -5,9 +5,9 @@ export interface RouteActionType {
     orgId: string
     routeId: string
     createdBy: string
-    createdDate: Date
+    createdDate: number
     lastEditedBy: string
-    lastEditDate: Date
+    lastEditDate: number
 }
 
 export enum ActionType {

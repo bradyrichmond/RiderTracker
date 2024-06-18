@@ -13,7 +13,11 @@ interface CreateUserParams {
     stopIds?: string[]
     riderIds?: string[]
     address?: string
-    userType?: RIDER_TRACKER_ROLES
+    userType?: RIDER_TRACKER_ROLES,
+    createdBy: string,
+    createdDate: number,
+    lastEditedBy: string,
+    lastEditDate: number
 }
 
 export interface CreateCognitoUserParams {
@@ -70,12 +74,12 @@ export class AdminApis {
     }
 
     createUser = async (orgId: string, body: CreateUserParams) => {
-        const createUserResponse = await this.client.organizationsOrgIdUsersPost({ orgId }, { ...body, stopIds: [''] })
+        const createUserResponse = await this.client.organizationsOrgIdUsersPost({ orgId }, JSON.stringify({ ...body, stopIds: [''] }))
 
         return handleApiResponse<object>(createUserResponse)
     }
 
-    createAdmin = async (admin: CreateCognitoUserParams, orgId: string) => {
+    createAdmin = async (admin: CreateCognitoUserParams, orgId: string, creatorId: string) => {
 
         try {
             const newCognitoUser = await this.createCognitoUser(admin)
@@ -88,7 +92,11 @@ export class AdminApis {
                 lastName: admin.family_name,
                 email: admin.email,
                 address: '',
-                userType: RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN
+                userType: RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN,
+                createdBy: creatorId,
+                createdDate: new Date().getTime(),
+                lastEditedBy: creatorId,
+                lastEditDate: new Date().getTime()
             })
 
             const addUserToGroupResponse = await this.addUserToGroup(id, RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN)
@@ -103,7 +111,7 @@ export class AdminApis {
         await this.client.adminProxyProxyAny(VERBS.POST, { proxy: 'disableUser' }, { username }, { ['Content-Type']: 'application/json' })
     }
 
-    createGuardian = async (guardian: CreateCognitoUserParams, address: AddressType, orgId: string) => {
+    createGuardian = async (guardian: CreateCognitoUserParams, address: AddressType, orgId: string, creatorId: string) => {
 
         try {
             const newCognitoUser = await this.createCognitoUser(guardian)
@@ -118,7 +126,11 @@ export class AdminApis {
                 lastName: guardian.family_name,
                 email: guardian.email,
                 address: address.id,
-                userType: RIDER_TRACKER_ROLES.RIDER_TRACKER_GUARDIAN
+                userType: RIDER_TRACKER_ROLES.RIDER_TRACKER_GUARDIAN,
+                createdBy: creatorId,
+                createdDate: new Date().getTime(),
+                lastEditedBy: creatorId,
+                lastEditDate: new Date().getTime()
             })
 
             const getOrgResponse = await this.client.organizationsOrgIdGet({ orgId })
@@ -142,10 +154,12 @@ export class AdminApis {
         }
     }
 
-    createDriver = async (driver: CreateCognitoUserParams, orgId: string) => {
+    createDriver = async (driver: CreateCognitoUserParams, orgId: string, creatorId: string) => {
         try {
             const newCognitoUser = await this.createCognitoUser(driver)
             const id = newCognitoUser.User.Username
+
+            const createdTime = new Date().getTime()
 
             await this.createUser(orgId, {
                 id,
@@ -153,7 +167,11 @@ export class AdminApis {
                 firstName: driver.given_name,
                 lastName: driver.family_name,
                 email: driver.email,
-                userType: RIDER_TRACKER_ROLES.RIDER_TRACKER_DRIVER
+                userType: RIDER_TRACKER_ROLES.RIDER_TRACKER_DRIVER,
+                createdBy: creatorId,
+                createdDate: createdTime,
+                lastEditedBy: creatorId,
+                lastEditDate: createdTime
             })
 
             const getOrgResponse = await this.client.organizationsOrgIdGet({ orgId })
@@ -221,9 +239,9 @@ export class AdminApis {
 export interface AdminApiFunctionTypes {
     createCognitoUser(body: CreateCognitoUserParams): Promise<AWSUserType>
     createUser(orgId: string, body: CreateUserParams, options?: Record<string, boolean>): Promise<object>
-    createAdmin(admin: CreateCognitoUserParams, orgId: string): Promise<object>
-    createGuardian(guardian: CreateCognitoUserParams, address: AddressType, orgId: string): Promise<object>
-    createDriver(driver: CreateCognitoUserParams, orgId: string): Promise<object>
+    createAdmin(admin: CreateCognitoUserParams, orgId: string, creatorId: string): Promise<object>
+    createGuardian(guardian: CreateCognitoUserParams, address: AddressType, orgId: string, creatorId: string): Promise<object>
+    createDriver(driver: CreateCognitoUserParams, orgId: string, creatorId: string): Promise<object>
     disableUser(username: string): Promise<void>
     updateUserProfileImage(orgId: string, userId: string, body: File, key: string): Promise<object>
     updateUserAttributes(body: AttributeType[], username: string): Promise<object>
