@@ -109,6 +109,8 @@ export const useUserStore = create<UserStore>((set, get) => ({
                 stateUpdate.userFullName = `${given_name} ${family_name}`
             }
 
+            get().updateUserType()
+
             set(stateUpdate)
         } catch {
             signOut()

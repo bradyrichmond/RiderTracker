@@ -15,9 +15,9 @@ interface CreateUserParams {
     address?: string
     userType?: RIDER_TRACKER_ROLES,
     createdBy: string,
-    createdDate: number,
+    createdDate: string,
     lastEditedBy: string,
-    lastEditDate: number
+    lastEditDate: string
 }
 
 export interface CreateCognitoUserParams {
@@ -85,6 +85,8 @@ export class AdminApis {
             const newCognitoUser = await this.createCognitoUser(admin)
             const id = newCognitoUser.User.Username
 
+            const createdTime = new Date().getTime().toString()
+
             await this.createUser(orgId, {
                 id,
                 orgId,
@@ -94,9 +96,9 @@ export class AdminApis {
                 address: '',
                 userType: RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN,
                 createdBy: creatorId,
-                createdDate: new Date().getTime(),
+                createdDate: createdTime,
                 lastEditedBy: creatorId,
-                lastEditDate: new Date().getTime()
+                lastEditDate: createdTime
             })
 
             const addUserToGroupResponse = await this.addUserToGroup(id, RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN)
@@ -119,6 +121,8 @@ export class AdminApis {
 
             await this.client.organizationsOrgIdAddressesPost({ orgId }, address)
 
+            const createdTime = new Date().getTime().toString()
+
             await this.createUser(orgId, {
                 id,
                 orgId,
@@ -128,9 +132,9 @@ export class AdminApis {
                 address: address.id,
                 userType: RIDER_TRACKER_ROLES.RIDER_TRACKER_GUARDIAN,
                 createdBy: creatorId,
-                createdDate: new Date().getTime(),
+                createdDate: createdTime,
                 lastEditedBy: creatorId,
-                lastEditDate: new Date().getTime()
+                lastEditDate: createdTime
             })
 
             const getOrgResponse = await this.client.organizationsOrgIdGet({ orgId })
@@ -159,7 +163,7 @@ export class AdminApis {
             const newCognitoUser = await this.createCognitoUser(driver)
             const id = newCognitoUser.User.Username
 
-            const createdTime = new Date().getTime()
+            const createdTime = new Date().getTime().toString()
 
             await this.createUser(orgId, {
                 id,

@@ -11,14 +11,18 @@ import { useUserStore } from '@/store/UserStore'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { loginSchema } from '@/validation/loginSchema'
 import { ERROR_NAMES } from '@/constants/ErrorNames'
+import { confirmSignIn } from 'aws-amplify/auth'
 
 interface LoginFormInputs {
     username: string
     password: string
+    newPassword?: string
+    verifyPassword?: string
 }
 
 const LoginForm = () => {
-    const { handleSubmit, register, formState: { errors, touchedFields } } = useForm<LoginFormInputs>({ resolver: yupResolver(loginSchema) })
+    const [resetPasswordRequired, setResetPasswordRequired] = useState(false)
+    const { handleSubmit, register, formState: { errors, touchedFields }, reset } = useForm<LoginFormInputs>({ resolver: yupResolver(loginSchema) })
     const { heaviestRole, updateUserData } = useUserStore()
     const { orgName, organizationLoginImageUrl, updateOrgData } = useOrgStore()
     const [errorMessage, setErrorMessage] = useState('')
@@ -44,13 +48,48 @@ const LoginForm = () => {
         }
     }, [updateOrgData, updateUserData])
 
+    const completeSignIn = async (newPassword: string) => {
+        await confirmSignIn({
+            challengeResponse: newPassword,
+            options: { }
+        })
+        setResetPasswordRequired(false)
+        await postLoginChecks()
+        reset()
+    }
+
     const login = async (data: LoginFormInputs) => {
         setDisabledButtons(true)
         setErrorMessage('')
 
+        if (resetPasswordRequired) {
+            const { newPassword, verifyPassword } = data
+            
+            if (!newPassword || !verifyPassword) {
+                setErrorMessage(t('missingRequiredFields'))
+                return
+            }
+
+            if (newPassword !== verifyPassword) {
+                setErrorMessage(t('passwordMismatch'))
+                return
+            }
+
+            await completeSignIn(newPassword)
+        }
+
         try {
-            await signIn(data)
-            await postLoginChecks()
+            const response = await signIn(data)
+            if (response.nextStep.signInStep === "CONFIRM_SIGN_IN_WITH_NEW_PASSWORD_REQUIRED") {
+                setErrorMessage(t('passwordResetRequired'))
+                setResetPasswordRequired(true)
+                setDisabledButtons(false)
+                return
+            }
+
+            if (response.nextStep.signInStep === "DONE") {
+                await postLoginChecks()
+            }
         } catch (e) {
             if (e instanceof Error) {
                 console.error(`${e.name} ${e.message}`)
@@ -118,6 +157,26 @@ const LoginForm = () => {
                                 error={!!errors.password?.message && touchedFields.password}
                                 helperText={errors.password?.message ? t(errors.password.message, { ns: 'common' }) : ''}
                             />
+                            {resetPasswordRequired ?
+                                <>
+                                    <TextField
+                                        type='password'
+                                        label={t('newPassword')}
+                                        {...register('newPassword')}
+                                        error={!!errors.password?.message && touchedFields.password}
+                                        helperText={errors.password?.message ? t(errors.password.message, { ns: 'common' }) : ''}
+                                    />
+                                    <TextField
+                                        type='password'
+                                        label={t('verifyPassword')}
+                                        {...register('verifyPassword')}
+                                        error={!!errors.password?.message && touchedFields.password}
+                                        helperText={errors.password?.message ? t(errors.password.message, { ns: 'common' }) : ''}
+                                    />
+                                </>
+                                :
+                                null
+                            }
                         </Box>
                         <Typography sx={{ color: 'red' }}>{errorMessage ?? ' '}</Typography>
                         <Button type='submit' variant='contained' disabled={disableButtons} sx={{ mt: 4 }} fullWidth>{t('signIn')}</Button>
