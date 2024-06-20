@@ -1,6 +1,6 @@
 import { handleApiResponse } from '@/helpers/ApiHelpers'
 import { ApiGatewayClientType } from '@/helpers/GenerateApiGatewayClient'
-import { RouteActionType } from '@/types/RouteActionType'
+import { ActionType, RouteActionType } from '@/types/RouteActionType'
 
 export class RouteActionApis {
     client: ApiGatewayClientType
@@ -15,35 +15,35 @@ export class RouteActionApis {
         return handleApiResponse<RouteActionType[]>(exceptionsResponse)
     }
 
+    getRouteActionsByActionType = async (orgId: string, routeActionType: ActionType): Promise<RouteActionType[]> => {
+        const exceptionsResponse = await this.client.organizationsOrgIdRouteActionsGet({ orgId, routeActionType })
+
+        return handleApiResponse<RouteActionType[]>(exceptionsResponse)
+    }
+
     getRouteActionsByDriverId = async (orgId: string, driverId: string): Promise<RouteActionType[]> => {
-        const exceptionsResponse = await this.client.organizationsOrgIdRouteActionsDriverDriverIdOptions({ orgId, driverId })
+        const exceptionsResponse = await this.client.organizationsOrgIdRouteActionsGet({ orgId, driverId })
 
         return handleApiResponse<RouteActionType[]>(exceptionsResponse)
     }
 
     getRouteActionsByRouteId = async (orgId: string, routeId: string): Promise<RouteActionType[]> => {
-        const exceptionsResponse = await this.client.organizationsOrgIdRouteActionsRouteRouteIdGet({ orgId, routeId })
+        const exceptionsResponse = await this.client.organizationsOrgIdRouteActionsGet({ orgId, routeId })
 
         return handleApiResponse<RouteActionType[]>(exceptionsResponse)
     }
 
     createRouteAction = async (orgId: string, routeAction: RouteActionType): Promise<object> => {
-        const createRouteActionResponse = await this.client.organizationsOrgIdExceptionsPost({ orgId }, routeAction)
+        const createRouteActionResponse = await this.client.organizationsOrgIdRouteActionsPost({ orgId }, routeAction)
 
         return handleApiResponse<object>(createRouteActionResponse)
-    }
-
-    deleteRouteAction = async (orgId: string, id: string): Promise<object> => {
-        const deleteRouteActionResponse = await this.client.organizationsOrgIdExceptionsIdDelete({ orgId, id })
-
-        return handleApiResponse<object>(deleteRouteActionResponse)
     }
 }
 
 export interface RouteActionApiFunctionTypes {
-    getRouteActions(orgId: string): Promise<RouteActionType[]>,
-    getRouteActionsByDriverId(orgId: string, driverId: string): Promise<RouteActionType[]>,
-    getRouteActionsByRouteId(orgId: string, routeId: string): Promise<RouteActionType[]>,
-    createRouteAction(orgId: string, address: RouteActionType): Promise<object>,
-    deleteRouteAction(orgId: string, id: string): Promise<object>
+    getRouteActions(orgId: string): Promise<RouteActionType[]>
+    getRouteActionsByActionType(orgId: string, actionType: ActionType): Promise<RouteActionType[]>
+    getRouteActionsByDriverId(orgId: string, driverId: string): Promise<RouteActionType[]>
+    getRouteActionsByRouteId(orgId: string, routeId: string): Promise<RouteActionType[]>
+    createRouteAction(orgId: string, address: RouteActionType): Promise<object>
 }

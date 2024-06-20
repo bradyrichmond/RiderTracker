@@ -3,7 +3,7 @@ import { useRouteStore } from '@/store/RouteStore'
 import { OptionsType } from '@/types/FormTypes'
 import { RouteType } from '@/types/RouteType'
 import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, TextField } from '@mui/material'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 
@@ -15,15 +15,31 @@ interface SelectRouteDialogProps {
 
 const SelectRouteDialog = ({ cancelAction, isSelectingRoute, selectRouteAction }: SelectRouteDialogProps) => {
     const [disableButtons, setDisableButtons] = useState(false)
+    const [routes, setRoutes] = useState<RouteType[]>([])
     const { t } = useTranslation(['riders', 'common'])
-    const routes = useRouteStore().routes
+    const getInactiveRoutes = useRouteStore().getInactiveRoutes
     const { handleSubmit, reset, resetField, setValue, formState: { errors } } = useForm<{ routeId: string }>()
 
-    const allGuardians = useMemo((): OptionsType[] => routes.map((r: RouteType) => ({ id: r.id, label: `${r.routeNumber}` })), [routes])
+    useEffect(() => {
+        const getRoutes = async () => {
+            const fetchedRoutes = await getInactiveRoutes()
+            setRoutes(fetchedRoutes)
+        }
 
-    const handleSelectRoute = () => {
+        getRoutes()
+    }, [getInactiveRoutes, isSelectingRoute])
+
+    const allRoutes = useMemo((): OptionsType[] => {
+        if (routes?.length > 0) {
+            return routes.map((r: RouteType) => ({ id: r.id, label: `${r.routeNumber}` }))
+        }
+
+        return []
+    }, [routes])
+
+    const handleSelectRoute = ({ routeId }: { routeId: string }) => {
         setDisableButtons(true)
-        selectRouteAction
+        selectRouteAction(routeId)
         setDisableButtons(false)
         resetForm()
         cancelAction()
@@ -50,15 +66,15 @@ const SelectRouteDialog = ({ cancelAction, isSelectingRoute, selectRouteAction }
                 <FormControl fullWidth>
                     <Autocomplete
                         id='RouteAutoComplete'
-                        options={allGuardians}
+                        options={allRoutes}
                         getOptionLabel={(option: OptionsType) => option.label}
                         filterSelectedOptions
                         onChange={(_e, value: OptionsType | null) => setValue('routeId', value?.id ?? '')}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
-                                label='Guardian'
-                                id='GuardianLabel'
+                                label='Route'
+                                id='RouteLabel'
                                 error={!!errors.routeId?.message}
                                 helperText={errors.routeId?.message ? t(errors.routeId.message) : ''}
                             />

@@ -15,9 +15,9 @@ interface CreateUserParams {
     address?: string
     userType?: RIDER_TRACKER_ROLES,
     createdBy: string,
-    createdDate: string,
+    createdDate: number,
     lastEditedBy: string,
-    lastEditDate: string
+    lastEditDate: number
 }
 
 export interface CreateCognitoUserParams {
@@ -85,7 +85,7 @@ export class AdminApis {
             const newCognitoUser = await this.createCognitoUser(admin)
             const id = newCognitoUser.User.Username
 
-            const createdTime = new Date().getTime().toString()
+            const createdTime = new Date().getTime()
 
             await this.createUser(orgId, {
                 id,
@@ -121,7 +121,7 @@ export class AdminApis {
 
             await this.client.organizationsOrgIdAddressesPost({ orgId }, address)
 
-            const createdTime = new Date().getTime().toString()
+            const createdTime = new Date().getTime()
 
             await this.createUser(orgId, {
                 id,
@@ -163,7 +163,7 @@ export class AdminApis {
             const newCognitoUser = await this.createCognitoUser(driver)
             const id = newCognitoUser.User.Username
 
-            const createdTime = new Date().getTime().toString()
+            const createdTime = new Date().getTime()
 
             await this.createUser(orgId, {
                 id,

@@ -64,7 +64,7 @@ const LoginForm = () => {
 
         if (resetPasswordRequired) {
             const { newPassword, verifyPassword } = data
-            
+
             if (!newPassword || !verifyPassword) {
                 setErrorMessage(t('missingRequiredFields'))
                 return
@@ -80,14 +80,14 @@ const LoginForm = () => {
 
         try {
             const response = await signIn(data)
-            if (response.nextStep.signInStep === "CONFIRM_SIGN_IN_WITH_NEW_PASSWORD_REQUIRED") {
+            if (response.nextStep.signInStep === 'CONFIRM_SIGN_IN_WITH_NEW_PASSWORD_REQUIRED') {
                 setErrorMessage(t('passwordResetRequired'))
                 setResetPasswordRequired(true)
                 setDisabledButtons(false)
                 return
             }
 
-            if (response.nextStep.signInStep === "DONE") {
+            if (response.nextStep.signInStep === 'DONE') {
                 await postLoginChecks()
             }
         } catch (e) {

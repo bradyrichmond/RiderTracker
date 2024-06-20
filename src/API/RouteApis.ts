@@ -9,8 +9,12 @@ export class RouteApis {
         this.client = apiGClient
     }
 
-    getRoutes = async (orgId: string) => {
-        const getRoutesResponse = await this.client.organizationsOrgIdRoutesGet({ orgId })
+    getRoutes = async (orgId: string, queryParams?: object) => {
+        if (!queryParams) {
+            queryParams = {}
+        }
+
+        const getRoutesResponse = await this.client.organizationsOrgIdRoutesGet({ orgId }, {}, { queryParams })
 
         return handleApiResponse<RouteType[]>(getRoutesResponse)
     }
@@ -27,11 +31,8 @@ export class RouteApis {
         return handleApiResponse<object>(createRouteResponse)
     }
 
-    updateRoute = async (orgId: string, id: string, route: RouteType) => {
-        const updatedRoute = {
-            riderIds: route.riderIds
-        }
-        const updateRouteResponse = await this.client.organizationsOrgIdRoutesIdPut({ orgId, id }, updatedRoute)
+    updateRoute = async (orgId: string, id: string, route: Partial<RouteType>) => {
+        const updateRouteResponse = await this.client.organizationsOrgIdRoutesIdPut({ orgId, id }, route)
 
         return handleApiResponse<object>(updateRouteResponse)
     }
@@ -44,9 +45,9 @@ export class RouteApis {
 }
 
 export interface RouteApiFunctionTypes {
-    getRoutes(orgId: string): Promise<RouteType[]>,
+    getRoutes(orgId: string, options?: object): Promise<RouteType[]>,
     getRouteById(orgId: string, id: string): Promise<RouteType>,
     createRoute(orgId: string, route: RouteType): Promise<object>,
-    updateRoute(orgId: string, id: string, route: RouteType): Promise<object>
+    updateRoute(orgId: string, id: string, route: Partial<RouteType>): Promise<object>
     deleteRoute(orgId: string, id: string): Promise<object>
 }

@@ -1,6 +1,6 @@
 import { RIDER_TRACKER_ROLES, RiderTrackerRole, isRiderTrackerRole } from '@/constants/Roles'
 import { getHeaviestRole } from '@/helpers/GetHeaviestRole'
-import { fetchAuthSession, signOut } from 'aws-amplify/auth'
+import { AuthSession, fetchAuthSession, signOut } from 'aws-amplify/auth'
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
 import { useOrgStore } from './OrgStore'
@@ -23,6 +23,8 @@ interface UserStore {
     updateUserData: () => Promise<void>
     users: UserType[]
     updateUsers: () => Promise<void>
+    userSession: AuthSession | undefined
+    updateUserSession: (retryCount?: number) => Promise<void>
     searchArg: string
     changeSearchArg(searchArg: string): Promise<void>
     usersFilter(u: UserType): boolean
@@ -149,4 +151,21 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
         return false
     },
+    userSession: undefined,
+    updateUserSession: async (retryCount?: number) => {
+        let retries = retryCount ?? 0
+        const retryMax = 3
+
+        const session = await fetchAuthSession()
+
+        if (session.userSub) {
+            set({ userSession: session })
+            return
+        }
+
+        if (retries < retryMax) {
+            retries++
+            get().updateUserSession(retries)
+        }
+    }
 }))

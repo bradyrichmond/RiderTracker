@@ -35,7 +35,7 @@ export const useRouteActionStore = create<RouteActionStore>((set) => ({
     createRouteAction: async (routeActionInput: CreateRouteActionInput) => {
         const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
-        const userId = useUserStore().userId
+        const userId = useUserStore.getState().userId
 
         const routeActionId = uuid()
 
@@ -51,12 +51,7 @@ export const useRouteActionStore = create<RouteActionStore>((set) => ({
             lastEditDate: new Date().getTime()
         }
 
-        if (!action.actionType) {
-            await api?.routeActions.createRouteAction(orgId, action)
-            return
-        }
-
-        throw 'Failed to create address'
+        await api?.routeActions.createRouteAction(orgId, action)
     },
     getRouteActionsByDriverId: async () => {
         const api = await useApiStore.getState().getApi()

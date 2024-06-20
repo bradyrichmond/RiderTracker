@@ -1,28 +1,43 @@
 import { RIDER_TRACKER_ROLES } from '@/constants/Roles'
 import { useUserStore } from '@/store/UserStore'
-import { Box, Typography } from '@mui/material'
+import { Box, LinearProgress } from '@mui/material'
 import DriverHome from './DriverHome'
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 
 const Home = () => {
-    const updateUserType = useUserStore().updateUserType
     const userType = useUserStore().userType
+    const updateUserType = useUserStore().updateUserType
+
+    const isLoading = useMemo(() => {
+        console.log(`usertype is ${userType}`)
+        return !userType
+    }, [userType])
 
     useEffect(() => {
+        if (!userType) {
+            const load = setInterval(async () => {
+                await updateUserType()
+                return
+            }, 1500)
+
+            return () => {
+                clearInterval(load)
+            }
+        }
+
         updateUserType()
-    }, [updateUserType])
+    }, [updateUserType, userType])
 
     return (
         <Box display='flex' justifyContent='center' alignItems='center' width='100%'>
-            <Box width='50%'>
-                {userType && userType === RIDER_TRACKER_ROLES.RIDER_TRACKER_DRIVER ?
-                    <DriverHome />
-                    :
-                    <Typography variant='h3'>
-                        You are logged in. There will be...........something here? Organization announcements? Snow route announcements? ??{userType}
-                    </Typography>
-                }
-            </Box>
+            {(!isLoading && userType && userType === RIDER_TRACKER_ROLES.RIDER_TRACKER_DRIVER) &&
+                <DriverHome />
+            }
+            {isLoading &&
+                <Box width='50%'>
+                    <LinearProgress />
+                </Box>
+            }
         </Box>
     )
 }

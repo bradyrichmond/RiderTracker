@@ -143,12 +143,18 @@ const Onboarding = () => {
     }
 
     const createNewOrganizationUser = async (orgId: string) => {
+        const createTime = new Date().getTime()
+
         await api?.admin.createUser(orgId, {
             id: newUserId,
             orgId,
             firstName: adminFirstName,
             lastName: adminLastName,
-            email: adminEmail
+            email: adminEmail,
+            createdBy: newUserId,
+            createdDate: createTime,
+            lastEditedBy: newUserId,
+            lastEditDate: createTime
         }, { forceRefesh: true })
     }
 

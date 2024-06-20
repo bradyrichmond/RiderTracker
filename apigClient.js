@@ -122,7 +122,7 @@ apigClientFactory.newClient = function (config) {
         return apiGatewayClient.makeRequest(adminProxyS3FolderObjectOptionsRequest, authType, additionalParams, config.apiKey);
     };
     
-    
+
     apigClient.adminProxyProxyAny = function (method, params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
@@ -139,7 +139,6 @@ apigClientFactory.newClient = function (config) {
         
         return apiGatewayClient.makeRequest(adminProxyProxyOptionsRequest, authType, additionalParams, config.apiKey);
     };
-
     
     apigClient.adminProxyProxyOptions = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
@@ -912,78 +911,6 @@ apigClientFactory.newClient = function (config) {
         
         
         return apiGatewayClient.makeRequest(organizationsOrgIdRouteActionsOptionsRequest, authType, additionalParams, config.apiKey);
-    };
-    
-    
-    apigClient.organizationsOrgIdRouteActionsDriverDriverIdGet = function (params, body, additionalParams) {
-        if(additionalParams === undefined) { additionalParams = {}; }
-        
-        utils.assertParametersDefined(params, ['orgId', 'driverId'], ['body']);
-        
-        var organizationsOrgIdRouteActionsDriverDriverIdGetRequest = {
-            verb: 'get'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/route-actions/driver/{driverId}').expand(utils.parseParametersToObject(params, ['orgId', 'driverId'])),
-            headers: utils.parseParametersToObject(params, []),
-            queryParams: utils.parseParametersToObject(params, []),
-            body: body
-        };
-        
-        
-        return apiGatewayClient.makeRequest(organizationsOrgIdRouteActionsDriverDriverIdGetRequest, authType, additionalParams, config.apiKey);
-    };
-    
-    
-    apigClient.organizationsOrgIdRouteActionsDriverDriverIdOptions = function (params, body, additionalParams) {
-        if(additionalParams === undefined) { additionalParams = {}; }
-        
-        utils.assertParametersDefined(params, [], ['body']);
-        
-        var organizationsOrgIdRouteActionsDriverDriverIdOptionsRequest = {
-            verb: 'options'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/route-actions/driver/{driverId}').expand(utils.parseParametersToObject(params, [])),
-            headers: utils.parseParametersToObject(params, []),
-            queryParams: utils.parseParametersToObject(params, []),
-            body: body
-        };
-        
-        
-        return apiGatewayClient.makeRequest(organizationsOrgIdRouteActionsDriverDriverIdOptionsRequest, authType, additionalParams, config.apiKey);
-    };
-    
-    
-    apigClient.organizationsOrgIdRouteActionsRouteRouteIdGet = function (params, body, additionalParams) {
-        if(additionalParams === undefined) { additionalParams = {}; }
-        
-        utils.assertParametersDefined(params, ['orgId', 'routeId'], ['body']);
-        
-        var organizationsOrgIdRouteActionsRouteRouteIdGetRequest = {
-            verb: 'get'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/route-actions/route/{routeId}').expand(utils.parseParametersToObject(params, ['orgId', 'routeId'])),
-            headers: utils.parseParametersToObject(params, []),
-            queryParams: utils.parseParametersToObject(params, []),
-            body: body
-        };
-        
-        
-        return apiGatewayClient.makeRequest(organizationsOrgIdRouteActionsRouteRouteIdGetRequest, authType, additionalParams, config.apiKey);
-    };
-    
-    
-    apigClient.organizationsOrgIdRouteActionsRouteRouteIdOptions = function (params, body, additionalParams) {
-        if(additionalParams === undefined) { additionalParams = {}; }
-        
-        utils.assertParametersDefined(params, [], ['body']);
-        
-        var organizationsOrgIdRouteActionsRouteRouteIdOptionsRequest = {
-            verb: 'options'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/route-actions/route/{routeId}').expand(utils.parseParametersToObject(params, [])),
-            headers: utils.parseParametersToObject(params, []),
-            queryParams: utils.parseParametersToObject(params, []),
-            body: body
-        };
-        
-        
-        return apiGatewayClient.makeRequest(organizationsOrgIdRouteActionsRouteRouteIdOptionsRequest, authType, additionalParams, config.apiKey);
     };
     
     
