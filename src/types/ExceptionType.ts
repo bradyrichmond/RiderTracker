@@ -1,18 +1,18 @@
 export interface ExceptionType {
-    id: string
-    orgId: string
-    riderId: string
+    createdBy: string
+    createdAt: number
     date: number
-    pickupStopId?: string
-    pickupGuardianId?: string
+    dropoff: string
     dropoffStopId?: string
     dropoffGuardianId?: string
+    id: string
+    updatedAt: number
+    updatedBy: string
+    orgId: string
+    pickupStopId?: string
+    pickupGuardianId?: string
     pickup: string
-    dropoff: string
-    createdBy: string
-    createdDate: number
-    lastEditedBy: string
-    lastEditDate: number
+    riderId: string
     type: ExceptionTypeType
 }
 

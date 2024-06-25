@@ -24,7 +24,8 @@ const Buses = () => {
     }
 
     const createBusAction = async () => {
-        await createBus()
+        // Need to add form for this, and unique bus identifications
+        await createBus('42')
     }
 
     const generateGridColumns = (): GridColDef[] => {

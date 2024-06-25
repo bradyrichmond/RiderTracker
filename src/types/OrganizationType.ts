@@ -1,13 +1,10 @@
 export interface OrganizationType {
+    createdBy: string
+    createdAt: number
     id: string
+    updatedBy: string
+    updatedAt: number
+    loginImageKey?: string
     orgName: string
     orgSlug: string
-    loginImageKey?: string
-    adminIds?: string[]
-    driverIds?: string[]
-    guardianIds?: string[]
-    createdBy: string
-    createdDate: Date
-    lastEditedBy: string
-    lastEditDate: Date
 }

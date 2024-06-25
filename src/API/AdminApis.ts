@@ -1,24 +1,7 @@
 import { handleApiResponse } from '@/helpers/ApiHelpers'
 import { AddressType } from '@/types/AddressType'
 import { RIDER_TRACKER_ROLES } from '@/constants/Roles'
-import { OrganizationType } from '@/types/OrganizationType'
 import { ApiGatewayClientType } from '@/helpers/GenerateApiGatewayClient'
-
-interface CreateUserParams {
-    id: string
-    orgId: string
-    firstName: string
-    lastName: string
-    email: string
-    stopIds?: string[]
-    riderIds?: string[]
-    address?: string
-    userType?: RIDER_TRACKER_ROLES,
-    createdBy: string,
-    createdDate: number,
-    lastEditedBy: string,
-    lastEditDate: number
-}
 
 export interface CreateCognitoUserParams {
     given_name: string
@@ -73,12 +56,6 @@ export class AdminApis {
         return handleApiResponse<AWSUserType>(createCognitoUserResponse)
     }
 
-    createUser = async (orgId: string, body: CreateUserParams) => {
-        const createUserResponse = await this.client.organizationsOrgIdUsersPost({ orgId }, JSON.stringify({ ...body, stopIds: [''] }))
-
-        return handleApiResponse<object>(createUserResponse)
-    }
-
     createAdmin = async (admin: CreateCognitoUserParams, orgId: string, creatorId: string) => {
 
         try {
@@ -87,7 +64,7 @@ export class AdminApis {
 
             const createdTime = new Date().getTime()
 
-            await this.createUser(orgId, {
+            await this.client.organizationsOrgIdAdminsPost(orgId, {
                 id,
                 orgId,
                 firstName: admin.given_name,
@@ -96,9 +73,9 @@ export class AdminApis {
                 address: '',
                 userType: RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN,
                 createdBy: creatorId,
-                createdDate: createdTime,
-                lastEditedBy: creatorId,
-                lastEditDate: createdTime
+                createdAt: createdTime,
+                updatedBy: creatorId,
+                updatedAt: createdTime
             })
 
             const addUserToGroupResponse = await this.addUserToGroup(id, RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN)
@@ -123,7 +100,7 @@ export class AdminApis {
 
             const createdTime = new Date().getTime()
 
-            await this.createUser(orgId, {
+            await this.client.organizationsOrgIdGuardiansPost(orgId, {
                 id,
                 orgId,
                 firstName: guardian.given_name,
@@ -132,23 +109,10 @@ export class AdminApis {
                 address: address.id,
                 userType: RIDER_TRACKER_ROLES.RIDER_TRACKER_GUARDIAN,
                 createdBy: creatorId,
-                createdDate: createdTime,
-                lastEditedBy: creatorId,
-                lastEditDate: createdTime
+                createdAt: createdTime,
+                updatedBy: creatorId,
+                updatedAt: createdTime
             })
-
-            const getOrgResponse = await this.client.organizationsOrgIdGet({ orgId })
-            const org: OrganizationType = handleApiResponse(getOrgResponse)
-            let newGuardianIds: string[]
-
-            if (!org.guardianIds) {
-                newGuardianIds = [id]
-            } else {
-                newGuardianIds = org.guardianIds.filter((g: string) => g !== '')
-                newGuardianIds.push(id)
-            }
-
-            await this.client.organizationsOrgIdPut({ orgId }, { guardianIds: newGuardianIds })
 
             const addUserToGroupResponse = await this.addUserToGroup(id, RIDER_TRACKER_ROLES.RIDER_TRACKER_GUARDIAN)
 
@@ -165,7 +129,7 @@ export class AdminApis {
 
             const createdTime = new Date().getTime()
 
-            await this.createUser(orgId, {
+            await this.client.organizationsOrgIdDriversPost(orgId, {
                 id,
                 orgId,
                 firstName: driver.given_name,
@@ -173,22 +137,10 @@ export class AdminApis {
                 email: driver.email,
                 userType: RIDER_TRACKER_ROLES.RIDER_TRACKER_DRIVER,
                 createdBy: creatorId,
-                createdDate: createdTime,
-                lastEditedBy: creatorId,
-                lastEditDate: createdTime
+                createdAt: createdTime,
+                updatedBy: creatorId,
+                updatedAt: createdTime
             })
-
-            const getOrgResponse = await this.client.organizationsOrgIdGet({ orgId })
-            const org: OrganizationType = handleApiResponse(getOrgResponse)
-            let newDriverIds: string[] | undefined = org.driverIds?.filter((g: string) => g !== '')
-
-            if (!org.guardianIds) {
-                newDriverIds = []
-            }
-
-            newDriverIds?.push(id)
-
-            await this.client.organizationsOrgIdPut({ orgId }, { driverIds: newDriverIds })
 
             const addUserToGroupResponse = await this.addUserToGroup(id, RIDER_TRACKER_ROLES.RIDER_TRACKER_DRIVER)
 
@@ -215,13 +167,12 @@ export class AdminApis {
         return handleApiResponse<object>(updateUserAttributesResponse)
     }
 
-    updateUserProfileImage = async (orgId: string, userId: string, file: File, key: string) => {
+    updateUserProfileImage = async (file: File, key: string) => {
         const fileExtension = file.name.split('.').pop()
         const bucket = 'ridertracker.profileimages'
         const fileName = `${key}.${fileExtension}`
-        const fullFileName = `${bucket}/${fileName}`
 
-        const updateUserProfileImageResponse = await this.client.adminProxyS3FolderObjectGet({ folder: bucket, object: fileName })
+        const updateUserProfileImageResponse = await this.client.s3FolderObjectGet({ folder: bucket, object: fileName })
 
         const putUrl = handleApiResponse<URL>(updateUserProfileImageResponse)
 
@@ -229,25 +180,16 @@ export class AdminApis {
             method: 'PUT',
             body: file
         })
-
-        return this.updateUser(orgId, userId, { profileImageKey: fullFileName })
-    }
-
-    updateUser = async (orgId: string, id: string, body: Record<string, string>) => {
-        const updateUserResponse = await this.client.organizationsOrgIdUsersIdPut({ orgId, id }, body)
-
-        return handleApiResponse<object>(updateUserResponse)
     }
 }
 
 export interface AdminApiFunctionTypes {
     createCognitoUser(body: CreateCognitoUserParams): Promise<AWSUserType>
-    createUser(orgId: string, body: CreateUserParams, options?: Record<string, boolean>): Promise<object>
     createAdmin(admin: CreateCognitoUserParams, orgId: string, creatorId: string): Promise<object>
     createGuardian(guardian: CreateCognitoUserParams, address: AddressType, orgId: string, creatorId: string): Promise<object>
     createDriver(driver: CreateCognitoUserParams, orgId: string, creatorId: string): Promise<object>
     disableUser(username: string): Promise<void>
-    updateUserProfileImage(orgId: string, userId: string, body: File, key: string): Promise<object>
+    updateUserProfileImage(body: File, key: string): Promise<void>
     updateUserAttributes(body: AttributeType[], username: string): Promise<object>
     addUserToGroup(username: string, groupname: string): Promise<object>
     removeUserFromGroup(username: string, groupname: string): Promise<object>

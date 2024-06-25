@@ -78,8 +78,8 @@ const RouteDrawer = ({ open, school }: RouteDrawerProps) => {
         setIsAddingSchool((current) => !current)
     }
 
-    const createSchoolAction = async (newSchool: SchoolType) => {
-        await createSchool(newSchool)
+    const createSchoolAction = async (newSchool: SchoolType, address: string) => {
+        await createSchool(newSchool, address)
         toggleAddingSchool()
     }
 

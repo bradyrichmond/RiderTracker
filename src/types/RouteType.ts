@@ -1,12 +1,17 @@
+import { RiderType } from './RiderType'
+import { StopType } from './StopType'
+
 export interface RouteType {
+    createdAt: number
+    createdBy: string
     id: string
     isActive: boolean
     orgId: string
-    stopIds?: string[]
-    riderIds?: string[]
+    riderIds: string[]
+    riders: RiderType[]
     routeNumber: string
-    createdBy: string
-    createdDate: number
-    lastEditedBy: string
-    lastEditDate: number
+    stopIds: string[]
+    stops?: StopType[]
+    updatedAt: number
+    updatedBy: string
 }

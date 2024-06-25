@@ -8,11 +8,12 @@ import { OptionsType } from '@/types/FormTypes'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useUserStore } from '@/store/UserStore'
-import { useRiderStore } from '@/store/RiderStore'
 import EntityDrawer, { DrawerListActionProps } from '@/components/EntityDrawer'
 import { useStopStore } from '@/store/StopStore'
 import { useRouteStore } from '@/store/RouteStore'
 import { useAddressStore } from '@/store/AddressStore'
+import { RiderType } from '@/types/RiderType'
+import { RouteType } from '@/types/RouteType'
 
 interface RouteDrawerProps {
     open: boolean
@@ -21,15 +22,12 @@ interface RouteDrawerProps {
 
 const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
     const [isAddingStop, setIsAddingStop] = useState(false)
-    const [routeNumber, setRouteNumber] = useState('')
+    const [route, setRoute] = useState<RouteType>()
     const [actionItems, setActionItems] = useState<DrawerListActionProps[]>([])
-    const [stops, setStops] = useState<OptionsType[]>([])
-    const [localRiders, setLocalRiders] = useState<OptionsType[]>([])
     const { getRouteById, deleteRoute } = useRouteStore()
     const { heaviestRole } = useUserStore()
-    const { getBulkRidersById } = useRiderStore()
     const { createAddress } = useAddressStore()
-    const { createStop, getBulkStopsById } = useStopStore()
+    const { createStop } = useStopStore()
     const navigate = useNavigate()
     const { t } = useTranslation('routes')
 
@@ -68,6 +66,28 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
         setActionItems(builtActionItems)
     }, [deleteRouteAction, heaviestRole, t])
 
+    const stops: OptionsType[] = useMemo(() => {
+        if (route?.stopIds && route.stops) {
+            return route.stops.map((s: StopType) => ({
+                id: s.id,
+                label: s.stopName
+            }))
+        }
+
+        return []
+    }, [route])
+
+    const riders: OptionsType[] = useMemo(() => {
+        if (route?.riderIds && route.riders) {
+            return route.riders.map((r: RiderType) => ({
+                id: r.id,
+                label: `${r.firstName} ${r.lastName}`
+            }))
+        }
+
+        return []
+    }, [route])
+
     const lists = useMemo(() => [
             {
                 title: t('stops'),
@@ -77,32 +97,16 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
             {
                 title: t('riders'),
                 action: viewRiderDetail,
-                items: localRiders
+                items: riders
             }
-        ], [localRiders, stops, t, viewRiderDetail, viewStopDetail])
+        ], [riders, stops, t, viewRiderDetail, viewStopDetail])
 
     useEffect(() => {
         const getRouteData = async () => {
             const fetchedRoute = await getRouteById(routeId)
 
             if (fetchedRoute) {
-                setRouteNumber(fetchedRoute.routeNumber)
-
-                const stopIds = fetchedRoute.stopIds
-                if (stopIds) {
-                    const fetchedStops = await getBulkStopsById(stopIds)
-
-                    if (fetchedStops) {
-                        setStops(fetchedStops.map((s) => ({ id: s.id, label: s.stopName })))
-                    }
-                }
-
-                const riderIds = fetchedRoute.riderIds
-                if (riderIds) {
-                    const riders = await getBulkRidersById(riderIds)
-                    setLocalRiders(riders.map((r) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` })))
-                }
-
+                setRoute(fetchedRoute)
                 buildActionItems()
             }
         }
@@ -110,7 +114,7 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
         if (routeId) {
             getRouteData()
         }
-    }, [routeId, buildActionItems, getBulkRidersById, getBulkStopsById, getRouteById ])
+    }, [routeId, buildActionItems, getRouteById ])
 
     const toggleAddingStop = () => {
         setIsAddingStop((current) => !current)
@@ -137,7 +141,7 @@ const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
                 back={handleBack}
                 lists={lists}
                 open={open}
-                title={`Route ${routeNumber}`}
+                title={`Route ${route?.routeNumber}`}
             />
         </>
     )

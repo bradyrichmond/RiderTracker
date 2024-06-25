@@ -7,7 +7,6 @@ import { useStopStore } from '@/store/StopStore'
 import { StopType } from '@/types/StopType'
 import { useTranslation } from 'react-i18next'
 import { useGuardianStore } from '@/store/GuardianStore'
-import { GuardianType } from '@/types/UserType'
 import { useExceptionStore } from '@/store/ExceptionStore'
 import { ExceptionType, ExceptionTypeType } from '@/types/ExceptionType'
 import RiderSpeedDial from './RiderSpeedDial'
@@ -22,7 +21,6 @@ const Rider = ({ activeRider: riderId }: RiderProps) => {
     const getRiders = useRiderStore().getRiders
     const stops = useStopStore().stops
     const getStops = useStopStore().getStops
-    const guardians = useGuardianStore().guardians
     const getGuardians = useGuardianStore().getGuardians
     const exceptions = useExceptionStore().exceptions
     const getExceptions = useExceptionStore().getExceptions
@@ -42,10 +40,6 @@ const Rider = ({ activeRider: riderId }: RiderProps) => {
     const riderStops = useMemo(() => {
         return stops.filter((s: StopType) => rider?.stopIds.includes(s.id))
     }, [stops, rider])
-
-    const riderGuardians = useMemo(() => {
-        return guardians.filter((g: GuardianType) => rider?.guardianIds?.includes(g.id))
-    }, [guardians, rider])
 
     const authorizedRiderExceptions = useMemo(() => {
         return exceptions.filter((e: ExceptionType) => e.riderId === riderId && e.type === ExceptionTypeType.AUTHORIZED)
@@ -76,15 +70,6 @@ const Rider = ({ activeRider: riderId }: RiderProps) => {
                             <Typography variant='h3' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{riderStops.length === 1 ? t('stop') : t('stops')}</Typography>
                             <Divider sx={{ mt: 2, mb: 2 }} />
                             {riderStops.length > 0 ? riderStops.map((s: StopType) => <Typography key={s.id}>{s.stopName}</Typography>) : t('noStopsAssigned')}
-                        </Box>
-                    </Paper>
-                </Grid>
-                <Grid xs={12} md={6}>
-                    <Paper sx={{ height: '100%' }}>
-                        <Box sx={{ padding: 2 }}>
-                            <Typography variant='h3' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>{riderGuardians.length === 1 ? t('guardian') : t('guardians')}</Typography>
-                            <Divider sx={{ mt: 2, mb: 2 }} />
-                            {riderGuardians.length > 0 ? riderGuardians.map((g: GuardianType) => <Typography key={g.id}>{`${g.firstName} ${g.lastName}`}</Typography>) : t('noGuardiansAssigned')}
                         </Box>
                     </Paper>
                 </Grid>

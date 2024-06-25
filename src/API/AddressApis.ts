@@ -41,12 +41,6 @@ export class AddressApis {
         return evaluated
     }
 
-    getBulkAddressesByIds = async (orgId: string, addressIds: string[]): Promise<AddressType[]> => {
-        const addressesResponse = await this.client.organizationsOrgIdAddressesBatchByIdPost({ orgId }, addressIds)
-
-        return handleApiResponse<AddressType[]>(addressesResponse)
-    }
-
     _evaluateAddressData = (result: GeoapifyValidateResponse): AddressType => {
         const ACCEPT_LEVEL = 0.75;
 
@@ -89,5 +83,4 @@ export interface AddressApiFunctionTypes {
     createAddress(orgId: string, address: AddressType): Promise<object>,
     validateAddress(address: string): Promise<AddressType>,
     deleteAddress(orgId: string, id: string): Promise<object>,
-    getBulkAddressesByIds(orgId: string, addressIds: string[]): Promise<AddressType[]>
 }

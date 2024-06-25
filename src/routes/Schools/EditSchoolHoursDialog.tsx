@@ -28,6 +28,7 @@ const EditSchoolDialog = ({ cancelAction, updateAction, open }: EditSchoolDialog
 
     useMemo(() => {
         const pickedSchool = schools.find((s: SchoolType) => s.id === schoolId)
+        // TODO: Figure out relationship with single table
         setSchoolHoursCopy(pickedSchool?.hours ?? [])
         return pickedSchool
     }, [schools, schoolId])

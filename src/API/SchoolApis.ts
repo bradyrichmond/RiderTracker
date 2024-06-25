@@ -24,10 +24,9 @@ export class SchoolApis {
     updateSchool = async (orgId: string, id: string, school: SchoolType) => {
         const updatedSchool = {
             schoolName: school.schoolName,
-            address: school.address,
-            hours: school.hours,
-            lastEditedBy: school.lastEditedBy,
-            lastEditDate: school.lastEditDate
+            addressId: school.addressId,
+            updatedBy: school.updatedBy,
+            updatedAt: school.updatedAt
         }
         const updateSchoolResponse = await this.client.organizationsOrgIdSchoolsIdPut({ orgId, id }, updatedSchool)
 

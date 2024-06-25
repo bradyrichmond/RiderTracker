@@ -1,6 +1,5 @@
 import { StopType } from '@/types/StopType'
 import { handleApiResponse } from '@/helpers/ApiHelpers'
-import { RouteType } from '@/types/RouteType'
 import { ApiGatewayClientType } from '@/helpers/GenerateApiGatewayClient'
 
 export class StopApis {
@@ -29,22 +28,9 @@ export class StopApis {
     }
 
     createStop = async (orgId: string, body: StopType) => {
-        await this.client.organizationsOrgIdStopsPost({ orgId }, body)
+        const createStopResponse = await this.client.organizationsOrgIdStopsPost({ orgId }, body)
 
-        const routeResponse = await this.client.organizationsOrgIdRoutesIdGet({ orgId, id: body.routeId })
-        const { stopIds } = handleApiResponse<RouteType>(routeResponse)
-
-        let stops: string[] | undefined = stopIds
-
-        if (!stops) {
-            stops = []
-        }
-
-        stops.push(body.id)
-
-        const updateRouteResponse = await this.client.organizationsOrgIdRoutesIdPut({ orgId, id: body.routeId }, { stopIds: stops })
-
-        return handleApiResponse<object>(updateRouteResponse)
+        return handleApiResponse<object>(createStopResponse)
     }
 
     deleteStop = async (orgId: string, id: string) => {
@@ -52,19 +38,12 @@ export class StopApis {
 
         return handleApiResponse<object>(deleteStopResponse)
     }
-
-    getBulkStopsByIds = async (orgId: string, stopIds: string[]) => {
-        const stops = await this.client.organizationsOrgIdStopsBulkPost({ orgId }, stopIds)
-
-        return handleApiResponse<StopType[]>(stops)
-    }
 }
 
 export interface StopApiFunctionTypes {
-    getStops(orgId: string): Promise<StopType[]>,
-    getBulkStopsByIds(orgId: string, stopIds: string[]): Promise<StopType[]>,
-    getStopById(orgId: string, id: string): Promise<StopType>,
-    updateStop(orgId: string, id: string, stop: object): Promise<object>,
-    createStop(orgId: string, stop: StopType): Promise<object>,
+    getStops(orgId: string): Promise<StopType[]>
+    getStopById(orgId: string, id: string): Promise<StopType>
+    updateStop(orgId: string, id: string, stop: object): Promise<object>
+    createStop(orgId: string, stop: StopType): Promise<object>
     deleteStop(orgId: string, id: string): Promise<object>
 }

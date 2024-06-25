@@ -3,10 +3,9 @@ export interface StopType {
     id: string
     orgId: string
     routeId: string
-    riderIds?: string[]
     stopName: string
+    createdAt: number
     createdBy: string
-    createdDate: Date
-    lastEditedBy: string
-    lastEditDate: Date
+    updatedAt: number
+    updatedBy: string
 }

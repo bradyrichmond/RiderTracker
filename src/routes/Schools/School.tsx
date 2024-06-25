@@ -54,7 +54,8 @@ const School = ({ activeSchool }: SchoolProps) => {
                 <Paper sx={{ p: 2 }}>
                     <Typography variant='h3' sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', pb: 2 }}>Hours</Typography>
                     <Grid container spacing={2}>
-                        {school?.hours.map((d, i) => <SchoolDayHours
+                        {/* TODO: Figure out relationship with single table */}
+                        {school?.hours && school?.hours.map((d, i) => <SchoolDayHours
                             key={d.dayName}
                             index={i}
                             dayName={t(d.dayName)}

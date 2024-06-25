@@ -1,15 +1,16 @@
-import { LocationType } from './LocationType'
+import { RiderType } from './RiderType'
 
 export interface ScanType {
+    createdAt: Date
+    createdBy: string
     id: string
+    lat: number
+    lon: number
+    manualScan?: boolean
     orgId: string
     stopId: string
     riderIds: string[]
-    deviceLocationOnSubmit?: LocationType
-    createdBy: string
-    createdDate: Date
-    lastEditedBy: string
-    lastEditDate: Date
-    manualScan?: boolean
-    guardianIds?: string[]
+    riders?: RiderType[]
+    updatedAt: Date
+    updatedBy: string
 }

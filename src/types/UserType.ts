@@ -1,4 +1,6 @@
 import { RIDER_TRACKER_ROLES } from '@/constants/Roles'
+import { RiderType } from './RiderType'
+import { StopType } from './StopType'
 
 export interface UserType {
     id: string
@@ -10,12 +12,14 @@ export interface UserType {
     profileImageKey?: string
     userType?: RIDER_TRACKER_ROLES
     createdBy: string
-    createdDate: Date
-    lastEditedBy: string
-    lastEditDate: Date
+    createdAt: Date
+    updatedBy: string
+    updatedAt: Date
 }
 
 export interface GuardianType extends UserType {
     riderIds?: string[]
+    riders?: RiderType[]
     stopId?: string
+    stop?: StopType
 }

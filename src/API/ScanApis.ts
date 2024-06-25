@@ -35,8 +35,8 @@ export class ScanApis {
 }
 
 export interface ScanApiFunctionTypes {
-    getScans(orgId: string): Promise<ScanType[]>,
-    getScanById(orgId: string, id: string): Promise<ScanType>,
-    createScan(orgId: string, scan: ScanType): Promise<object>,
+    getScans(orgId: string): Promise<ScanType[]>
+    getScanById(orgId: string, id: string): Promise<ScanType>
+    createScan(orgId: string, scan: ScanType): Promise<object>
     deleteScan(orgId: string, id: string): Promise<object>
 }

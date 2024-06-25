@@ -1,14 +1,19 @@
+import { AddressType } from './AddressType'
+import { RiderType } from './RiderType'
+
 export interface SchoolType {
-    address: string
+    addressId: string
+    address?: AddressType
+    createdAt: number
     createdBy: string
-    createdDate: number
-    hours: SchoolHourType[]
+    hours?: SchoolHourType[]
     id: string
-    lastEditedBy: string
-    lastEditDate: number
     orgId: string
     riderIds?: string[]
+    riders?: RiderType[]
     schoolName: string
+    updatedAt: number
+    updatedBy: string
 }
 
 export interface SchoolHourType {

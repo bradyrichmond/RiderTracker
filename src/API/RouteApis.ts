@@ -45,9 +45,9 @@ export class RouteApis {
 }
 
 export interface RouteApiFunctionTypes {
-    getRoutes(orgId: string, options?: object): Promise<RouteType[]>,
-    getRouteById(orgId: string, id: string): Promise<RouteType>,
-    createRoute(orgId: string, route: RouteType): Promise<object>,
+    getRoutes(orgId: string, options?: object): Promise<RouteType[]>
+    getRouteById(orgId: string, id: string): Promise<RouteType>
+    createRoute(orgId: string, route: RouteType): Promise<object>
     updateRoute(orgId: string, id: string, route: Partial<RouteType>): Promise<object>
     deleteRoute(orgId: string, id: string): Promise<object>
 }

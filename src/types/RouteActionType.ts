@@ -1,13 +1,13 @@
 export interface RouteActionType {
     actionType: ActionType
+    createdAt: number
+    createdBy: string
     driverId: string
     id: string
     orgId: string
     routeId: string
-    createdBy: string
-    createdDate: number
-    lastEditedBy: string
-    lastEditDate: number
+    updatedAt: number
+    updatedBy: string
 }
 
 export enum ActionType {

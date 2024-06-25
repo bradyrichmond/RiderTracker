@@ -21,15 +21,9 @@ export class RiderApis {
         return handleApiResponse<RiderType>(getRiderResponse)
     }
 
-    getBulkRidersByIds = async (orgId: string, userIds: string[]) => {
-        const ridersResponse = await this.client.organizationsOrgIdRidersBatchByIdPost({ orgId }, userIds)
-
-        return handleApiResponse<RiderType[]>(ridersResponse)
-    }
-
     updateRider = async (orgId: string, id: string, rider: RiderType) => {
-        const { firstName, lastName, schoolId, stopIds, guardianIds } = rider
-        const trimmedRider = { firstName, lastName, schoolId, stopIds, guardianIds }
+        const { firstName, lastName, schoolId, stopIds } = rider
+        const trimmedRider = { firstName, lastName, schoolId, stopIds }
         const updateRiderResponse = await this.client.organizationsOrgIdRidersIdPut({ orgId, id }, trimmedRider)
 
         return handleApiResponse<object>(updateRiderResponse)
@@ -49,10 +43,9 @@ export class RiderApis {
 }
 
 export interface RiderApiFunctionTypes {
-    getRiders(orgId: string): Promise<RiderType[]>,
-    getRiderById(orgId: string, id: string): Promise<RiderType>,
-    updateRider(orgId: string, id: string, rider: RiderType): Promise<object>,
-    createRider(orgId: string, rider: RiderType): Promise<object>,
-    deleteRider(orgId: string, id: string): Promise<object>,
-    getBulkRidersByIds(orgId: string, userIds: string[]): Promise<RiderType[]>
+    getRiders(orgId: string): Promise<RiderType[]>
+    getRiderById(orgId: string, id: string): Promise<RiderType>
+    updateRider(orgId: string, id: string, rider: RiderType): Promise<object>
+    createRider(orgId: string, rider: RiderType): Promise<object>
+    deleteRider(orgId: string, id: string): Promise<object>
 }

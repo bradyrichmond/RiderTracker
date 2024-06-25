@@ -1,13 +1,23 @@
+import { RouteType } from './RouteType'
+import { SchoolType } from './SchoolType'
+import { StopType } from './StopType'
+import { GuardianType } from './UserType'
+
 export interface RiderType {
-    id: string
+    createdAt: number
+    createdBy: string
     firstName: string
+    guardianIds: string[]
+    guardians?: GuardianType[]
+    id: string
     lastName: string
     orgId: string
+    routeIds: string[]
+    routes?: RouteType[]
+    school?: SchoolType
     schoolId: string
     stopIds: string[]
-    guardianIds?: string[]
-    createdBy: string
-    createdDate: Date
-    lastEditedBy: string
-    lastEditDate: Date
+    stops?: StopType[]
+    updatedBy: string
+    updatedAt: number
 }

@@ -8,7 +8,6 @@ interface AddressStore {
     addresses: AddressType[],
     updateAddresses(): Promise<void>
     createAddress(address: string): Promise<AddressType>
-    getBulkAddressesById(addressIds: string[]): Promise<AddressType[]>
 }
 
 export const useAddressStore = create<AddressStore>((set) => ({
@@ -37,16 +36,5 @@ export const useAddressStore = create<AddressStore>((set) => ({
         }
 
         throw 'Failed to create address'
-    },
-    getBulkAddressesById: async (addressIds: string[]) => {
-        const api = await useApiStore.getState().getApi()
-        const orgId = useOrgStore.getState().orgId
-
-        const addresses = api?.addresses.getBulkAddressesByIds(orgId, addressIds)
-        if (addresses) {
-            return addresses
-        }
-
-        throw 'Could not get addresses by id'
     }
 }))

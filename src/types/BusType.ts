@@ -1,5 +1,5 @@
 export interface BusType {
+    busNumber: string
     id: string
     orgId: string
-    busNumber?: string
 }

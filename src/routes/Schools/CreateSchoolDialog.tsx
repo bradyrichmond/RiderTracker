@@ -9,8 +9,13 @@ import { schoolSchema } from '@/validation/schoolSchema'
 
 interface CreateSchoolDialogProps {
     cancelAction(): void
-    createSchool(school: Partial<SchoolType>): Promise<void>
+    createSchool(school: Partial<SchoolType>, address: string): Promise<void>
     open: boolean
+}
+
+interface CreateSchoolInput {
+    address: string
+    schoolName: string
 }
 
 const CreateSchoolDialog = ({ createSchool, cancelAction, open }: CreateSchoolDialogProps) => {
@@ -18,9 +23,9 @@ const CreateSchoolDialog = ({ createSchool, cancelAction, open }: CreateSchoolDi
     const { t } = useTranslation(['schools', 'common'])
     const { handleSubmit, register, reset, formState: { errors, touchedFields } } = useForm({ resolver: yupResolver(schoolSchema) })
 
-    const handleCreate = async (newRoute: Partial<SchoolType>) => {
+    const handleCreate = async ({ address, schoolName }: CreateSchoolInput) => {
         setDisableButtons(false)
-        await createSchool(newRoute)
+        await createSchool({ schoolName }, address)
         setDisableButtons(false)
         reset()
     }

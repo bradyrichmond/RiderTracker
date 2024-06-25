@@ -20,7 +20,7 @@ interface RouteActionStore {
 }
 
 const dateCompare = (a: RouteActionType, b: RouteActionType) => {
-    return Number(a.createdDate) - Number(b.createdDate)
+    return Number(a.createdAt) - Number(b.createdAt)
 }
 
 export const useRouteActionStore = create<RouteActionStore>((set) => ({
@@ -46,9 +46,9 @@ export const useRouteActionStore = create<RouteActionStore>((set) => ({
             orgId,
             routeId: routeActionInput.routeId,
             createdBy: userId,
-            createdDate: new Date().getTime(),
-            lastEditedBy: userId,
-            lastEditDate: new Date().getTime()
+            createdAt: new Date().getTime(),
+            updatedBy: userId,
+            updatedAt: new Date().getTime()
         }
 
         await api?.routeActions.createRouteAction(orgId, action)

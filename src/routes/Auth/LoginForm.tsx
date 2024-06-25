@@ -23,7 +23,7 @@ interface LoginFormInputs {
 const LoginForm = () => {
     const [resetPasswordRequired, setResetPasswordRequired] = useState(false)
     const { handleSubmit, register, formState: { errors, touchedFields }, reset } = useForm<LoginFormInputs>({ resolver: yupResolver(loginSchema) })
-    const { heaviestRole, updateUserData } = useUserStore()
+    const { updateUserData } = useUserStore()
     const { orgName, organizationLoginImageUrl, updateOrgData } = useOrgStore()
     const [errorMessage, setErrorMessage] = useState('')
     const [disableButtons, setDisabledButtons] = useState(false)
@@ -110,20 +110,7 @@ const LoginForm = () => {
         const api = await useApiStore.getState().getApi(true)
 
         if (api) {
-            const path = window.location.toString().split('//')[1]
-            const pathOrgSlug = path.split('.')[0]
-            const orgSlugResponse = await api.organizations.getOrganizationLoginDataBySlug(pathOrgSlug)
-            const { id } = orgSlugResponse
-
-            const userId = await useUserStore.getState().getUserId()
-
             const previousPath = history.state?.usr?.previousPath
-            const userOrgIds: string | string[] | undefined = await api?.organizations.getOrgIdForUser(userId, heaviestRole)
-
-            if ((Array.isArray(userOrgIds) && !userOrgIds.some((o) => o === id)) || userOrgIds !== id) {
-                signOut()
-                throw 'User does not have access to organization.'
-            }
 
             navigate(previousPath ?? '/app')
         }

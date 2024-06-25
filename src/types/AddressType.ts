@@ -1,103 +1,103 @@
 import { LocationType } from './LocationType'
 
 export interface AddressType {
-    id: string
-    orgId: string
-    houseNumber: string
-    streetName: string
     city: string
-    state: string
-    county: string
     country: string
-    postcode: string
+    county: string
     formatted: string
+    houseNumber: string
+    id: string
     location: LocationType
+    orgId: string
+    postcode: string
+    state: string
+    streetName: string
 }
 
 export interface GeoapifyValidateResponse {
     body: {
-        type: string
         features: GeoapifyValidateResponseFeature[]
         query: GeoapifyValidateResponseQuery
+        type: string
     },
-    statusCode: string,
     headers: Record<string,string>
+    statusCode: string
 }
 
 interface GeoapifyValidateResponseFeature {
-    type: string
-    properties: GeoapifyValidateResponseFeatureProperties
-    geometry: GeoapifyValidateResponseFeatureGeometry
     bbox: number[]
+    geometry: GeoapifyValidateResponseFeatureGeometry
+    properties: GeoapifyValidateResponseFeatureProperties
+    type: string
 }
 
 interface GeoapifyValidateResponseFeatureGeometry {
-    type: string,
     coordinates: number[]
+    type: string
 }
 
 interface GeoapifyValidateResponseFeatureProperties {
-    datasource: GeoapifyValidateResponseFeaturePropertiesDatasource
-    housenumber: string
-    street: string
-    suburb: string
-    city: string
-    county: string
-    state: string
-    postcode: string
-    country: string
-    country_code: string
-    lon: number
-    lat: number
-    formatted: string
     address_line1: string
     address_line2: string
-    state_code: string
-    result_type: string
-    rank: GeoapifyValidateResponseFeatureRank
-    timezone: GeoapifyValidateResponseFeatureTimezone
-    place_id: string
     category: string
+    city: string
+    country: string
+    county: string
+    country_code: string
+    datasource: GeoapifyValidateResponseFeaturePropertiesDatasource
+    formatted: string
+    housenumber: string
+    lat: number
+    lon: number
+    postcode: string
+    place_id: string
     plus_code: string
+    rank: GeoapifyValidateResponseFeatureRank
+    result_type: string
+    state: string
+    state_code: string
+    street: string
+    suburb: string
+    timezone: GeoapifyValidateResponseFeatureTimezone
 }
 
 interface GeoapifyValidateResponseFeaturePropertiesDatasource {
-    sourcename: string
     attribution: string
     license: string
+    sourcename: string
     url: URL
 }
 
 interface GeoapifyValidateResponseFeatureRank {
-    importance: number
-    popularity: number
     confidence: number
     confidence_city_level: number
     confidence_street_level: number
+    importance: number
     match_type: string
+    popularity: number
 }
 
 interface GeoapifyValidateResponseFeatureTimezone {
+    abbreviation_DST: string
+    abbreviation_STD: string
     name: string
-    offset_STD: string
-    offset_STD_seconds: number
     offset_DST: string
     offset_DST_seconds: number
-    abbreviation_STD: string
-    abbreviation_DST: string
+    offset_STD: string
+    offset_STD_seconds: number
 }
 
 interface GeoapifyValidateResponseQuery {
-    text: string
     parsed: GeoapifyValidateResponseQueryParsed
+    text: string
 }
 
 interface GeoapifyValidateResponseQueryParsed {
-    housenumber: string
-    street: string
-    postcode: string
     city: string
-    state: string
     country: string
     expected_type: string
+    housenumber: string
+    postcode: string
+    street: string
+    state: string
 }

@@ -123,7 +123,12 @@ export const useUserStore = create<UserStore>((set, get) => ({
         const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
-        const users = await api?.users.getUsers(orgId)
+        const admins = await api?.users.getAdmins(orgId)
+        const drivers = await api?.users.getDrivers(orgId)
+        const guardians = await api?.users.getDrivers(orgId)
+
+        const users = [...admins, ...drivers, ...guardians ]
+
         set({ users })
     },
     searchArg: '',

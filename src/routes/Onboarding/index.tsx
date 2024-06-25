@@ -143,19 +143,11 @@ const Onboarding = () => {
     }
 
     const createNewOrganizationUser = async (orgId: string) => {
-        const createTime = new Date().getTime()
-
-        await api?.admin.createUser(orgId, {
-            id: newUserId,
-            orgId,
-            firstName: adminFirstName,
-            lastName: adminLastName,
-            email: adminEmail,
-            createdBy: newUserId,
-            createdDate: createTime,
-            lastEditedBy: newUserId,
-            lastEditDate: createTime
-        }, { forceRefesh: true })
+        await api?.admin.createAdmin({
+            given_name: adminFirstName,
+            family_name: adminLastName,
+            email: adminEmail
+        }, orgId, newUserId)
     }
 
     const createNewOrg = async (newOrgSlug: string) => {
@@ -166,11 +158,10 @@ const Onboarding = () => {
             orgName,
             orgSlug: newOrgSlug,
             loginImageKey: '',
-            adminIds: [newUserId],
             createdBy: newUserId,
-            createdDate: new Date(),
-            lastEditedBy: newUserId,
-            lastEditDate: new Date()
+            createdAt: new Date().getTime(),
+            updatedBy: newUserId,
+            updatedAt: new Date().getTime()
         })
 
         await createNewOrganizationUser(newOrgId)

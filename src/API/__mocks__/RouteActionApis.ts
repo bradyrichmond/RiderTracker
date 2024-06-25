@@ -5,9 +5,9 @@ const mockGetRouteActions = async (orgId: string) => [{
     orgId,
     routeId: '72bc1fa7-4d6c-413a-a7ca-8843da5fcd88',
     createdBy: 'ae010e55-c8d8-4957-a5b6-259fba09de69',
-    createdDate: '1718392660306',
-    lastEditedBy: 'ae010e55-c8d8-4957-a5b6-259fba09de69',
-    lastEditDate: '1718392660306'
+    createdAt: '1718392660306',
+    updatedBy: 'ae010e55-c8d8-4957-a5b6-259fba09de69',
+    updatedAt: '1718392660306'
 }]
 
 const mockGetRouteActionsByDriverId = async (orgId: string, driverId: string) => [{
@@ -17,9 +17,9 @@ const mockGetRouteActionsByDriverId = async (orgId: string, driverId: string) =>
     orgId,
     routeId: '72bc1fa7-4d6c-413a-a7ca-8843da5fcd88',
     createdBy: 'ae010e55-c8d8-4957-a5b6-259fba09de69',
-    createdDate: '1718392660306',
-    lastEditedBy: 'ae010e55-c8d8-4957-a5b6-259fba09de69',
-    lastEditDate: '1718392660306'
+    createdAt: '1718392660306',
+    updatedBy: 'ae010e55-c8d8-4957-a5b6-259fba09de69',
+    updatedAt: '1718392660306'
 }]
 
 const mockGetRouteActionsByRouteId = async (orgId: string, routeId: string) => [{
@@ -29,9 +29,9 @@ const mockGetRouteActionsByRouteId = async (orgId: string, routeId: string) => [
     orgId,
     routeId,
     createdBy: 'ae010e55-c8d8-4957-a5b6-259fba09de69',
-    createdDate: '1718392660306',
-    lastEditedBy: 'ae010e55-c8d8-4957-a5b6-259fba09de69',
-    lastEditDate: '1718392660306'
+    createdAt: '1718392660306',
+    updatedBy: 'ae010e55-c8d8-4957-a5b6-259fba09de69',
+    updatedAt: '1718392660306'
 }]
 
 const mockCreateRouteAction = async () => { }

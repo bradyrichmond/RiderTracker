@@ -65,7 +65,7 @@ const DriverDrawer = ({ open, driverId }: DriverDrawerProps) => {
             const mappedRouteActions = routeActions.map((r: RouteActionType) => {
                 return {
                     id: r.id,
-                    label: `${r.actionType} ${dayjs(Number(r.createdDate)).format('YYYY-MM-DD HH:mm:sss')}`
+                    label: `${r.actionType} ${dayjs(Number(r.createdAt)).format('YYYY-MM-DD HH:mm:sss')}`
                 }
             })
 

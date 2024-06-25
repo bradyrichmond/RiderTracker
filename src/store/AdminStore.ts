@@ -43,6 +43,7 @@ export const useAdminStore = create<AdminStore>((set, get) => ({
 
         await api?.admin.disableUser(id)
         await api?.admin.removeUserFromGroup(id, RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN)
+        // TODO: Add delete admin to api
         await api?.users.deleteUser(orgId, id)
     },
     createGuardian: async (newGuardian: CreateGuardianInput) => {

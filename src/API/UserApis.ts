@@ -2,7 +2,6 @@ import { updatePassword } from '@aws-amplify/auth'
 import { GuardianType, UserType } from '@/types/UserType'
 import { handleApiResponse } from '@/helpers/ApiHelpers'
 import { ApiGatewayClientType } from '@/helpers/GenerateApiGatewayClient'
-import { RIDER_TRACKER_ROLES } from '@/constants/Roles'
 
 export class UserApis {
     client: ApiGatewayClientType
@@ -19,113 +18,107 @@ export class UserApis {
         }
     }
 
-    getUsers = async (orgId: string) => {
-        const getUsersResponse = await this.client.organizationsOrgIdUsersGet({ orgId }, {})
+    deleteUser = async (orgId: string, id: string) => {
+        const sk = await this._getUserSortKey(orgId, id)
+        const userType = sk.split('#')[0]
 
-        return handleApiResponse<UserType[]>(getUsersResponse)
-    }
+        // Need to decide what to do with cognito user
 
-    getUserById = async (orgId: string, id: string) => {
-        const getUserResponse = await this.client.organizationsOrgIdUsersIdGet({ orgId, id })
+        if (userType === 'ADMIN') {
+            this.client.organizationsOrgIdAdminsIdDelete({ orgId, id })
+            return
+        }
 
-        return handleApiResponse<UserType>(getUserResponse)
-    }
+        if (userType === 'GUARDIAN') {
+            this.client.organizationsOrgIdGuardiansIdDelete({ orgId, id })
+            return
+        }
 
-    getAdmins = async (orgId: string) => {
-        const getUsersResponse = await this.client.organizationsOrgIdUsersGet({ orgId }, {}, {
-            queryParams: {
-                userType: RIDER_TRACKER_ROLES.RIDER_TRACKER_ORGADMIN
-            }
-        })
-
-        return handleApiResponse<GuardianType[]>(getUsersResponse)
+        if (userType === 'DRIVER') {
+            this.client.organizationsOrgIdDriversIdDelete({ orgId, id })
+            return
+        }
     }
 
     getAdminById = async (orgId: string, id: string) => {
-        const getAdminResponse = await this.client.organizationsOrgIdUsersIdGet({ orgId, id })
+        const getAdminResponse = await this.client.organizationsOrgIdAdminsIdGet({ orgId, id })
 
         return handleApiResponse<UserType>(getAdminResponse)
     }
 
-    getGuardians = async (orgId: string) => {
-        const getUsersResponse = await this.client.organizationsOrgIdUsersGet({ orgId }, {}, {
-            queryParams: {
-                userType: RIDER_TRACKER_ROLES.RIDER_TRACKER_GUARDIAN
-            }
-        })
+    getAdmins = async (orgId: string) => {
+        const getUsersResponse = await this.client.organizationsOrgIdAdminsGet({ orgId })
 
         return handleApiResponse<GuardianType[]>(getUsersResponse)
     }
 
     getGuardianById = async (orgId: string, id: string) => {
-        const getGuardianResponse = await this.client.organizationsOrgIdUsersIdGet({ orgId, id })
+        const getGuardianResponse = await this.client.organizationsOrgIdGuardiansIdGet({ orgId, id })
 
         return handleApiResponse<GuardianType>(getGuardianResponse)
     }
 
-    getDrivers = async (orgId: string) => {
-        const getUsersResponse = await this.client.organizationsOrgIdUsersGet({ orgId }, {}, {
-            queryParams: {
-                userType: RIDER_TRACKER_ROLES.RIDER_TRACKER_DRIVER
-            }
-        })
+    getGuardians = async (orgId: string) => {
+        const getUsersResponse = await this.client.organizationsOrgIdGuardiansGet({ orgId })
 
-        return handleApiResponse<UserType[]>(getUsersResponse)
+        return handleApiResponse<GuardianType[]>(getUsersResponse)
     }
 
     getDriverById = async (orgId: string, id: string) => {
-        const getDriversResponse = await this.client.organizationsOrgIdUsersIdGet({ orgId, id })
+        const getDriversResponse = await this.client.organizationsOrgIdDriversIdGet({ orgId, id })
 
         return handleApiResponse<UserType>(getDriversResponse)
     }
 
-    getUserProfileImage = async (orgId: string, userId: string) => {
-        const profileImageResponse = await this.client.organizationsOrgIdUsersIdGet({ orgId, id: userId })
+    getDrivers = async (orgId: string) => {
+        const getUsersResponse = await this.client.organizationsOrgIdDriversGet({ orgId })
 
-        const response = handleApiResponse<UserType>(profileImageResponse)
-
-        const { profileImageKey } = response
-        return profileImageKey
+        return handleApiResponse<UserType[]>(getUsersResponse)
     }
 
-    getBulkUsersByIds = async (orgId: string, userIds: string[]) => {
-        const usersResponse = await this.client.organizationsOrgIdUsersBatchByIdPost({ orgId }, userIds)
+    getUserById = async (orgId: string, id: string) => {
+        const getDriversResponse = await this.client.organizationsOrgIdDriversIdGet({ orgId, id })
 
-        return handleApiResponse<UserType[]>(usersResponse)
+        return handleApiResponse<UserType>(getDriversResponse)
     }
 
-    getBulkGuardiansByIds = async (orgId: string, userIds: string[]) => {
-        const usersResponse = await this.client.organizationsOrgIdUsersBatchByIdPost({ orgId }, userIds)
+    updateUser = async (orgId: string, id: string, changes: Partial<GuardianType | UserType>) => {
+        const sk = await this._getUserSortKey(orgId, id)
+        const userType = sk.split('#')[0]
 
-        return handleApiResponse<GuardianType[]>(usersResponse)
+        if (userType === 'ADMIN') {
+            this.client.organizationsOrgIdAdminsIdPut({ orgId, id }, changes)
+            return
+        }
+
+        if (userType === 'GUARDIAN') {
+            this.client.organizationsOrgIdGuardiansIdPut({ orgId, id }, changes)
+            return
+        }
+
+        if (userType === 'DRIVER') {
+            this.client.organizationsOrgIdDriversIdPut({ orgId, id }, changes)
+            return
+        }
     }
 
-    deleteUser = async (orgId: string, id: string) => {
-        const deleteUserResponse = await this.client.organizationsOrgIdUsersIdDelete({ orgId, id })
+    _getUserSortKey = async (orgId: string, id: string) => {
+        const response = await this.client.organizationsOrgIdUsersIdGet({ orgId, id })
+        const { sk } = handleApiResponse<{ sk: string }>(response)
 
-        return handleApiResponse<object>(deleteUserResponse)
-    }
-
-    updateUser = async (orgId: string, id: string, body: Partial<UserType | GuardianType>) => {
-        const updateUserResponse = await this.client.organizationsOrgIdUsersIdPut({ orgId, id }, body)
-
-        return handleApiResponse<object>(updateUserResponse)
+        return sk
     }
 }
 
 export interface UserApiFunctionTypes {
     changeUserPassword(previousPassword: string, proposedPassword: string): Promise<void>
-    getUserProfileImage(orgId: string, userId: string): Promise<string | undefined>
-    getUsers(orgId: string): Promise<UserType[]>
-    getUserById(orgId: string, id: string): Promise<UserType>
-    getAdmins(orgId: string): Promise<UserType[]>
+    deleteUser(orgId: string, id: string): Promise<void>
     getAdminById(orgId: string, id: string): Promise<UserType>
-    getGuardians(orgId: string): Promise<GuardianType[]>
+    getAdmins(orgId: string): Promise<UserType[]>
     getGuardianById(orgId: string, id: string): Promise<GuardianType>
-    getDrivers(orgId: string): Promise<UserType[]>
+    getGuardians(orgId: string): Promise<GuardianType[]>
     getDriverById(orgId: string, id: string): Promise<UserType>
-    getBulkUsersByIds(orgId: string, userIds: string[]): Promise<UserType[]>
-    getBulkGuardiansByIds(orgId: string, userIds: string[]): Promise<GuardianType[]>
-    deleteUser(orgId: string, id: string): Promise<object>
-    updateUser(orgId: string, id: string, body: Partial<UserType | GuardianType>): Promise<object>
+    getDrivers(orgId: string): Promise<UserType[]>
+    getUserById(orgId: string, id: string): Promise<UserType>
+    updateUser(orgId: string, id: string, changes: Partial<UserType>): Promise<void>
 }

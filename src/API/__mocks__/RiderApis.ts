@@ -47,16 +47,18 @@ const mockGetBulkRidersById = async (riderIds: string[]) => {
     const riders: RiderType[] = []
 
     riderIds.forEach((r) => riders.push({
+        createdAt: new Date().getTime(),
+        createdBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
         id: r,
         firstName: 'Johnny',
+        guardianIds: ['ac7a22c5-5e28-46d5-ac26-18b54eb5gggg'],
         lastName: 'Tester',
         orgId: '00492e30-ab34-44f6-9843-44f47f2cdf27',
+        routeIds: ['72bc1fa7-4d6c-413a-a7ca-8843da5fcd88'],
         schoolId: '16982bd6-eb83-416d-b5fa-e7002d863136',
         stopIds: ['765ae823-c502-45a3-85f5-1caf270d7f0b', 'fd812b1b-6532-4f32-be25-352c6f84cefc'],
-        createdBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
-        createdDate: new Date(),
-        lastEditedBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
-        lastEditDate: new Date()
+        updatedAt: new Date().getTime(),
+        updatedBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4'
     }))
 
     return riders

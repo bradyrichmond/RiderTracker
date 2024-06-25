@@ -35,8 +35,8 @@ const Schools = ({ activeSchool }: SchoolsProps) => {
         getRiders()
     }, [getSchools, updateAddresses, getRiders])
 
-    const createSchoolAction = async (newSchool: SchoolType) => {
-        await createSchool(newSchool)
+    const createSchoolAction = async (newSchool: SchoolType, address: string) => {
+        await createSchool(newSchool, address)
 
         getSchools()
         updateAddresses()

@@ -13,6 +13,8 @@
  * permissions and limitations under the License.
  */
 
+/* eslint no-useless-escape: 0 */
+
 import uritemplate from "./lib/url-template/url-template";
 import apiGatewayClientFactory from "./lib/apiGatewayCore/apiGatewayClientFactory";
 import utils from "./lib/apiGatewayCore/utils";
@@ -57,7 +59,8 @@ apigClientFactory.newClient = function (config) {
 
     
     // extract endpoint and path from url
-    var invokeUrl = 'https://uqz8uvqzcl.execute-api.us-west-2.amazonaws.com/DEV';
+    var invokeUrl = 'https://6u1xxhadqj.execute-api.us-west-2.amazonaws.com/dev';
+    // 
     var endpoint = /(^https?:\/\/[^\/]+)/g.exec(invokeUrl)[1];
     var pathComponent = invokeUrl.substring(endpoint.length);
 
@@ -87,41 +90,23 @@ apigClientFactory.newClient = function (config) {
     
     
     
-    apigClient.adminProxyS3FolderObjectGet = function (params, body, additionalParams) {
-        if(additionalParams === undefined) { additionalParams = {}; }
-        
-        utils.assertParametersDefined(params, ['object', 'folder'], ['body']);
-        
-        var adminProxyS3FolderObjectGetRequest = {
-            verb: 'get'.toUpperCase(),
-            path: pathComponent + uritemplate('/admin-proxy/s3/{folder}/{object}').expand(utils.parseParametersToObject(params, ['object', 'folder'])),
-            headers: utils.parseParametersToObject(params, []),
-            queryParams: utils.parseParametersToObject(params, []),
-            body: body
-        };
-        
-        
-        return apiGatewayClient.makeRequest(adminProxyS3FolderObjectGetRequest, authType, additionalParams, config.apiKey);
-    };
-    
-    
-    apigClient.adminProxyS3FolderObjectOptions = function (params, body, additionalParams) {
+    apigClient.adminProxyProxyOptions = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
         utils.assertParametersDefined(params, [], ['body']);
         
-        var adminProxyS3FolderObjectOptionsRequest = {
+        var adminProxyProxyOptionsRequest = {
             verb: 'options'.toUpperCase(),
-            path: pathComponent + uritemplate('/admin-proxy/s3/{folder}/{object}').expand(utils.parseParametersToObject(params, [])),
+            path: pathComponent + uritemplate('/admin-proxy/{proxy}').expand(utils.parseParametersToObject(params, [])),
             headers: utils.parseParametersToObject(params, []),
             queryParams: utils.parseParametersToObject(params, []),
             body: body
         };
         
         
-        return apiGatewayClient.makeRequest(adminProxyS3FolderObjectOptionsRequest, authType, additionalParams, config.apiKey);
+        return apiGatewayClient.makeRequest(adminProxyProxyOptionsRequest, authType, additionalParams, config.apiKey);
     };
-    
+
 
     apigClient.adminProxyProxyAny = function (method, params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
@@ -131,23 +116,6 @@ apigClientFactory.newClient = function (config) {
         var adminProxyProxyOptionsRequest = {
             verb: method,
             path: pathComponent + uritemplate('/admin-proxy/{proxy}').expand(utils.parseParametersToObject(params, ['proxy'])),
-            headers: utils.parseParametersToObject(params, []),
-            queryParams: utils.parseParametersToObject(params, []),
-            body: body
-        };
-        
-        
-        return apiGatewayClient.makeRequest(adminProxyProxyOptionsRequest, authType, additionalParams, config.apiKey);
-    };
-    
-    apigClient.adminProxyProxyOptions = function (params, body, additionalParams) {
-        if(additionalParams === undefined) { additionalParams = {}; }
-        
-        utils.assertParametersDefined(params, [], ['body']);
-        
-        var adminProxyProxyOptionsRequest = {
-            verb: 'options'.toUpperCase(),
-            path: pathComponent + uritemplate('/admin-proxy/{proxy}').expand(utils.parseParametersToObject(params, [])),
             headers: utils.parseParametersToObject(params, []),
             queryParams: utils.parseParametersToObject(params, []),
             body: body
@@ -179,7 +147,7 @@ apigClientFactory.newClient = function (config) {
     apigClient.organizationsPost = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
-        utils.assertParametersDefined(params, ['body'], ['body']);
+        utils.assertParametersDefined(params, [], ['body']);
         
         var organizationsPostRequest = {
             verb: 'post'.toUpperCase(),
@@ -230,42 +198,6 @@ apigClientFactory.newClient = function (config) {
     };
     
     
-    apigClient.organizationsOrgIdPut = function (params, body, additionalParams) {
-        if(additionalParams === undefined) { additionalParams = {}; }
-        
-        utils.assertParametersDefined(params, ['orgId', 'body'], ['body']);
-        
-        var organizationsOrgIdPutRequest = {
-            verb: 'put'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}').expand(utils.parseParametersToObject(params, ['orgId', ])),
-            headers: utils.parseParametersToObject(params, []),
-            queryParams: utils.parseParametersToObject(params, []),
-            body: body
-        };
-        
-        
-        return apiGatewayClient.makeRequest(organizationsOrgIdPutRequest, authType, additionalParams, config.apiKey);
-    };
-    
-    
-    apigClient.organizationsOrgIdDelete = function (params, body, additionalParams) {
-        if(additionalParams === undefined) { additionalParams = {}; }
-        
-        utils.assertParametersDefined(params, ['orgId'], ['body']);
-        
-        var organizationsOrgIdDeleteRequest = {
-            verb: 'delete'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}').expand(utils.parseParametersToObject(params, ['orgId'])),
-            headers: utils.parseParametersToObject(params, []),
-            queryParams: utils.parseParametersToObject(params, []),
-            body: body
-        };
-        
-        
-        return apiGatewayClient.makeRequest(organizationsOrgIdDeleteRequest, authType, additionalParams, config.apiKey);
-    };
-    
-    
     apigClient.organizationsOrgIdOptions = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
@@ -305,11 +237,11 @@ apigClientFactory.newClient = function (config) {
     apigClient.organizationsOrgIdAddressesPost = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
-        utils.assertParametersDefined(params, ['orgId', 'body'], ['body']);
+        utils.assertParametersDefined(params, ['orgId'], ['body']);
         
         var organizationsOrgIdAddressesPostRequest = {
             verb: 'post'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/addresses').expand(utils.parseParametersToObject(params, ['orgId', ])),
+            path: pathComponent + uritemplate('/organizations/{orgId}/addresses').expand(utils.parseParametersToObject(params, ['orgId'])),
             headers: utils.parseParametersToObject(params, []),
             queryParams: utils.parseParametersToObject(params, []),
             body: body
@@ -338,42 +270,6 @@ apigClientFactory.newClient = function (config) {
     };
     
     
-    apigClient.organizationsOrgIdAddressesBatchByIdPost = function (params, body, additionalParams) {
-        if(additionalParams === undefined) { additionalParams = {}; }
-        
-        utils.assertParametersDefined(params, ['orgId'], ['body']);
-        
-        var organizationsOrgIdAddressesBatchByIdPostRequest = {
-            verb: 'post'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/addresses/batchById').expand(utils.parseParametersToObject(params, ['orgId'])),
-            headers: utils.parseParametersToObject(params, []),
-            queryParams: utils.parseParametersToObject(params, []),
-            body: body
-        };
-        
-        
-        return apiGatewayClient.makeRequest(organizationsOrgIdAddressesBatchByIdPostRequest, authType, additionalParams, config.apiKey);
-    };
-    
-    
-    apigClient.organizationsOrgIdAddressesBatchByIdOptions = function (params, body, additionalParams) {
-        if(additionalParams === undefined) { additionalParams = {}; }
-        
-        utils.assertParametersDefined(params, [], ['body']);
-        
-        var organizationsOrgIdAddressesBatchByIdOptionsRequest = {
-            verb: 'options'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/addresses/batchById').expand(utils.parseParametersToObject(params, [])),
-            headers: utils.parseParametersToObject(params, []),
-            queryParams: utils.parseParametersToObject(params, []),
-            body: body
-        };
-        
-        
-        return apiGatewayClient.makeRequest(organizationsOrgIdAddressesBatchByIdOptionsRequest, authType, additionalParams, config.apiKey);
-    };
-    
-    
     apigClient.organizationsOrgIdAddressesIdGet = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
@@ -395,11 +291,11 @@ apigClientFactory.newClient = function (config) {
     apigClient.organizationsOrgIdAddressesIdPut = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
-        utils.assertParametersDefined(params, ['orgId', 'id', 'body'], ['body']);
+        utils.assertParametersDefined(params, ['orgId', 'id'], ['body']);
         
         var organizationsOrgIdAddressesIdPutRequest = {
             verb: 'put'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/addresses/{id}').expand(utils.parseParametersToObject(params, ['orgId', 'id', ])),
+            path: pathComponent + uritemplate('/organizations/{orgId}/addresses/{id}').expand(utils.parseParametersToObject(params, ['orgId', 'id'])),
             headers: utils.parseParametersToObject(params, []),
             queryParams: utils.parseParametersToObject(params, []),
             body: body
@@ -443,6 +339,132 @@ apigClientFactory.newClient = function (config) {
         
         
         return apiGatewayClient.makeRequest(organizationsOrgIdAddressesIdOptionsRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdAdminsGet = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        utils.assertParametersDefined(params, ['orgId'], ['body']);
+        
+        var organizationsOrgIdAdminsGetRequest = {
+            verb: 'get'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/admins').expand(utils.parseParametersToObject(params, ['orgId'])),
+            headers: utils.parseParametersToObject(params, []),
+            queryParams: utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdAdminsGetRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdAdminsPost = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        utils.assertParametersDefined(params, ['orgId'], ['body']);
+        
+        var organizationsOrgIdAdminsPostRequest = {
+            verb: 'post'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/admins').expand(utils.parseParametersToObject(params, ['orgId'])),
+            headers: utils.parseParametersToObject(params, []),
+            queryParams: utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdAdminsPostRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdAdminsOptions = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        utils.assertParametersDefined(params, [], ['body']);
+        
+        var organizationsOrgIdAdminsOptionsRequest = {
+            verb: 'options'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/admins').expand(utils.parseParametersToObject(params, [])),
+            headers: utils.parseParametersToObject(params, []),
+            queryParams: utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdAdminsOptionsRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdAdminsIdGet = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        utils.assertParametersDefined(params, ['orgId', 'id'], ['body']);
+        
+        var organizationsOrgIdAdminsIdGetRequest = {
+            verb: 'get'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/admins/{id}').expand(utils.parseParametersToObject(params, ['orgId', 'id'])),
+            headers: utils.parseParametersToObject(params, []),
+            queryParams: utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdAdminsIdGetRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdAdminsIdPut = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        utils.assertParametersDefined(params, ['orgId', 'id'], ['body']);
+        
+        var organizationsOrgIdAdminsIdPutRequest = {
+            verb: 'put'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/admins/{id}').expand(utils.parseParametersToObject(params, ['orgId', 'id'])),
+            headers: utils.parseParametersToObject(params, []),
+            queryParams: utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdAdminsIdPutRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdAdminsIdDelete = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        utils.assertParametersDefined(params, ['orgId', 'id'], ['body']);
+        
+        var organizationsOrgIdAdminsIdDeleteRequest = {
+            verb: 'delete'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/admins/{id}').expand(utils.parseParametersToObject(params, ['orgId', 'id'])),
+            headers: utils.parseParametersToObject(params, []),
+            queryParams: utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdAdminsIdDeleteRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdAdminsIdOptions = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        utils.assertParametersDefined(params, [], ['body']);
+        
+        var organizationsOrgIdAdminsIdOptionsRequest = {
+            verb: 'options'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/admins/{id}').expand(utils.parseParametersToObject(params, [])),
+            headers: utils.parseParametersToObject(params, []),
+            queryParams: utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdAdminsIdOptionsRequest, authType, additionalParams, config.apiKey);
     };
     
     
@@ -572,6 +594,132 @@ apigClientFactory.newClient = function (config) {
     };
     
     
+    apigClient.organizationsOrgIdDriversGet = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        utils.assertParametersDefined(params, ['orgId'], ['body']);
+        
+        var organizationsOrgIdDriversGetRequest = {
+            verb: 'get'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/drivers').expand(utils.parseParametersToObject(params, ['orgId'])),
+            headers: utils.parseParametersToObject(params, []),
+            queryParams: utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdDriversGetRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdDriversPost = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        utils.assertParametersDefined(params, ['orgId'], ['body']);
+        
+        var organizationsOrgIdDriversPostRequest = {
+            verb: 'post'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/drivers').expand(utils.parseParametersToObject(params, ['orgId'])),
+            headers: utils.parseParametersToObject(params, []),
+            queryParams: utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdDriversPostRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdDriversOptions = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        utils.assertParametersDefined(params, [], ['body']);
+        
+        var organizationsOrgIdDriversOptionsRequest = {
+            verb: 'options'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/drivers').expand(utils.parseParametersToObject(params, [])),
+            headers: utils.parseParametersToObject(params, []),
+            queryParams: utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdDriversOptionsRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdDriversIdGet = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        utils.assertParametersDefined(params, ['orgId', 'id'], ['body']);
+        
+        var organizationsOrgIdDriversIdGetRequest = {
+            verb: 'get'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/drivers/{id}').expand(utils.parseParametersToObject(params, ['orgId', 'id'])),
+            headers: utils.parseParametersToObject(params, []),
+            queryParams: utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdDriversIdGetRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdDriversIdPut = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        utils.assertParametersDefined(params, ['orgId', 'id'], ['body']);
+        
+        var organizationsOrgIdDriversIdPutRequest = {
+            verb: 'put'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/drivers/{id}').expand(utils.parseParametersToObject(params, ['orgId', 'id'])),
+            headers: utils.parseParametersToObject(params, []),
+            queryParams: utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdDriversIdPutRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdDriversIdDelete = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        utils.assertParametersDefined(params, ['orgId', 'id'], ['body']);
+        
+        var organizationsOrgIdDriversIdDeleteRequest = {
+            verb: 'delete'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/drivers/{id}').expand(utils.parseParametersToObject(params, ['orgId', 'id'])),
+            headers: utils.parseParametersToObject(params, []),
+            queryParams: utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdDriversIdDeleteRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdDriversIdOptions = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        utils.assertParametersDefined(params, [], ['body']);
+        
+        var organizationsOrgIdDriversIdOptionsRequest = {
+            verb: 'options'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/drivers/{id}').expand(utils.parseParametersToObject(params, [])),
+            headers: utils.parseParametersToObject(params, []),
+            queryParams: utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdDriversIdOptionsRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
     apigClient.organizationsOrgIdExceptionsGet = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
@@ -593,11 +741,11 @@ apigClientFactory.newClient = function (config) {
     apigClient.organizationsOrgIdExceptionsPost = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
-        utils.assertParametersDefined(params, ['orgId', 'body'], ['body']);
+        utils.assertParametersDefined(params, ['orgId'], ['body']);
         
         var organizationsOrgIdExceptionsPostRequest = {
             verb: 'post'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/exceptions').expand(utils.parseParametersToObject(params, ['orgId', ])),
+            path: pathComponent + uritemplate('/organizations/{orgId}/exceptions').expand(utils.parseParametersToObject(params, ['orgId'])),
             headers: utils.parseParametersToObject(params, []),
             queryParams: utils.parseParametersToObject(params, []),
             body: body
@@ -647,11 +795,11 @@ apigClientFactory.newClient = function (config) {
     apigClient.organizationsOrgIdExceptionsIdPut = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
-        utils.assertParametersDefined(params, ['orgId', 'id', 'body'], ['body']);
+        utils.assertParametersDefined(params, ['orgId', 'id'], ['body']);
         
         var organizationsOrgIdExceptionsIdPutRequest = {
             verb: 'put'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/exceptions/{id}').expand(utils.parseParametersToObject(params, ['orgId', 'id', ])),
+            path: pathComponent + uritemplate('/organizations/{orgId}/exceptions/{id}').expand(utils.parseParametersToObject(params, ['orgId', 'id'])),
             headers: utils.parseParametersToObject(params, []),
             queryParams: utils.parseParametersToObject(params, []),
             body: body
@@ -698,6 +846,132 @@ apigClientFactory.newClient = function (config) {
     };
     
     
+    apigClient.organizationsOrgIdGuardiansGet = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        utils.assertParametersDefined(params, ['orgId'], ['body']);
+        
+        var organizationsOrgIdGuardiansGetRequest = {
+            verb: 'get'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/guardians').expand(utils.parseParametersToObject(params, ['orgId'])),
+            headers: utils.parseParametersToObject(params, []),
+            queryParams: utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdGuardiansGetRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdGuardiansPost = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        utils.assertParametersDefined(params, ['orgId'], ['body']);
+        
+        var organizationsOrgIdGuardiansPostRequest = {
+            verb: 'post'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/guardians').expand(utils.parseParametersToObject(params, ['orgId'])),
+            headers: utils.parseParametersToObject(params, []),
+            queryParams: utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdGuardiansPostRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdGuardiansOptions = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        utils.assertParametersDefined(params, [], ['body']);
+        
+        var organizationsOrgIdGuardiansOptionsRequest = {
+            verb: 'options'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/guardians').expand(utils.parseParametersToObject(params, [])),
+            headers: utils.parseParametersToObject(params, []),
+            queryParams: utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdGuardiansOptionsRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdGuardiansIdGet = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        utils.assertParametersDefined(params, ['orgId', 'id'], ['body']);
+        
+        var organizationsOrgIdGuardiansIdGetRequest = {
+            verb: 'get'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/guardians/{id}').expand(utils.parseParametersToObject(params, ['orgId', 'id'])),
+            headers: utils.parseParametersToObject(params, []),
+            queryParams: utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdGuardiansIdGetRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdGuardiansIdPut = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        utils.assertParametersDefined(params, ['orgId', 'id'], ['body']);
+        
+        var organizationsOrgIdGuardiansIdPutRequest = {
+            verb: 'put'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/guardians/{id}').expand(utils.parseParametersToObject(params, ['orgId', 'id'])),
+            headers: utils.parseParametersToObject(params, []),
+            queryParams: utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdGuardiansIdPutRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdGuardiansIdDelete = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        utils.assertParametersDefined(params, ['orgId', 'id'], ['body']);
+        
+        var organizationsOrgIdGuardiansIdDeleteRequest = {
+            verb: 'delete'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/guardians/{id}').expand(utils.parseParametersToObject(params, ['orgId', 'id'])),
+            headers: utils.parseParametersToObject(params, []),
+            queryParams: utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdGuardiansIdDeleteRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdGuardiansIdOptions = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        utils.assertParametersDefined(params, [], ['body']);
+        
+        var organizationsOrgIdGuardiansIdOptionsRequest = {
+            verb: 'options'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/guardians/{id}').expand(utils.parseParametersToObject(params, [])),
+            headers: utils.parseParametersToObject(params, []),
+            queryParams: utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdGuardiansIdOptionsRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
     apigClient.organizationsOrgIdRidersGet = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
@@ -719,11 +993,11 @@ apigClientFactory.newClient = function (config) {
     apigClient.organizationsOrgIdRidersPost = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
-        utils.assertParametersDefined(params, ['orgId', 'body'], ['body']);
+        utils.assertParametersDefined(params, ['orgId'], ['body']);
         
         var organizationsOrgIdRidersPostRequest = {
             verb: 'post'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/riders').expand(utils.parseParametersToObject(params, ['orgId', ])),
+            path: pathComponent + uritemplate('/organizations/{orgId}/riders').expand(utils.parseParametersToObject(params, ['orgId'])),
             headers: utils.parseParametersToObject(params, []),
             queryParams: utils.parseParametersToObject(params, []),
             body: body
@@ -752,42 +1026,6 @@ apigClientFactory.newClient = function (config) {
     };
     
     
-    apigClient.organizationsOrgIdRidersBatchByIdPost = function (params, body, additionalParams) {
-        if(additionalParams === undefined) { additionalParams = {}; }
-        
-        utils.assertParametersDefined(params, ['orgId'], ['body']);
-        
-        var organizationsOrgIdRidersBatchByIdPostRequest = {
-            verb: 'post'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/riders/batchById').expand(utils.parseParametersToObject(params, ['orgId'])),
-            headers: utils.parseParametersToObject(params, []),
-            queryParams: utils.parseParametersToObject(params, []),
-            body: body
-        };
-        
-        
-        return apiGatewayClient.makeRequest(organizationsOrgIdRidersBatchByIdPostRequest, authType, additionalParams, config.apiKey);
-    };
-    
-    
-    apigClient.organizationsOrgIdRidersBatchByIdOptions = function (params, body, additionalParams) {
-        if(additionalParams === undefined) { additionalParams = {}; }
-        
-        utils.assertParametersDefined(params, [], ['body']);
-        
-        var organizationsOrgIdRidersBatchByIdOptionsRequest = {
-            verb: 'options'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/riders/batchById').expand(utils.parseParametersToObject(params, [])),
-            headers: utils.parseParametersToObject(params, []),
-            queryParams: utils.parseParametersToObject(params, []),
-            body: body
-        };
-        
-        
-        return apiGatewayClient.makeRequest(organizationsOrgIdRidersBatchByIdOptionsRequest, authType, additionalParams, config.apiKey);
-    };
-    
-    
     apigClient.organizationsOrgIdRidersIdGet = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
@@ -809,11 +1047,11 @@ apigClientFactory.newClient = function (config) {
     apigClient.organizationsOrgIdRidersIdPut = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
-        utils.assertParametersDefined(params, ['orgId', 'id', 'body'], ['body']);
+        utils.assertParametersDefined(params, ['orgId', 'id'], ['body']);
         
         var organizationsOrgIdRidersIdPutRequest = {
             verb: 'put'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/riders/{id}').expand(utils.parseParametersToObject(params, ['orgId', 'id', ])),
+            path: pathComponent + uritemplate('/organizations/{orgId}/riders/{id}').expand(utils.parseParametersToObject(params, ['orgId', 'id'])),
             headers: utils.parseParametersToObject(params, []),
             queryParams: utils.parseParametersToObject(params, []),
             body: body
@@ -881,11 +1119,11 @@ apigClientFactory.newClient = function (config) {
     apigClient.organizationsOrgIdRouteActionsPost = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
-        utils.assertParametersDefined(params, ['orgId', 'body'], ['body']);
+        utils.assertParametersDefined(params, ['orgId'], ['body']);
         
         var organizationsOrgIdRouteActionsPostRequest = {
             verb: 'post'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/route-actions').expand(utils.parseParametersToObject(params, ['orgId', ])),
+            path: pathComponent + uritemplate('/organizations/{orgId}/route-actions').expand(utils.parseParametersToObject(params, ['orgId'])),
             headers: utils.parseParametersToObject(params, []),
             queryParams: utils.parseParametersToObject(params, []),
             body: body
@@ -935,11 +1173,11 @@ apigClientFactory.newClient = function (config) {
     apigClient.organizationsOrgIdRoutesPost = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
-        utils.assertParametersDefined(params, ['orgId', 'body'], ['body']);
+        utils.assertParametersDefined(params, ['orgId'], ['body']);
         
         var organizationsOrgIdRoutesPostRequest = {
             verb: 'post'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/routes').expand(utils.parseParametersToObject(params, ['orgId', ])),
+            path: pathComponent + uritemplate('/organizations/{orgId}/routes').expand(utils.parseParametersToObject(params, ['orgId'])),
             headers: utils.parseParametersToObject(params, []),
             queryParams: utils.parseParametersToObject(params, []),
             body: body
@@ -989,11 +1227,11 @@ apigClientFactory.newClient = function (config) {
     apigClient.organizationsOrgIdRoutesIdPut = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
-        utils.assertParametersDefined(params, ['orgId', 'id', 'body'], ['body']);
+        utils.assertParametersDefined(params, ['orgId', 'id'], ['body']);
         
         var organizationsOrgIdRoutesIdPutRequest = {
             verb: 'put'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/routes/{id}').expand(utils.parseParametersToObject(params, ['orgId', 'id', ])),
+            path: pathComponent + uritemplate('/organizations/{orgId}/routes/{id}').expand(utils.parseParametersToObject(params, ['orgId', 'id'])),
             headers: utils.parseParametersToObject(params, []),
             queryParams: utils.parseParametersToObject(params, []),
             body: body
@@ -1187,11 +1425,11 @@ apigClientFactory.newClient = function (config) {
     apigClient.organizationsOrgIdSchoolsPost = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
-        utils.assertParametersDefined(params, ['orgId', 'body'], ['body']);
+        utils.assertParametersDefined(params, ['orgId'], ['body']);
         
         var organizationsOrgIdSchoolsPostRequest = {
             verb: 'post'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/schools').expand(utils.parseParametersToObject(params, ['orgId', ])),
+            path: pathComponent + uritemplate('/organizations/{orgId}/schools').expand(utils.parseParametersToObject(params, ['orgId'])),
             headers: utils.parseParametersToObject(params, []),
             queryParams: utils.parseParametersToObject(params, []),
             body: body
@@ -1241,11 +1479,11 @@ apigClientFactory.newClient = function (config) {
     apigClient.organizationsOrgIdSchoolsIdPut = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
-        utils.assertParametersDefined(params, ['orgId', 'id', 'body'], ['body']);
+        utils.assertParametersDefined(params, ['orgId', 'id'], ['body']);
         
         var organizationsOrgIdSchoolsIdPutRequest = {
             verb: 'put'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/schools/{id}').expand(utils.parseParametersToObject(params, ['orgId', 'id', ])),
+            path: pathComponent + uritemplate('/organizations/{orgId}/schools/{id}').expand(utils.parseParametersToObject(params, ['orgId', 'id'])),
             headers: utils.parseParametersToObject(params, []),
             queryParams: utils.parseParametersToObject(params, []),
             body: body
@@ -1313,11 +1551,11 @@ apigClientFactory.newClient = function (config) {
     apigClient.organizationsOrgIdStopsPost = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
-        utils.assertParametersDefined(params, ['orgId', 'body'], ['body']);
+        utils.assertParametersDefined(params, ['orgId'], ['body']);
         
         var organizationsOrgIdStopsPostRequest = {
             verb: 'post'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/stops').expand(utils.parseParametersToObject(params, ['orgId', ])),
+            path: pathComponent + uritemplate('/organizations/{orgId}/stops').expand(utils.parseParametersToObject(params, ['orgId'])),
             headers: utils.parseParametersToObject(params, []),
             queryParams: utils.parseParametersToObject(params, []),
             body: body
@@ -1346,42 +1584,6 @@ apigClientFactory.newClient = function (config) {
     };
     
     
-    apigClient.organizationsOrgIdStopsBulkPost = function (params, body, additionalParams) {
-        if(additionalParams === undefined) { additionalParams = {}; }
-        
-        utils.assertParametersDefined(params, ['orgId'], ['body']);
-        
-        var organizationsOrgIdStopsBulkPostRequest = {
-            verb: 'post'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/stops/bulk').expand(utils.parseParametersToObject(params, ['orgId'])),
-            headers: utils.parseParametersToObject(params, []),
-            queryParams: utils.parseParametersToObject(params, []),
-            body: body
-        };
-        
-        
-        return apiGatewayClient.makeRequest(organizationsOrgIdStopsBulkPostRequest, authType, additionalParams, config.apiKey);
-    };
-    
-    
-    apigClient.organizationsOrgIdStopsBulkOptions = function (params, body, additionalParams) {
-        if(additionalParams === undefined) { additionalParams = {}; }
-        
-        utils.assertParametersDefined(params, [], ['body']);
-        
-        var organizationsOrgIdStopsBulkOptionsRequest = {
-            verb: 'options'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/stops/bulk').expand(utils.parseParametersToObject(params, [])),
-            headers: utils.parseParametersToObject(params, []),
-            queryParams: utils.parseParametersToObject(params, []),
-            body: body
-        };
-        
-        
-        return apiGatewayClient.makeRequest(organizationsOrgIdStopsBulkOptionsRequest, authType, additionalParams, config.apiKey);
-    };
-    
-    
     apigClient.organizationsOrgIdStopsIdGet = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
@@ -1403,11 +1605,11 @@ apigClientFactory.newClient = function (config) {
     apigClient.organizationsOrgIdStopsIdPut = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
-        utils.assertParametersDefined(params, ['orgId', 'id', 'body'], ['body']);
+        utils.assertParametersDefined(params, ['orgId', 'id'], ['body']);
         
         var organizationsOrgIdStopsIdPutRequest = {
             verb: 'put'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/stops/{id}').expand(utils.parseParametersToObject(params, ['orgId', 'id', ])),
+            path: pathComponent + uritemplate('/organizations/{orgId}/stops/{id}').expand(utils.parseParametersToObject(params, ['orgId', 'id'])),
             headers: utils.parseParametersToObject(params, []),
             queryParams: utils.parseParametersToObject(params, []),
             body: body
@@ -1452,98 +1654,8 @@ apigClientFactory.newClient = function (config) {
         
         return apiGatewayClient.makeRequest(organizationsOrgIdStopsIdOptionsRequest, authType, additionalParams, config.apiKey);
     };
-    
-    
-    apigClient.organizationsOrgIdUsersGet = function (params, body, additionalParams) {
-        if(additionalParams === undefined) { additionalParams = {}; }
-        
-        utils.assertParametersDefined(params, ['orgId'], ['body']);
-        
-        var organizationsOrgIdUsersGetRequest = {
-            verb: 'get'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/users').expand(utils.parseParametersToObject(params, ['orgId'])),
-            headers: utils.parseParametersToObject(params, []),
-            queryParams: utils.parseParametersToObject(params, []),
-            body: body
-        };
-        
-        
-        return apiGatewayClient.makeRequest(organizationsOrgIdUsersGetRequest, authType, additionalParams, config.apiKey);
-    };
-    
-    
-    apigClient.organizationsOrgIdUsersPost = function (params, body, additionalParams) {
-        if(additionalParams === undefined) { additionalParams = {}; }
-        
-        utils.assertParametersDefined(params, ['orgId', 'body'], ['body']);
-        
-        var organizationsOrgIdUsersPostRequest = {
-            verb: 'post'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/users').expand(utils.parseParametersToObject(params, ['orgId', ])),
-            headers: utils.parseParametersToObject(params, []),
-            queryParams: utils.parseParametersToObject(params, []),
-            body: body
-        };
-        
-        
-        return apiGatewayClient.makeRequest(organizationsOrgIdUsersPostRequest, authType, additionalParams, config.apiKey);
-    };
-    
-    
-    apigClient.organizationsOrgIdUsersOptions = function (params, body, additionalParams) {
-        if(additionalParams === undefined) { additionalParams = {}; }
-        
-        utils.assertParametersDefined(params, [], ['body']);
-        
-        var organizationsOrgIdUsersOptionsRequest = {
-            verb: 'options'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/users').expand(utils.parseParametersToObject(params, [])),
-            headers: utils.parseParametersToObject(params, []),
-            queryParams: utils.parseParametersToObject(params, []),
-            body: body
-        };
-        
-        
-        return apiGatewayClient.makeRequest(organizationsOrgIdUsersOptionsRequest, authType, additionalParams, config.apiKey);
-    };
-    
-    
-    apigClient.organizationsOrgIdUsersBatchByIdPost = function (params, body, additionalParams) {
-        if(additionalParams === undefined) { additionalParams = {}; }
-        
-        utils.assertParametersDefined(params, ['orgId'], ['body']);
-        
-        var organizationsOrgIdUsersBatchByIdPostRequest = {
-            verb: 'post'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/users/batchById').expand(utils.parseParametersToObject(params, ['orgId'])),
-            headers: utils.parseParametersToObject(params, []),
-            queryParams: utils.parseParametersToObject(params, []),
-            body: body
-        };
-        
-        
-        return apiGatewayClient.makeRequest(organizationsOrgIdUsersBatchByIdPostRequest, authType, additionalParams, config.apiKey);
-    };
-    
-    
-    apigClient.organizationsOrgIdUsersBatchByIdOptions = function (params, body, additionalParams) {
-        if(additionalParams === undefined) { additionalParams = {}; }
-        
-        utils.assertParametersDefined(params, [], ['body']);
-        
-        var organizationsOrgIdUsersBatchByIdOptionsRequest = {
-            verb: 'options'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/users/batchById').expand(utils.parseParametersToObject(params, [])),
-            headers: utils.parseParametersToObject(params, []),
-            queryParams: utils.parseParametersToObject(params, []),
-            body: body
-        };
-        
-        
-        return apiGatewayClient.makeRequest(organizationsOrgIdUsersBatchByIdOptionsRequest, authType, additionalParams, config.apiKey);
-    };
-    
-    
+
+
     apigClient.organizationsOrgIdUsersIdGet = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
@@ -1559,42 +1671,6 @@ apigClientFactory.newClient = function (config) {
         
         
         return apiGatewayClient.makeRequest(organizationsOrgIdUsersIdGetRequest, authType, additionalParams, config.apiKey);
-    };
-    
-    
-    apigClient.organizationsOrgIdUsersIdPut = function (params, body, additionalParams) {
-        if(additionalParams === undefined) { additionalParams = {}; }
-        
-        utils.assertParametersDefined(params, ['orgId', 'id', 'body'], ['body']);
-        
-        var organizationsOrgIdUsersIdPutRequest = {
-            verb: 'put'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/users/{id}').expand(utils.parseParametersToObject(params, ['orgId', 'id', ])),
-            headers: utils.parseParametersToObject(params, []),
-            queryParams: utils.parseParametersToObject(params, []),
-            body: body
-        };
-        
-        
-        return apiGatewayClient.makeRequest(organizationsOrgIdUsersIdPutRequest, authType, additionalParams, config.apiKey);
-    };
-    
-    
-    apigClient.organizationsOrgIdUsersIdDelete = function (params, body, additionalParams) {
-        if(additionalParams === undefined) { additionalParams = {}; }
-        
-        utils.assertParametersDefined(params, ['orgId', 'id'], ['body']);
-        
-        var organizationsOrgIdUsersIdDeleteRequest = {
-            verb: 'delete'.toUpperCase(),
-            path: pathComponent + uritemplate('/organizations/{orgId}/users/{id}').expand(utils.parseParametersToObject(params, ['orgId', 'id'])),
-            headers: utils.parseParametersToObject(params, []),
-            queryParams: utils.parseParametersToObject(params, []),
-            body: body
-        };
-        
-        
-        return apiGatewayClient.makeRequest(organizationsOrgIdUsersIdDeleteRequest, authType, additionalParams, config.apiKey);
     };
     
     
@@ -1632,6 +1708,42 @@ apigClientFactory.newClient = function (config) {
         
         return apiGatewayClient.makeRequest(publicOrganizationsOrgSlugGetRequest, authType, additionalParams, config.apiKey);
     };
+
+
+    apigClient.organizationsOrgIdUsersGet = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        utils.assertParametersDefined(params, ['orgId'], ['body']);
+        
+        var organizationsOrgIdUsersGetRequest = {
+            verb: 'get'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/users').expand(utils.parseParametersToObject(params, ['orgId'])),
+            headers: utils.parseParametersToObject(params, []),
+            queryParams: utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdUsersGetRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.organizationsOrgIdUsersOptions = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        utils.assertParametersDefined(params, [], ['body']);
+        
+        var organizationsOrgIdUsersOptionsRequest = {
+            verb: 'options'.toUpperCase(),
+            path: pathComponent + uritemplate('/organizations/{orgId}/users').expand(utils.parseParametersToObject(params, [])),
+            headers: utils.parseParametersToObject(params, []),
+            queryParams: utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(organizationsOrgIdUsersOptionsRequest, authType, additionalParams, config.apiKey);
+    };
     
     
     apigClient.publicOrganizationsOrgSlugOptions = function (params, body, additionalParams) {
@@ -1652,6 +1764,42 @@ apigClientFactory.newClient = function (config) {
     };
     
     
+    apigClient.s3FolderObjectGet = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        utils.assertParametersDefined(params, ['object', 'folder'], ['body']);
+        
+        var s3FolderObjectGetRequest = {
+            verb: 'get'.toUpperCase(),
+            path: pathComponent + uritemplate('/s3/{folder}/{object}').expand(utils.parseParametersToObject(params, ['object', 'folder'])),
+            headers: utils.parseParametersToObject(params, []),
+            queryParams: utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(s3FolderObjectGetRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
+    apigClient.s3FolderObjectOptions = function (params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        utils.assertParametersDefined(params, [], ['body']);
+        
+        var s3FolderObjectOptionsRequest = {
+            verb: 'options'.toUpperCase(),
+            path: pathComponent + uritemplate('/s3/{folder}/{object}').expand(utils.parseParametersToObject(params, [])),
+            headers: utils.parseParametersToObject(params, []),
+            queryParams: utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(s3FolderObjectOptionsRequest, authType, additionalParams, config.apiKey);
+    };
+    
+    
     apigClient.userProxyProxyOptions = function (params, body, additionalParams) {
         if(additionalParams === undefined) { additionalParams = {}; }
         
@@ -1660,6 +1808,24 @@ apigClientFactory.newClient = function (config) {
         var userProxyProxyOptionsRequest = {
             verb: 'options'.toUpperCase(),
             path: pathComponent + uritemplate('/user-proxy/{proxy}').expand(utils.parseParametersToObject(params, [])),
+            headers: utils.parseParametersToObject(params, []),
+            queryParams: utils.parseParametersToObject(params, []),
+            body: body
+        };
+        
+        
+        return apiGatewayClient.makeRequest(userProxyProxyOptionsRequest, authType, additionalParams, config.apiKey);
+    };
+
+
+    apigClient.userProxyProxyAny = function (method, params, body, additionalParams) {
+        if(additionalParams === undefined) { additionalParams = {}; }
+        
+        utils.assertParametersDefined(params, ['proxy'], ['body']);
+        
+        var userProxyProxyOptionsRequest = {
+            verb: method,
+            path: pathComponent + uritemplate('/user-proxy/{proxy}').expand(utils.parseParametersToObject(params, ['proxy'])),
             headers: utils.parseParametersToObject(params, []),
             queryParams: utils.parseParametersToObject(params, []),
             body: body

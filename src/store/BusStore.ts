@@ -7,7 +7,7 @@ import { v4 as uuid } from 'uuid'
 interface BusStore {
     buses: BusType[]
     updateBuses(): Promise<void>
-    createBus(): Promise<void>
+    createBus(busNumber: string): Promise<void>
     deleteBus(busId: string): Promise<void>
     getBusById(busId: string): Promise<BusType>
 }
@@ -33,14 +33,15 @@ export const useBusStore = create<BusStore>((set, get) => ({
 
         throw 'Could not find bus by id'
     },
-    createBus: async () => {
+    createBus: async (busNumber: string) => {
         const api = await useApiStore.getState().getApi()
         const orgId = useOrgStore.getState().orgId
 
         const newBusId = uuid()
         const newBus = {
             id: newBusId,
-            orgId
+            orgId,
+            busNumber
         }
 
         await api?.buses.createBus(orgId, newBus)

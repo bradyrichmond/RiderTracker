@@ -7,18 +7,16 @@ import useFileUpload from '@/hooks/useFileUpload'
 import { MB } from '@/constants/Numbers'
 import PriorityHighIcon from '@mui/icons-material/PriorityHigh'
 import { useTranslation } from 'react-i18next'
-import { useOrgStore } from '@/store/OrgStore'
 import { useUserStore } from '@/store/UserStore'
 
 const ProfileSettings = () => {
     const getApi = useApiStore().getApi
     const { userId, userFullName, userPictureUrl, updateUserData } = useUserStore()
-    const { orgId } = useOrgStore()
     const { t } = useTranslation('settings')
 
     const uploadFile = async (file: File) => {
         const api = await getApi()
-        await api?.admin.updateUserProfileImage(orgId, userId, file, userId)
+        await api?.admin.updateUserProfileImage(file, userId)
         await updateUserData()
     }
 

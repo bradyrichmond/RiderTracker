@@ -9,9 +9,9 @@ const mockGetExceptionById = async (id: string) => Promise.resolve({
     guardianId: 'ac7a22c5-5e28-46d5-ac26-18b54eb5gggg',
     dropOffStopId: '0c3dfca8-13eb-4df7-a194-883f0294d49b',
     createdBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
-    createdDate: new Date(),
-    lastEditedBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
-    lastEditDate: new Date(),
+    createdAt: new Date(),
+    updatedBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
+    updatedAt: new Date(),
     type: ExceptionTypeType.AUTHORIZED
 })
 
@@ -25,9 +25,9 @@ const mockGetExceptions = async (orgId: string) => Promise.resolve([
         guardianId: 'ac7a22c5-5e28-46d5-ac26-18b54eb5gggg',
         dropOffStopId: '0c3dfca8-13eb-4df7-a194-883f0294d49b',
         createdBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
-        createdDate: new Date(),
-        lastEditedBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
-        lastEditDate: new Date(),
+        createdAt: new Date(),
+        updatedBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
+        updatedAt: new Date(),
         type: ExceptionTypeType.AUTHORIZED
     },
     {
@@ -39,9 +39,9 @@ const mockGetExceptions = async (orgId: string) => Promise.resolve([
         guardianId: 'ac7a22c5-5e28-46d5-ac26-18b54eb5gggg',
         dropOffStopId: '0c3dfca8-13eb-4df7-a194-883f0294d49b',
         createdBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
-        createdDate: new Date(),
-        lastEditedBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
-        lastEditDate: new Date(),
+        createdAt: new Date(),
+        updatedBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
+        updatedAt: new Date(),
         type: ExceptionTypeType.AUTHORIZED
     },
     {
@@ -53,9 +53,9 @@ const mockGetExceptions = async (orgId: string) => Promise.resolve([
         guardianId: 'ac7a22c5-5e28-46d5-ac26-18b54eb5gggg',
         dropOffStopId: '0c3dfca8-13eb-4df7-a194-883f0294d49b',
         createdBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
-        createdDate: new Date(),
-        lastEditedBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
-        lastEditDate: new Date(),
+        createdAt: new Date(),
+        updatedBy: 'b5e026e6-0947-4d6e-8ddb-1fa911435ac4',
+        updatedAt: new Date(),
         type: ExceptionTypeType.UNAUTHORIZED
     }
 ])

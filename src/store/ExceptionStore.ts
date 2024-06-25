@@ -62,9 +62,9 @@ export const useExceptionStore = create<ExceptionStore>((set) => ({
             date: newException.date.getTime(),
             dropoff: newException.dropoff,
             createdBy: userId,
-            createdDate:  new Date().getTime(),
-            lastEditedBy: userId,
-            lastEditDate:  new Date().getTime(),
+            createdAt:  new Date().getTime(),
+            updatedBy: userId,
+            updatedAt:  new Date().getTime(),
             pickup: newException.pickup,
             type
         }
