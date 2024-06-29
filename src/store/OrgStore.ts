@@ -1,20 +1,16 @@
 import { OrganizationType } from '@/types/OrganizationType'
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
-
-interface StateUpdate {
-    orgId?: string
-    orgName?: string
-    organizationLoginImageUrl?: string
-}
+import { Schema } from '../../amplify/data/resource'
 
 export interface OrgStore {
+    createOrg(orgName: string): Promise<Schema['Organization']['type']>
     orgId: string
     setOrgId(id: string): void
     orgName: string,
     setOrgName(name: string): void
     updateOrgData(): Promise<void>
-    organizationArray: OrganizationType[]
+    orgs: OrganizationType[]
     setOrganizationArray(orgs: OrganizationType[]): void
     organizationOverride: boolean
     setOrganizationOverride(override: boolean): void
@@ -23,30 +19,28 @@ export interface OrgStore {
 }
 
 export const useOrgStore = create<OrgStore>((set) => ({
+    createOrg: async (orgName: string) => {
+        const client = await useApiStore.getState().getClient()
+        const { data } = await client.models.Organization.create({ orgName })
+
+        if (data) {
+            set({ orgId: data.id })
+            return data
+        }
+
+        throw 'Failed to create org'
+    },
     orgId: '',
     setOrgId: (id: string) => set({ orgId: id }),
     updateOrgData: async () => {
-        const api = await useApiStore.getState().getApi()
-        const stateUpdate: StateUpdate = {}
-        const path = window.location.toString().split('//')[1]
-        const pathOrgSlug = path.split('.')[0]
-        const orgSlugResponse = await api?.organizations.getOrganizationLoginDataBySlug(pathOrgSlug)
-        const { orgName: fetchedOrgName, loginImageKey, id } = orgSlugResponse
-
-        stateUpdate.orgId = id
-        stateUpdate.orgName = fetchedOrgName
-
-        if (loginImageKey) {
-            stateUpdate.organizationLoginImageUrl = `https://s3.us-west-2.amazonaws.com/${loginImageKey}`
-        }
-
-        set(stateUpdate)
+        const client = await useApiStore.getState().getClient()
+        client.models.Organization.list()
     },
     orgName: '',
     setOrgName: (name: string) => set({ orgName: name }),
-    organizationArray: [],
+    orgs: [],
     setOrganizationArray: (orgs: OrganizationType[]) => {
-        set({ organizationArray: orgs })
+        set({ orgs })
     },
     organizationOverride: false,
     setOrganizationOverride: (override: boolean) => {

@@ -29,5 +29,6 @@
     }
   },
   "include": ["src", "./jest.setup.ts", "apigClient.js", "lib"],
+  "exclude": ["amplify/**/*"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

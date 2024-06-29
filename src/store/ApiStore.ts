@@ -1,27 +1,29 @@
-import RiderTrackerAPI from '@/API'
 import { create } from 'zustand'
+import { Client, generateClient } from 'aws-amplify/data'
+import type { Schema } from '../../amplify/data/resource'
 
 interface ApiStore {
-    api: RiderTrackerAPI | undefined
-    getApi(updateCredentials?: boolean): Promise<RiderTrackerAPI>
-    updateApi(): Promise<RiderTrackerAPI>
+    client?: Client<Schema>
+    getClient(updateCredentials?: boolean): Promise<Client<Schema>>
+    updateClient(): Client<Schema>
 }
 
-export const useApiStore = create<ApiStore>((set, get) => ({
-    api: undefined,
-    getApi: async (updateCredentials?: boolean) => {
-        const api = get().api
 
-        if (!api || updateCredentials) {
-            const newApi = await get().updateApi()
-            set({ api: newApi })
+export const useApiStore = create<ApiStore>((set, get) => ({
+    client: undefined,
+    getClient: async (updateCredentials?: boolean) => {
+        const client = get().client
+
+        if (!client || updateCredentials) {
+            const newApi = await get().updateClient()
+            set({ client: newApi })
             return newApi
         }
 
-        return api
+        return client
     },
-    updateApi: async () => {
-        const newClient = await RiderTrackerAPI.getClient()
+    updateClient: () => {
+        const newClient = generateClient<Schema>({ authMode: 'iam' })
         return newClient
     }
 }))

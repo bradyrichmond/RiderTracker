@@ -1,15 +1,15 @@
 import { Box, Button, Step, StepLabel, Stepper, Typography } from '@mui/material'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import SetOrganizationName from './SetOrganizationName'
 import { FormProvider, useForm } from 'react-hook-form'
-import SetOrgSlug from './SetOrgSlug'
 import { confirmSignUp, signIn, signUp } from 'aws-amplify/auth'
 import CreateOrganizationAdmin from './CreateOrganizationAdmin'
 import ConfirmOrganizationAdmin from './ConfirmOrganizationAdmin'
-import { v4 as uuid } from 'uuid'
-import RiderTrackerAPI from '@/API'
 import OnboardingComplete from './OnboardingComplete'
 import { useTranslation } from 'react-i18next'
+import { useOrgStore } from '@/store/OrgStore'
+import { useNavigate } from 'react-router-dom'
+import { useUserStore } from '@/store/UserStore'
 
 interface StepType {
     label: string
@@ -26,20 +26,29 @@ interface CreateOrganizationInputs {
     confirmationCode: string
 }
 
-const urlSafeMatch = /^[a-zA-Z0-9_-]*$/
+interface NewAdmin {
+    id: string
+    firstName: string
+    lastName: string
+    email: string
+}
 
 const Onboarding = () => {
     const [activeStep, setActiveStep] = useState(0)
     const methods = useForm<CreateOrganizationInputs>()
     const { watch } = methods
-    const [orgName, setOrgName] = useState('')
     const [isLoading, setIsLoading] = useState(false)
-    const [tempOrgSlug, setTempOrgSlug] = useState('')
-    const [newUserId, setNewUserId] = useState('')
-    const [api, setApi] = useState<RiderTrackerAPI>()
+    const [newAdmin, setNewAdmin] = useState<NewAdmin>()
     const { t } = useTranslation(['onboarding', 'common'])
+    const createOrg = useOrgStore().createOrg
+    const orgId = useOrgStore().orgId
+    const navigate = useNavigate()
+    const addAdmin = useUserStore().addAdmin
 
     const steps: StepType[] = [
+        {
+            label: t('setOrgName')
+        },
         {
             label: t('createOrgAdmin')
         },
@@ -47,76 +56,48 @@ const Onboarding = () => {
             label: t('confirmAdmin')
         },
         {
-            label: t('setOrgName')
-        },
-        {
-            label: t('setOrgSlug')
-        },
-        {
             label: t('onboardingComplete')
         }
     ]
 
-    const { orgName: orgNameValue, orgSlug: orgSlugValue, adminFirstName, adminLastName, adminEmail, adminPassword, confirmationCode } = watch()
-
-    const getApi = async () => {
-        const riderTrackerApi = await RiderTrackerAPI.getClient()
-        setApi(riderTrackerApi)
-    }
-
-    useMemo(() => {
-        getApi()
-    }, [])
+    const { orgName, adminFirstName, adminLastName, adminEmail, adminPassword, confirmationCode } = watch()
 
     const handleNext = async () => {
-        // TODO: Add form validation to rhf
-        if (activeStep === 0) {
-            setIsLoading(true)
-            await createNewAWSUser()
-            setIsLoading(false)
-            setActiveStep((current) => current + 1)
+        try {
+            // TODO: Add form validation to rhf
+            if (activeStep === 0) {
+                if (orgName.length > 3) {
+                    await createNewOrg()
+                    setActiveStep((current) => current + 1)
+                }
 
-            return
-        }
-
-        if (activeStep === 1) {
-            setIsLoading(true)
-            await confirmAwsUser()
-            setIsLoading(false)
-            setActiveStep((current) => current + 1)
-
-            return
-        }
-
-        if (activeStep === 2) {
-            if (orgNameValue.length > 3) {
-                setOrgName(orgNameValue)
-                generateOrgSlug(orgNameValue)
-                setActiveStep((current) => current + 1)
+                return
             }
 
-            return
-        }
-
-        if (activeStep === 3) {
-            if (orgSlugValue.length > 3 && orgSlugValue.match(urlSafeMatch)) {
+            if (activeStep === 1) {
                 setIsLoading(true)
-                await createNewOrg(orgSlugValue)
+                await createNewAWSUser()
                 setIsLoading(false)
                 setActiveStep((current) => current + 1)
+
+                return
             }
 
-            return
-        }
+            if (activeStep === 2) {
+                setIsLoading(true)
+                await confirmAwsUser()
+                setIsLoading(false)
+                setActiveStep((current) => current + 1)
 
+                return
+            }
 
-        if (activeStep === 4) {
-            const host = location.origin.split('//')[1]
-            const protocol = location.protocol
-            const newUrl = `${protocol}//${orgSlugValue}.${host}`
-            window.location.assign(newUrl)
-
-            return
+            if (activeStep === 3) {
+                navigate('/app')
+                return
+            }
+        } catch {
+            setIsLoading(false)
         }
     }
 
@@ -134,41 +115,40 @@ const Onboarding = () => {
             }
         })
 
-        setNewUserId(userId ?? '')
+        if (userId) {
+            const newAdminObj = {
+                id: userId,
+                firstName: adminFirstName,
+                lastName: adminLastName,
+                email: adminEmail
+            }
+
+            setNewAdmin(newAdminObj)
+        }
     }
 
     const confirmAwsUser = async () => {
-        await confirmSignUp({ username: newUserId, confirmationCode })
-        await signIn({ username: newUserId, password: adminPassword })
+        if (newAdmin) {
+            await confirmSignUp({ username: newAdmin.id, confirmationCode })
+            await signIn({ username: newAdmin.id, password: adminPassword })
+            await createNewOrgAdmin()
+        }
     }
 
-    const createNewOrganizationUser = async (orgId: string) => {
-        await api?.admin.createAdmin({
-            given_name: adminFirstName,
-            family_name: adminLastName,
-            email: adminEmail
-        }, orgId, newUserId)
+    const createNewOrgAdmin = async () => {
+        if (orgId) {
+            await addAdmin({
+                email: adminEmail,
+                firstName: adminFirstName,
+                orgId,
+                lastName: adminLastName,
+                title: 'Admin'
+            })
+        }
     }
 
-    const createNewOrg = async (newOrgSlug: string) => {
-        const newOrgId = uuid()
-
-        await api?.organizations.createOrganization({
-            id: newOrgId,
-            orgName,
-            orgSlug: newOrgSlug,
-            loginImageKey: '',
-            createdBy: newUserId,
-            createdAt: new Date().getTime(),
-            updatedBy: newUserId,
-            updatedAt: new Date().getTime()
-        })
-
-        await createNewOrganizationUser(newOrgId)
-    }
-
-    const generateOrgSlug = (val: string) => {
-        setTempOrgSlug(val.split(' ').join('-').toLowerCase())
+    const createNewOrg = async () => {
+        await createOrg(orgName)
     }
 
     const handleBack = () => {
@@ -192,11 +172,10 @@ const Onboarding = () => {
                             }
                         </Stepper>
                         <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            {activeStep === 0 ? <CreateOrganizationAdmin /> : null}
-                            {activeStep === 1 ? <ConfirmOrganizationAdmin /> : null}
-                            {activeStep === 2 ? <SetOrganizationName /> : null}
-                            {activeStep === 3 ? <SetOrgSlug slugSuggestion={tempOrgSlug} currentSlug={orgSlugValue} /> : null}
-                            {activeStep === 4 ? <OnboardingComplete /> : null}
+                            {activeStep === 0 ? <SetOrganizationName /> : null}
+                            {activeStep === 1 ? <CreateOrganizationAdmin /> : null}
+                            {activeStep === 2 ? <ConfirmOrganizationAdmin /> : null}
+                            {activeStep === 3 ? <OnboardingComplete /> : null}
                         </Box>
                         <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2, justifyContent: 'space-evenly' }}>
                             <Button

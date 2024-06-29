@@ -23,6 +23,10 @@ dist-ssr
 *.sln
 *.sw?
 
+
+#code coverage docs
+coverage/
+
 #amplify-do-not-edit-begin
 amplify/\#current-cloud-backend
 amplify/.config/local-*
@@ -45,5 +49,7 @@ amplifytools.xcconfig
 **.sample
 #amplify-do-not-edit-end
 
-#code coverage docs
-coverage/
+# amplify
+.amplify
+amplify_outputs*
+amplifyconfiguration*
