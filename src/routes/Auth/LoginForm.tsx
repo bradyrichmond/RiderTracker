@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom'
 import { Hub } from 'aws-amplify/utils'
 import { useTranslation } from 'react-i18next'
 import { useOrgStore } from '@/store/OrgStore'
-import { useApiStore } from '@/store/ApiStore'
 import { useUserStore } from '@/store/UserStore'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { loginSchema } from '@/validation/loginSchema'
@@ -23,7 +22,7 @@ interface LoginFormInputs {
 const LoginForm = () => {
     const [resetPasswordRequired, setResetPasswordRequired] = useState(false)
     const { handleSubmit, register, formState: { errors, touchedFields }, reset } = useForm<LoginFormInputs>({ resolver: yupResolver(loginSchema) })
-    const { updateUserData } = useUserStore()
+    const updateUserData = useUserStore().updateUserData
     const { orgName, organizationLoginImageUrl, updateOrgData } = useOrgStore()
     const [errorMessage, setErrorMessage] = useState('')
     const [disableButtons, setDisabledButtons] = useState(false)
@@ -107,13 +106,9 @@ const LoginForm = () => {
     }
 
     const postLoginChecks = async () => {
-        const api = await useApiStore.getState().getApi(true)
+        const previousPath = history.state?.usr?.previousPath
 
-        if (api) {
-            const previousPath = history.state?.usr?.previousPath
-
-            navigate(previousPath ?? '/app')
-        }
+        navigate(previousPath ?? '/app')
     }
 
     return (

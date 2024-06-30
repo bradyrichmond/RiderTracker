@@ -8,7 +8,6 @@ import bg4 from './images/bg4.jpg'
 import bg5 from './images/bg5.jpg'
 import bg6 from './images/bg6.jpg'
 import LoginForm from './LoginForm'
-import { fetchAuthSession } from 'aws-amplify/auth'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useUserStore } from '@/store/UserStore'
@@ -27,31 +26,26 @@ const Auth = () => {
     const [image, setImage] = useState('')
     const [isLoading, setIsLoading] = useState(true)
     const theme = useTheme()
-    const { setUserId, updateUserData } = useUserStore()
+    const currentUser = useUserStore().currentUser
     const navigate = useNavigate()
     const { t } = useTranslation('auth')
 
     useEffect(() => {
-        const checkForLoggedInUser = async () => {
-            const session = await fetchAuthSession()
-            if (session?.userSub) {
-                setUserId(session.userSub)
-                updateUserData()
-                const previousPath = history.state?.usr?.previousPath
+        if (currentUser) {
+            const previousPath = history.state?.usr?.previousPath
 
-                if (previousPath && previousPath !== location.pathname) {
-                    console.log(`redirecting from ${location.pathname} to ${previousPath}`)
-                    navigate(previousPath)
-                }
+            if (previousPath && previousPath !== location.pathname) {
+                console.log(`redirecting from ${location.pathname} to ${previousPath}`)
+                navigate(previousPath)
             }
         }
 
         const randomImageIndex = Math.floor(Math.random() * bgImages.length)
         setImage(bgImages[randomImageIndex])
-        checkForLoggedInUser()
+
         // magic number for preventing flash of login screen
         setTimeout(hideLoading, 2000)
-    }, [navigate, setUserId, updateUserData])
+    }, [navigate, currentUser])
 
     const hideLoading = () => {
         setIsLoading(false)

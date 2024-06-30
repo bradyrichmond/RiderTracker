@@ -1,28 +1,20 @@
 import { Box, Button, Card, Typography } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
-import { useEffect, useState } from 'react'
-import OrganizationAdminCard from './OrganizationAdminCard'
+import { useState } from 'react'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
-import { CreateCognitoUserParams } from '@/API/AdminApis'
 import { useTranslation } from 'react-i18next'
 import CreateAdminDialog from './CreateAdminDialog'
-import { useAdminStore } from '@/store/AdminStore'
 
 const OrganizationAdminSettings = () => {
-    const { admins, updateAdmins, createAdmin } = useAdminStore()
     const [showModal, setShowModal] = useState(false)
     const { t } = useTranslation('settings')
-
-    useEffect(() => {
-        updateAdmins()
-    }, [updateAdmins])
 
     const toggleShowModal = () => {
         setShowModal((cur) => !cur)
     }
 
-    const createNewAdmin = async (newAdmin: CreateCognitoUserParams) => {
-        await createAdmin(newAdmin)
+    const createNewAdmin = async () => {
+        console.log('disabled create admin for now')
     }
 
     return (
@@ -50,24 +42,6 @@ const OrganizationAdminSettings = () => {
                 </Grid>
                 <Grid container spacing={2}>
                     <Grid xs={12} md={6}>
-                        {admins.length > 0 ?
-                            admins.map((a, idx) => <OrganizationAdminCard
-                                key={a.id}
-                                id={a.id}
-                                orgId={a.orgId}
-                                firstName={a.firstName}
-                                lastName={a.lastName}
-                                email={a.email}
-                                title={a.title}
-                                createdBy={a.createdBy}
-                                createdAt={a.createdAt}
-                                updatedBy={a.updatedBy}
-                                updatedAt={a.updatedAt}
-                                index={idx}
-                            />)
-                            :
-                            null
-                        }
                     </Grid>
                 </Grid>
             </Card>

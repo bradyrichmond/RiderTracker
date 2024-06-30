@@ -1,14 +1,12 @@
 import { Box, CircularProgress, Typography } from '@mui/material'
-import { signOut } from 'aws-amplify/auth'
 import { Hub } from 'aws-amplify/utils'
 import { useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useUserStore } from '@/store/UserStore'
-import { RIDER_TRACKER_ROLES } from '@/constants/Roles'
 
 const Logout = () => {
-    const { setUserId, setHeaviestRole } = useUserStore()
+    const signOut = useUserStore().signOutAws
     const navigate = useNavigate()
     const { t } = useTranslation('common')
 
@@ -16,8 +14,6 @@ const Logout = () => {
         const cleanup = Hub.listen('auth', ({ payload: { event } }) => {
             console.log(`root router heard ${event}`)
             if (event === 'signedOut') {
-                setUserId('')
-                setHeaviestRole(RIDER_TRACKER_ROLES.RIDER_TRACKER_UNAUTHENTICATED)
                 navigate('/login')
             }
         })
@@ -27,7 +23,7 @@ const Logout = () => {
         return () => {
             cleanup()
         }
-    }, [navigate, setUserId, setHeaviestRole])
+    }, [navigate, signOut])
 
     return (
         <Box sx={{ height: '100%', width: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

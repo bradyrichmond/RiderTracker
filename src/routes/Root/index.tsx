@@ -2,20 +2,20 @@ import { Box, Container, LinearProgress, Typography } from '@mui/material'
 import { Outlet } from 'react-router-dom'
 import NavigationContainer from '@/components/NavigationContainer'
 import { useOrgStore } from '@/store/OrgStore'
-import { useApiStore } from '@/store/ApiStore'
+import { useUserStore } from '@/store/UserStore'
 import { useState, useEffect, useCallback } from 'react'
 import { Hub } from 'aws-amplify/utils'
 
 const Root = () => {
     const [isInitialized, setIsInitialized] = useState<boolean>(false)
-    const getClient = useApiStore().getClient
+    const updateUserData = useUserStore().updateUserData
     const { updateOrgData, organizationOverride } = useOrgStore()
 
     const initialize = useCallback(async () => {
-        await getClient()
+        await updateUserData()
         await updateOrgData()
         setIsInitialized(true)
-    }, [getClient, updateOrgData])
+    }, [updateOrgData, updateUserData])
 
     useEffect(() => {
         initialize()

@@ -9,10 +9,7 @@ import { useGuardianStore } from '@/store/GuardianStore'
 import { useTranslation } from 'react-i18next'
 import SearchBar from '@/components/SearchBar'
 import GuardianDrawer from './GuardianDrawer'
-import { useAdminStore } from '@/store/AdminStore'
 import { useRiderStore } from '@/store/RiderStore'
-import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
-import { useUserStore } from '@/store/UserStore'
 import Grid from '@mui/material/Unstable_Grid2'
 
 export interface CreateGuardianInput {
@@ -29,8 +26,6 @@ interface GuardiansProps {
 const Guardians = ({ activeGuardian }: GuardiansProps) => {
     const { guardians, getGuardians, changeSearchArg } = useGuardianStore()
     const getRiders = useRiderStore().getRiders
-    const { createGuardian } = useAdminStore()
-    const heaviestRole = useUserStore().heaviestRole
     const navigate = useNavigate()
     const [isAddingGuardian, setIsAddingGuardian] = useState<boolean>(false)
     const { t } = useTranslation('guardians')
@@ -40,10 +35,8 @@ const Guardians = ({ activeGuardian }: GuardiansProps) => {
         getRiders()
     }, [getGuardians, getRiders])
 
-    const createGuardianAction = async (guardian: CreateGuardianInput) => {
-
-        await createGuardian(guardian)
-
+    const createGuardianAction = async () => {
+        console.log('disabled create guardian for now')
         toggleShowModal()
     }
 
@@ -86,7 +79,6 @@ const Guardians = ({ activeGuardian }: GuardiansProps) => {
             </Grid>
             <Grid xs={12} md={6}>
                 <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_GUARDIAN) ?
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                             <Button variant='contained' onClick={toggleShowModal}>
                                 <Box sx={{ display: 'flex', flexDirection: 'row' }}>
@@ -97,10 +89,7 @@ const Guardians = ({ activeGuardian }: GuardiansProps) => {
                                 </Box>
                             </Button>
                         </Box>
-                        :
-                        null
-                    }
-                </Box>
+                                    </Box>
             </Grid>
             <Grid xs={12}>
                 <Box sx={{ mb: 2 }}>

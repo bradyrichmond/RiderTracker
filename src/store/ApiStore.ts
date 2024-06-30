@@ -15,7 +15,7 @@ export const useApiStore = create<ApiStore>((set, get) => ({
         const client = get().client
 
         if (!client || updateCredentials) {
-            const newApi = await get().updateClient()
+            const newApi = get().updateClient()
             set({ client: newApi })
             return newApi
         }
@@ -23,7 +23,7 @@ export const useApiStore = create<ApiStore>((set, get) => ({
         return client
     },
     updateClient: () => {
-        const newClient = generateClient<Schema>({ authMode: 'iam' })
+        const newClient = generateClient<Schema>({ authMode: 'userPool' })
         return newClient
     }
 }))

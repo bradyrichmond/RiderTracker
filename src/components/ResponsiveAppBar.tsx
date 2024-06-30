@@ -17,6 +17,7 @@ import { ROUTE_PROTECTION, SettingsItemType } from '../constants/RouteProtection
 import { useTheme } from '@mui/material'
 import { NavItemType } from './NavigationDrawer'
 import { useUserStore } from '@/store/UserStore'
+import { RIDER_TRACKER_ROLES } from '@/constants/Roles'
 
 
 interface MenuItemWithIconProps {
@@ -44,8 +45,8 @@ const ResponsiveAppBar = () => {
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null)
     const navigate = useNavigate()
-    const { userFullName, userPictureUrl, heaviestRole, userId } = useUserStore()
-    const routeProtection = ROUTE_PROTECTION.find((r) => r.name === heaviestRole)
+    const fullName = useUserStore().fullName
+    const routeProtection = ROUTE_PROTECTION.find((r) => r.name === RIDER_TRACKER_ROLES.RIDER_TRACKER_WIZARD)
     const pages: NavItemType[] = routeProtection?.navItems ?? []
     const settings: SettingsItemType[] = routeProtection?.settingsItems ?? []
 
@@ -159,11 +160,11 @@ const ResponsiveAppBar = () => {
                             ))}
                         </Box>
 
-                        {userId ?
+                        {fullName ?
                             <Box sx={{ flexGrow: 0 }}>
                                 <Tooltip title={'Open settings'}>
                                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                        <Avatar alt={userFullName} src={userPictureUrl} />
+                                        <Avatar alt={fullName} src={''} />
                                     </IconButton>
                                 </Tooltip>
                                 <Menu

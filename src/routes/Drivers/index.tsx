@@ -8,10 +8,6 @@ import { useEffect, useState } from 'react'
 import { useDriverStore } from '@/store/DriverStore'
 import DriverDrawer from './DriverDrawer'
 import CreateDriverDialog from './CreateDriverDialog'
-import { CreateCognitoUserParams } from '@/API/AdminApis'
-import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
-import { useUserStore } from '@/store/UserStore'
-import { useAdminStore } from '@/store/AdminStore'
 
 interface DriversProps {
     activeDriver?: string
@@ -20,8 +16,6 @@ interface DriversProps {
 const Drivers = ({ activeDriver }: DriversProps) => {
     const [isAddingDriver, setIsAddingDriver] = useState(false)
     const { drivers, updateDrivers } = useDriverStore()
-    const createDriver = useAdminStore().createDriver
-    const heaviestRole = useUserStore().heaviestRole
     const navigate = useNavigate()
     const { t } = useTranslation('drivers')
 
@@ -29,8 +23,8 @@ const Drivers = ({ activeDriver }: DriversProps) => {
         updateDrivers()
     }, [updateDrivers])
 
-    const createDriverAction = async (newDriver: CreateCognitoUserParams) => {
-        await createDriver(newDriver)
+    const createDriverAction = async () => {
+        console.log('disabled create driver for now')
         toggleAddingDriver()
     }
 
@@ -63,7 +57,6 @@ const Drivers = ({ activeDriver }: DriversProps) => {
                         {t('drivers')}
                     </Typography>
                 </Box>
-                {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_DRIVER) ?
                     <Box sx={{ padding: 4, flex: 1, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
                         <Button variant='contained' onClick={toggleAddingDriver}>
                             <Box display='flex' flexDirection='row'>
@@ -74,9 +67,6 @@ const Drivers = ({ activeDriver }: DriversProps) => {
                             </Box>
                         </Button>
                     </Box>
-                    :
-                    null
-                }
             </Box>
             <DriverDrawer open={!!activeDriver} driverId={activeDriver ?? ''} />
             <CreateDriverDialog

@@ -3,10 +3,8 @@ import { useEffect, useState } from 'react'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { Box, Button, Typography } from '@mui/material'
-import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useUserStore } from '@/store/UserStore'
 import SchoolDrawer from './SchoolDrawer'
 import CreateSchoolDialog from './CreateSchoolDialog'
 import { useSchoolStore } from '@/store/SchoolStore'
@@ -20,12 +18,11 @@ interface SchoolsProps {
 
 const Schools = ({ activeSchool }: SchoolsProps) => {
     const [isAddingSchool, setIsAddingSchool] = useState<boolean>(false)
-    const { heaviestRole } = useUserStore()
     const { createSchool, getSchools, schools } = useSchoolStore()
     const addresses = useAddressStore().addresses
     const updateAddresses = useAddressStore().updateAddresses
     const getRiders = useRiderStore().getRiders
-    const canEditSchool = RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.UPDATE_SCHOOL)
+    const canEditSchool = true
     const navigate = useNavigate()
     const { t } = useTranslation('schools')
 
@@ -93,20 +90,16 @@ const Schools = ({ activeSchool }: SchoolsProps) => {
             </Grid>
             <Grid xs={12} md={6}>
                 <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_SCHOOL) ?
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            <Button variant='contained' onClick={toggleAddingSchool}>
-                                <Box display='flex' flexDirection='row'>
-                                    <AddCircleIcon />
-                                    <Box sx={{ flex: 1, ml: 2 }}>
-                                        <Typography>{t('addSchool')}</Typography>
-                                    </Box>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <Button variant='contained' onClick={toggleAddingSchool}>
+                            <Box display='flex' flexDirection='row'>
+                                <AddCircleIcon />
+                                <Box sx={{ flex: 1, ml: 2 }}>
+                                    <Typography>{t('addSchool')}</Typography>
                                 </Box>
-                            </Button>
-                        </Box>
-                        :
-                        null
-                    }
+                            </Box>
+                        </Button>
+                    </Box>
                 </Box>
             </Grid>
             <Grid xs>

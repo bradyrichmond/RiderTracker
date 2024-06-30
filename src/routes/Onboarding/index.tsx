@@ -2,7 +2,7 @@ import { Box, Button, Step, StepLabel, Stepper, Typography } from '@mui/material
 import { useState } from 'react'
 import SetOrganizationName from './SetOrganizationName'
 import { FormProvider, useForm } from 'react-hook-form'
-import { confirmSignUp, signIn, signUp } from 'aws-amplify/auth'
+import { confirmSignUp, signIn, signOut, signUp } from 'aws-amplify/auth'
 import CreateOrganizationAdmin from './CreateOrganizationAdmin'
 import ConfirmOrganizationAdmin from './ConfirmOrganizationAdmin'
 import OnboardingComplete from './OnboardingComplete'
@@ -43,7 +43,8 @@ const Onboarding = () => {
     const createOrg = useOrgStore().createOrg
     const orgId = useOrgStore().orgId
     const navigate = useNavigate()
-    const addAdmin = useUserStore().addAdmin
+    const addUserToOrg = useUserStore().addUserToOrg
+    const addUserToAdminGroup = useUserStore().addUserToAdminGroup
 
     const steps: StepType[] = [
         {
@@ -63,41 +64,37 @@ const Onboarding = () => {
     const { orgName, adminFirstName, adminLastName, adminEmail, adminPassword, confirmationCode } = watch()
 
     const handleNext = async () => {
-        try {
-            // TODO: Add form validation to rhf
-            if (activeStep === 0) {
-                if (orgName.length > 3) {
-                    await createNewOrg()
-                    setActiveStep((current) => current + 1)
-                }
-
-                return
-            }
-
-            if (activeStep === 1) {
-                setIsLoading(true)
-                await createNewAWSUser()
-                setIsLoading(false)
+        // TODO: Add form validation to rhf
+        if (activeStep === 0) {
+            if (orgName.length > 3) {
+                await createNewOrg()
                 setActiveStep((current) => current + 1)
-
-                return
             }
 
-            if (activeStep === 2) {
-                setIsLoading(true)
-                await confirmAwsUser()
-                setIsLoading(false)
-                setActiveStep((current) => current + 1)
+            return
+        }
 
-                return
-            }
-
-            if (activeStep === 3) {
-                navigate('/app')
-                return
-            }
-        } catch {
+        if (activeStep === 1) {
+            setIsLoading(true)
+            await createNewAWSUser()
             setIsLoading(false)
+            setActiveStep((current) => current + 1)
+
+            return
+        }
+
+        if (activeStep === 2) {
+            setIsLoading(true)
+            await confirmAwsUser()
+            setIsLoading(false)
+            setActiveStep((current) => current + 1)
+
+            return
+        }
+
+        if (activeStep === 3) {
+            navigate('/app')
+            return
         }
     }
 
@@ -136,18 +133,23 @@ const Onboarding = () => {
     }
 
     const createNewOrgAdmin = async () => {
-        if (orgId) {
-            await addAdmin({
+        if (orgId && newAdmin && newAdmin?.id) {
+            const admin = {
+                id: newAdmin?.id,
                 email: adminEmail,
                 firstName: adminFirstName,
                 orgId,
                 lastName: adminLastName,
                 title: 'Admin'
-            })
+            }
+
+            await addUserToOrg(admin)
+            await addUserToAdminGroup(admin)
         }
     }
 
     const createNewOrg = async () => {
+        await signOut()
         await createOrg(orgName)
     }
 
