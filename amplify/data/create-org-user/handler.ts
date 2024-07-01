@@ -11,13 +11,13 @@ interface CreateOrgUserInput {
     email: string
     family_name: string
     given_name: string
-    password: string
+    orgId: string
 }
 
 const client = new CognitoIdentityProviderClient()
 
 export const handler: Handler<CreateOrgUserInput, AdminCreateUserCommandOutput> = async (event) => {
-    const { email, family_name, given_name } = event
+    const { email, family_name, given_name, orgId } = event
     const commandInput: AdminCreateUserCommandInput = {
         DesiredDeliveryMediums: ['EMAIL'],
         UserAttributes: [
@@ -32,6 +32,10 @@ export const handler: Handler<CreateOrgUserInput, AdminCreateUserCommandOutput> 
             {
                 Name: 'given_name',
                 Value: given_name
+            },
+            {
+                Name: 'custom:orgId',
+                Value: orgId
             }
         ],
         Username: email,

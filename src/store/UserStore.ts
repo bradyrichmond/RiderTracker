@@ -28,9 +28,25 @@ interface UserStore {
 export const useUserStore = create<UserStore>((set, get) => ({
     addUserToAdminGroup: async (admin: UserType) => {
         const client = await useApiStore.getState().getClient()
+
         if (admin.id) {
             await client.mutations.addUserToGroup({ userId: admin.id, groupName: 'Admins' })
-            return
+
+            const { data: org } = await client.models.Organization.get({ id: admin.orgId }, { authMode: 'userPool' })
+
+            if (org) {
+                const { admins } = org
+                let newAdmins = admins
+
+                if (!newAdmins) {
+                    newAdmins = []
+                }
+
+                newAdmins?.push(admin.id)
+
+                await client.models.Organization.update({ id: org.id, admins: newAdmins })
+                return
+            }
         }
 
         throw 'Failed to add admin to org'
@@ -51,7 +67,8 @@ export const useUserStore = create<UserStore>((set, get) => ({
         const { data: createCognitoUserData } = await client.mutations.createOrgUser({
             email: user.email ?? '',
             family_name: user.lastName,
-            given_name: user.firstName
+            given_name: user.firstName,
+            orgId: user.orgId
         }, { authMode: 'userPool' })
 
         if (createCognitoUserData) {
@@ -65,7 +82,8 @@ export const useUserStore = create<UserStore>((set, get) => ({
     getUsers: async () => {
         const client = await useApiStore.getState().getClient()
 
-        const { data } = await client.models.User.list()
+        const { data } = await client.models.User.list({ authMode: 'userPool' })
+
         set({ users: data })
         return data
     },

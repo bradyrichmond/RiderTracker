@@ -1,6 +1,6 @@
 import { type ClientSchema, a, defineData } from '@aws-amplify/backend'
 import { addUserToGroup } from './add-user-to-group/resource'
-import { createOrgUser } from './create-org-user/resource';
+import { createOrgUser } from './create-org-user/resource'
 
 const schema = a.schema({
   // Mutations
@@ -17,7 +17,8 @@ const schema = a.schema({
     .arguments({
       email: a.string().required(),
       family_name: a.string().required(),
-      given_name: a.string().required()
+      given_name: a.string().required(),
+      orgId: a.string().required()
     })
     .handler(a.handler.function(createOrgUser))
     .returns(a.ref('CreateAdminOutput')),
@@ -62,7 +63,11 @@ const schema = a.schema({
     admins: a.string().array(),
     guardians: a.string().array(),
     drivers: a.string().array()
-  }),
+  })
+  .authorization((allow) => [
+    allow.authenticated(),
+    allow.guest().to(['create'])
+  ]),
   User: a.model({
     email: a.email(),
     firstName: a.string().required(),
@@ -72,9 +77,12 @@ const schema = a.schema({
     orgId: a.id().required(),
     title: a.string()
   })
-}).authorization((allow) => [allow.authenticated(), allow.guest()]);
+  .authorization((allow) => [
+    allow.authenticated()
+  ])
+}).authorization((allow) => [allow.authenticated()])
 
-export type Schema = ClientSchema<typeof schema>;
+export type Schema = ClientSchema<typeof schema>
 
 export const data = defineData({
   schema,

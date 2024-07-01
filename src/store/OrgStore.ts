@@ -4,6 +4,7 @@ import { Schema } from '../../amplify/data/resource'
 import { useUserStore } from './UserStore'
 
 export interface OrgStore {
+    orgData?: Schema['Organization']['type']
     createOrg(orgName: string): Promise<Schema['Organization']['type']>
     orgId: string
     setOrgId(id: string): void
@@ -38,10 +39,10 @@ export const useOrgStore = create<OrgStore>((set) => ({
 
         if (user) {
             const client = await useApiStore.getState().getClient()
-            const { data: orgs } = await client.models.Organization.list({ authMode: 'userPool' })
+            const { data: orgData } = await client.models.Organization.get({ id: user.orgId }, { authMode: 'userPool' })
 
-            if (orgs) {
-                set({ orgs })
+            if (orgData) {
+                set({ orgData })
             }
         }
     },
