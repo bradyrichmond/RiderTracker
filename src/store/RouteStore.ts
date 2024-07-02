@@ -57,8 +57,8 @@ export const useRouteStore = create<RouteStore>((set, get) => ({
         throw 'Could not get route by id'
     },
     createRoute: async (route: RouteType) => {
-        const api = await useApiStore.getState().getApi()
-        const orgId = useOrgStore.getState().orgId
+        const client = await useApiStore.getState().getClient()
+        const orgId = await useOrgStore.getState().getOrgId()
 
         await api?.routes.createRoute(orgId, route)
         await get().getRoutes()
@@ -71,15 +71,15 @@ export const useRouteStore = create<RouteStore>((set, get) => ({
         await get().getRoutes()
     },
     setRouteActive: async (routeId: string) => {
-        const api = await useApiStore.getState().getApi()
-        const orgId = useOrgStore.getState().orgId
+        const client = await useApiStore.getState().getClient()
+        const orgId = await useOrgStore.getState().getOrgId()
         const userId = useUserStore.getState().userId
 
         await api?.routes.updateRoute(orgId, routeId, { isActive: true, updatedBy: userId, updatedAt: new Date().getTime() })
     },
     setRouteInactive: async (routeId: string) => {
-        const api = await useApiStore.getState().getApi()
-        const orgId = useOrgStore.getState().orgId
+        const client = await useApiStore.getState().getClient()
+        const orgId = await useOrgStore.getState().getOrgId()
         const userId = useUserStore.getState().userId
 
         await api?.routes.updateRoute(orgId, routeId, { isActive: false, updatedBy: userId, updatedAt: new Date().getTime() })

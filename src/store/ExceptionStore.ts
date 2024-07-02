@@ -29,16 +29,16 @@ const dateCompare = (a: ExceptionType, b: ExceptionType) => {
 export const useExceptionStore = create<ExceptionStore>((set) => ({
     exceptions: [],
     getExceptions: async () => {
-        const api = await useApiStore.getState().getApi()
-        const orgId = useOrgStore.getState().orgId
+        const client = await useApiStore.getState().getClient()
+        const orgId = await useOrgStore.getState().getOrgId()
 
         const initialExceptions: ExceptionType[] = await api?.exceptions.getExceptions(orgId)
         const exceptions = initialExceptions.sort(dateCompare)
         set({ exceptions })
     },
     getExceptionById: async (exceptionId: string) => {
-        const api = await useApiStore.getState().getApi()
-        const orgId = useOrgStore.getState().orgId
+        const client = await useApiStore.getState().getClient()
+        const orgId = await useOrgStore.getState().getOrgId()
 
         const exception = await api?.exceptions.getExceptionById(orgId, exceptionId)
 
@@ -49,8 +49,8 @@ export const useExceptionStore = create<ExceptionStore>((set) => ({
         throw 'Unable to find exception by id'
     },
     createException: async (newException: CreateExceptionInput, type: ExceptionTypeType, riderId: string) => {
-        const api = await useApiStore.getState().getApi()
-        const orgId = useOrgStore.getState().orgId
+        const client = await useApiStore.getState().getClient()
+        const orgId = await useOrgStore.getState().getOrgId()
         const userId = useUserStore.getState().userId
 
         const exceptionId = uuid()
@@ -84,8 +84,8 @@ export const useExceptionStore = create<ExceptionStore>((set) => ({
         await api?.exceptions.createException(orgId, exception)
     },
     deleteException: async (exceptionId: string) => {
-        const api = await useApiStore.getState().getApi()
-        const orgId = useOrgStore.getState().orgId
+        const client = await useApiStore.getState().getClient()
+        const orgId = await useOrgStore.getState().getOrgId()
 
         await api?.exceptions.deleteException(orgId, exceptionId)
     }

@@ -10,6 +10,16 @@ export const auth = defineAuth({
   loginWith: {
     email: true,
   },
+  userAttributes: {
+    givenName: {
+      mutable: false,
+      required: true
+    },
+    familyName: {
+      mutable: false,
+      required: true
+    }
+  },
   groups: ['ADMINS', 'GUARDIANS', 'DRIVERS'],
   access: (allow) => [
     allow.resource(addUserToGroup).to(['addUserToGroup']),

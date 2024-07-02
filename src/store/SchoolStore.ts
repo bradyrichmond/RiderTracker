@@ -31,21 +31,21 @@ export const useSchoolStore = create<SchoolStore>((set, get) => ({
         await get().getSchools()
     },
     deleteSchool: async (schoolId: string) => {
-        const api = await useApiStore.getState().getApi()
-        const orgId = useOrgStore.getState().orgId
+        const client = await useApiStore.getState().getClient()
+        const orgId = await useOrgStore.getState().getOrgId()
 
         await api?.schools.deleteSchool(orgId, schoolId)
     },
     getSchools: async () => {
-        const api = await useApiStore.getState().getApi()
-        const orgId = useOrgStore.getState().orgId
+        const client = await useApiStore.getState().getClient()
+        const orgId = await useOrgStore.getState().getOrgId()
 
         const schools = await api?.schools.getSchools(orgId)
         set({ schools })
     },
     getSchoolById: async (schoolId: string) => {
-        const api = await useApiStore.getState().getApi()
-        const orgId = useOrgStore.getState().orgId
+        const client = await useApiStore.getState().getClient()
+        const orgId = await useOrgStore.getState().getOrgId()
 
         const school = await api?.schools.getSchoolById(orgId, schoolId)
 
@@ -57,8 +57,8 @@ export const useSchoolStore = create<SchoolStore>((set, get) => ({
     },
     schools: [],
     updateSchoolHours: async (schoolId: string, hours: SchoolHourType[]) => {
-        const api = await useApiStore.getState().getApi()
-        const orgId = useOrgStore.getState().orgId
+        const client = await useApiStore.getState().getClient()
+        const orgId = await useOrgStore.getState().getOrgId()
         const userId = useUserStore.getState().userId
 
         const school = await get().getSchoolById(schoolId)

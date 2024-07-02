@@ -26,15 +26,15 @@ const dateCompare = (a: RouteActionType, b: RouteActionType) => {
 export const useRouteActionStore = create<RouteActionStore>((set) => ({
     routeActions: [],
     updateRouteActions: async () => {
-        const api = await useApiStore.getState().getApi()
-        const orgId = useOrgStore.getState().orgId
+        const client = await useApiStore.getState().getClient()
+        const orgId = await useOrgStore.getState().getOrgId()
 
         const routeActions = await api?.routeActions.getRouteActions(orgId)
         set({ routeActions })
     },
     createRouteAction: async (routeActionInput: CreateRouteActionInput) => {
-        const api = await useApiStore.getState().getApi()
-        const orgId = useOrgStore.getState().orgId
+        const client = await useApiStore.getState().getClient()
+        const orgId = await useOrgStore.getState().getOrgId()
         const userId = useUserStore.getState().userId
 
         const routeActionId = uuid()
@@ -54,16 +54,16 @@ export const useRouteActionStore = create<RouteActionStore>((set) => ({
         await api?.routeActions.createRouteAction(orgId, action)
     },
     getRouteActionsByDriverId: async () => {
-        const api = await useApiStore.getState().getApi()
-        const orgId = useOrgStore.getState().orgId
+        const client = await useApiStore.getState().getClient()
+        const orgId = await useOrgStore.getState().getOrgId()
 
         const routeActionsResponse = await api?.routeActions.getRouteActions(orgId)
         const routeActions = routeActionsResponse.sort(dateCompare)
         return routeActions
     },
     getRouteActionsByRouteId: async () => {
-        const api = await useApiStore.getState().getApi()
-        const orgId = useOrgStore.getState().orgId
+        const client = await useApiStore.getState().getClient()
+        const orgId = await useOrgStore.getState().getOrgId()
 
         const routeActionsResponse = await api?.routeActions.getRouteActions(orgId)
         const routeActions = routeActionsResponse.sort(dateCompare)

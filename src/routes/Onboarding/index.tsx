@@ -35,16 +35,16 @@ interface NewAdmin {
 
 const Onboarding = () => {
     const [activeStep, setActiveStep] = useState(0)
-    const methods = useForm<CreateOrganizationInputs>()
-    const { watch } = methods
     const [isLoading, setIsLoading] = useState(false)
+    const [orgId, setOrgId] = useState('')
     const [newAdmin, setNewAdmin] = useState<NewAdmin>()
-    const { t } = useTranslation(['onboarding', 'common'])
     const createOrg = useOrgStore().createOrg
-    const orgId = useOrgStore().orgId
     const navigate = useNavigate()
     const addUserToOrg = useUserStore().addUserToOrg
     const addUserToAdminGroup = useUserStore().addUserToAdminGroup
+    const { t } = useTranslation(['onboarding', 'common'])
+    const methods = useForm<CreateOrganizationInputs>()
+    const { watch } = methods
 
     const steps: StepType[] = [
         {
@@ -106,7 +106,8 @@ const Onboarding = () => {
                 userAttributes: {
                     given_name: adminFirstName,
                     family_name: adminLastName,
-                    email: adminEmail
+                    email: adminEmail,
+                    'custom:orgId': orgId
                 },
                 autoSignIn: true
             }
@@ -150,7 +151,8 @@ const Onboarding = () => {
 
     const createNewOrg = async () => {
         await signOut()
-        await createOrg(orgName)
+        const newOrg = await createOrg(orgName)
+        setOrgId(newOrg.id)
     }
 
     const handleBack = () => {

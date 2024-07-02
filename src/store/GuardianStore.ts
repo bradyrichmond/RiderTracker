@@ -35,8 +35,8 @@ export const useGuardianStore = create<GuardianStore>((set, get) => ({
         await get().getGuardians()
     },
     getGuardianById: async (guardianId: string) => {
-        const api = await useApiStore.getState().getApi()
-        const orgId = useOrgStore.getState().orgId
+        const client = await useApiStore.getState().getClient()
+        const orgId = await useOrgStore.getState().getOrgId()
         const guardian = await api?.users.getGuardianById(orgId, guardianId)
 
         if (guardian) {

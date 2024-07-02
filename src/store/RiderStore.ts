@@ -18,8 +18,8 @@ interface RiderStore {
 
 export const useRiderStore = create<RiderStore>((set, get) => ({
     addGuardiansToRider: async (guardianIds: string[], riderId: string) => {
-        const api = await useApiStore.getState().getApi()
-        const orgId = useOrgStore.getState().orgId
+        const client = await useApiStore.getState().getClient()
+        const orgId = await useOrgStore.getState().getOrgId()
 
         const rider = await get().getRiderById(riderId)
 
@@ -30,8 +30,8 @@ export const useRiderStore = create<RiderStore>((set, get) => ({
         await api?.riders.updateRider(orgId, rider.id, rider)
     },
     addStopToRider: async (stopId: string, riderId: string) => {
-        const api = await useApiStore.getState().getApi()
-        const orgId = useOrgStore.getState().orgId
+        const client = await useApiStore.getState().getClient()
+        const orgId = await useOrgStore.getState().getOrgId()
 
         const rider = await get().getRiderById(riderId)
 
@@ -54,8 +54,8 @@ export const useRiderStore = create<RiderStore>((set, get) => ({
         set({ riders })
     },
     createRider: async (rider: RiderType) => {
-        const api = await useApiStore.getState().getApi()
-        const orgId = useOrgStore.getState().orgId
+        const client = await useApiStore.getState().getClient()
+        const orgId = await useOrgStore.getState().getOrgId()
 
         await api?.riders.createRider(orgId, rider)
         await get().getRiders()

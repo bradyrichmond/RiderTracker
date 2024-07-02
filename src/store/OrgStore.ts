@@ -2,62 +2,63 @@ import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
 import { Schema } from '../../amplify/data/resource'
 import { useUserStore } from './UserStore'
+import { fetchUserAttributes } from 'aws-amplify/auth'
+import { Subscription } from 'rxjs'
 
 export interface OrgStore {
     orgData?: Schema['Organization']['type']
     createOrg(orgName: string): Promise<Schema['Organization']['type']>
-    orgId: string
-    setOrgId(id: string): void
-    orgName: string,
-    setOrgName(name: string): void
-    updateOrgData(): Promise<void>
-    orgs: Schema['Organization']['type'][]
-    setOrganizationArray(orgs: Schema['Organization']['type'][]): void
-    organizationOverride: boolean
-    setOrganizationOverride(override: boolean): void
-    organizationLoginImageUrl: string
-    setOrganizationLoginImageUrl(url: string): void
+    getOrgId(): Promise<string>
+    startOrgSubscription(): Promise<void>
+    stopOrgSubscription(): Promise<void>
+    subscription?: Subscription
 }
 
-export const useOrgStore = create<OrgStore>((set) => ({
+export const useOrgStore = create<OrgStore>((set, get) => ({
+    orgData: undefined,
     createOrg: async (orgName: string) => {
         await useUserStore.getState().signOutAws()
         const client = await useApiStore.getState().getClient()
         const { data } = await client.models.Organization.create({ orgName }, { authMode: 'iam' })
 
         if (data) {
-            set({ orgId: data.id })
             return data
         }
 
         throw 'Failed to create org'
     },
-    orgId: '',
-    setOrgId: (id: string) => set({ orgId: id }),
-    updateOrgData: async () => {
-        const user = useUserStore.getState().currentUser
+    getOrgId: async () => {
+        const attributes = await fetchUserAttributes()
+        const orgId = attributes['custom:orgId']
 
-        if (user) {
-            const client = await useApiStore.getState().getClient()
-            const { data: orgData } = await client.models.Organization.get({ id: user.orgId }, { authMode: 'userPool' })
+        if (orgId) {
+            return orgId
+        }
 
-            if (orgData) {
-                set({ orgData })
-            }
+        throw 'Unable to get org id'
+    },
+    startOrgSubscription: async () => {
+        const client = await useApiStore.getState().getClient()
+        const orgId = await get().getOrgId()
+
+        if (orgId) {
+            const subscription = client.models.Organization.observeQuery({ filter: { id: { eq: orgId } } }).subscribe({
+                next: ({ items }) => {
+                    console.log('Organization update')
+                    set({ orgData: items[0] })
+                },
+                error: () => {
+                    console.error('Subscription problem')
+                }
+            })
+            set({ subscription })
         }
     },
-    orgName: '',
-    setOrgName: (name: string) => set({ orgName: name }),
-    orgs: [],
-    setOrganizationArray: (orgs: Schema['Organization']['type'][]) => {
-        set({ orgs })
-    },
-    organizationOverride: false,
-    setOrganizationOverride: (override: boolean) => {
-        set({ organizationOverride: override })
-    },
-    organizationLoginImageUrl: '',
-    setOrganizationLoginImageUrl: (url: string) => {
-        set({ organizationLoginImageUrl: url })
+    stopOrgSubscription: async () => {
+        const subscription = get().subscription
+
+        if (subscription) {
+            subscription.unsubscribe()
+        }
     }
 }))

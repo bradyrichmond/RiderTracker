@@ -1,31 +1,42 @@
-import { BusType } from '@/types/BusType'
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
 import { useOrgStore } from './OrgStore'
-import { v4 as uuid } from 'uuid'
+import { Schema } from '../../amplify/data/resource'
+
+type BusType = Schema['Bus']['type']
 
 interface BusStore {
     buses: BusType[]
-    updateBuses(): Promise<void>
     createBus(busNumber: string): Promise<void>
     deleteBus(busId: string): Promise<void>
     getBusById(busId: string): Promise<BusType>
+    updateBuses(): Promise<void>
 }
 
 export const useBusStore = create<BusStore>((set, get) => ({
     buses: [],
-    updateBuses: async () => {
-        const api = await useApiStore.getState().getApi()
-        const orgId = useOrgStore.getState().orgId
-        const buses = await api?.buses.getBuses(orgId)
+    createBus: async (busNumber: string) => {
+        const client = await useApiStore.getState().getClient()
+        const orgId = await useOrgStore.getState().getOrgId()
 
-        set({ buses })
+        const newBus = {
+            orgId,
+            busNumber
+        }
+
+        await client.models.Bus.create(newBus)
+        await get().updateBuses()
+    },
+    deleteBus: async (busId: string) => {
+        const client = await useApiStore.getState().getClient()
+
+        await client.models.Bus.delete({ id: busId })
+        await get().updateBuses()
     },
     getBusById: async (busId: string) => {
-        const api = await useApiStore.getState().getApi()
-        const orgId = useOrgStore.getState().orgId
+        const client = await useApiStore.getState().getClient()
 
-        const bus = await api?.buses.getBusById(orgId, busId)
+        const { data: bus } = await client.models.Bus.get({ id: busId })
 
         if (bus) {
             return bus
@@ -33,25 +44,16 @@ export const useBusStore = create<BusStore>((set, get) => ({
 
         throw 'Could not find bus by id'
     },
-    createBus: async (busNumber: string) => {
-        const api = await useApiStore.getState().getApi()
-        const orgId = useOrgStore.getState().orgId
+    updateBuses: async () => {
+        const client = await useApiStore.getState().getClient()
+        const orgId = await useOrgStore.getState().getOrgId()
+        const { data: buses } = await client.models.Bus.listBusByOrgId({ orgId })
 
-        const newBusId = uuid()
-        const newBus = {
-            id: newBusId,
-            orgId,
-            busNumber
+        if (buses) {
+            set({ buses })
+            return
         }
 
-        await api?.buses.createBus(orgId, newBus)
-        await get().updateBuses()
-    },
-    deleteBus: async (busId: string) => {
-        const api = await useApiStore.getState().getApi()
-        const orgId = useOrgStore.getState().orgId
-
-        await api?.buses.deleteBus(orgId, busId)
-        await get().updateBuses()
+        throw 'Failed to update buses'
     }
 }))

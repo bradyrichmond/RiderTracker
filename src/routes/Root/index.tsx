@@ -1,4 +1,4 @@
-import { Box, Container, LinearProgress, Typography } from '@mui/material'
+import { Box, Container, LinearProgress } from '@mui/material'
 import { Outlet } from 'react-router-dom'
 import NavigationContainer from '@/components/NavigationContainer'
 import { useOrgStore } from '@/store/OrgStore'
@@ -9,13 +9,13 @@ import { Hub } from 'aws-amplify/utils'
 const Root = () => {
     const [isInitialized, setIsInitialized] = useState<boolean>(false)
     const updateUserData = useUserStore().updateUserData
-    const { updateOrgData, organizationOverride } = useOrgStore()
+    const startOrgSubscription = useOrgStore().startOrgSubscription
 
     const initialize = useCallback(async () => {
         await updateUserData()
-        await updateOrgData()
+        startOrgSubscription()
         setIsInitialized(true)
-    }, [updateOrgData, updateUserData])
+    }, [startOrgSubscription, updateUserData])
 
     useEffect(() => {
         initialize()
@@ -42,23 +42,6 @@ const Root = () => {
             <Box>
                 <NavigationContainer />
             </Box>
-            {organizationOverride ?
-                <Box sx={{
-                    width: '100%',
-                    padding: 4,
-                    background: '#ff0000',
-                    color: '#fff',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                }}>
-                    <Typography variant='h5'>
-                        You are currently operating as a manually selected organization.
-                    </Typography>
-                </Box>
-                :
-                null
-            }
             <Container sx={{ mb: 4, flex: 1 }}>
                 {isInitialized ?
                     <Outlet />

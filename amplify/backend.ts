@@ -10,6 +10,15 @@ const backend = defineBackend({
   data,
 });
 
+const { cfnUserPool } = backend.auth.resources.cfnResources
+
+if (Array.isArray(cfnUserPool.schema)) {
+  cfnUserPool.schema.push({
+    name: 'orgId',
+    attributeDataType: 'String'
+  })
+}
+
 export const getTableName = (baseName: string) => {
   const tables = backend.data.resources.cfnResources.cfnTables
   const tableKeys = Object.keys(tables)
@@ -23,5 +32,5 @@ export const getTableName = (baseName: string) => {
     }
   }
 
-  throw 'Unable to get organiztion table'
+  throw 'Unable to get organization table'
 }
