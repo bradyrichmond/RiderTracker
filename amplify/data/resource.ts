@@ -1,6 +1,7 @@
 import { type ClientSchema, a, defineData } from '@aws-amplify/backend'
 import { addUserToGroup } from './add-user-to-group/resource'
 import { createOrgUser } from './create-org-user/resource'
+import { validateAddress } from './validate-address/resource'
 
 const schema = a.schema({
   // Mutations
@@ -22,6 +23,11 @@ const schema = a.schema({
     })
     .handler(a.handler.function(createOrgUser))
     .returns(a.ref('CreateAdminOutput')),
+  validateAddress: a
+    .mutation()
+    .arguments({ address: a.string().required() })
+    .handler(a.handler.function(validateAddress))
+    .returns(a.json()),
 
   // CustomTypes
   AttributeType: a.customType({

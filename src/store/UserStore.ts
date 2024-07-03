@@ -23,6 +23,7 @@ interface UserStore {
     signOutAws(): Promise<void>
     updateUserData(): Promise<void>
     users: (Schema['User']['type'])[]
+    userGroups: string[]
 }
 
 export const useUserStore = create<UserStore>((set, get) => ({
@@ -102,6 +103,14 @@ export const useUserStore = create<UserStore>((set, get) => ({
                 set({ currentUser, fullName: `${currentUser.firstName} ${currentUser.lastName}` })
             }
         }
+
+        const accessToken = session.tokens?.accessToken
+
+        if (accessToken) {
+            const groups = accessToken.payload['cognito:groups'] as string[]
+            set({ userGroups: groups })
+        }
     },
-    users: []
+    users: [],
+    userGroups: []
 }))

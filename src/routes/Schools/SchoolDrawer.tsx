@@ -1,16 +1,15 @@
-import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
 import { useCallback, useMemo, useState } from 'react'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import InfoIcon from '@mui/icons-material/Info'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useUserStore } from '@/store/UserStore'
 import { useRiderStore } from '@/store/RiderStore'
 import EntityDrawer, { DrawerListActionProps } from '@/components/EntityDrawer'
 import { useSchoolStore } from '@/store/SchoolStore'
 import { SchoolType } from '@/types/SchoolType'
 import CreateSchoolDialog from './CreateSchoolDialog'
 import { RiderType } from '@/types/RiderType'
+import { useUserStore } from '@/store/UserStore'
 
 interface RouteDrawerProps {
     open: boolean
@@ -20,10 +19,11 @@ interface RouteDrawerProps {
 const RouteDrawer = ({ open, school }: RouteDrawerProps) => {
     const [isAddingSchool, setIsAddingSchool] = useState<boolean>(false)
     const { createSchool, deleteSchool } = useSchoolStore()
-    const heaviestRole = useUserStore().heaviestRole
+    const something = useUserStore()
     const riders = useRiderStore().riders
     const navigate = useNavigate()
     const { t } = useTranslation(['routes', 'common'])
+
 
     const deleteSchoolAction = useCallback(async () => {
         if (school) {
@@ -41,9 +41,8 @@ const RouteDrawer = ({ open, school }: RouteDrawerProps) => {
 
     const actionItems = useMemo(() => {
         const builtActionItems: DrawerListActionProps[] = []
-        const userPermissions = RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole]
 
-        if (userPermissions.includes(permissions.DELETE_SCHOOL)) {
+        if (canDeleteSchool) {
             builtActionItems.push({
                 handleClick: deleteSchoolAction,
                 tooltipTitle: t('deleteSchool'),
@@ -58,7 +57,7 @@ const RouteDrawer = ({ open, school }: RouteDrawerProps) => {
         })
 
         return builtActionItems
-    }, [deleteSchoolAction, viewSchoolDetail, heaviestRole, t])
+    }, [deleteSchoolAction, viewSchoolDetail, t])
 
     const lists = useMemo(() => {
         const filteredRiders = riders.filter((r: RiderType) => r.schoolId === school?.id)
