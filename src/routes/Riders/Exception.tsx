@@ -6,8 +6,7 @@ import Grid from '@mui/material/Unstable_Grid2'
 import dayjs from 'dayjs'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Schema } from '../../../amplify/data/resource'
-import { OverrideType } from '@/types/AmplifyTypes'
+import { OverrideType, StopType, UserType } from '@/types/AmplifyTypes'
 
 interface ExceptionProps {
     exceptionId: string
@@ -25,22 +24,22 @@ const Exception = ({ exceptionId }: ExceptionProps) => {
     }, [exceptions, exceptionId])
 
     const pickupGuardian = useMemo(() => {
-        const filteredGuardian = guardians.find((g: Schema['User']['type']) => g.id === exception?.pickupGuardianId)
+        const filteredGuardian = guardians.find((g: UserType) => g.id === exception?.pickupGuardianId)
         return filteredGuardian
     }, [guardians, exception])
 
     const pickupStop = useMemo(() => {
-        const filteredStop = stops.find((s: Schema['Stop']['type']) => s.id === pickupGuardian?.stopId)
+        const filteredStop = stops.find((s: StopType) => s.id === pickupGuardian?.stopId)
         return filteredStop
     }, [pickupGuardian, stops])
 
     const dropoffGuardian = useMemo(() => {
-        const filteredGuardian = guardians.find((g: Schema['User']['type']) => g.id === exception?.dropoffGuardianId)
+        const filteredGuardian = guardians.find((g: UserType) => g.id === exception?.dropoffGuardianId)
         return filteredGuardian
     }, [guardians, exception])
 
     const dropoffStop = useMemo(() => {
-        const filteredStop = stops.find((s: Schema['Stop']['type']) => s.id === dropoffGuardian?.stopId)
+        const filteredStop = stops.find((s: StopType) => s.id === dropoffGuardian?.stopId)
         return filteredStop
     }, [dropoffGuardian, stops])
 

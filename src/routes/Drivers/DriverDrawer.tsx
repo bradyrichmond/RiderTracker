@@ -6,7 +6,7 @@ import EntityDrawer, { DrawerListActionProps } from '@/components/EntityDrawer'
 import { useDriverStore } from '@/store/DriverStore'
 import { useRouteActionStore } from '@/store/RouteActionStore'
 import dayjs from 'dayjs'
-import { Schema } from '../../../amplify/data/resource'
+import { RouteActionType, UserType } from '@/types/AmplifyTypes'
 
 interface DriverDrawerProps {
     open: boolean
@@ -25,8 +25,8 @@ const DriverDrawer = ({ open, driverId }: DriverDrawerProps) => {
         updateDrivers()
     }, [driverId, updateDrivers])
 
-    const driver: Schema['User']['type'] | undefined = useMemo(() => {
-        const selectedDriver = drivers.find((d: Schema['User']['type']) => d.id === driverId)
+    const driver: UserType | undefined = useMemo(() => {
+        const selectedDriver = drivers.find((d: UserType) => d.id === driverId)
 
         if (selectedDriver) {
             return selectedDriver
@@ -47,7 +47,7 @@ const DriverDrawer = ({ open, driverId }: DriverDrawerProps) => {
 
     const lists = useMemo(() => {
         if (driverId && Array.isArray(routeActions)) {
-            const mappedRouteActions = routeActions.map((r: Schema['RouteAction']['type']) => {
+            const mappedRouteActions = routeActions.map((r: RouteActionType) => {
                 return {
                     id: r.id,
                     label: `${r.actionType} ${dayjs(Number(r.createdAt)).format('YYYY-MM-DD HH:mm:sss')}`

@@ -1,4 +1,4 @@
-import { ScanType } from '@/types/AmplifyTypes'
+import { RiderType, ScanType, StopType, UserType } from '@/types/AmplifyTypes'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
@@ -13,7 +13,6 @@ import { useStopStore } from '@/store/StopStore'
 import { useGuardianStore } from '@/store/GuardianStore'
 import { useScanStore } from '@/store/ScanStore'
 import Grid from '@mui/material/Unstable_Grid2'
-import { Schema } from '../../../amplify/data/resource'
 
 const Scans = () => {
     const [isAddingScan, setIsAddingScan] = useState(false)
@@ -69,9 +68,9 @@ const Scans = () => {
         return initialGridColumns
     }
 
-    const allRiders = useMemo(() => riders.map((r: Schema['Rider']['type']) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` })), [riders])
-    const allStops = useMemo(() => stops.map((s: Schema['Stop']['type']) => ({ id: s.id, label: s.name })), [stops])
-    const allGuardians = useMemo(() => guardians.map((g: Schema['User']['type']) => ({ id: g.id, label: `${g.firstName} ${g.lastName}` })), [guardians])
+    const allRiders = useMemo(() => riders.map((r: RiderType) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` })), [riders])
+    const allStops = useMemo(() => stops.map((s: StopType) => ({ id: s.id, label: s.name })), [stops])
+    const allGuardians = useMemo(() => guardians.map((g: UserType) => ({ id: g.id, label: `${g.firstName} ${g.lastName}` })), [guardians])
 
     useEffect(() => {
         const updateData = async () => {

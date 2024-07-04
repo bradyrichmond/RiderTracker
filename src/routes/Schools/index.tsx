@@ -10,7 +10,7 @@ import { useSchoolStore } from '@/store/SchoolStore'
 import { useAddressStore } from '@/store/AddressStore'
 import { useRiderStore } from '@/store/RiderStore'
 import Grid from '@mui/material/Unstable_Grid2'
-import { Schema } from '../../../amplify/data/resource'
+import { CreateSchoolTypeInput, SchoolType } from '@/types/AmplifyTypes'
 
 interface SchoolsProps {
     activeSchool?: string
@@ -32,7 +32,7 @@ const Schools = ({ activeSchool }: SchoolsProps) => {
         getRiders()
     }, [getSchools, updateAddresses, getRiders])
 
-    const createSchoolAction = async (newSchool: Schema['School']['createType']) => {
+    const createSchoolAction = async (newSchool: CreateSchoolTypeInput) => {
         await createSchool(newSchool)
 
         getSchools()
@@ -75,7 +75,7 @@ const Schools = ({ activeSchool }: SchoolsProps) => {
 
     return (
         <Grid container spacing={2}>
-            <SchoolDrawer open={!!activeSchool} school={schools.find((s: Schema['School']['type']) => s.id === activeSchool)} />
+            <SchoolDrawer open={!!activeSchool} school={schools.find((s: SchoolType) => s.id === activeSchool)} />
             <CreateSchoolDialog createSchool={createSchoolAction} cancelAction={toggleAddingSchool} open={isAddingSchool} />
             <Grid xs={12} md={6}>
                 <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>

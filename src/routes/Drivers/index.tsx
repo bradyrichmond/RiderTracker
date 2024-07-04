@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react'
 import { useDriverStore } from '@/store/DriverStore'
 import DriverDrawer from './DriverDrawer'
 import CreateDriverDialog from './CreateDriverDialog'
-import { Schema } from '../../../amplify/data/resource'
+import { UserType } from '@/types/AmplifyTypes'
 
 interface DriversProps {
     activeDriver?: string
@@ -36,7 +36,7 @@ const Drivers = ({ activeDriver }: DriversProps) => {
         return initialGridColumns
     }
 
-    const processRowUpdate = async (updatedRow: Schema['User']['type']) => {
+    const processRowUpdate = async (updatedRow: UserType) => {
         return updatedRow
     }
 

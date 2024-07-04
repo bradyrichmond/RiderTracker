@@ -1,22 +1,23 @@
 import { Transition } from '@/components/Transition'
+import { CreateRouteTypeInput } from '@/types/AmplifyTypes'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Schema } from '../../../amplify/data/resource'
+
 
 interface CreateRouteDialogProps {
     cancelAction(): void
-    createRoute(route: Schema['Route']['createType']): Promise<void>
+    createRoute(route: CreateRouteTypeInput): Promise<void>
     isAddingRoute: boolean
 }
 
 const CreateRouteDialog = ({ createRoute, cancelAction, isAddingRoute }: CreateRouteDialogProps) => {
     const [disableButtons, setDisableButtons] = useState<boolean>(false)
     const { t } = useTranslation(['routes', 'common'])
-    const { handleSubmit, register, reset, formState: { errors, touchedFields } } = useForm<Schema['Route']['createType']>()
+    const { handleSubmit, register, reset, formState: { errors, touchedFields } } = useForm<CreateRouteTypeInput>()
 
-    const handleCreate = async (newRoute: Schema['Route']['createType']) => {
+    const handleCreate = async (newRoute: CreateRouteTypeInput) => {
         setDisableButtons(false)
         await createRoute(newRoute)
         setDisableButtons(false)

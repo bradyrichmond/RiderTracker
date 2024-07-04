@@ -144,8 +144,11 @@ const Onboarding = () => {
                 title: 'Admin'
             }
 
-            await addUserToOrg(admin)
-            await addUserToAdminGroup(admin)
+            const createdAdmin = await addUserToOrg(admin)
+
+            if (createdAdmin) {
+                await addUserToAdminGroup(createdAdmin)
+            }
         }
     }
 

@@ -1,18 +1,10 @@
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
-import { Schema } from '../../amplify/data/resource'
 import { fetchAuthSession } from 'aws-amplify/auth'
 import { signOut } from 'aws-amplify/auth'
 import { useOrgStore } from './OrgStore'
+import { CreateUserTypeInput, UserType } from '@/types/AmplifyTypes'
 
-export interface UserType {
-    id?: string
-    email?: string
-    firstName: string
-    lastName: string
-    orgId: string
-    title?: string
-}
 
 export interface CreateCognitoUserInput {
     family_name: string
@@ -22,15 +14,15 @@ export interface CreateCognitoUserInput {
 
 interface UserStore {
     addUserToAdminGroup(admin: UserType): Promise<void>
-    addUserToOrg(admin: UserType): Promise<Schema['User']['type']>
-    createDriver(driver: CreateCognitoUserInput): Promise<Schema['User']['type']>
-    createUser(admin: UserType): Promise<Schema['User']['type']>
-    currentUser?: Schema['User']['type']
+    addUserToOrg(admin: CreateUserTypeInput): Promise<UserType>
+    createDriver(driver: CreateCognitoUserInput): Promise<UserType>
+    createUser(admin: CreateUserTypeInput): Promise<UserType>
+    currentUser?: UserType
     fullName?: string
-    getUsers(): Promise<(Schema['User']['type'])[]>
+    getUsers(): Promise<UserType[]>
     signOutAws(): Promise<void>
     updateUserData(): Promise<void>
-    users: (Schema['User']['type'])[]
+    users: UserType[]
     userGroups: string[]
 }
 
@@ -84,11 +76,11 @@ export const useUserStore = create<UserStore>((set, get) => ({
         const response = await get().createUser(newDriver)
 
         await client.mutations.addUserToGroup({ userId: response.id, groupName: 'DRIVERS' })
-        await get().addUserToOrg(newDriver)
+        await get().addUserToOrg(response)
 
         return response
     },
-    createUser: async (user: UserType) => {
+    createUser: async (user: CreateUserTypeInput) => {
         const client = await useApiStore.getState().getClient()
 
         const { data: createCognitoUserData } = await client.mutations.createOrgUser({

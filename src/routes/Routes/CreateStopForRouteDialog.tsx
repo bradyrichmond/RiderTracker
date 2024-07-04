@@ -5,11 +5,11 @@ import ShuffleOnIcon from '@mui/icons-material/ShuffleOn'
 import { useRandomNameGenerator } from '@/hooks/useRandomNameGenerator'
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
-import { Schema } from '../../../amplify/data/resource'
+import { CreateStopTypeInput } from '@/types/AmplifyTypes'
 
 interface CreateStopForRouteDialogProps {
     cancelAction(): void
-    createStop(stop: Schema['Stop']['createType']): Promise<void>
+    createStop(stop: CreateStopTypeInput): Promise<void>
     isAddingStop: boolean
 }
 
@@ -17,9 +17,9 @@ const CreateStopForRouteDialog = ({ cancelAction, createStop, isAddingStop }: Cr
     const [disableButtons, setDisableButtons] = useState<boolean>(false)
     const { t } = useTranslation(['routes', 'common'])
     const { randomName, generateRandomName } = useRandomNameGenerator()
-    const { handleSubmit, reset } = useForm<Schema['Stop']['createType']>()
+    const { handleSubmit, reset } = useForm<CreateStopTypeInput>()
 
-    const handleCreateStop = async (stop: Schema['Stop']['createType']) => {
+    const handleCreateStop = async (stop: CreateStopTypeInput) => {
         setDisableButtons(true)
         stop.name = randomName
         await createStop(stop)

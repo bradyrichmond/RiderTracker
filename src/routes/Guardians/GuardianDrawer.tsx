@@ -8,11 +8,11 @@ import EntityDrawer, { DrawerListActionProps } from '@/components/EntityDrawer'
 import { useGuardianStore } from '@/store/GuardianStore'
 import { useStopStore } from '@/store/StopStore'
 import CreateRiderDialog from '../Riders/CreateRiderDialog'
-import { Schema } from '../../../amplify/data/resource'
+import { CreateRiderTypeInput, RiderType, UserType } from '@/types/AmplifyTypes'
 
 interface GuardianDrawerProps {
     open: boolean
-    guardian?: Schema['User']['type']
+    guardian?: UserType
 }
 
 const GuardianDrawer = ({ open, guardian }: GuardianDrawerProps) => {
@@ -56,7 +56,7 @@ const GuardianDrawer = ({ open, guardian }: GuardianDrawerProps) => {
 
     const lists = useMemo(() => {
         const filteredRiders = riders
-        const mappedRiders = filteredRiders.map((r: Schema['Rider']['type']) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` }))
+        const mappedRiders = filteredRiders.map((r: RiderType) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` }))
         return [
             {
                 title: t('riders'),
@@ -66,7 +66,7 @@ const GuardianDrawer = ({ open, guardian }: GuardianDrawerProps) => {
         ]
     }, [t, viewRiderDetail, riders])
 
-    const createRiderAction = async (newRider: Schema['Rider']['type']) => {
+    const createRiderAction = async (newRider: CreateRiderTypeInput) => {
         await createRider(newRider)
         toggleAddingRider()
         getGuardians()

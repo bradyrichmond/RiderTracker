@@ -3,15 +3,7 @@ import { useApiStore } from './ApiStore'
 import { useOrgStore } from './OrgStore'
 import { v4 as uuid } from 'uuid'
 import { Schema } from '../../amplify/data/resource'
-import { OverrideType } from '@/types/AmplifyTypes'
-
-export interface CreateExceptionInput {
-    date: Date
-    pickupGuardianId?: string
-    dropoffGuardianId?: string
-    pickup: Schema['OverrideType']['type']
-    dropoff: Schema['OverrideType']['type']
-}
+import { CreateExceptionTypeInput, OverrideType } from '@/types/AmplifyTypes'
 
 type ExceptionType = Schema['Exception']['type']
 
@@ -19,7 +11,7 @@ interface ExceptionStore {
     exceptions: ExceptionType[]
     getExceptions(): Promise<void>
     getExceptionById(exceptionId: string): Promise<ExceptionType>
-    createException(exception: CreateExceptionInput, riderId: string): Promise<void>
+    createException(exception: CreateExceptionTypeInput, riderId: string): Promise<void>
     deleteException(exceptionId: string): Promise<void>
 }
 
@@ -45,7 +37,7 @@ export const useExceptionStore = create<ExceptionStore>((set) => ({
 
         throw 'Unable to find exception by id'
     },
-    createException: async (newException: CreateExceptionInput, riderId: string) => {
+    createException: async (newException: CreateExceptionTypeInput, riderId: string) => {
         const client = await useApiStore.getState().getClient()
         const orgId = await useOrgStore.getState().getOrgId()
 
@@ -56,7 +48,7 @@ export const useExceptionStore = create<ExceptionStore>((set) => ({
                 id: exceptionId,
                 orgId: orgId ?? '',
                 riderId: riderId,
-                date: newException.date.toDateString(),
+                date: newException.date,
                 dropoff: newException.dropoff,
                 pickup: newException.pickup
             }

@@ -8,13 +8,11 @@ import { useGuardianStore } from '@/store/GuardianStore'
 import { useExceptionStore } from '@/store/ExceptionStore'
 import RiderSpeedDial from './RiderSpeedDial'
 import Exception from './Exception'
-import { Schema } from '../../../amplify/data/resource'
+import { ExceptionType, RiderType } from '@/types/AmplifyTypes'
 
 interface RiderProps {
     activeRider?: string
 }
-
-type ExceptionType = Schema['Exception']['type']
 
 const Rider = ({ activeRider: riderId }: RiderProps) => {
     const riders = useRiderStore().riders
@@ -33,7 +31,7 @@ const Rider = ({ activeRider: riderId }: RiderProps) => {
     }, [getRiders, getStops, getGuardians, getExceptions])
 
     const rider = useMemo(() => {
-        return riders.find((r: Schema['Rider']['type']) => r.id === riderId)
+        return riders.find((r: RiderType) => r.id === riderId)
     }, [riders, riderId])
 
     const authorizedRiderExceptions = useMemo(() => {

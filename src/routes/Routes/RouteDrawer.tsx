@@ -8,15 +8,12 @@ import { useTranslation } from 'react-i18next'
 import EntityDrawer, { DrawerListActionProps } from '@/components/EntityDrawer'
 import { useStopStore } from '@/store/StopStore'
 import { useRouteStore } from '@/store/RouteStore'
-import { Schema } from '../../../amplify/data/resource'
+import { RouteType, StopType } from '@/types/AmplifyTypes'
 
 interface RouteDrawerProps {
     open: boolean
     routeId: string
 }
-
-type RouteType = Schema['Route']['type']
-type StopType = Schema['Stop']['type']
 
 const RouteDrawer = ({ open, routeId }: RouteDrawerProps) => {
     const [isAddingStop, setIsAddingStop] = useState(false)

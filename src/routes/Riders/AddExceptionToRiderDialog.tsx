@@ -1,5 +1,5 @@
 import { Transition } from '@/components/Transition'
-import { CreateExceptionInput, useExceptionStore } from '@/store/ExceptionStore'
+import { useExceptionStore } from '@/store/ExceptionStore'
 import { useGuardianStore } from '@/store/GuardianStore'
 import { OptionsType } from '@/types/OptionsType'
 import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, TextField } from '@mui/material'
@@ -10,8 +10,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import ExceptionTypeToggleButton from './ExceptionTypeToggleButton'
-import { Schema } from '../../../amplify/data/resource'
-import { OverrideType } from '@/types/AmplifyTypes'
+import { CreateExceptionTypeInput, OverrideType, UserType } from '@/types/AmplifyTypes'
 
 interface AddExceptionToRiderDialogProps {
     cancelAction(): void
@@ -25,13 +24,13 @@ const AddExceptionToRiderDialog = ({ cancelAction, isAddingException }: AddExcep
     const getExceptions = useExceptionStore().getExceptions
     const { t } = useTranslation(['riders', 'common'])
     const { id: riderId } = useParams()
-    const { control, handleSubmit, reset, resetField, setValue, formState: { errors }, watch } = useForm<CreateExceptionInput>()
+    const { control, handleSubmit, reset, resetField, setValue, formState: { errors }, watch } = useForm<CreateExceptionTypeInput>()
 
-    const allGuardians = useMemo(() => guardians.map((g: Schema['User']['type']) => ({ id: g.id, label: `${g.firstName} ${g.lastName}` })), [guardians])
+    const allGuardians = useMemo(() => guardians.map((g: UserType) => ({ id: g.id, label: `${g.firstName} ${g.lastName}` })), [guardians])
 
     const { pickup, dropoff } = watch()
 
-    const createExceptionAction = async (data: CreateExceptionInput) => {
+    const createExceptionAction = async (data: CreateExceptionTypeInput) => {
         if (!riderId) {
             throw 'How are you on this page without a rider id?'
         }
@@ -73,7 +72,7 @@ const AddExceptionToRiderDialog = ({ cancelAction, isAddingException }: AddExcep
                                     label="Exception Date"
                                     onChange={(newValue) => {
                                         if (newValue) {
-                                            setValue('date', newValue.toDate())
+                                            setValue('date', newValue.toString())
                                         }
                                     }}
                                 />
@@ -82,8 +81,8 @@ const AddExceptionToRiderDialog = ({ cancelAction, isAddingException }: AddExcep
                     />
                 </FormControl>
                 <Grid container spacing={2}>
-                    <ExceptionTypeToggleButton title={t('pickup')} value={pickup ?? 'no change'} onChange={(_e: SyntheticEvent, value: Schema['OverrideType']['type']) => { setValue('pickup', value) }} />
-                    <ExceptionTypeToggleButton title={t('dropoff')} value={dropoff ?? 'no change'} onChange={(_e: SyntheticEvent, value: Schema['OverrideType']['type']) => { setValue('dropoff', value) }} />
+                    <ExceptionTypeToggleButton title={t('pickup')} value={OverrideType[pickup] ?? OverrideType.NO_CHANGE} onChange={(_e: SyntheticEvent, value: OverrideType) => { setValue('pickup', value) }} />
+                    <ExceptionTypeToggleButton title={t('dropoff')} value={OverrideType[dropoff] ?? OverrideType.NO_CHANGE} onChange={(_e: SyntheticEvent, value: OverrideType) => { setValue('dropoff', value) }} />
                 </Grid>
                 <FormControl fullWidth>
                     <Autocomplete

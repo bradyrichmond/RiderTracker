@@ -14,7 +14,7 @@ import { useSchoolStore } from '@/store/SchoolStore'
 import { useStopStore } from '@/store/StopStore'
 import { useGuardianStore } from '@/store/GuardianStore'
 import Grid from '@mui/material/Unstable_Grid2'
-import { Schema } from '../../../amplify/data/resource'
+import { CreateRiderTypeInput, RiderType, UpdateRiderTypeInput, UserType } from '@/types/AmplifyTypes'
 
 interface RidersProps {
     activeRider?: string
@@ -64,13 +64,13 @@ const Riders = ({ activeRider }: RidersProps) => {
     }, [stops])
 
     const allGuardians: OptionsType[] = useMemo(() => {
-        return guardians.map((g: Schema['User']['type']) => ({
+        return guardians.map((g: UserType) => ({
             label: `${g.firstName} ${g.lastName}`,
             id: g.id
         }))
     }, [guardians])
 
-    const handleCreateRider = async (newRider: Schema['Rider']['createType']) => {
+    const handleCreateRider = async (newRider: CreateRiderTypeInput) => {
         try {
             await createRider(newRider)
             setIsAddingRider(false)
@@ -95,7 +95,7 @@ const Riders = ({ activeRider }: RidersProps) => {
         return initialGridColumns
     }, [allSchools])
 
-    const processRowUpdate = async (updatedRow: Schema['Rider']['type']) => {
+    const processRowUpdate = async (updatedRow: UpdateRiderTypeInput) => {
         return updatedRow
     }
 
@@ -120,7 +120,7 @@ const Riders = ({ activeRider }: RidersProps) => {
                 allStops={allStops}
                 cancelAction={cancelAction}
             />
-            <RiderDrawer open={!!activeRider} rider={riders.find((r: Schema['Rider']['type']) => r.id === activeRider)} />
+            <RiderDrawer open={!!activeRider} rider={riders.find((r: RiderType) => r.id === activeRider)} />
             <Grid xs={12} md={6}>
                 <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
                     <Typography variant='h2'>

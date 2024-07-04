@@ -7,11 +7,11 @@ import EntityDrawer, { DrawerListActionProps } from '@/components/EntityDrawer'
 import { useRiderStore } from '@/store/RiderStore'
 import { useStopStore } from '@/store/StopStore'
 import { useGuardianStore } from '@/store/GuardianStore'
-import { Schema } from '../../../amplify/data/resource'
+import { RiderType, StopType, UserType } from '@/types/AmplifyTypes'
 
 interface RiderDrawerProps {
     open: boolean
-    rider?: Schema['Rider']['type']
+    rider?: RiderType
 }
 
 const RiderDrawer = ({ open, rider }: RiderDrawerProps) => {
@@ -39,9 +39,9 @@ const RiderDrawer = ({ open, rider }: RiderDrawerProps) => {
     const lists = useMemo(() => {
         if (rider) {
             const filteredStops = stops
-            const mappedStops = filteredStops.map((s: Schema['Stop']['type']) => ({ id: s.id, label: s.name }))
+            const mappedStops = filteredStops.map((s: StopType) => ({ id: s.id, label: s.name }))
             const filteredGuardians = guardians
-            const mappedGuardians = filteredGuardians.map((g: Schema['User']['type']) => ({ id: g.id, label: `${g.firstName} ${g.lastName}` }))
+            const mappedGuardians = filteredGuardians.map((g: UserType) => ({ id: g.id, label: `${g.firstName} ${g.lastName}` }))
 
             return [
                 {

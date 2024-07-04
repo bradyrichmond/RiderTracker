@@ -7,11 +7,11 @@ import { useRiderStore } from '@/store/RiderStore'
 import EntityDrawer, { DrawerListActionProps } from '@/components/EntityDrawer'
 import { useSchoolStore } from '@/store/SchoolStore'
 import CreateSchoolDialog from './CreateSchoolDialog'
-import { Schema } from '../../../amplify/data/resource'
+import { CreateSchoolTypeInput, RiderType, SchoolType } from '@/types/AmplifyTypes'
 
 interface RouteDrawerProps {
     open: boolean
-    school?: Schema['School']['type']
+    school?: SchoolType
 }
 
 const RouteDrawer = ({ open, school }: RouteDrawerProps) => {
@@ -56,7 +56,7 @@ const RouteDrawer = ({ open, school }: RouteDrawerProps) => {
 
     const lists = useMemo(() => {
         const filteredRiders = riders
-        const mappedRiders = filteredRiders.map((r: Schema['Rider']['type']) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` }))
+        const mappedRiders = filteredRiders.map((r: RiderType) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` }))
         const builtLists = [
             {
                 title: t('riders'),
@@ -72,7 +72,7 @@ const RouteDrawer = ({ open, school }: RouteDrawerProps) => {
         setIsAddingSchool((current) => !current)
     }
 
-    const createSchoolAction = async (newSchool: Schema['School']['createType']) => {
+    const createSchoolAction = async (newSchool: CreateSchoolTypeInput) => {
         await createSchool(newSchool)
         toggleAddingSchool()
     }

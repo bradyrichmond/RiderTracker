@@ -1,12 +1,12 @@
 import { Transition } from '@/components/Transition'
 import { useGuardianStore } from '@/store/GuardianStore'
+import { UserType } from '@/types/AmplifyTypes'
 import { OptionsType } from '@/types/OptionsType'
 import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, TextField } from '@mui/material'
 import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
-import { Schema } from '../../../amplify/data/resource'
 
 interface AddGuardianToRiderDialogProps {
     cancelAction(): void
@@ -20,7 +20,7 @@ const AddGuardianToRiderDialog = ({ cancelAction, isAddingGuardian }: AddGuardia
     const { handleSubmit, reset, resetField, setValue, formState: { errors } } = useForm<{ guardianIds: string[] }>()
     const { id: riderId } = useParams()
 
-    const allGuardians = useMemo((): OptionsType[] => guardians.map((g: Schema['User']['type']) => ({ id: g.id, label: `${g.firstName} ${g.lastName}` })), [guardians])
+    const allGuardians = useMemo((): OptionsType[] => guardians.map((g: UserType) => ({ id: g.id, label: `${g.firstName} ${g.lastName}` })), [guardians])
 
     const updateRiderGuardians = async () => {
         setDisableButtons(true)

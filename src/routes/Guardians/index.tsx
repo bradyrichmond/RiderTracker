@@ -10,7 +10,7 @@ import SearchBar from '@/components/SearchBar'
 import GuardianDrawer from './GuardianDrawer'
 import { useRiderStore } from '@/store/RiderStore'
 import Grid from '@mui/material/Unstable_Grid2'
-import { Schema } from '../../../amplify/data/resource'
+import { UpdateUserTypeInput, UserType } from '@/types/AmplifyTypes'
 
 export interface CreateGuardianInput {
     given_name: string
@@ -54,7 +54,7 @@ const Guardians = ({ activeGuardian }: GuardiansProps) => {
         return initialGridColumns
     }
 
-    const processRowUpdate = async (updatedRow: Schema['User']['type']) => {
+    const processRowUpdate = async (updatedRow: UpdateUserTypeInput) => {
         return updatedRow
     }
 
@@ -68,7 +68,7 @@ const Guardians = ({ activeGuardian }: GuardiansProps) => {
 
     return (
         <Grid container spacing={2}>
-            <GuardianDrawer open={!!activeGuardian} guardian={guardians.find((g: Schema['User']['type']) => g.id === activeGuardian)} />
+            <GuardianDrawer open={!!activeGuardian} guardian={guardians.find((g: UserType) => g.id === activeGuardian)} />
             <CreateGuardianDialog createGuardian={createGuardianAction} isAddingGuardian={isAddingGuardian} cancel={toggleShowModal} />
             <Grid xs={12} md={6}>
                 <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>

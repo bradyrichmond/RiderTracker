@@ -4,11 +4,10 @@ import { useUserStore } from '@/store/UserStore'
 import Grid from '@mui/material/Unstable_Grid2'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Schema } from '../../../../amplify/data/resource'
-import { RouteActionTypes } from '@/types/AmplifyTypes'
+import { RouteActionTypes, RouteType } from '@/types/AmplifyTypes'
 
 const ActiveRoute = () => {
-    const [activeRoute, setActiveRoute] = useState<Schema['Route']['type'] | undefined>()
+    const [activeRoute, setActiveRoute] = useState<RouteType | undefined>()
     const routeActions = useRouteActionStore().routeActions
     const getRouteById = useRouteStore().getRouteById
     const userId = useUserStore().currentUser?.id

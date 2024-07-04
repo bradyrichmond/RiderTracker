@@ -8,7 +8,7 @@ import RouteDrawer from './RouteDrawer'
 import { useNavigate } from 'react-router-dom'
 import { useRouteStore } from '@/store/RouteStore'
 import Grid from '@mui/material/Unstable_Grid2'
-import { Schema } from '../../../amplify/data/resource'
+import { CreateRouteTypeInput, RouteType } from '@/types/AmplifyTypes'
 
 interface RoutesProps {
     activeRoute?: string
@@ -27,7 +27,7 @@ const Routes = ({ activeRoute }: RoutesProps) => {
         getRoutes()
     }, [activeRoute, getRoutes])
 
-    const createRouteAction = async (newRoute: Schema['Route']['createType']) => {
+    const createRouteAction = async (newRoute: CreateRouteTypeInput) => {
         await createRoute(newRoute)
         setIsAddingRoute(false)
     }
@@ -42,7 +42,7 @@ const Routes = ({ activeRoute }: RoutesProps) => {
         return initialGridColumns
     }
 
-    const processRowUpdate = async (updatedRow: Schema['Route']['type']) => {
+    const processRowUpdate = async (updatedRow: RouteType) => {
         return updatedRow
     }
 

@@ -1,22 +1,22 @@
 import { Transition } from '@/components/Transition'
+import { CreateSchoolTypeInput } from '@/types/AmplifyTypes'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Schema } from '../../../amplify/data/resource'
 
 interface CreateSchoolDialogProps {
     cancelAction(): void
-    createSchool(school: Schema['School']['createType']): Promise<void>
+    createSchool(school: CreateSchoolTypeInput): Promise<void>
     open: boolean
 }
 
 const CreateSchoolDialog = ({ createSchool, cancelAction, open }: CreateSchoolDialogProps) => {
     const [disableButtons, setDisableButtons] = useState<boolean>(false)
     const { t } = useTranslation(['schools', 'common'])
-    const { handleSubmit, register, reset, formState: { errors, touchedFields } } = useForm<Schema['School']['createType']>()
+    const { handleSubmit, register, reset, formState: { errors, touchedFields } } = useForm<CreateSchoolTypeInput>()
 
-    const handleCreate = async (school: Schema['School']['createType']) => {
+    const handleCreate = async (school: CreateSchoolTypeInput) => {
         setDisableButtons(false)
         await createSchool(school)
         setDisableButtons(false)

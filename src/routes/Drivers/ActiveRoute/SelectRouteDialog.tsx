@@ -1,13 +1,11 @@
 import { Transition } from '@/components/Transition'
 import { useRouteStore } from '@/store/RouteStore'
+import { RouteType } from '@/types/AmplifyTypes'
 import { OptionsType } from '@/types/OptionsType'
 import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, TextField } from '@mui/material'
 import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { Schema } from '../../../../amplify/data/resource'
-
-type RouteType = Schema['Route']['type']
 
 interface SelectRouteDialogProps {
     cancelAction(): void

@@ -3,13 +3,11 @@ import { Paper, Typography } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import { useEffect, useMemo, useState } from 'react'
 import EditSchoolDialog from './EditSchoolHoursDialog'
-import { Schema } from '../../../amplify/data/resource'
+import { SchoolType } from '@/types/AmplifyTypes'
 
 interface SchoolProps {
     activeSchool?: string
 }
-
-type SchoolType = Schema['School']['type']
 
 const School = ({ activeSchool }: SchoolProps) => {
     const [isEditingHours, setIsEditingHours] = useState(false)

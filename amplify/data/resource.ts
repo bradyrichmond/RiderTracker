@@ -121,12 +121,12 @@ const schema = a.schema({
   Exception: a.model({
     authorized: a.boolean(),
     date: a.date().required(),
-    dropoff: a.ref('OverrideType'),
+    dropoff: a.ref('OverrideType').required(),
     dropoffGuardianId: a.id(),
     dropoffStopId: a.id(),
     id: a.id(),
     orgId: a.id().required(),
-    pickup: a.ref('OverrideType'),
+    pickup: a.ref('OverrideType').required(),
     pickupGuardianId: a.id(),
     pickupStopId: a.id(),
     riderId: a.id()
