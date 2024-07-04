@@ -1,5 +1,4 @@
 import { Transition } from '@/components/Transition'
-import { useRiderStore } from '@/store/RiderStore'
 import { useStopStore } from '@/store/StopStore'
 import { OptionsType } from '@/types/FormTypes'
 import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, TextField } from '@mui/material'
@@ -17,16 +16,15 @@ const AddStopToRiderDialog = ({ cancelAction, isAddingStop }: AddStopToRiderDial
     const [disableButtons, setDisableButtons] = useState(false)
     const { t } = useTranslation(['riders', 'common'])
     const stops = useStopStore().stops
-    const addStopToRider = useRiderStore().addStopToRider
     const { handleSubmit, reset, resetField, setValue, formState: { errors } } = useForm<{ stopId: string }>()
     const { id: riderId } = useParams()
 
-    const allStops = useMemo((): OptionsType[] => stops.map((stop) => ({ id: stop.id, label: stop.stopName })), [stops])
+    const allStops = useMemo((): OptionsType[] => stops.map((stop) => ({ id: stop.id, label: stop.name })), [stops])
 
-    const updateRiderStops = async ({ stopId }: { stopId: string }) => {
+    const updateRiderStops = async () => {
         setDisableButtons(true)
         if (riderId) {
-            addStopToRider(stopId, riderId)
+            // TODO: Fix add rider to stop
             resetForm()
             setDisableButtons(false)
         }

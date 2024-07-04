@@ -1,7 +1,8 @@
-import { GuardianType } from '@/types/UserType'
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
-import { useOrgStore } from './OrgStore'
+import { Schema } from '../../amplify/data/resource'
+
+type GuardianType = Schema['User']['type']
 
 interface GuardianStore {
     changeSearchArg(searchArg: string): Promise<void>
@@ -27,17 +28,12 @@ export const useGuardianStore = create<GuardianStore>((set, get) => ({
         set({ guardians })
     },
     deleteGuardian: async (guardian: GuardianType) => {
-        const orgId = useOrgStore.getState().orgId
-        const api = await useApiStore.getState().getApi()
-
-        await api?.users.deleteUser(orgId, guardian.id)
-
-        await get().getGuardians()
+        const client = await useApiStore.getState().getClient()
+        await client.models.User.delete({ id: guardian.id })
     },
     getGuardianById: async (guardianId: string) => {
         const client = await useApiStore.getState().getClient()
-        const orgId = await useOrgStore.getState().getOrgId()
-        const guardian = await api?.users.getGuardianById(orgId, guardianId)
+        const { data: guardian } = await client.models.User.get({ id: guardianId })
 
         if (guardian) {
             return guardian
@@ -46,10 +42,9 @@ export const useGuardianStore = create<GuardianStore>((set, get) => ({
         throw 'Failed to get guardian by id'
     },
     getGuardians: async () => {
-        const orgId = useOrgStore.getState().orgId
-        const api = await useApiStore.getState().getApi()
+        const client = await useApiStore.getState().getClient()
 
-        const fetchedGuardians = await api?.users.getGuardians(orgId)
+        const { data: fetchedGuardians } = await client.models.User.list()
         set({ guardians: fetchedGuardians })
     },
     guardians: [],

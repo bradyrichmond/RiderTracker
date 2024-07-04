@@ -5,7 +5,6 @@ import { signIn, signOut } from '@aws-amplify/auth'
 import { useNavigate } from 'react-router-dom'
 import { Hub } from 'aws-amplify/utils'
 import { useTranslation } from 'react-i18next'
-import { useOrgStore } from '@/store/OrgStore'
 import { useUserStore } from '@/store/UserStore'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { loginSchema } from '@/validation/loginSchema'
@@ -23,15 +22,12 @@ const LoginForm = () => {
     const [resetPasswordRequired, setResetPasswordRequired] = useState(false)
     const { handleSubmit, register, formState: { errors, touchedFields }, reset } = useForm<LoginFormInputs>({ resolver: yupResolver(loginSchema) })
     const updateUserData = useUserStore().updateUserData
-    const { orgName, organizationLoginImageUrl, updateOrgData } = useOrgStore()
     const [errorMessage, setErrorMessage] = useState('')
     const [disableButtons, setDisabledButtons] = useState(false)
     const navigate = useNavigate()
     const { t } = useTranslation(['auth', 'common'])
 
     useEffect(() => {
-        updateOrgData()
-
         const cleanup = Hub.listen('auth', async ({ payload: { event } }) => {
             if (event === 'signedIn') {
                 try {
@@ -45,7 +41,7 @@ const LoginForm = () => {
         return () => {
             cleanup()
         }
-    }, [updateOrgData, updateUserData])
+    }, [updateUserData])
 
     const completeSignIn = async (newPassword: string) => {
         await confirmSignIn({
@@ -114,15 +110,6 @@ const LoginForm = () => {
     return (
         <Box sx={{ flex: 1 }}>
             <Box sx={{ pl: 4, pr: 4 }}>
-                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    {organizationLoginImageUrl ?
-                        <img src={organizationLoginImageUrl} alt={`${orgName}`} />
-                        :
-                        <Typography variant='h3'>
-                            {orgName}
-                        </Typography>
-                    }
-                </Box>
                 <Box sx={{ mt: 4 }}>
                     <form onSubmit={handleSubmit(login)}>
                         <Box sx={{ display: 'flex', flexDirection: 'column' }}>

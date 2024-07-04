@@ -1,21 +1,17 @@
-import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
 import { useCallback, useEffect, useMemo } from 'react'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import InfoIcon from '@mui/icons-material/Info'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useUserStore } from '@/store/UserStore'
 import EntityDrawer, { DrawerListActionProps } from '@/components/EntityDrawer'
 import { useRiderStore } from '@/store/RiderStore'
-import { RiderType } from '@/types/RiderType'
 import { useStopStore } from '@/store/StopStore'
-import { StopType } from '@/types/StopType'
 import { useGuardianStore } from '@/store/GuardianStore'
-import { GuardianType } from '@/types/UserType'
+import { Schema } from '../../../amplify/data/resource'
 
 interface RiderDrawerProps {
     open: boolean
-    rider?: RiderType
+    rider?: Schema['Rider']['type']
 }
 
 const RiderDrawer = ({ open, rider }: RiderDrawerProps) => {
@@ -23,7 +19,6 @@ const RiderDrawer = ({ open, rider }: RiderDrawerProps) => {
     const getStops = useStopStore().getStops
     const guardians = useGuardianStore().guardians
     const getGuardians = useGuardianStore().getGuardians
-    const heaviestRole = useUserStore().heaviestRole
     const { deleteRider } = useRiderStore()
     const navigate = useNavigate()
     const { t } = useTranslation(['riders', 'common'])
@@ -43,10 +38,10 @@ const RiderDrawer = ({ open, rider }: RiderDrawerProps) => {
 
     const lists = useMemo(() => {
         if (rider) {
-            const filteredStops = stops.filter((s: StopType) => rider.stopIds.includes(s.id))
-            const mappedStops = filteredStops.map((s: StopType) => ({ id: s.id, label: s.stopName }))
-            const filteredGuardians = guardians.filter((g: GuardianType) => rider.guardianIds?.includes(g.id))
-            const mappedGuardians = filteredGuardians.map((g: GuardianType) => ({ id: g.id, label: `${g.firstName} ${g.lastName}` }))
+            const filteredStops = stops
+            const mappedStops = filteredStops.map((s: Schema['Stop']['type']) => ({ id: s.id, label: s.name }))
+            const filteredGuardians = guardians
+            const mappedGuardians = filteredGuardians.map((g: Schema['User']['type']) => ({ id: g.id, label: `${g.firstName} ${g.lastName}` }))
 
             return [
                 {
@@ -67,7 +62,7 @@ const RiderDrawer = ({ open, rider }: RiderDrawerProps) => {
 
     const deleteRiderAction = useCallback(async () => {
         if (rider) {
-            await deleteRider(rider)
+            await deleteRider(rider.id)
             return
         }
     }, [deleteRider, rider])
@@ -78,15 +73,12 @@ const RiderDrawer = ({ open, rider }: RiderDrawerProps) => {
 
     const actionItems = useMemo(() => {
         const builtActionItems: DrawerListActionProps[] = []
-        const userPermissions = RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole]
 
-        if (userPermissions.includes(permissions.DELETE_GUARDIAN)) {
-            builtActionItems.push({
-                handleClick: deleteRiderAction,
-                tooltipTitle: t('deleteRider'),
-                Icon: DeleteForeverIcon
-            })
-        }
+        builtActionItems.push({
+            handleClick: deleteRiderAction,
+            tooltipTitle: t('deleteRider'),
+            Icon: DeleteForeverIcon
+        })
 
         builtActionItems.push({
             handleClick: viewRiderDetail,
@@ -96,7 +88,7 @@ const RiderDrawer = ({ open, rider }: RiderDrawerProps) => {
 
         return builtActionItems
 
-    }, [deleteRiderAction, viewRiderDetail, heaviestRole, t])
+    }, [deleteRiderAction, viewRiderDetail, t])
 
     const handleBack = () => {
         navigate('/app/riders')

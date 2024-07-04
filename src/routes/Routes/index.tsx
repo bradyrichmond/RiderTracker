@@ -2,15 +2,13 @@ import { useEffect, useState } from 'react'
 import { DataGrid, GridColDef, GridComparatorFn } from '@mui/x-data-grid'
 import { Box, Button, CircularProgress, Typography } from '@mui/material'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
-import { RouteType } from '@/types/RouteType'
 import { useTranslation } from 'react-i18next'
 import CreateRouteDialog from './CreateRouteDialog'
 import RouteDrawer from './RouteDrawer'
 import { useNavigate } from 'react-router-dom'
 import { useRouteStore } from '@/store/RouteStore'
-import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
-import { useUserStore } from '@/store/UserStore'
 import Grid from '@mui/material/Unstable_Grid2'
+import { Schema } from '../../../amplify/data/resource'
 
 interface RoutesProps {
     activeRoute?: string
@@ -22,7 +20,6 @@ const routeNumberComparator: GridComparatorFn<string> = (v1, v2) =>
 const Routes = ({ activeRoute }: RoutesProps) => {
     const [isAddingRoute, setIsAddingRoute] = useState(false)
     const { routes, getRoutes, createRoute } = useRouteStore()
-    const heaviestRole = useUserStore().heaviestRole
     const { t } = useTranslation('routes')
     const navigate = useNavigate()
 
@@ -30,7 +27,7 @@ const Routes = ({ activeRoute }: RoutesProps) => {
         getRoutes()
     }, [activeRoute, getRoutes])
 
-    const createRouteAction = async (newRoute: RouteType) => {
+    const createRouteAction = async (newRoute: Schema['Route']['createType']) => {
         await createRoute(newRoute)
         setIsAddingRoute(false)
     }
@@ -45,7 +42,7 @@ const Routes = ({ activeRoute }: RoutesProps) => {
         return initialGridColumns
     }
 
-    const processRowUpdate = async (updatedRow: RouteType) => {
+    const processRowUpdate = async (updatedRow: Schema['Route']['type']) => {
         return updatedRow
     }
 
@@ -70,21 +67,16 @@ const Routes = ({ activeRoute }: RoutesProps) => {
             </Grid>
             <Grid xs={12} md={6}>
                 <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    {
-                        RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_ROUTE) ?
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            <Button variant='contained' onClick={toggleIsAddingRoute}>
-                                <Box display='flex' flexDirection='row'>
-                                    <AddCircleIcon />
-                                    <Box sx={{ flex: 1, ml: 2 }}>
-                                        <Typography>{t('addRoute')}</Typography>
-                                    </Box>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <Button variant='contained' onClick={toggleIsAddingRoute}>
+                            <Box display='flex' flexDirection='row'>
+                                <AddCircleIcon />
+                                <Box sx={{ flex: 1, ml: 2 }}>
+                                    <Typography>{t('addRoute')}</Typography>
                                 </Box>
-                            </Button>
-                        </Box>
-                        :
-                        null
-                    }
+                            </Box>
+                        </Button>
+                    </Box>
                 </Box>
             </Grid>
             <Grid xs>

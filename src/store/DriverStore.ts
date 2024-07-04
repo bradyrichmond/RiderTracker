@@ -1,7 +1,8 @@
 import { create } from 'zustand'
-import { UserType } from '@/types/UserType'
 import { useApiStore } from './ApiStore'
-import { useOrgStore } from './OrgStore'
+import { Schema } from '../../amplify/data/resource'
+
+type UserType = Schema['User']['type']
 
 interface DriverStore {
     drivers: UserType[]
@@ -14,23 +15,24 @@ export const useDriverStore = create<DriverStore>((set, get) => ({
     drivers: [],
     updateDrivers: async () => {
         const client = await useApiStore.getState().getClient()
-        const orgId = await useOrgStore.getState().getOrgId()
-        const drivers = await api?.users.getDrivers(orgId)
+        const { data: drivers } = await client.models.User.list()
 
-        set({ drivers })
+        if (drivers) {
+            set({ drivers })
+        }
+
+        throw 'failed to get drivers'
     },
     deleteDriver: async (driverId: string) => {
         const client = await useApiStore.getState().getClient()
-        const orgId = await useOrgStore.getState().getOrgId()
 
-        await api?.users.deleteUser(orgId, driverId)
+        await client.models.User.delete({ id: driverId })
         await get().updateDrivers()
     },
     getDriverById: async (driverId: string) => {
         const client = await useApiStore.getState().getClient()
-        const orgId = await useOrgStore.getState().getOrgId()
 
-        const driver = api?.users.getDriverById(orgId, driverId)
+        const { data: driver } = await client.models.User.get({ id: driverId })
 
         if (driver) {
             return driver

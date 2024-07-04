@@ -5,11 +5,12 @@ import PauseIcon from '@mui/icons-material/Pause'
 import ChangeCircleIcon from '@mui/icons-material/ChangeCircle'
 import { useTranslation } from 'react-i18next'
 import { SyntheticEvent } from 'react'
+import { Schema } from '../../../amplify/data/resource'
 
 interface ExceptionTypeToggleButtonProps {
     title: string
-    onChange: (_e: SyntheticEvent, value: string) => void
-    value: string
+    onChange: (_e: SyntheticEvent, value: Schema['OverrideType']['type']) => void
+    value: Schema['OverrideType']['type']
 }
 
 const ExceptionTypeToggleButton = ({ title, onChange, value }: ExceptionTypeToggleButtonProps) => {

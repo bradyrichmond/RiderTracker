@@ -1,4 +1,3 @@
-import { SchoolType } from '@/types/SchoolType'
 import { useEffect, useState } from 'react'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
@@ -11,6 +10,7 @@ import { useSchoolStore } from '@/store/SchoolStore'
 import { useAddressStore } from '@/store/AddressStore'
 import { useRiderStore } from '@/store/RiderStore'
 import Grid from '@mui/material/Unstable_Grid2'
+import { Schema } from '../../../amplify/data/resource'
 
 interface SchoolsProps {
     activeSchool?: string
@@ -32,8 +32,8 @@ const Schools = ({ activeSchool }: SchoolsProps) => {
         getRiders()
     }, [getSchools, updateAddresses, getRiders])
 
-    const createSchoolAction = async (newSchool: SchoolType, address: string) => {
-        await createSchool(newSchool, address)
+    const createSchoolAction = async (newSchool: Schema['School']['createType']) => {
+        await createSchool(newSchool)
 
         getSchools()
         updateAddresses()
@@ -65,10 +65,6 @@ const Schools = ({ activeSchool }: SchoolsProps) => {
         return initialGridColumns
     }
 
-    const processRowUpdate = async (_updatedRow: SchoolType, originalRow: SchoolType) => {
-        return originalRow
-    }
-
     const handleRowClick = (id: string) => {
         navigate(`/app/schools/${id}`)
     }
@@ -79,7 +75,7 @@ const Schools = ({ activeSchool }: SchoolsProps) => {
 
     return (
         <Grid container spacing={2}>
-            <SchoolDrawer open={!!activeSchool} school={schools.find((s: SchoolType) => s.id === activeSchool)} />
+            <SchoolDrawer open={!!activeSchool} school={schools.find((s: Schema['School']['type']) => s.id === activeSchool)} />
             <CreateSchoolDialog createSchool={createSchoolAction} cancelAction={toggleAddingSchool} open={isAddingSchool} />
             <Grid xs={12} md={6}>
                 <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
@@ -109,7 +105,6 @@ const Schools = ({ activeSchool }: SchoolsProps) => {
                             rows={schools}
                             columns={generateGridColumns()}
                             rowHeight={100}
-                            processRowUpdate={processRowUpdate}
                             onRowClick={(params) => handleRowClick(params.row.id)}
                             initialState={{
                                 sorting: {

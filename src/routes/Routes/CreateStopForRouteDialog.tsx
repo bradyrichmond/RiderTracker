@@ -2,37 +2,26 @@ import { Transition } from '@/components/Transition'
 import { Box, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField, Tooltip } from '@mui/material'
 import { useTranslation } from 'react-i18next'
 import ShuffleOnIcon from '@mui/icons-material/ShuffleOn'
-import { StopType } from '@/types/StopType'
 import { useRandomNameGenerator } from '@/hooks/useRandomNameGenerator'
 import { useForm } from 'react-hook-form'
-import { useEffect, useState } from 'react'
-import { v4 as uuid } from 'uuid'
-import { useOrgStore } from '@/store/OrgStore'
+import { useState } from 'react'
+import { Schema } from '../../../amplify/data/resource'
 
 interface CreateStopForRouteDialogProps {
     cancelAction(): void
-    createStop(stop: StopType): Promise<void>
+    createStop(stop: Schema['Stop']['createType']): Promise<void>
     isAddingStop: boolean
 }
 
 const CreateStopForRouteDialog = ({ cancelAction, createStop, isAddingStop }: CreateStopForRouteDialogProps) => {
-    const [newStopId, setNewStopId] = useState<string>('')
     const [disableButtons, setDisableButtons] = useState<boolean>(false)
     const { t } = useTranslation(['routes', 'common'])
     const { randomName, generateRandomName } = useRandomNameGenerator()
-    const { handleSubmit, register, reset } = useForm<StopType>()
-    const { orgId } = useOrgStore()
+    const { handleSubmit, reset } = useForm<Schema['Stop']['createType']>()
 
-    useEffect(() => {
-        if (orgId) {
-            const nextStopId = uuid()
-            setNewStopId(nextStopId)
-        }
-    }, [orgId])
-
-    const handleCreateStop = async (stop: StopType) => {
+    const handleCreateStop = async (stop: Schema['Stop']['createType']) => {
         setDisableButtons(true)
-        stop.stopName = randomName
+        stop.name = randomName
         await createStop(stop)
         generateRandomName()
         setDisableButtons(false)
@@ -69,17 +58,6 @@ const CreateStopForRouteDialog = ({ cancelAction, createStop, isAddingStop }: Cr
                             </Tooltip>
                         </Button>
                     </Box>
-                </Box>
-                <TextField fullWidth label='Address' {...register('address')} />
-                <Box sx={{ height: 0, overflow: 'hidden' }}>
-                    <TextField
-                        value={orgId}
-                        fullWidth {...register('orgId')}
-                    />
-                    <TextField
-                        value={newStopId}
-                        fullWidth {...register('id')}
-                    />
                 </Box>
             </DialogContent>
             <DialogActions sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>

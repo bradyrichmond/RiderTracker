@@ -3,7 +3,6 @@ import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { useEffect, useState } from 'react'
 import { Box, Button, Typography } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import { GuardianType, UserType } from '@/types/UserType'
 import CreateGuardianDialog from './CreateGuardianDialog'
 import { useGuardianStore } from '@/store/GuardianStore'
 import { useTranslation } from 'react-i18next'
@@ -11,6 +10,7 @@ import SearchBar from '@/components/SearchBar'
 import GuardianDrawer from './GuardianDrawer'
 import { useRiderStore } from '@/store/RiderStore'
 import Grid from '@mui/material/Unstable_Grid2'
+import { Schema } from '../../../amplify/data/resource'
 
 export interface CreateGuardianInput {
     given_name: string
@@ -54,7 +54,7 @@ const Guardians = ({ activeGuardian }: GuardiansProps) => {
         return initialGridColumns
     }
 
-    const processRowUpdate = async (updatedRow: UserType) => {
+    const processRowUpdate = async (updatedRow: Schema['User']['type']) => {
         return updatedRow
     }
 
@@ -68,7 +68,7 @@ const Guardians = ({ activeGuardian }: GuardiansProps) => {
 
     return (
         <Grid container spacing={2}>
-            <GuardianDrawer open={!!activeGuardian} guardian={guardians.find((g: GuardianType) => g.id === activeGuardian)} />
+            <GuardianDrawer open={!!activeGuardian} guardian={guardians.find((g: Schema['User']['type']) => g.id === activeGuardian)} />
             <CreateGuardianDialog createGuardian={createGuardianAction} isAddingGuardian={isAddingGuardian} cancel={toggleShowModal} />
             <Grid xs={12} md={6}>
                 <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>

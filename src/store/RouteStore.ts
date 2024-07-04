@@ -1,54 +1,50 @@
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
-import { useOrgStore } from './OrgStore'
-import { RouteType } from '@/types/RouteType'
-import { useUserStore } from './UserStore'
+import { Schema } from '../../amplify/data/resource'
+
+type RouteType = Schema['Route']['type']
 
 interface RouteStore {
     routes: RouteType[]
     getRoutes(): Promise<void>
     getActiveRoutes(): Promise<RouteType[]>
     getInactiveRoutes(): Promise<RouteType[]>
-    createRoute(route: RouteType): Promise<void>
+    createRoute(route: Schema['Route']['createType']): Promise<void>
     deleteRoute(routeId: string): Promise<void>
     getRouteById(routeId: string): Promise<RouteType>
     setRouteActive(routeId: string): Promise<void>
     setRouteInactive(routeId: string): Promise<void>
 }
 
-export const useRouteStore = create<RouteStore>((set, get) => ({
+export const useRouteStore = create<RouteStore>((set) => ({
     routes: [],
     getRoutes: async () => {
-        const orgId = useOrgStore.getState().orgId
-        const api = await useApiStore.getState().getApi()
+        const client = await useApiStore.getState().getClient()
 
-        const fetchedRoutes = await api?.routes.getRoutes(orgId)
+        const { data: fetchedRoutes } = await client.models.Route.list()
 
         if (fetchedRoutes) {
-            set(() => ({ routes: fetchedRoutes }))
+            set({ routes: fetchedRoutes })
         }
     },
     getActiveRoutes: async () => {
-        const orgId = useOrgStore.getState().orgId
-        const api = await useApiStore.getState().getApi()
+        const client = await useApiStore.getState().getClient()
 
-        const fetchedRoutes = await api?.routes.getRoutes(orgId, { isActive: true })
+        const { data: fetchedRoutes } = await client.models.Route.list()
 
         return fetchedRoutes
     },
     getInactiveRoutes: async () => {
-        const orgId = useOrgStore.getState().orgId
-        const api = await useApiStore.getState().getApi()
+        const client = await useApiStore.getState().getClient()
 
-        const fetchedRoutes = await api?.routes.getRoutes(orgId, { isActive: false })
+        const { data: fetchedRoutes } = await client.models.Route.list()
 
         return fetchedRoutes
     },
     getRouteById: async (routeId: string) => {
-        const orgId = useOrgStore.getState().orgId
-        const api = await useApiStore.getState().getApi()
+        const client = await useApiStore.getState().getClient()
 
-        const fetchedRoute = await api?.routes.getRouteById(orgId, routeId)
+        const { data: fetchedRoute } = await client.models.Route.get({ id: routeId })
 
         if (fetchedRoute) {
             return fetchedRoute
@@ -56,32 +52,24 @@ export const useRouteStore = create<RouteStore>((set, get) => ({
 
         throw 'Could not get route by id'
     },
-    createRoute: async (route: RouteType) => {
+    createRoute: async (route: Schema['Route']['createType']) => {
         const client = await useApiStore.getState().getClient()
-        const orgId = await useOrgStore.getState().getOrgId()
 
-        await api?.routes.createRoute(orgId, route)
-        await get().getRoutes()
+        await client.models.Route.create(route)
     },
     deleteRoute: async (routeId: string) => {
-        const orgId = useOrgStore.getState().orgId
-        const api = await useApiStore.getState().getApi()
+        const client = await useApiStore.getState().getClient()
 
-        await api?.routes.deleteRoute(orgId, routeId)
-        await get().getRoutes()
+        await client.models.Route.delete({ id: routeId })
     },
     setRouteActive: async (routeId: string) => {
         const client = await useApiStore.getState().getClient()
-        const orgId = await useOrgStore.getState().getOrgId()
-        const userId = useUserStore.getState().userId
 
-        await api?.routes.updateRoute(orgId, routeId, { isActive: true, updatedBy: userId, updatedAt: new Date().getTime() })
+        await client.models.Route.update({ id: routeId, isActive: true })
     },
     setRouteInactive: async (routeId: string) => {
         const client = await useApiStore.getState().getClient()
-        const orgId = await useOrgStore.getState().getOrgId()
-        const userId = useUserStore.getState().userId
 
-        await api?.routes.updateRoute(orgId, routeId, { isActive: false, updatedBy: userId, updatedAt: new Date().getTime() })
+        await client.models.Route.update({ id: routeId, isActive: false })
     }
 }))

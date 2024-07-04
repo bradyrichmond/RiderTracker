@@ -71,6 +71,11 @@ const schema = a.schema({
     formatted: a.string().required()
   }),
 
+  // Enums
+  RouteActionTypes: a.enum(['route_start', 'route_end', 'route_scan']),
+  ExceptionTypeTypes: a.enum(['authorized', 'unauthorized']),
+  OverrideType: a.enum(['override', 'cancel', 'no change']),
+
   // Models
   Organization: a.model({
     orgName: a.string().required(),
@@ -110,6 +115,19 @@ const schema = a.schema({
     orgId: a.id().required()
   })
   .secondaryIndexes((index) => [index('orgId')]),
+  Exception: a.model({
+    id: a.id(),
+    date: a.date().required(),
+    dropoff: a.ref('OverrideType'),
+    dropoffGuardianId: a.id(),
+    dropoffStopId: a.id(),
+    orgId: a.id().required(),
+    pickup: a.ref('OverrideType'),
+    pickupGuardianId: a.id(),
+    pickupStopId: a.id(),
+    riderId: a.id(),
+    type: a.ref('ExceptionTypeTypes')
+  }),
   Rider: a.model({
     firstName: a.string().required(),
     lastName: a.string().required(),
@@ -118,14 +136,14 @@ const schema = a.schema({
     routeId: a.id().required()
   }),
   Route: a.model({
-    driver: a.id().required(),
     isActive: a.boolean(),
     organization: a.belongsTo('Organization', 'orgId'),
     orgId: a.id().required(),
-    riders: a.id().array().required()
+    riders: a.id().array().required(),
+    routeNumber: a.string().required()
   }),
   RouteAction: a.model({
-    actionType: a.enum(['route_begin', 'route_end', 'route_scan']),
+    actionType: a.ref('RouteActionTypes'),
     driverId: a.id().required(),
     organization: a.belongsTo('Organization', 'orgId'),
     orgId: a.id().required(),
@@ -142,6 +160,7 @@ const schema = a.schema({
     stopIds: a.id().array(),
   }),
   Stop: a.model({
+    name: a.string().required(),
     organization: a.belongsTo('Organization', 'orgId'),
     orgId: a.id().required(),
     riderIds: a.id().array().required(),
@@ -154,6 +173,7 @@ const schema = a.schema({
     lastName: a.string().required(),
     organization: a.belongsTo('Organization', 'orgId'),
     orgId: a.id().required(),
+    stopId: a.id(),
     title: a.string()
   })
 }).authorization((allow) => [allow.authenticated()])

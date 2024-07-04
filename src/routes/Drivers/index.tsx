@@ -1,13 +1,13 @@
 import { useNavigate } from 'react-router-dom'
 import { Box, Button, Typography } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import { UserType } from '@/types/UserType'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { useTranslation } from 'react-i18next'
 import { useEffect, useState } from 'react'
 import { useDriverStore } from '@/store/DriverStore'
 import DriverDrawer from './DriverDrawer'
 import CreateDriverDialog from './CreateDriverDialog'
+import { Schema } from '../../../amplify/data/resource'
 
 interface DriversProps {
     activeDriver?: string
@@ -23,25 +23,20 @@ const Drivers = ({ activeDriver }: DriversProps) => {
         updateDrivers()
     }, [updateDrivers])
 
-    const createDriverAction = async () => {
-        console.log('disabled create driver for now')
-        toggleAddingDriver()
-    }
-
     const toggleAddingDriver = () => {
         setIsAddingDriver((current) => !current)
     }
 
     const generateGridColumns = (): GridColDef[] => {
         const initialGridColumns: GridColDef[] = [
-            { field: 'firstName',  headerName: 'First Name', flex: 1, align: 'center', headerAlign: 'center' },
-            { field: 'lastName',  headerName: 'Last Name', flex: 1, align: 'center', headerAlign: 'center' }
+            { field: 'firstName', headerName: 'First Name', flex: 1, align: 'center', headerAlign: 'center' },
+            { field: 'lastName', headerName: 'Last Name', flex: 1, align: 'center', headerAlign: 'center' }
         ]
 
         return initialGridColumns
     }
 
-    const processRowUpdate = async (updatedRow: UserType) => {
+    const processRowUpdate = async (updatedRow: Schema['User']['type']) => {
         return updatedRow
     }
 
@@ -57,22 +52,21 @@ const Drivers = ({ activeDriver }: DriversProps) => {
                         {t('drivers')}
                     </Typography>
                 </Box>
-                    <Box sx={{ padding: 4, flex: 1, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
-                        <Button variant='contained' onClick={toggleAddingDriver}>
-                            <Box display='flex' flexDirection='row'>
-                                <AddCircleIcon />
-                                <Box sx={{ flex: 1, ml: 2 }}>
-                                    <Typography>{t('addDriver')}</Typography>
-                                </Box>
+                <Box sx={{ padding: 4, flex: 1, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
+                    <Button variant='contained' onClick={toggleAddingDriver}>
+                        <Box display='flex' flexDirection='row'>
+                            <AddCircleIcon />
+                            <Box sx={{ flex: 1, ml: 2 }}>
+                                <Typography>{t('addDriver')}</Typography>
                             </Box>
-                        </Button>
-                    </Box>
+                        </Box>
+                    </Button>
+                </Box>
             </Box>
             <DriverDrawer open={!!activeDriver} driverId={activeDriver ?? ''} />
             <CreateDriverDialog
                 isAddingDriver={isAddingDriver}
                 cancel={toggleAddingDriver}
-                createDriver={createDriverAction}
             />
             <Box sx={{ flex: 1 }}>
                 <Box sx={{ height: '100%', width: '100%' }}>

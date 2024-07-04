@@ -8,9 +8,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { editSchoolHoursSchema } from '@/validation/editSchoolHoursSchema'
 import { TimePicker } from '@mui/x-date-pickers'
 import dayjs, { Dayjs } from 'dayjs'
-import { useParams } from 'react-router-dom'
-import { useSchoolStore } from '@/store/SchoolStore'
-import { SchoolHourType, SchoolType } from '@/types/SchoolType'
+import { SchoolHourType } from '@/types/SchoolType'
 
 interface EditSchoolDialogProps {
     cancelAction(): void
@@ -20,18 +18,9 @@ interface EditSchoolDialogProps {
 
 const EditSchoolDialog = ({ cancelAction, updateAction, open }: EditSchoolDialogProps) => {
     const [disableButtons, setDisableButtons] = useState(false)
-    const [schoolHoursCopy, setSchoolHoursCopy] = useState<SchoolHourType[]>()
-    const schools = useSchoolStore().schools
+    const [schoolHoursCopy] = useState<SchoolHourType[]>([])
     const { handleSubmit } = useForm({ resolver: yupResolver(editSchoolHoursSchema) })
-    const { id: schoolId } = useParams()
     const { t } = useTranslation('schools')
-
-    useMemo(() => {
-        const pickedSchool = schools.find((s: SchoolType) => s.id === schoolId)
-        // TODO: Figure out relationship with single table
-        setSchoolHoursCopy(pickedSchool?.hours ?? [])
-        return pickedSchool
-    }, [schools, schoolId])
 
     const handleUpdate = async () => {
         if (schoolHoursCopy) {
@@ -42,21 +31,8 @@ const EditSchoolDialog = ({ cancelAction, updateAction, open }: EditSchoolDialog
         }
     }
 
-    const handleChange = (index: number, time: Dayjs, startTime?: boolean) => {
-        if (schoolHoursCopy) {
-            const dayToEdit = schoolHoursCopy[index]
-            const propertyToUpdate = startTime ? 'startTime' : 'endTime'
-
-            if (dayToEdit) {
-                dayToEdit[propertyToUpdate] = time.toDate().getTime().toString()
-                setSchoolHoursCopy((current?: SchoolHourType[]) => {
-                    if (current) {
-                        current[index] = dayToEdit
-                        return current
-                    }
-                })
-            }
-        }
+    const handleChange = () => {
+        throw 'You broke this too'
     }
 
     return (

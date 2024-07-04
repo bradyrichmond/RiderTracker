@@ -1,4 +1,3 @@
-import { useApiStore } from '@/store/ApiStore'
 import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 import { Box, Button, TextField } from '@mui/material'
 import { useContext } from 'react'
@@ -14,11 +13,10 @@ interface PasswordFormInput {
 const UpdatePasswordForm = () => {
     const { handleSubmit, register } = useForm<PasswordFormInput>()
     const { showErrorSnackbar } = useContext(SnackbarContext)
-    const getApi = useApiStore().getApi
     const { t } = useTranslation(['settings', 'common'])
 
     const onSubmit = (data: PasswordFormInput) => {
-        const { oldPassword, newPassword, verifyNewPassword } = data
+        const { newPassword, verifyNewPassword } = data
         const passwordVerified = verifyNewPasswordMatch(newPassword, verifyNewPassword)
 
         if (!passwordVerified) {
@@ -26,13 +24,12 @@ const UpdatePasswordForm = () => {
             return
         }
 
-        submitPasswordChangeRequest(oldPassword, newPassword)
+        submitPasswordChangeRequest()
     }
 
-    const submitPasswordChangeRequest = async (oldPassword: string, newPassword: string) => {
+    const submitPasswordChangeRequest = async () => {
         try {
-            const api = await getApi()
-            await api?.users.changeUserPassword(oldPassword, newPassword)
+            // TODO: handle password change
         } catch {
             showPasswordSetFailureSnackbar()
         }

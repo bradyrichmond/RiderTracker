@@ -1,15 +1,12 @@
-import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo } from 'react'
 import BlockIcon from '@mui/icons-material/Block'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useUserStore } from '@/store/UserStore'
 import EntityDrawer, { DrawerListActionProps } from '@/components/EntityDrawer'
-import { UserType } from '@/types/UserType'
 import { useDriverStore } from '@/store/DriverStore'
 import { useRouteActionStore } from '@/store/RouteActionStore'
-import { RouteActionType } from '@/types/RouteActionType'
 import dayjs from 'dayjs'
+import { Schema } from '../../../amplify/data/resource'
 
 interface DriverDrawerProps {
     open: boolean
@@ -17,12 +14,10 @@ interface DriverDrawerProps {
 }
 
 const DriverDrawer = ({ open, driverId }: DriverDrawerProps) => {
-    const heaviestRole = useUserStore().heaviestRole
     const deleteDriver = useDriverStore().deleteDriver
     const drivers = useDriverStore().drivers
     const updateDrivers = useDriverStore().updateDrivers
-    const [routeActions, setRouteActions] = useState<RouteActionType[]>([])
-    const getRouteActionsByDriverId = useRouteActionStore().getRouteActionsByDriverId
+    const routeActions = useRouteActionStore().routeActions
     const navigate = useNavigate()
     const { t } = useTranslation('drivers')
 
@@ -30,8 +25,8 @@ const DriverDrawer = ({ open, driverId }: DriverDrawerProps) => {
         updateDrivers()
     }, [driverId, updateDrivers])
 
-    const driver: UserType | undefined = useMemo(() => {
-        const selectedDriver = drivers.find((d: UserType) => d.id === driverId)
+    const driver: Schema['User']['type'] | undefined = useMemo(() => {
+        const selectedDriver = drivers.find((d: Schema['User']['type']) => d.id === driverId)
 
         if (selectedDriver) {
             return selectedDriver
@@ -50,19 +45,9 @@ const DriverDrawer = ({ open, driverId }: DriverDrawerProps) => {
         }
     }, [driver?.id, deleteDriver, handleBack])
 
-    useEffect(() => {
-        if (driverId) {
-            const getRouteActions = async () => {
-            const fetchedRouteActions = await getRouteActionsByDriverId(driverId)
-            setRouteActions(fetchedRouteActions)
-        }
-
-        getRouteActions() }
-    }, [driverId, getRouteActionsByDriverId])
-
     const lists = useMemo(() => {
         if (driverId && Array.isArray(routeActions)) {
-            const mappedRouteActions = routeActions.map((r: RouteActionType) => {
+            const mappedRouteActions = routeActions.map((r: Schema['RouteAction']['type']) => {
                 return {
                     id: r.id,
                     label: `${r.actionType} ${dayjs(Number(r.createdAt)).format('YYYY-MM-DD HH:mm:sss')}`
@@ -82,18 +67,15 @@ const DriverDrawer = ({ open, driverId }: DriverDrawerProps) => {
 
     const actionItems: DrawerListActionProps[] | undefined = useMemo(() => {
         const builtActionItems: DrawerListActionProps[] = []
-        const userPermissions = RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole]
 
-        if (userPermissions.includes(permissions.DELETE_DRIVER)) {
-            builtActionItems.push({
-                handleClick: disableDriverAction,
-                tooltipTitle: t('disableDriver'),
-                Icon: BlockIcon
-            })
-        }
+        builtActionItems.push({
+            handleClick: disableDriverAction,
+            tooltipTitle: t('disableDriver'),
+            Icon: BlockIcon
+        })
 
         return builtActionItems
-    }, [disableDriverAction, heaviestRole, t])
+    }, [disableDriverAction, t])
 
 
     return (

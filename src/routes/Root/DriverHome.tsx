@@ -9,54 +9,51 @@ import { ActionType } from '@/types/RouteActionType'
 import { useUserStore } from '@/store/UserStore'
 import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 import { useRouteStore } from '@/store/RouteStore'
-import { useOrgStore } from '@/store/OrgStore'
 
 const DriverHome = () => {
     const [isSelectingRoute, setIsSelectingRoute] = useState(false)
     const [disableButtons, setDisableButtons] = useState(false)
     const { t } = useTranslation('drivers')
-    const userId = useUserStore().userId
-    const orgId = useOrgStore().orgId
+    const userId = useUserStore().currentUser?.id
     const createRouteAction = useRouteActionStore().createRouteAction
     const setRouteActive = useRouteStore().setRouteActive
-    const getRouteActionsByDriverId = useRouteActionStore().getRouteActionsByDriverId
     const routeActions = useRouteActionStore().routeActions
     const { showErrorSnackbar } = useContext(SnackbarContext)
     const navigate = useNavigate()
 
     useEffect(() => {
         const checkForActiveRoute = async () => {
-            if (userId && orgId) {
-                const filteredByDriver = await getRouteActionsByDriverId(userId)
+            if (userId) {
+                const mostRecent = routeActions[0]
 
-                const mostRecent = filteredByDriver[0]
-
-                if (mostRecent && mostRecent.actionType === ActionType.ROUTE_BEGIN) {
+                if (mostRecent && mostRecent.actionType === ActionType.ROUTE_START) {
                     navigate('/app/drivers/active-route')
                 }
             }
         }
 
         checkForActiveRoute()
-    }, [routeActions, navigate, orgId, userId, getRouteActionsByDriverId])
+    }, [routeActions, navigate, userId])
 
     const selectRouteAction = async (routeId: string) => {
-        setDisableButtons(true)
+        if (userId) {
+            setDisableButtons(true)
 
-        try {
-            await createRouteAction({
-                actionType: ActionType.ROUTE_BEGIN,
-                driverId: userId,
-                routeId
-            })
+            try {
+                await createRouteAction({
+                    actionType: ActionType.ROUTE_START,
+                    driverId: userId,
+                    routeId
+                })
 
-            await setRouteActive(routeId)
+                await setRouteActive(routeId)
 
-            navigate('/drivers')
-            setDisableButtons(false)
-        } catch {
-            setDisableButtons(false)
-            showErrorSnackbar(t('errorStartingRoute'))
+                navigate('/drivers')
+                setDisableButtons(false)
+            } catch {
+                setDisableButtons(false)
+                showErrorSnackbar(t('errorStartingRoute'))
+            }
         }
     }
 

@@ -1,13 +1,12 @@
-import { SchoolHourType, SchoolType } from '@/types/SchoolType'
+import { SchoolHourType } from '@/types/SchoolType'
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
-import { useOrgStore } from './OrgStore'
-import { useAddressStore } from './AddressStore'
-import { v4 as uuid } from 'uuid'
-import { useUserStore } from './UserStore'
+import { Schema } from '../../amplify/data/resource'
+
+type SchoolType = Schema['School']['type']
 
 interface SchoolStore {
-    createSchool(school: SchoolType, address: string): Promise<void>
+    createSchool(school: Schema['School']['createType']): Promise<void>
     deleteSchool(schoolId: string): Promise<void>
     getSchools(): Promise<void>
     getSchoolById(schoolId: string): Promise<SchoolType>
@@ -16,38 +15,27 @@ interface SchoolStore {
 }
 
 export const useSchoolStore = create<SchoolStore>((set, get) => ({
-    createSchool: async (school: SchoolType, address: string) => {
-        const orgId = useOrgStore.getState().orgId
-        const api = await useApiStore.getState().getApi()
-        const createAddress = useAddressStore.getState().createAddress
+    createSchool: async (school: Schema['School']['createType']) => {
+        const client = await useApiStore.getState().getClient()
 
-        const addressResponse = await createAddress(address)
-        school.addressId = addressResponse.id
-
-        const newSchoolId = uuid()
-        school.id = newSchoolId
-
-        await api?.schools.createSchool(orgId, school)
+        await client.models.School.create(school)
         await get().getSchools()
     },
     deleteSchool: async (schoolId: string) => {
         const client = await useApiStore.getState().getClient()
-        const orgId = await useOrgStore.getState().getOrgId()
 
-        await api?.schools.deleteSchool(orgId, schoolId)
+        await client.models.School.delete({ id: schoolId })
     },
     getSchools: async () => {
         const client = await useApiStore.getState().getClient()
-        const orgId = await useOrgStore.getState().getOrgId()
 
-        const schools = await api?.schools.getSchools(orgId)
+        const { data: schools } = await client.models.School.list()
         set({ schools })
     },
     getSchoolById: async (schoolId: string) => {
         const client = await useApiStore.getState().getClient()
-        const orgId = await useOrgStore.getState().getOrgId()
 
-        const school = await api?.schools.getSchoolById(orgId, schoolId)
+        const { data: school } = await client.models.School.get({ id: schoolId })
 
         if (!school) {
             throw 'Could not find school by id'
@@ -56,19 +44,7 @@ export const useSchoolStore = create<SchoolStore>((set, get) => ({
         return school
     },
     schools: [],
-    updateSchoolHours: async (schoolId: string, hours: SchoolHourType[]) => {
-        const client = await useApiStore.getState().getClient()
-        const orgId = await useOrgStore.getState().getOrgId()
-        const userId = useUserStore.getState().userId
-
-        const school = await get().getSchoolById(schoolId)
-
-        if (school) {
-            school.hours = hours
-            school.updatedBy = userId
-            school.updatedAt = new Date().getTime()
-
-            await api?.schools.updateSchool(orgId, school.id, school)
-        }
+    updateSchoolHours: async () => {
+        throw 'You broke school hours'
     }
 }))

@@ -1,10 +1,8 @@
 import { useNavigate } from 'react-router-dom'
-import { RiderType } from '@/types/RiderType'
 import { Box, Button, CircularProgress, Typography } from '@mui/material'
 import { useContext, useEffect, useMemo, useState } from 'react'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { OptionsType } from '@/types/FormTypes'
-import { GuardianType } from '@/types/UserType'
 import CreateRiderDialog from './CreateRiderDialog'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { useRiderStore } from '@/store/RiderStore'
@@ -15,9 +13,8 @@ import SearchBar from '@/components/SearchBar'
 import { useSchoolStore } from '@/store/SchoolStore'
 import { useStopStore } from '@/store/StopStore'
 import { useGuardianStore } from '@/store/GuardianStore'
-import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
-import { useUserStore } from '@/store/UserStore'
 import Grid from '@mui/material/Unstable_Grid2'
+import { Schema } from '../../../amplify/data/resource'
 
 interface RidersProps {
     activeRider?: string
@@ -28,7 +25,6 @@ const Riders = ({ activeRider }: RidersProps) => {
     const { schools, getSchools } = useSchoolStore()
     const { stops, getStops } = useStopStore()
     const { guardians, getGuardians } = useGuardianStore()
-    const heaviestRole = useUserStore().heaviestRole
     const { showErrorSnackbar } = useContext(SnackbarContext)
     const [isAddingRider, setIsAddingRider] = useState(false)
     const navigate = useNavigate()
@@ -62,19 +58,19 @@ const Riders = ({ activeRider }: RidersProps) => {
 
     const allStops: OptionsType[] = useMemo(() => {
         return stops.map((s) => ({
-            label: s.stopName,
+            label: s.name,
             id: s.id
         }))
     }, [stops])
 
     const allGuardians: OptionsType[] = useMemo(() => {
-        return guardians.map((g: GuardianType) => ({
+        return guardians.map((g: Schema['User']['type']) => ({
             label: `${g.firstName} ${g.lastName}`,
             id: g.id
         }))
     }, [guardians])
 
-    const handleCreateRider = async (newRider: RiderType) => {
+    const handleCreateRider = async (newRider: Schema['Rider']['createType']) => {
         try {
             await createRider(newRider)
             setIsAddingRider(false)
@@ -99,7 +95,7 @@ const Riders = ({ activeRider }: RidersProps) => {
         return initialGridColumns
     }, [allSchools])
 
-    const processRowUpdate = async (updatedRow: RiderType) => {
+    const processRowUpdate = async (updatedRow: Schema['Rider']['type']) => {
         return updatedRow
     }
 
@@ -121,11 +117,10 @@ const Riders = ({ activeRider }: RidersProps) => {
                 createRider={handleCreateRider}
                 isAddingRider={isAddingRider}
                 allGuardians={allGuardians}
-                allSchools={allSchools}
                 allStops={allStops}
                 cancelAction={cancelAction}
             />
-            <RiderDrawer open={!!activeRider} rider={riders.find((r: RiderType) => r.id === activeRider)} />
+            <RiderDrawer open={!!activeRider} rider={riders.find((r: Schema['Rider']['type']) => r.id === activeRider)} />
             <Grid xs={12} md={6}>
                 <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
                     <Typography variant='h2'>
@@ -135,20 +130,16 @@ const Riders = ({ activeRider }: RidersProps) => {
             </Grid>
             <Grid xs={12} md={6}>
                 <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_RIDER) ?
-                        <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            <Button variant='contained' onClick={startAddingRider}>
-                                <Box display='flex' flexDirection='row'>
-                                    <AddCircleIcon />
-                                    <Box sx={{ flex: 1, ml: 2 }}>
-                                        <Typography>{t('addRider')}</Typography>
-                                    </Box>
+                    <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <Button variant='contained' onClick={startAddingRider}>
+                            <Box display='flex' flexDirection='row'>
+                                <AddCircleIcon />
+                                <Box sx={{ flex: 1, ml: 2 }}>
+                                    <Typography>{t('addRider')}</Typography>
                                 </Box>
-                            </Button>
-                        </Box>
-                        :
-                        null
-                    }
+                            </Box>
+                        </Button>
+                    </Box>
                 </Box>
             </Grid>
             <Grid xs={12}>

@@ -3,6 +3,7 @@ import { useApiStore } from './ApiStore'
 import { Schema } from '../../amplify/data/resource'
 import { fetchAuthSession } from 'aws-amplify/auth'
 import { signOut } from 'aws-amplify/auth'
+import { useOrgStore } from './OrgStore'
 
 export interface UserType {
     id?: string
@@ -13,9 +14,16 @@ export interface UserType {
     title?: string
 }
 
+export interface CreateCognitoUserInput {
+    family_name: string
+    given_name: string
+    email: string
+}
+
 interface UserStore {
     addUserToAdminGroup(admin: UserType): Promise<void>
     addUserToOrg(admin: UserType): Promise<Schema['User']['type']>
+    createDriver(driver: CreateCognitoUserInput): Promise<Schema['User']['type']>
     createUser(admin: UserType): Promise<Schema['User']['type']>
     currentUser?: Schema['User']['type']
     fullName?: string
@@ -61,6 +69,24 @@ export const useUserStore = create<UserStore>((set, get) => ({
         }
 
         throw 'Failed to add user to org'
+    },
+    createDriver: async (driver: CreateCognitoUserInput) => {
+        const client = await useApiStore.getState().getClient()
+        const orgId = await useOrgStore.getState().getOrgId()
+
+        const newDriver = {
+            orgId,
+            firstName: driver.given_name,
+            lastName: driver.family_name,
+            email: driver.email
+        }
+
+        const response = await get().createUser(newDriver)
+
+        await client.mutations.addUserToGroup({ userId: response.id, groupName: 'DRIVERS' })
+        await get().addUserToOrg(newDriver)
+
+        return response
     },
     createUser: async (user: UserType) => {
         const client = await useApiStore.getState().getClient()

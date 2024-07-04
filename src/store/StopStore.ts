@@ -1,33 +1,32 @@
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
-import { useOrgStore } from './OrgStore'
-import { StopType } from '@/types/StopType'
+import { Schema } from '../../amplify/data/resource'
+
+type StopType = Schema['Stop']['type']
 
 interface StopStore {
     stops: StopType[]
     getStops(): Promise<void>
     getStopById(stopId: string): Promise<StopType>
-    createStop(stop: StopType): Promise<void>
+    createStop(stop: Schema['Stop']['createType']): Promise<void>
     deleteStop(stopId: string): Promise<void>
 }
 
-export const useStopStore = create<StopStore>((set, get) => ({
+export const useStopStore = create<StopStore>((set) => ({
     stops: [],
     getStops: async () => {
-        const orgId = useOrgStore.getState().orgId
-        const api = await useApiStore.getState().getApi()
+        const client = await useApiStore.getState().getClient()
 
-        const fetchedStops = await api?.stops.getStops(orgId)
+        const { data: fetchedStops } = await client.models.Stop.list()
 
         if (fetchedStops) {
-            set(() => ({ stops: fetchedStops }))
+            set({ stops: fetchedStops })
         }
     },
     getStopById: async (stopId: string) => {
-        const orgId = useOrgStore.getState().orgId
-        const api = await useApiStore.getState().getApi()
+        const client = await useApiStore.getState().getClient()
 
-        const fetchedStop = await api?.stops.getStopById(orgId, stopId)
+        const { data: fetchedStop } = await client.models.Stop.get({ id: stopId })
 
         if (fetchedStop) {
             return fetchedStop
@@ -35,17 +34,13 @@ export const useStopStore = create<StopStore>((set, get) => ({
 
         throw 'Could not get route by id'
     },
-    createStop: async (stop: StopType) => {
-        const orgId = stop.orgId
-        const api = await useApiStore.getState().getApi()
+    createStop: async (stop: Schema['Stop']['createType']) => {
+        const client = await useApiStore.getState().getClient()
 
-        await api?.stops.createStop(orgId, stop)
-        await get().getStops()
+        await client.models.Stop.create(stop)
     },
     deleteStop: async (stopId: string) => {
-        const orgId = useOrgStore.getState().orgId
-        const api = await useApiStore.getState().getApi()
-        await api?.stops.deleteStop(orgId, stopId)
-        await get().getStops()
+        const client = await useApiStore.getState().getClient()
+        await client.models.Stop.delete({ id: stopId })
     }
 }))

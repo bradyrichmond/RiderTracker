@@ -4,11 +4,11 @@ import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 import { Transition } from '@/components/Transition'
-import { CreateCognitoUserParams } from '@/API/AdminApis'
+import { CreateCognitoUserInput } from '@/store/UserStore'
 
 interface CreateAdminDialogProps {
     cancel(): void
-    createAdmin(input: CreateCognitoUserParams): Promise<void>
+    createAdmin(input: CreateCognitoUserInput): Promise<void>
     isAddingAdmin: boolean
 }
 
@@ -20,9 +20,9 @@ const CreateAdminDialog = ({ cancel, createAdmin, isAddingAdmin }: CreateAdminDi
         handleSubmit,
         register,
         reset
-    } = useForm<CreateCognitoUserParams>()
+    } = useForm<CreateCognitoUserInput>()
 
-    const createAdminAction = async (data: CreateCognitoUserParams) => {
+    const createAdminAction = async (data: CreateCognitoUserInput) => {
         try {
             setDisableButtons(true)
             await createAdmin(data)

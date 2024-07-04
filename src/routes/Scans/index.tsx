@@ -12,13 +12,9 @@ import CreateScanDialog from './CreateScanDialog'
 import { useRiderStore } from '@/store/RiderStore'
 import { useStopStore } from '@/store/StopStore'
 import { useGuardianStore } from '@/store/GuardianStore'
-import { RiderType } from '@/types/RiderType'
-import { StopType } from '@/types/StopType'
-import { GuardianType } from '@/types/UserType'
 import { useScanStore } from '@/store/ScanStore'
-import { RIDERTRACKER_PERMISSIONS_BY_ROLE, permissions } from '@/constants/Roles'
-import { useUserStore } from '@/store/UserStore'
 import Grid from '@mui/material/Unstable_Grid2'
+import { Schema } from '../../../amplify/data/resource'
 
 const Scans = () => {
     const [isAddingScan, setIsAddingScan] = useState(false)
@@ -26,7 +22,6 @@ const Scans = () => {
     const { riders, getRiders } = useRiderStore()
     const { stops, getStops } = useStopStore()
     const { guardians, getGuardians } = useGuardianStore()
-    const heaviestRole = useUserStore().heaviestRole
     const navigate = useNavigate()
     const { getCurrentPosition } = useDeviceLocation()
     const { t } = useTranslation('scans')
@@ -76,9 +71,9 @@ const Scans = () => {
         return initialGridColumns
     }
 
-    const allRiders = useMemo(() => riders.map((r: RiderType) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` })), [riders])
-    const allStops = useMemo(() => stops.map((s: StopType) => ({ id: s.id, label: s.stopName })), [stops])
-    const allGuardians = useMemo(() => guardians.map((g: GuardianType) => ({ id: g.id, label: `${g.firstName} ${g.lastName}` })), [guardians])
+    const allRiders = useMemo(() => riders.map((r: Schema['Rider']['type']) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` })), [riders])
+    const allStops = useMemo(() => stops.map((s: Schema['Stop']['type']) => ({ id: s.id, label: s.name })), [stops])
+    const allGuardians = useMemo(() => guardians.map((g: Schema['User']['type']) => ({ id: g.id, label: `${g.firstName} ${g.lastName}` })), [guardians])
 
     useEffect(() => {
         const updateData = async () => {
@@ -122,20 +117,16 @@ const Scans = () => {
             </Grid>
             <Grid xs={12} md={6}>
                 <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    {RIDERTRACKER_PERMISSIONS_BY_ROLE[heaviestRole].includes(permissions.CREATE_SCAN) ?
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            <Button variant='contained' onClick={toggleAddingScan}>
-                                <Box display='flex' flexDirection='row'>
-                                    <AddCircleIcon />
-                                    <Box sx={{ flex: 1, ml: 2 }}>
-                                        <Typography>{t('addScan')}</Typography>
-                                    </Box>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <Button variant='contained' onClick={toggleAddingScan}>
+                            <Box display='flex' flexDirection='row'>
+                                <AddCircleIcon />
+                                <Box sx={{ flex: 1, ml: 2 }}>
+                                    <Typography>{t('addScan')}</Typography>
                                 </Box>
-                            </Button>
-                        </Box>
-                        :
-                        null
-                    }
+                            </Box>
+                        </Button>
+                    </Box>
                 </Box>
             </Grid>
             <Grid xs>

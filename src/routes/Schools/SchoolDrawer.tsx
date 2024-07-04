@@ -6,20 +6,17 @@ import { useTranslation } from 'react-i18next'
 import { useRiderStore } from '@/store/RiderStore'
 import EntityDrawer, { DrawerListActionProps } from '@/components/EntityDrawer'
 import { useSchoolStore } from '@/store/SchoolStore'
-import { SchoolType } from '@/types/SchoolType'
 import CreateSchoolDialog from './CreateSchoolDialog'
-import { RiderType } from '@/types/RiderType'
-import { useUserStore } from '@/store/UserStore'
+import { Schema } from '../../../amplify/data/resource'
 
 interface RouteDrawerProps {
     open: boolean
-    school?: SchoolType
+    school?: Schema['School']['type']
 }
 
 const RouteDrawer = ({ open, school }: RouteDrawerProps) => {
     const [isAddingSchool, setIsAddingSchool] = useState<boolean>(false)
     const { createSchool, deleteSchool } = useSchoolStore()
-    const something = useUserStore()
     const riders = useRiderStore().riders
     const navigate = useNavigate()
     const { t } = useTranslation(['routes', 'common'])
@@ -42,13 +39,11 @@ const RouteDrawer = ({ open, school }: RouteDrawerProps) => {
     const actionItems = useMemo(() => {
         const builtActionItems: DrawerListActionProps[] = []
 
-        if (canDeleteSchool) {
-            builtActionItems.push({
-                handleClick: deleteSchoolAction,
-                tooltipTitle: t('deleteSchool'),
-                Icon: DeleteForeverIcon
-            })
-        }
+        builtActionItems.push({
+            handleClick: deleteSchoolAction,
+            tooltipTitle: t('deleteSchool'),
+            Icon: DeleteForeverIcon
+        })
 
         builtActionItems.push({
             handleClick: viewSchoolDetail,
@@ -60,8 +55,8 @@ const RouteDrawer = ({ open, school }: RouteDrawerProps) => {
     }, [deleteSchoolAction, viewSchoolDetail, t])
 
     const lists = useMemo(() => {
-        const filteredRiders = riders.filter((r: RiderType) => r.schoolId === school?.id)
-        const mappedRiders = filteredRiders.map((r: RiderType) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` }))
+        const filteredRiders = riders
+        const mappedRiders = filteredRiders.map((r: Schema['Rider']['type']) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` }))
         const builtLists = [
             {
                 title: t('riders'),
@@ -71,14 +66,14 @@ const RouteDrawer = ({ open, school }: RouteDrawerProps) => {
         ]
 
         return builtLists
-    }, [t, viewRiderDetail, riders, school])
+    }, [t, viewRiderDetail, riders])
 
     const toggleAddingSchool = () => {
         setIsAddingSchool((current) => !current)
     }
 
-    const createSchoolAction = async (newSchool: SchoolType, address: string) => {
-        await createSchool(newSchool, address)
+    const createSchoolAction = async (newSchool: Schema['School']['createType']) => {
+        await createSchool(newSchool)
         toggleAddingSchool()
     }
 

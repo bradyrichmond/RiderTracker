@@ -1,7 +1,6 @@
 import { Avatar, Badge, Box, Card, Tooltip, Typography } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import FolderIcon from '@mui/icons-material/Folder'
-import { useApiStore } from '@/store/ApiStore'
 import UpdateProfileDataForm from './UpdateProfileDataForm'
 import useFileUpload from '@/hooks/useFileUpload'
 import { MB } from '@/constants/Numbers'
@@ -10,13 +9,12 @@ import { useTranslation } from 'react-i18next'
 import { useUserStore } from '@/store/UserStore'
 
 const ProfileSettings = () => {
-    const getApi = useApiStore().getApi
-    const { userId, userFullName, userPictureUrl, updateUserData } = useUserStore()
+    const updateUserData = useUserStore().updateUserData
+    const currentUser = useUserStore().currentUser
     const { t } = useTranslation('settings')
 
-    const uploadFile = async (file: File) => {
-        const api = await getApi()
-        await api?.admin.updateUserProfileImage(file, userId)
+    const uploadFile = async () => {
+        // TODO: handle file upload
         await updateUserData()
     }
 
@@ -35,7 +33,7 @@ const ProfileSettings = () => {
                     <Box sx={{ pb: 4 }} display='flex' justifyContent='center' alignItems='center' >
                         <Tooltip title={temporaryFileUrl ? t('fileNotUploaded', { ns: 'common' }) : t('changeProfilePicture', { ns: 'common' })}>
                             <Badge badgeContent={<PriorityHighIcon fontSize='large' />} invisible={!temporaryFileUrl} color='error' sx={{ '& .MuiBadge-badge': { padding: 1, borderRadius: 4, height: 'fit-content', width: 'fit-content' } }}>
-                                <Avatar sx={{ height: 200, width: 200 }} onClick={openFileDialog} src={temporaryFileUrl || userPictureUrl} alt={userFullName}>
+                                <Avatar sx={{ height: 200, width: 200 }} onClick={openFileDialog} src={temporaryFileUrl} alt={`${currentUser?.firstName} ${currentUser?.lastName}`}>
                                     <FolderIcon fontSize='large' />
                                 </Avatar>
                             </Badge>

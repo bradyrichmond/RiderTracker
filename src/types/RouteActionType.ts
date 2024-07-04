@@ -11,8 +11,7 @@ export interface RouteActionType {
 }
 
 export enum ActionType {
-    ROUTE_BEGIN = 'route_begin',
+    ROUTE_START = 'route_start',
     ROUTE_COMPLETE = 'route_complete',
-    ROUTE_STOP = 'route_stop',
     ROUTE_SCAN = 'route_scan'
 }

@@ -1,5 +1,5 @@
 import { Avatar, Box, Paper, SvgIconProps, Tooltip, Typography } from '@mui/material'
-import { ComponentType, useCallback, useMemo, useRef } from 'react'
+import { ComponentType, useMemo, useRef } from 'react'
 import PersonIcon from '@mui/icons-material/Person'
 import EmailIcon from '@mui/icons-material/Email'
 import { UserType } from '@/types/UserType'
@@ -7,7 +7,6 @@ import { useHover } from 'usehooks-ts'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { useTranslation } from 'react-i18next'
 import { useUserStore } from '@/store/UserStore'
-import { useAdminStore } from '@/store/AdminStore'
 import Grid from '@mui/material/Unstable_Grid2'
 
 interface OrganizationAdminCardProps extends UserType {
@@ -19,13 +18,8 @@ const OrganizationAdminCard = ({ id, firstName, lastName, title, email, index }:
     const profileUrl = useMemo(() => `https://s3.us-west-2.amazonaws.com/ridertracker.profileimages/${id}.jpg`, [id])
     const ref = useRef(null)
     const hovering = useHover<HTMLDivElement>(ref)
-    const { userId } = useUserStore()
-    const deleteAdmin = useAdminStore().deleteAdmin
+    const userId = useUserStore().currentUser?.id
     const { t } = useTranslation('settings')
-
-    const deleteAdminAction = useCallback(async (id: string) => {
-        await deleteAdmin(id)
-    }, [deleteAdmin])
 
     const actions = useMemo(() => {
         const actionsList: OrganizationAdminActionProps[] = []
@@ -35,12 +29,12 @@ const OrganizationAdminCard = ({ id, firstName, lastName, title, email, index }:
                 id,
                 tooltipString: t('deleteAdminTooltip'),
                 Icon: DeleteIcon,
-                action: deleteAdminAction
+                action: async (id: string) => { console.log(`You disabled deleting admins, ${id}`) }
             })
         }
 
         return actionsList
-    }, [deleteAdminAction, id, t, userId])
+    }, [id, t, userId])
 
 
     return (

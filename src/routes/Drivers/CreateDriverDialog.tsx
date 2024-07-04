@@ -4,9 +4,7 @@ import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 import { Transition } from '@/components/Transition'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { awsCognitoUserSchema } from '@/validation/awsCognitoUserSchema'
-import { CreateDriverParams, useUserStore } from '@/store/UserStore'
+import { CreateCognitoUserInput, useUserStore } from '@/store/UserStore'
 
 interface CreateDriverDialogProps {
     cancel(): void
@@ -26,9 +24,9 @@ const CreateDriverDialog = ({ cancel, isAddingDriver }: CreateDriverDialogProps)
             errors,
             touchedFields
         }
-    } = useForm<CreateDriverParams>({ resolver: yupResolver(awsCognitoUserSchema) })
+    } = useForm<CreateCognitoUserInput>()
 
-    const createDriverAction = async (data: CreateDriverParams) => {
+    const createDriverAction = async (data: CreateCognitoUserInput) => {
         try {
             setDisableButtons(true)
             await createDriver(data)

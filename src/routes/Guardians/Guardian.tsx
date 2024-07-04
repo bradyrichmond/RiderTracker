@@ -1,11 +1,11 @@
 import { Box, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { GuardianType } from '@/types/UserType'
 import { useGuardianStore } from '@/store/GuardianStore'
+import { Schema } from '../../../amplify/data/resource'
 
 const Guardian = () => {
-    const [guardian, setGuardian] = useState<GuardianType>()
+    const [guardian, setGuardian] = useState<Schema['User']['type']>()
     const { id } = useParams()
     const { getGuardianById } = useGuardianStore()
 

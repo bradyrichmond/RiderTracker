@@ -1,11 +1,7 @@
 import { Transition } from '@/components/Transition'
 import { CreateExceptionInput, useExceptionStore } from '@/store/ExceptionStore'
 import { useGuardianStore } from '@/store/GuardianStore'
-import { ExceptionTypeType } from '@/types/ExceptionType'
 import { OptionsType } from '@/types/FormTypes'
-import { GuardianType } from '@/types/UserType'
-import { exceptionSchema } from '@/validation/exceptionSchema'
-import { yupResolver } from '@hookform/resolvers/yup'
 import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, TextField } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import { DatePicker } from '@mui/x-date-pickers'
@@ -14,6 +10,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import ExceptionTypeToggleButton from './ExceptionTypeToggleButton'
+import { Schema } from '../../../amplify/data/resource'
 
 interface AddExceptionToRiderDialogProps {
     cancelAction(): void
@@ -27,23 +24,19 @@ const AddExceptionToRiderDialog = ({ cancelAction, isAddingException }: AddExcep
     const getExceptions = useExceptionStore().getExceptions
     const { t } = useTranslation(['riders', 'common'])
     const { id: riderId } = useParams()
-    const { control, handleSubmit, reset, resetField, setValue, formState: { errors }, watch } = useForm({ defaultValues: { dropoff: 'noChange', pickup: 'noChange' }, resolver: yupResolver(exceptionSchema) })
+    const { control, handleSubmit, reset, resetField, setValue, formState: { errors }, watch } = useForm<CreateExceptionInput>()
 
-    const allGuardians = useMemo(() => guardians.map((g: GuardianType) => ({ id: g.id, label: `${g.firstName} ${g.lastName}` })), [guardians])
+    const allGuardians = useMemo(() => guardians.map((g: Schema['User']['type']) => ({ id: g.id, label: `${g.firstName} ${g.lastName}` })), [guardians])
 
     const { pickup, dropoff } = watch()
 
-    const createAuthorizedException = async (data: CreateExceptionInput) => {
-        await createExceptionAction(data, ExceptionTypeType.AUTHORIZED)
-    }
-
-    const createExceptionAction = async (data: CreateExceptionInput, exceptionType: ExceptionTypeType) => {
+    const createExceptionAction = async (data: CreateExceptionInput) => {
         if (!riderId) {
             throw 'How are you on this page without a rider id?'
         }
 
         setDisableButtons(true)
-        await createException(data, exceptionType, riderId)
+        await createException(data, riderId)
         resetForm()
         setDisableButtons(false)
         cancelAction()
@@ -63,7 +56,7 @@ const AddExceptionToRiderDialog = ({ cancelAction, isAddingException }: AddExcep
             TransitionComponent={Transition}
             PaperProps={{
                 component: 'form',
-                onSubmit: handleSubmit(createAuthorizedException),
+                onSubmit: handleSubmit(createExceptionAction),
                 sx: { padding: 4, minWidth: '25%' }
             }}
         >
@@ -88,8 +81,8 @@ const AddExceptionToRiderDialog = ({ cancelAction, isAddingException }: AddExcep
                     />
                 </FormControl>
                 <Grid container spacing={2}>
-                    <ExceptionTypeToggleButton title={t('pickup')} value={pickup ?? 'noChange'} onChange={(_e: SyntheticEvent, value: string) => { setValue('pickup', value) }} />
-                    <ExceptionTypeToggleButton title={t('dropoff')} value={dropoff ?? 'noChange'} onChange={(_e: SyntheticEvent, value: string) => { setValue('dropoff', value) }} />
+                    <ExceptionTypeToggleButton title={t('pickup')} value={pickup ?? 'no change'} onChange={(_e: SyntheticEvent, value: Schema['OverrideType']['type']) => { setValue('pickup', value) }} />
+                    <ExceptionTypeToggleButton title={t('dropoff')} value={dropoff ?? 'no change'} onChange={(_e: SyntheticEvent, value: Schema['OverrideType']['type']) => { setValue('dropoff', value) }} />
                 </Grid>
                 <FormControl fullWidth>
                     <Autocomplete

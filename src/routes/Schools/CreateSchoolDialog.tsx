@@ -1,31 +1,24 @@
 import { Transition } from '@/components/Transition'
-import { SchoolType } from '@/types/SchoolType'
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { schoolSchema } from '@/validation/schoolSchema'
+import { Schema } from '../../../amplify/data/resource'
 
 interface CreateSchoolDialogProps {
     cancelAction(): void
-    createSchool(school: Partial<SchoolType>, address: string): Promise<void>
+    createSchool(school: Schema['School']['createType']): Promise<void>
     open: boolean
-}
-
-interface CreateSchoolInput {
-    address: string
-    schoolName: string
 }
 
 const CreateSchoolDialog = ({ createSchool, cancelAction, open }: CreateSchoolDialogProps) => {
     const [disableButtons, setDisableButtons] = useState<boolean>(false)
     const { t } = useTranslation(['schools', 'common'])
-    const { handleSubmit, register, reset, formState: { errors, touchedFields } } = useForm({ resolver: yupResolver(schoolSchema) })
+    const { handleSubmit, register, reset, formState: { errors, touchedFields } } = useForm<Schema['School']['createType']>()
 
-    const handleCreate = async ({ address, schoolName }: CreateSchoolInput) => {
+    const handleCreate = async (school: Schema['School']['createType']) => {
         setDisableButtons(false)
-        await createSchool({ schoolName }, address)
+        await createSchool(school)
         setDisableButtons(false)
         reset()
     }
@@ -49,13 +42,6 @@ const CreateSchoolDialog = ({ createSchool, cancelAction, open }: CreateSchoolDi
                     fullWidth {...register('schoolName')}
                     error={!!errors.schoolName && touchedFields.schoolName}
                     helperText={errors.schoolName?.message ? t('fieldRequired', { ns: 'common' }) : ''}
-                />
-                <TextField
-                    label='Address'
-                    autoComplete='off'
-                    fullWidth {...register('address')}
-                    error={!!errors.address && touchedFields.address}
-                    helperText={errors.address?.message ? t('fieldRequired', { ns: 'common' }) : ''}
                 />
             </DialogContent>
             <DialogActions sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
