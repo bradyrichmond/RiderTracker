@@ -27,7 +27,7 @@ const schema = a.schema({
     .mutation()
     .arguments({ address: a.string().required() })
     .handler(a.handler.function(validateAddress))
-    .returns(a.json()),
+    .returns(a.ref('ValidatedAddress')),
 
   // CustomTypes
   AttributeType: a.customType({
@@ -60,6 +60,16 @@ const schema = a.schema({
     'UNCONFIRMED',
     'UNKNOWN'
   ]),
+  ValidatedAddress: a.customType({
+    houseNumber: a.string().required(),
+    streetName: a.string().required(),
+    city: a.string().required(),
+    state: a.string().required(),
+    county: a.string().required(),
+    country: a.string().required(),
+    postcode: a.string().required(),
+    formatted: a.string().required()
+  }),
 
   // Models
   Organization: a.model({
@@ -81,7 +91,6 @@ const schema = a.schema({
     allow.guest().to(['create'])
   ]),
   Address: a.model({
-    id: a.id().required(),
     city: a.string().required(),
     country: a.string().required(),
     county: a.string().required(),
@@ -158,21 +167,3 @@ export const data = defineData({
   }
 })
 
-/*
-'use client'
-import { generateClient } from 'aws-amplify/data';
-import type { Schema } from '@/amplify/data/resource';
-
-const client = generateClient<Schema>() // use this Data client for CRUDL requests
-*/
-
-/* == STEP 3 ===============================================================
-Fetch records from the database and use them in your frontend component.
-(THIS SNIPPET WILL ONLY WORK IN THE FRONTEND CODE FILE.)
-========================================================================= */
-
-/* For example, in a React component, you can use this snippet in your
-  function's RETURN statement */
-// const { data: todos } = await client.models.Todo.list()
-
-// return <ul>{todos.map(todo => <li key={todo.id}>{todo.content}</li>)}</ul>

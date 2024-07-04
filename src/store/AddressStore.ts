@@ -6,7 +6,7 @@ import { Schema } from '../../amplify/data/resource'
 interface AddressStore {
     addresses: (Schema['Address']['type'])[],
     updateAddresses(): Promise<void>
-    // createAddress(address: string): Promise<Schema['Address']['type']>
+    createAddress(address: string): Promise<Schema['Address']['type']>
 }
 
 export const useAddressStore = create<AddressStore>((set) => ({
@@ -21,22 +21,25 @@ export const useAddressStore = create<AddressStore>((set) => ({
             set({ addresses })
         }
     },
-    // createAddress: async (address: string) => {
-    //     TODO: add address check to backend again
+    createAddress: async (address: string) => {
+        const client = await useApiStore.getState().getClient()
+        const orgId = await useOrgStore.getState().getOrgId()
 
-    //     const client = await useApiStore.getState().getClient()
-    //     const orgId = await useOrgStore.getState().getOrgId()
+        const { data: validatedAddress } = await client.mutations.validateAddress({ address })
 
-    //     const validatedAddress = await api?.addresses.validateAddress(address)
+        if (validatedAddress) {
+            const newAddress = {
+                ...validatedAddress,
+                orgId
+            }
 
-    //     if (validatedAddress) {
-    //         validatedAddress.orgId = orgId
+            const { data } = await client.models.Address.create(newAddress)
 
-    //         await client.models.Address.create(validatedAddress)
+            if (data) {
+                return data
+            }
+        }
 
-    //         return validatedAddress
-    //     }
-
-    //     throw 'Failed to create address'
-    // }
+        throw 'Failed to create address'
+    }
 }))
