@@ -3,6 +3,7 @@ import { useApiStore } from './ApiStore'
 import { useOrgStore } from './OrgStore'
 import { v4 as uuid } from 'uuid'
 import { Schema } from '../../amplify/data/resource'
+import { OverrideType } from '@/types/AmplifyTypes'
 
 export interface CreateExceptionInput {
     date: Date
@@ -60,7 +61,7 @@ export const useExceptionStore = create<ExceptionStore>((set) => ({
                 pickup: newException.pickup
             }
 
-            if (newException.pickup === 'override' && newException.pickupGuardianId) {
+            if (newException.pickup === OverrideType.OVERRIDE && newException.pickupGuardianId) {
                 const { data: pickupGuardian } = await client.models.User.get({ id: newException.pickupGuardianId })
 
                 if (pickupGuardian) {
@@ -69,7 +70,7 @@ export const useExceptionStore = create<ExceptionStore>((set) => ({
                 }
             }
 
-            if (newException.dropoff === 'override' && newException.dropoffGuardianId) {
+            if (newException.dropoff === OverrideType.OVERRIDE && newException.dropoffGuardianId) {
                 const { data: dropoffGuardian } = await client.models.User.get({ id: newException.dropoffGuardianId })
 
                 if (dropoffGuardian) {

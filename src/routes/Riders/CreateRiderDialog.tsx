@@ -1,5 +1,5 @@
 import { Transition } from '@/components/Transition'
-import { OptionsType } from '@/types/FormTypes'
+import { OptionsType } from '@/types/OptionsType'
 import { riderSchema } from '@/validation/riderSchema'
 import { yupResolver } from '@hookform/resolvers/yup'
 import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, TextField } from '@mui/material'

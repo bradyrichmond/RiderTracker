@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { BusType } from '@/types/BusType'
+import { BusType } from '@/types/AmplifyTypes'
 import { useParams } from 'react-router-dom'
 import { useBusStore } from '@/store/BusStore'
 

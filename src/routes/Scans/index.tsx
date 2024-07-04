@@ -1,11 +1,10 @@
-import { ScanType } from '@/types/ScanType'
+import { ScanType } from '@/types/AmplifyTypes'
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { Box, Button, Tooltip, Typography } from '@mui/material'
 import { useDeviceLocation } from '@/hooks/useDeviceLocation'
-import { locationFactory } from './LocationFactory'
 import { AppShortcut } from '@mui/icons-material'
 import { useTranslation } from 'react-i18next'
 import CreateScanDialog from './CreateScanDialog'
@@ -28,9 +27,8 @@ const Scans = () => {
 
     const createScanAction = async (newScan: ScanType) => {
         try {
-            const fetchedLocation = await getCurrentPosition()
-            const generatedLocation = locationFactory(fetchedLocation)
-            const scanWithLocation = { ...newScan, deviceLocationOnSubmit: generatedLocation, manualScan: true }
+            const [lat, lon] = await getCurrentPosition()
+            const scanWithLocation = { ...newScan, deviceLocationOnSubmit: { lat: lat.toString(), lon: lon.toString() }, manualScan: true }
             await createScan(scanWithLocation)
         } catch (e) {
             console.log(e)

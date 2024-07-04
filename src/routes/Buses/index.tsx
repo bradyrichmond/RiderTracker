@@ -1,4 +1,4 @@
-import { BusType } from '@/types/BusType'
+import { BusType } from '@/types/AmplifyTypes'
 import { Box, Button, Tooltip, Typography } from '@mui/material'
 import NoTransferIcon from '@mui/icons-material/NoTransfer'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'

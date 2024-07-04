@@ -1,11 +1,6 @@
-import { AddressType } from '@/types/AddressType'
-import { BusType } from '@/types/BusType'
-import { LocationType } from '@/types/LocationType'
-import { OrganizationType } from '@/types/OrganizationType'
-import { RiderType } from '@/types/RiderType'
-import { ScanType } from '@/types/ScanType'
-import { SchoolType } from '@/types/SchoolType'
-import { UserType } from '@/types/UserType'
+import { UserType } from '@/store/UserStore'
+import { AddressType, BusType, LocationType, OrganizationType, RiderType, ScanType, SchoolType } from '@/types/AmplifyTypes'
+
 
 type ResponseDataTypes = AddressType | BusType | LocationType | OrganizationType | RiderType | ScanType | SchoolType | UserType
 

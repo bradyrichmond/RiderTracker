@@ -45,21 +45,14 @@ const schema = a.schema({
       Username: a.string().required()
     })
   }),
-  DeliveryMediumType: a.enum([ 'EMAIL', 'SMS' ]),
+  Location: a.customType({
+    lat: a.string().required(),
+    lon: a.string().required()
+  }),
   MFAOptionType: a.customType({
     AttributeName: a.string().required(),
     DeliveryMedium: a.ref('DeliveryMediumType')
   }),
-  UserStatusType: a.enum([
-    'ARCHIVED',
-    'COMPROMISED',
-    'CONFIRMED',
-    'EXTERNAL_PROVIDER',
-    'FORCE_CHANGE_PASSWORD',
-    'RESET_REQUIRED',
-    'UNCONFIRMED',
-    'UNKNOWN'
-  ]),
   ValidatedAddress: a.customType({
     houseNumber: a.string().required(),
     streetName: a.string().required(),
@@ -72,9 +65,19 @@ const schema = a.schema({
   }),
 
   // Enums
-  RouteActionTypes: a.enum(['route_start', 'route_end', 'route_scan']),
-  ExceptionTypeTypes: a.enum(['authorized', 'unauthorized']),
-  OverrideType: a.enum(['override', 'cancel', 'no change']),
+  DeliveryMediumType: a.enum([ 'EMAIL', 'SMS' ]),
+  RouteActionTypes: a.enum(['ROUTE_START', 'ROUTE_END', 'ROUTE_SCAN']),
+  OverrideType: a.enum(['OVERRIDE', 'CANCEL', 'NO_CHANGE']),
+  UserStatusType: a.enum([
+    'ARCHIVED',
+    'COMPROMISED',
+    'CONFIRMED',
+    'EXTERNAL_PROVIDER',
+    'FORCE_CHANGE_PASSWORD',
+    'RESET_REQUIRED',
+    'UNCONFIRMED',
+    'UNKNOWN'
+  ]),
 
   // Models
   Organization: a.model({
@@ -116,17 +119,17 @@ const schema = a.schema({
   })
   .secondaryIndexes((index) => [index('orgId')]),
   Exception: a.model({
-    id: a.id(),
+    authorized: a.boolean(),
     date: a.date().required(),
     dropoff: a.ref('OverrideType'),
     dropoffGuardianId: a.id(),
     dropoffStopId: a.id(),
+    id: a.id(),
     orgId: a.id().required(),
     pickup: a.ref('OverrideType'),
     pickupGuardianId: a.id(),
     pickupStopId: a.id(),
-    riderId: a.id(),
-    type: a.ref('ExceptionTypeTypes')
+    riderId: a.id()
   }),
   Rider: a.model({
     firstName: a.string().required(),
@@ -143,12 +146,20 @@ const schema = a.schema({
     routeNumber: a.string().required()
   }),
   RouteAction: a.model({
-    actionType: a.ref('RouteActionTypes'),
+    actionType: a.ref('RouteActionTypes').required(),
     driverId: a.id().required(),
     organization: a.belongsTo('Organization', 'orgId'),
     orgId: a.id().required(),
     riderIds: a.id().array(),
     routeId: a.id().required()
+  }),
+  Scan: a.model({
+    deviceLocationOnSubmit: a.ref('Location'),
+    guardianIds: a.id().array(),
+    manualScan: a.boolean(),
+    orgId: a.id().required(),
+    riderIds: a.id().array().required(),
+    stopId: a.id().required()
   }),
   School: a.model({
     address: a.hasOne('Address', 'schoolId'),
@@ -156,8 +167,16 @@ const schema = a.schema({
     organization: a.belongsTo('Organization', 'orgId'),
     orgId: a.id().required(),
     riderIds: a.id().array(),
+    SchoolHours: a.hasMany('SchoolHour', 'schoolId'),
     schoolName: a.string().required(),
     stopIds: a.id().array(),
+  }),
+  SchoolHour: a.model({
+    school: a.belongsTo('School', 'schoolId'),
+    schoolId: a.id().required(),
+    dayName: a.string().required(),
+    endTime: a.time().required(),
+    startTime: a.time().required()
   }),
   Stop: a.model({
     name: a.string().required(),

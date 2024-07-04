@@ -2,7 +2,7 @@ import { Box, Button, Divider, Drawer, Fab, LinearProgress, Stack, Tooltip, Typo
 import { ComponentType } from 'react'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import EntityDrawerList from './EntityDrawerList'
-import { OptionsType } from '@/types/FormTypes'
+import { OptionsType } from '@/types/OptionsType'
 import Grid from '@mui/material/Unstable_Grid2'
 
 export interface DrawerListItem {

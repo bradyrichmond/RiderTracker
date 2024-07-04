@@ -1,6 +1,6 @@
 import { Box, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
-import { ScanType } from '@/types/ScanType'
+import { ScanType } from '@/types/AmplifyTypes'
 import { useParams } from 'react-router-dom'
 import { useScanStore } from '@/store/ScanStore'
 

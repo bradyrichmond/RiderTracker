@@ -1,7 +1,7 @@
 import { Transition } from '@/components/Transition'
 import { CreateExceptionInput, useExceptionStore } from '@/store/ExceptionStore'
 import { useGuardianStore } from '@/store/GuardianStore'
-import { OptionsType } from '@/types/FormTypes'
+import { OptionsType } from '@/types/OptionsType'
 import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, TextField } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import { DatePicker } from '@mui/x-date-pickers'
@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import ExceptionTypeToggleButton from './ExceptionTypeToggleButton'
 import { Schema } from '../../../amplify/data/resource'
+import { OverrideType } from '@/types/AmplifyTypes'
 
 interface AddExceptionToRiderDialogProps {
     cancelAction(): void
@@ -100,7 +101,7 @@ const AddExceptionToRiderDialog = ({ cancelAction, isAddingException }: AddExcep
                                 helperText={errors.pickupGuardianId?.message ? t(errors.pickupGuardianId.message, { ns: 'common' }) : ''}
                             />
                         )}
-                        disabled={pickup !== 'override'}
+                        disabled={pickup !== OverrideType.OVERRIDE}
                     />
                 </FormControl>
                 <FormControl fullWidth>
@@ -119,7 +120,7 @@ const AddExceptionToRiderDialog = ({ cancelAction, isAddingException }: AddExcep
                                 helperText={errors.dropoffGuardianId?.message ? t(errors.dropoffGuardianId.message, { ns: 'common' }) : ''}
                             />
                         )}
-                        disabled={dropoff !== 'override'}
+                        disabled={dropoff !== OverrideType.OVERRIDE}
                     />
                 </FormControl>
             </DialogContent>

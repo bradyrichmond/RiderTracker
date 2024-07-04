@@ -1,11 +1,11 @@
 import { useRouteActionStore } from '@/store/RouteActionStore'
 import { useRouteStore } from '@/store/RouteStore'
 import { useUserStore } from '@/store/UserStore'
-import { ActionType } from '@/types/RouteActionType'
 import Grid from '@mui/material/Unstable_Grid2'
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Schema } from '../../../../amplify/data/resource'
+import { RouteActionTypes } from '@/types/AmplifyTypes'
 
 const ActiveRoute = () => {
     const [activeRoute, setActiveRoute] = useState<Schema['Route']['type'] | undefined>()
@@ -20,7 +20,7 @@ const ActiveRoute = () => {
                 const filteredByDriver = routeActions
                 const mostRecent = filteredByDriver[0]
 
-                if (mostRecent && mostRecent.actionType === ActionType.ROUTE_START) {
+                if (mostRecent && mostRecent.actionType === RouteActionTypes.ROUTE_START) {
                     const activeRoute = await getRouteById(mostRecent.routeId)
                     setActiveRoute(activeRoute)
                     return

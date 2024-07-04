@@ -1,4 +1,4 @@
-import { ScanType } from '@/types/ScanType'
+import { ScanType } from '@/types/AmplifyTypes'
 import { create } from 'zustand'
 
 interface ScanStore {

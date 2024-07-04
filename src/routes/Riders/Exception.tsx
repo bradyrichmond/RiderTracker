@@ -7,6 +7,7 @@ import dayjs from 'dayjs'
 import { useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Schema } from '../../../amplify/data/resource'
+import { OverrideType } from '@/types/AmplifyTypes'
 
 interface ExceptionProps {
     exceptionId: string
@@ -70,12 +71,12 @@ const Exception = ({ exceptionId }: ExceptionProps) => {
                                 <Typography variant='h3'>{exceptionDate}</Typography>
                             </Box>
                         </Grid>
-                        {pickup === 'override' && pickupGuardian ? <ExceptionStop title={t('pickup')} guardianLabel={`${pickupGuardian?.firstName} ${pickupGuardian?.lastName}`} pickupStopName={pickupStop?.name ?? ''} /> : null}
-                        {pickup === 'no change' ? <ExceptionStop title={t('pickup')} guardianLabel={t('noChange')} pickupStopName={t('noChange')} /> : null}
-                        {pickup === 'cancel' ? <ExceptionStop title={t('pickup')} guardianLabel={t('noPickup')} pickupStopName={t('noPickup')} /> : null}
-                        {dropoff === 'override' && dropoffGuardian ? <ExceptionStop title={t('dropoff')} guardianLabel={`${dropoffGuardian?.firstName} ${dropoffGuardian?.lastName}`} pickupStopName={dropoffStop?.name ?? ''} /> : null}
-                        {dropoff === 'no change' ? <ExceptionStop title={t('dropoff')} guardianLabel={t('noChange')} pickupStopName={t('noChange')} /> : null}
-                        {dropoff === 'cancel' ? <ExceptionStop title={t('dropoff')} guardianLabel={t('noDropoff')} pickupStopName={t('noDropoff')} /> : null}
+                        {pickup === OverrideType.OVERRIDE && pickupGuardian ? <ExceptionStop title={t('pickup')} guardianLabel={`${pickupGuardian?.firstName} ${pickupGuardian?.lastName}`} pickupStopName={pickupStop?.name ?? ''} /> : null}
+                        {pickup === OverrideType.NO_CHANGE ? <ExceptionStop title={t('pickup')} guardianLabel={t('noChange')} pickupStopName={t('noChange')} /> : null}
+                        {pickup === OverrideType.CANCEL ? <ExceptionStop title={t('pickup')} guardianLabel={t('noPickup')} pickupStopName={t('noPickup')} /> : null}
+                        {dropoff === OverrideType.OVERRIDE && dropoffGuardian ? <ExceptionStop title={t('dropoff')} guardianLabel={`${dropoffGuardian?.firstName} ${dropoffGuardian?.lastName}`} pickupStopName={dropoffStop?.name ?? ''} /> : null}
+                        {dropoff === OverrideType.NO_CHANGE ? <ExceptionStop title={t('dropoff')} guardianLabel={t('noChange')} pickupStopName={t('noChange')} /> : null}
+                        {dropoff === OverrideType.CANCEL ? <ExceptionStop title={t('dropoff')} guardianLabel={t('noDropoff')} pickupStopName={t('noDropoff')} /> : null}
                     </Grid>
                 </Box>
                 :

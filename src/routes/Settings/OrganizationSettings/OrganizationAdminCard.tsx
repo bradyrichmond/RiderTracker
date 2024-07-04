@@ -2,7 +2,7 @@ import { Avatar, Box, Paper, SvgIconProps, Tooltip, Typography } from '@mui/mate
 import { ComponentType, useMemo, useRef } from 'react'
 import PersonIcon from '@mui/icons-material/Person'
 import EmailIcon from '@mui/icons-material/Email'
-import { UserType } from '@/types/UserType'
+import { UserType } from '@/types/AmplifyTypes'
 import { useHover } from 'usehooks-ts'
 import DeleteIcon from '@mui/icons-material/Delete'
 import { useTranslation } from 'react-i18next'

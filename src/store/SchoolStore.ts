@@ -1,4 +1,4 @@
-import { SchoolHourType } from '@/types/SchoolType'
+import { SchoolHourType } from '@/types/AmplifyTypes'
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
 import { Schema } from '../../amplify/data/resource'

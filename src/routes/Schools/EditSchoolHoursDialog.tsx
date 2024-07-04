@@ -8,7 +8,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { editSchoolHoursSchema } from '@/validation/editSchoolHoursSchema'
 import { TimePicker } from '@mui/x-date-pickers'
 import dayjs, { Dayjs } from 'dayjs'
-import { SchoolHourType } from '@/types/SchoolType'
+import { SchoolHourType } from '@/types/AmplifyTypes'
 
 interface EditSchoolDialogProps {
     cancelAction(): void

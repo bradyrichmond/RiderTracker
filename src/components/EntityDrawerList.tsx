@@ -1,6 +1,6 @@
 import { Paper, Typography } from '@mui/material'
 import EntityDrawerListItem from './EntityDrawerListItem'
-import { OptionsType } from '@/types/FormTypes'
+import { OptionsType } from '@/types/OptionsType'
 import { useTranslation } from 'react-i18next'
 
 interface EntityDrawerDetailListProps {

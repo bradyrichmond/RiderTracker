@@ -1,6 +1,6 @@
 import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
-import { OptionsType } from '@/types/FormTypes'
-import { OrganizationType } from '@/types/OrganizationType'
+import { OptionsType } from '@/types/OptionsType'
+import { OrganizationType } from '@/types/AmplifyTypes'
 import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, TextField } from '@mui/material'
 import { SyntheticEvent, useContext, useMemo, useState } from 'react'
 

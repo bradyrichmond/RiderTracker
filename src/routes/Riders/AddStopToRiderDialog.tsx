@@ -1,6 +1,6 @@
 import { Transition } from '@/components/Transition'
 import { useStopStore } from '@/store/StopStore'
-import { OptionsType } from '@/types/FormTypes'
+import { OptionsType } from '@/types/OptionsType'
 import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, TextField } from '@mui/material'
 import { useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'

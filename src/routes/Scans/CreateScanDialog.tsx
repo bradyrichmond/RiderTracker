@@ -4,19 +4,12 @@ import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 import { Transition } from '@/components/Transition'
-import { OptionsType } from '@/types/FormTypes'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { scanSchema } from '@/validation/scanSchema'
-
-interface ScanInput {
-    riderIds: string[]
-    stopId: string
-    guardianIds?: string[]
-}
+import { OptionsType } from '@/types/OptionsType'
+import { CreateScanTypeInput } from '@/types/AmplifyTypes'
 
 interface CreateScanDialogProps {
     cancel(): void
-    createScan(input: ScanInput ): Promise<void>
+    createScan(input: CreateScanTypeInput ): Promise<void>
     isAddingScan: boolean
     allStops: OptionsType[]
     allRiders: OptionsType[]
@@ -34,9 +27,9 @@ const CreateScanDialog = ({ cancel, createScan, isAddingScan, allStops, allRider
         formState: {
             errors
         }
-    } = useForm<ScanInput>({ resolver: yupResolver(scanSchema) })
+    } = useForm<CreateScanTypeInput>()
 
-    const createScanAction = async (scan: ScanInput) => {
+    const createScanAction = async (scan: CreateScanTypeInput) => {
         try {
             setDisableButtons(true)
             await createScan(scan)

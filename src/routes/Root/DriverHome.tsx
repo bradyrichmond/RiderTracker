@@ -5,10 +5,10 @@ import { useContext, useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import SelectRouteDialog from '../Drivers/ActiveRoute/SelectRouteDialog'
-import { ActionType } from '@/types/RouteActionType'
 import { useUserStore } from '@/store/UserStore'
 import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 import { useRouteStore } from '@/store/RouteStore'
+import { RouteActionTypes } from '@/types/AmplifyTypes'
 
 const DriverHome = () => {
     const [isSelectingRoute, setIsSelectingRoute] = useState(false)
@@ -26,7 +26,7 @@ const DriverHome = () => {
             if (userId) {
                 const mostRecent = routeActions[0]
 
-                if (mostRecent && mostRecent.actionType === ActionType.ROUTE_START) {
+                if (mostRecent && mostRecent.actionType === RouteActionTypes.ROUTE_START) {
                     navigate('/app/drivers/active-route')
                 }
             }
@@ -41,7 +41,7 @@ const DriverHome = () => {
 
             try {
                 await createRouteAction({
-                    actionType: ActionType.ROUTE_START,
+                    actionType: RouteActionTypes.ROUTE_START,
                     driverId: userId,
                     routeId
                 })
