@@ -3,8 +3,6 @@ import Buses from '..'
 import { render, screen, waitFor } from '@testing-library/react'
 import { AsRole, ProviderWrapperAsRole } from '@/helpers/ProviderWrapper'
 import { PropsWithChildren } from 'react'
-jest.mock('@/API/BusApis')
-jest.mock('@/API/OrganizationApis')
 
 afterEach(() => {
   jest.restoreAllMocks()
@@ -34,7 +32,7 @@ describe('Buses Tests', () => {
     render(<Buses />, { wrapper: ProviderWrapperAsRole })
 
     await waitFor(() => {
-      expect(screen.getByText(/7888888888/i)).toBeInTheDocument()
+      expect(screen.getByText(/1850fe3d-531e-48db-a6de-c12ba360e45d/i)).toBeInTheDocument()
     })
   })
 })

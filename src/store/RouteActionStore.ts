@@ -2,23 +2,21 @@ import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
 import { useOrgStore } from './OrgStore'
 import { v4 as uuid } from 'uuid'
-import { Schema } from '../../amplify/data/resource'
+import { RouteActionType, RouteActionTypes } from '@/types/AmplifyTypes'
 
 export interface CreateRouteActionInput {
-    actionType: Schema['RouteActionTypes']['type']
+    actionType: RouteActionTypes
     driverId: string
     routeId: string
 }
 
 interface CreateInput {
-    actionType: Schema['RouteActionTypes']['type']
+    actionType: RouteActionTypes
     driverId: string
     id: string
     orgId: string
     routeId: string
 }
-
-type RouteActionType = Schema['RouteAction']['type']
 
 interface RouteActionStore {
     routeActions: RouteActionType[],

@@ -1,12 +1,9 @@
-import { SchoolHourType } from '@/types/AmplifyTypes'
+import { CreateSchoolTypeInput, SchoolHourType, SchoolType } from '@/types/AmplifyTypes'
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
-import { Schema } from '../../amplify/data/resource'
-
-type SchoolType = Schema['School']['type']
 
 interface SchoolStore {
-    createSchool(school: Schema['School']['createType']): Promise<void>
+    createSchool(school: CreateSchoolTypeInput): Promise<void>
     deleteSchool(schoolId: string): Promise<void>
     getSchools(): Promise<void>
     getSchoolById(schoolId: string): Promise<SchoolType>
@@ -15,7 +12,7 @@ interface SchoolStore {
 }
 
 export const useSchoolStore = create<SchoolStore>((set, get) => ({
-    createSchool: async (school: Schema['School']['createType']) => {
+    createSchool: async (school: CreateSchoolTypeInput) => {
         const client = await useApiStore.getState().getClient()
 
         await client.models.School.create(school)

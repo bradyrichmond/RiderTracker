@@ -1,9 +1,7 @@
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
 import { useOrgStore } from './OrgStore'
-import { Schema } from '../../amplify/data/resource'
-
-type BusType = Schema['Bus']['type']
+import { BusType } from '@/types/AmplifyTypes'
 
 interface BusStore {
     buses: BusType[]

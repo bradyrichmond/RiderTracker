@@ -63,7 +63,7 @@ describe('Guardians Tests', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('gridcell', {
-        name: /Trigger/i
+        name: /test/i
       })).toBeInTheDocument()
     })
   })

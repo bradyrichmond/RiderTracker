@@ -1,13 +1,13 @@
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
-import { Schema } from '../../amplify/data/resource'
 import { useUserStore } from './UserStore'
 import { fetchUserAttributes } from 'aws-amplify/auth'
 import { Subscription } from 'rxjs'
+import { OrganizationType } from '@/types/AmplifyTypes'
 
 export interface OrgStore {
-    orgData?: Schema['Organization']['type']
-    createOrg(orgName: string): Promise<Schema['Organization']['type']>
+    orgData?: OrganizationType
+    createOrg(orgName: string): Promise<OrganizationType>
     getOrgId(): Promise<string>
     startOrgSubscription(): Promise<void>
     stopOrgSubscription(): Promise<void>

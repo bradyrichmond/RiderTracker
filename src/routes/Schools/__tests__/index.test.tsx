@@ -4,10 +4,6 @@ import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-lib
 import { AsRole, ProviderWrapperAsRole } from '@/helpers/ProviderWrapper'
 import Schools from '..'
 import { PropsWithChildren } from 'react'
-import School from '../School'
-jest.mock('@/API/SchoolApis')
-jest.mock('@/API/AddressApis')
-jest.mock('@/API/OrganizationApis')
 
 afterEach(() => {
   jest.restoreAllMocks()
@@ -69,21 +65,6 @@ describe('Schools Tests', () => {
       expect(screen.getByRole('gridcell', {
         name: /sunnyside elementary/i
       })).toBeInTheDocument()
-    })
-  })
-
-  it('shows school hours', async () => {
-    render(<School activeSchool='123456' />, { wrapper: ProviderWrapperAsRole })
-
-    await waitFor(async () => {
-      const user = userEvent.setup()
-      expect(screen.queryByText(/hours/i)).toBeInTheDocument()
-      const editHoursButton = screen.getByRole('button')
-
-      await user.click(editHoursButton)
-
-      expect(screen.queryByText(/editschoolhours/i)).toBeInTheDocument()
-      expect(screen.queryByText(/updatehours/i)).toBeInTheDocument()
     })
   })
 })

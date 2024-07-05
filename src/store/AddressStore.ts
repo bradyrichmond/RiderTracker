@@ -1,12 +1,12 @@
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
 import { useOrgStore } from './OrgStore'
-import { Schema } from '../../amplify/data/resource'
+import { AddressType } from '@/types/AmplifyTypes'
 
 interface AddressStore {
-    addresses: (Schema['Address']['type'])[],
+    addresses: AddressType[],
     updateAddresses(): Promise<void>
-    createAddress(address: string): Promise<Schema['Address']['type']>
+    createAddress(address: string): Promise<AddressType>
 }
 
 export const useAddressStore = create<AddressStore>((set) => ({

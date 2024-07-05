@@ -1,18 +1,10 @@
 import '@testing-library/jest-dom'
+import { Amplify } from 'aws-amplify'
+import outputs from './amplify_outputs.json'
 
-jest.mock('@/API/AddressApis')
-jest.mock('@/API/AdminApis')
-jest.mock('@/API/BusApis')
-jest.mock('@/API/ExceptionApis')
-jest.mock('@/API/OrganizationApis')
-jest.mock('@/API/RiderApis')
-jest.mock('@/API/RouteActionApis')
-jest.mock('@/API/RouteApis')
-jest.mock('@/API/ScanApis')
-jest.mock('@/API/SchoolApis')
-jest.mock('@/API/StopApis')
-jest.mock('@/API/UserApis')
-jest.mock('@/helpers/GenerateApiGatewayClient')
+beforeEach(() => {
+    Amplify.configure(outputs)
+})
 
 jest.mock('react-i18next', () => ({
     useTranslation: () => ({
@@ -22,3 +14,35 @@ jest.mock('react-i18next', () => ({
         }
     })
 }))
+
+jest.mock('aws-amplify/auth', () => ({
+    fetchAuthSession: () => ({
+        userSub: '77463cae-8fcd-48c8-a526-a8997a4e167e',
+        tokens: {
+            accessToken: {
+                'custom:orgId': '1cf1a2b2-30dd-43ea-b854-e6217073fe06'
+            }
+        }
+    }),
+    signUp: () => ({
+        userId: 'newUserId'
+    }),
+    signOut: jest.fn()
+}))
+
+jest.mock('@/hooks/useDeviceLocation')
+
+jest.mock('@/store/AddressStore')
+jest.mock('@/store/ApiStore')
+jest.mock('@/store/BusStore')
+jest.mock('@/store/DriverStore')
+jest.mock('@/store/ExceptionStore')
+jest.mock('@/store/GuardianStore')
+jest.mock('@/store/OrgStore')
+jest.mock('@/store/RiderStore')
+jest.mock('@/store/RouteActionStore')
+jest.mock('@/store/RouteStore')
+jest.mock('@/store/ScanStore')
+jest.mock('@/store/SchoolStore')
+jest.mock('@/store/StopStore')
+jest.mock('@/store/UserStore')

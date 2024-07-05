@@ -1,16 +1,15 @@
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
-
-import { Schema } from '../../amplify/data/resource'
+import { CreateRiderTypeInput, RiderType } from '@/types/AmplifyTypes'
 
 interface RiderStore {
     changeSearchArg(searchArg: string): Promise<void>
-    createRider(rider: Schema['Rider']['createType']): Promise<void>
+    createRider(rider: CreateRiderTypeInput): Promise<void>
     deleteRider(riderId: string): Promise<void>
-    getRiderById(riderId: string): Promise<Schema['Rider']['type']>
+    getRiderById(riderId: string): Promise<RiderType>
     getRiders(): Promise<void>
-    riders: Schema['Rider']['type'][]
-    ridersFilter(r: Schema['Rider']['type']): boolean
+    riders: RiderType[]
+    ridersFilter(r: RiderType): boolean
     searchArg: string
 }
 
@@ -27,7 +26,7 @@ export const useRiderStore = create<RiderStore>((set, get) => ({
 
         set({ riders })
     },
-    createRider: async (rider: Schema['Rider']['createType']) => {
+    createRider: async (rider: CreateRiderTypeInput) => {
         const client = await useApiStore.getState().getClient()
 
         await client.models.Rider.create(rider)
@@ -58,7 +57,7 @@ export const useRiderStore = create<RiderStore>((set, get) => ({
         throw 'Could not get rider by id'
     },
     riders: [],
-    ridersFilter: (r: Schema['Rider']['type']) => {
+    ridersFilter: (r: RiderType) => {
         const searchArg = get().searchArg
         const standardizedArg = searchArg.toLowerCase()
         const { firstName, lastName } = r

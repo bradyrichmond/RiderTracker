@@ -5,8 +5,6 @@ import Auth from '..'
 import LoginForm from '../LoginForm'
 import Logout from '../Logout'
 
-jest.mock('aws-amplify/auth')
-
 afterEach(() => {
   jest.restoreAllMocks()
 })

@@ -4,8 +4,6 @@ import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-lib
 import { AsRole, ProviderWrapperAsRole } from '@/helpers/ProviderWrapper'
 import Drivers from '..'
 import { PropsWithChildren } from 'react'
-jest.mock('@/API/UserApis')
-jest.mock('@/API/OrganizationApis')
 
 afterEach(() => {
   jest.restoreAllMocks()

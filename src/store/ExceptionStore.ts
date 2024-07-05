@@ -2,10 +2,7 @@ import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
 import { useOrgStore } from './OrgStore'
 import { v4 as uuid } from 'uuid'
-import { Schema } from '../../amplify/data/resource'
-import { CreateExceptionTypeInput, OverrideType } from '@/types/AmplifyTypes'
-
-type ExceptionType = Schema['Exception']['type']
+import { CreateExceptionTypeInput, ExceptionType, OverrideType } from '@/types/AmplifyTypes'
 
 interface ExceptionStore {
     exceptions: ExceptionType[]

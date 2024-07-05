@@ -1,15 +1,13 @@
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
-import { Schema } from '../../amplify/data/resource'
-
-type RouteType = Schema['Route']['type']
+import { CreateRouteTypeInput, RouteType } from '@/types/AmplifyTypes'
 
 interface RouteStore {
     routes: RouteType[]
     getRoutes(): Promise<void>
     getActiveRoutes(): Promise<RouteType[]>
     getInactiveRoutes(): Promise<RouteType[]>
-    createRoute(route: Schema['Route']['createType']): Promise<void>
+    createRoute(route: CreateRouteTypeInput): Promise<void>
     deleteRoute(routeId: string): Promise<void>
     getRouteById(routeId: string): Promise<RouteType>
     setRouteActive(routeId: string): Promise<void>
@@ -52,7 +50,7 @@ export const useRouteStore = create<RouteStore>((set) => ({
 
         throw 'Could not get route by id'
     },
-    createRoute: async (route: Schema['Route']['createType']) => {
+    createRoute: async (route: CreateRouteTypeInput) => {
         const client = await useApiStore.getState().getClient()
 
         await client.models.Route.create(route)

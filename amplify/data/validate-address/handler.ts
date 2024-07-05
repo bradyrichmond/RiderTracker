@@ -48,17 +48,19 @@ const _evaluateAddressData = (result: any): Partial<Schema['Address']['type']> =
         const place = body.features[0].properties
 
         if (place.rank.confidence > ACCEPT_LEVEL) {
-            const { housenumber, street, city, suburb, state, postcode, county, country, formatted } = place
+            const { housenumber, street, city, suburb, state, postcode, county, country, formatted, lon, lat } = place
 
             return {
-                houseNumber: housenumber,
-                streetName: street,
                 city: city ?? suburb,
-                state,
                 county,
                 country,
+                formatted,
+                houseNumber: housenumber,
+                lat,
+                lon,
                 postcode,
-                formatted
+                state,
+                streetName: street
             }
         } else {
             throw 'Address confidence is too low'

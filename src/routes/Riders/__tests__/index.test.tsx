@@ -64,14 +64,14 @@ describe('Riders Tests', () => {
 
     await waitFor(() => {
       expect(screen.getByRole('gridcell', {
-        name: /hallie/i
+        name: /randy/i
       })).toBeInTheDocument()
     })
   })
 
   it('opens the drawer when url path has an id', async () => {
 
-    render(<Riders activeRider='123456' />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} userRole="RiderTracker_OrgAdmin" /> })
+    render(<Riders activeRider='5cc9dfb8-0a4a-442f-ba0e-6dca8616853c' />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} userRole="RiderTracker_OrgAdmin" /> })
 
     await waitFor(() => {
       expect(screen.getByLabelText('deleteRider')).toBeInTheDocument()
@@ -79,7 +79,7 @@ describe('Riders Tests', () => {
   })
 
   it('renders rider details page', async () => {
-    render(<Rider activeRider='123456' />, { wrapper: ProviderWrapperAsRole })
+    render(<Rider activeRider='5cc9dfb8-0a4a-442f-ba0e-6dca8616853c' />, { wrapper: ProviderWrapperAsRole })
 
     await waitFor(() => {
       expect(screen.getByText('authorizedExceptions')).toBeInTheDocument()

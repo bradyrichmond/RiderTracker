@@ -1,14 +1,12 @@
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
-import { Schema } from '../../amplify/data/resource'
-
-type StopType = Schema['Stop']['type']
+import { CreateStopTypeInput, StopType } from '@/types/AmplifyTypes'
 
 interface StopStore {
     stops: StopType[]
     getStops(): Promise<void>
     getStopById(stopId: string): Promise<StopType>
-    createStop(stop: Schema['Stop']['createType']): Promise<void>
+    createStop(stop: CreateStopTypeInput): Promise<void>
     deleteStop(stopId: string): Promise<void>
 }
 
@@ -34,7 +32,7 @@ export const useStopStore = create<StopStore>((set) => ({
 
         throw 'Could not get route by id'
     },
-    createStop: async (stop: Schema['Stop']['createType']) => {
+    createStop: async (stop: CreateStopTypeInput) => {
         const client = await useApiStore.getState().getClient()
 
         await client.models.Stop.create(stop)

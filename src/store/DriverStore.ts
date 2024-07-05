@@ -1,8 +1,6 @@
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
-import { Schema } from '../../amplify/data/resource'
-
-type UserType = Schema['User']['type']
+import { UserType } from '@/types/AmplifyTypes'
 
 interface DriverStore {
     drivers: UserType[]

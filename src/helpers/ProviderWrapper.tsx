@@ -1,5 +1,6 @@
-import { PropsWithChildren } from 'react'
+import { PropsWithChildren, useEffect } from 'react'
 import { MemoryRouter } from 'react-router-dom'
+import { useUserStore } from '@/store/UserStore'
 
 export interface AsRole {
     userRole?: string
@@ -15,11 +16,24 @@ export const ProviderWrapper = ({ children }: PropsWithChildren) => {
 }
 
 export const ProviderWrapperAsRole = ({ children, userRole, routes }: PropsWithChildren<AsRole>) => {
+    const updateUserData = useUserStore().updateUserData
+    const currentUser = useUserStore().currentUser
+
+    useEffect(() => {
+        updateUserData()
+    }, [updateUserData])
+
     return (
         <MemoryRouter initialEntries={routes ?? ['/']}>
-            <AsRole userRole={userRole}>
-                {children}
-            </AsRole>
+            <>
+                {currentUser ?
+                    <AsRole userRole={userRole}>
+                        {children}
+                    </AsRole>
+                    :
+                    null
+                }
+            </>
         </MemoryRouter>
     )
 }

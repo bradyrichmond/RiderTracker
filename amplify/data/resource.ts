@@ -54,14 +54,16 @@ const schema = a.schema({
     DeliveryMedium: a.ref('DeliveryMediumType')
   }),
   ValidatedAddress: a.customType({
-    houseNumber: a.string().required(),
-    streetName: a.string().required(),
     city: a.string().required(),
-    state: a.string().required(),
-    county: a.string().required(),
     country: a.string().required(),
+    county: a.string().required(),
+    formatted: a.string().required(),
+    houseNumber: a.string().required(),
+    lat: a.string().required(),
+    lon: a.string().required(),
     postcode: a.string().required(),
-    formatted: a.string().required()
+    streetName: a.string().required(),
+    state: a.string().required()
   }),
 
   // Enums
@@ -104,6 +106,8 @@ const schema = a.schema({
     county: a.string().required(),
     formatted: a.string().required(),
     houseNumber: a.string().required(),
+    lat: a.string().required(),
+    lon: a.string().required(),
     orgId: a.id().required(),
     postcode: a.string().required(),
     school: a.belongsTo('School', 'schoolId'),
