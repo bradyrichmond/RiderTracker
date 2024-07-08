@@ -19,11 +19,11 @@ interface UserStore {
     createUser(admin: CreateUserTypeInput): Promise<UserType>
     currentUser?: UserType
     fullName?: string
+    getUserById(id: string): Promise<UserType>
     getUsers(): Promise<UserType[]>
     signOutAws(): Promise<void>
     updateUserData(): Promise<void>
     users: UserType[]
-    userGroups: string[]
 }
 
 export const useUserStore = create<UserStore>((set, get) => ({
@@ -98,6 +98,17 @@ export const useUserStore = create<UserStore>((set, get) => ({
         throw 'Failed to create admin'
     },
     currentUser: undefined,
+    getUserById: async (id: string) => {
+        const client = await useApiStore.getState().getClient()
+
+        const { data: userData } = await client.queries.getUserById({ id })
+
+        if (userData) {
+            return userData
+        }
+
+        throw `Unable to find user with id: ${id}`
+    },
     getUsers: async () => {
         const client = await useApiStore.getState().getClient()
 
@@ -116,19 +127,12 @@ export const useUserStore = create<UserStore>((set, get) => ({
         const userId = session.userSub
 
         if (userId) {
-            const { data: currentUser } = await client.models.User.get({ id: userId }, { authMode: 'userPool' })
+            const { data: currentUser } = await client.queries.getCurrentUser()
+
             if (currentUser) {
                 set({ currentUser, fullName: `${currentUser.firstName} ${currentUser.lastName}` })
             }
         }
-
-        const accessToken = session.tokens?.accessToken
-
-        if (accessToken) {
-            const groups = accessToken.payload['cognito:groups'] as string[]
-            set({ userGroups: groups })
-        }
     },
-    users: [],
-    userGroups: []
+    users: []
 }))

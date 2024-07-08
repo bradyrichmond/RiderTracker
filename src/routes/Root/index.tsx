@@ -1,21 +1,21 @@
 import { Box, Container, LinearProgress } from '@mui/material'
 import { Outlet } from 'react-router-dom'
 import NavigationContainer from '@/components/NavigationContainer'
-import { useOrgStore } from '@/store/OrgStore'
 import { useUserStore } from '@/store/UserStore'
 import { useState, useEffect, useCallback } from 'react'
 import { Hub } from 'aws-amplify/utils'
+import { useOrgStore } from '@/store/OrgStore'
 
 const Root = () => {
     const [isInitialized, setIsInitialized] = useState<boolean>(false)
     const updateUserData = useUserStore().updateUserData
-    const startOrgSubscription = useOrgStore().startOrgSubscription
+    const updateOrgData = useOrgStore().updateOrgData
 
     const initialize = useCallback(async () => {
         await updateUserData()
-        startOrgSubscription()
+        updateOrgData()
         setIsInitialized(true)
-    }, [startOrgSubscription, updateUserData])
+    }, [updateOrgData, updateUserData])
 
     useEffect(() => {
         initialize()

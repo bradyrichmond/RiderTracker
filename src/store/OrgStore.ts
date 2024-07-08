@@ -2,19 +2,16 @@ import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
 import { useUserStore } from './UserStore'
 import { fetchUserAttributes } from 'aws-amplify/auth'
-import { Subscription } from 'rxjs'
 import { OrganizationType } from '@/types/AmplifyTypes'
 
 export interface OrgStore {
     orgData?: OrganizationType
     createOrg(orgName: string): Promise<OrganizationType>
     getOrgId(): Promise<string>
-    startOrgSubscription(): Promise<void>
-    stopOrgSubscription(): Promise<void>
-    subscription?: Subscription
+    updateOrgData(): Promise<void>
 }
 
-export const useOrgStore = create<OrgStore>((set, get) => ({
+export const useOrgStore = create<OrgStore>((set) => ({
     orgData: undefined,
     createOrg: async (orgName: string) => {
         await useUserStore.getState().signOutAws()
@@ -27,6 +24,14 @@ export const useOrgStore = create<OrgStore>((set, get) => ({
 
         throw 'Failed to create org'
     },
+    updateOrgData: async () => {
+        const client = await useApiStore.getState().getClient()
+        const { data: orgData } = await client.queries.getUserOrg()
+
+        if (orgData) {
+            set({ orgData })
+        }
+    },
     getOrgId: async () => {
         const attributes = await fetchUserAttributes()
         const orgId = attributes['custom:orgId']
@@ -36,29 +41,5 @@ export const useOrgStore = create<OrgStore>((set, get) => ({
         }
 
         throw 'Unable to get org id'
-    },
-    startOrgSubscription: async () => {
-        const client = await useApiStore.getState().getClient()
-        const orgId = await get().getOrgId()
-
-        if (orgId) {
-            const subscription = client.models.Organization.observeQuery({ filter: { id: { eq: orgId } } }).subscribe({
-                next: ({ items }) => {
-                    console.log('Organization update')
-                    set({ orgData: items[0] })
-                },
-                error: () => {
-                    console.error('Subscription problem')
-                }
-            })
-            set({ subscription })
-        }
-    },
-    stopOrgSubscription: async () => {
-        const subscription = get().subscription
-
-        if (subscription) {
-            subscription.unsubscribe()
-        }
     }
 }))

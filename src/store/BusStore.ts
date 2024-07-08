@@ -4,7 +4,7 @@ import { useOrgStore } from './OrgStore'
 import { BusType } from '@/types/AmplifyTypes'
 
 interface BusStore {
-    buses: BusType[]
+    buses?: (BusType | null | undefined)[]
     createBus(busNumber: string): Promise<void>
     deleteBus(busId: string): Promise<void>
     getBusById(busId: string): Promise<BusType>
@@ -44,8 +44,7 @@ export const useBusStore = create<BusStore>((set, get) => ({
     },
     updateBuses: async () => {
         const client = await useApiStore.getState().getClient()
-        const orgId = await useOrgStore.getState().getOrgId()
-        const { data: buses } = await client.models.Bus.listBusByOrgId({ orgId })
+        const { data: buses } = await client.queries.listBusesForOrg()
 
         if (buses) {
             set({ buses })
