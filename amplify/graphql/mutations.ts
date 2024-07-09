@@ -116,6 +116,28 @@ export const createBus = /* GraphQL */ `mutation CreateBus(
   APITypes.CreateBusMutationVariables,
   APITypes.CreateBusMutation
 >;
+export const createBusForOrg = /* GraphQL */ `mutation CreateBusForOrg($busNumber: String!) {
+  createBusForOrg(busNumber: $busNumber) {
+    busNumber
+    createdAt
+    id
+    orgId
+    organization {
+      createdAt
+      id
+      loginImageKey
+      orgName
+      updatedAt
+      __typename
+    }
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedMutation<
+  APITypes.CreateBusForOrgMutationVariables,
+  APITypes.CreateBusForOrgMutation
+>;
 export const createException = /* GraphQL */ `mutation CreateException(
   $condition: ModelExceptionConditionInput
   $input: CreateExceptionInput!

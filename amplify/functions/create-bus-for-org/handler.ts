@@ -2,8 +2,8 @@ import { Amplify } from 'aws-amplify'
 import { env } from '$amplify/env/get-org'
 import { Schema } from '../../data/resource'
 import { generateClient } from 'aws-amplify/data'
-import { getUser } from '../../graphql/queries'
 import { AppSyncResolverHandler } from 'aws-lambda'
+import { createBus } from '../../graphql/mutations'
 
 Amplify.configure(
     {
@@ -35,36 +35,42 @@ Amplify.configure(
 
 const client = generateClient<Schema>()
 
-export const handler: AppSyncResolverHandler<Schema['getCurrentUser']['args'], Schema['getCurrentUser']['returnType'], Schema['getCurrentUser']> = async (event) => {
-    const { identity } = event
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const handler: AppSyncResolverHandler<Schema['createBusForOrg']['args'], Schema['createBusForOrg']['returnType'], Schema['getUserOrg']> = async (event) => {
+    const { identity, arguments: args } = event
+    const { busNumber } = args
 
     if (!identity) {
         throw 'Missing identity from handler function'
     }
 
-    if ('groups' in identity && 'sub' in identity) {
+    if ('groups' in identity) {
         const { groups } = identity
 
         if (groups) {
-            const orgGroup = groups.find((g: string) => g.includes('RiderTrackerOrgId#'))
-            const { sub: userId } = identity
-
-            if (orgGroup && userId) {
-                const { data } = await client.graphql({
-                    query: getUser,
-                    variables: {
-                        id: userId
-                    }
-                })
-
-                const currentUser = data.getUser
-
-                if (currentUser) {
-                    return currentUser
-                }
+            if (!groups.includes('ADMINS')) {
+                throw 'User is not Admin'
             }
+
+            const orgGroup = groups.find((g: string) => g.includes('RiderTrackerOrgId#'))
+
+            if (!orgGroup) {
+                throw 'Org group not found for user'
+            }
+
+            const orgId = orgGroup.split('#')[1]
+            await client.graphql({
+                query: createBus,
+                variables: {
+                    input: {
+                        busNumber,
+                        orgId
+                    }
+                }
+            })
+
         }
     }
 
-    throw 'Failed to find user'
+    throw 'Failed to create bus'
 }

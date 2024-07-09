@@ -1,11 +1,10 @@
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
-import { useOrgStore } from './OrgStore'
-import { BusType } from '@/types/AmplifyTypes'
+import { BusType, UpdateBusTypeInput } from '@/types/AmplifyTypes'
 
 interface BusStore {
-    buses?: (BusType | null | undefined)[]
-    createBus(busNumber: string): Promise<void>
+    buses?: BusType[]
+    createBus(busNumber: string): Promise<UpdateBusTypeInput>
     deleteBus(busId: string): Promise<void>
     getBusById(busId: string): Promise<BusType>
     updateBuses(): Promise<void>
@@ -15,15 +14,16 @@ export const useBusStore = create<BusStore>((set, get) => ({
     buses: [],
     createBus: async (busNumber: string) => {
         const client = await useApiStore.getState().getClient()
-        const orgId = await useOrgStore.getState().getOrgId()
 
-        const newBus = {
-            orgId,
-            busNumber
+        const { data: bus } = await client.mutations.createBusForOrg({ busNumber })
+
+        await get().updateBuses()
+
+        if (bus) {
+            return bus
         }
 
-        await client.models.Bus.create(newBus)
-        await get().updateBuses()
+        throw 'Failed to create bus'
     },
     deleteBus: async (busId: string) => {
         const client = await useApiStore.getState().getClient()
@@ -45,9 +45,10 @@ export const useBusStore = create<BusStore>((set, get) => ({
     updateBuses: async () => {
         const client = await useApiStore.getState().getClient()
         const { data: buses } = await client.queries.listBusesForOrg()
+        const filteredBuses = buses?.filter((b) => !!b)
 
         if (buses) {
-            set({ buses })
+            set({ buses: filteredBuses })
             return
         }
 

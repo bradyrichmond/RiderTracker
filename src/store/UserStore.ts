@@ -13,13 +13,11 @@ export interface CreateCognitoUserInput {
 }
 
 interface UserStore {
-    addUserToAdminGroup(admin: UserType): Promise<void>
     addUserToOrg(admin: CreateUserTypeInput): Promise<UserType>
     createDriver(driver: CreateCognitoUserInput): Promise<UserType>
     createUser(admin: CreateUserTypeInput): Promise<UserType>
     currentUser?: UserType
     fullName?: string
-    getUserById(id: string): Promise<UserType>
     getUsers(): Promise<UserType[]>
     signOutAws(): Promise<void>
     updateUserData(): Promise<void>
@@ -27,31 +25,6 @@ interface UserStore {
 }
 
 export const useUserStore = create<UserStore>((set, get) => ({
-    addUserToAdminGroup: async (admin: UserType) => {
-        const client = await useApiStore.getState().getClient()
-
-        if (admin.id) {
-            await client.mutations.addUserToGroup({ userId: admin.id, groupName: 'Admins' })
-
-            const { data: org } = await client.models.Organization.get({ id: admin.orgId }, { authMode: 'userPool' })
-
-            if (org) {
-                const { admins } = org
-                let newAdmins = admins
-
-                if (!newAdmins) {
-                    newAdmins = []
-                }
-
-                newAdmins?.push(admin.id)
-
-                await client.models.Organization.update({ id: org.id, admins: newAdmins })
-                return
-            }
-        }
-
-        throw 'Failed to add admin to org'
-    },
     addUserToOrg: async (user: UserType) => {
         const client = await useApiStore.getState().getClient()
         const { data } = await client.models.User.create(user, { authMode: 'userPool' })
@@ -98,17 +71,6 @@ export const useUserStore = create<UserStore>((set, get) => ({
         throw 'Failed to create admin'
     },
     currentUser: undefined,
-    getUserById: async (id: string) => {
-        const client = await useApiStore.getState().getClient()
-
-        const { data: userData } = await client.queries.getUserById({ id })
-
-        if (userData) {
-            return userData
-        }
-
-        throw `Unable to find user with id: ${id}`
-    },
     getUsers: async () => {
         const client = await useApiStore.getState().getClient()
 

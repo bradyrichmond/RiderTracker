@@ -375,8 +375,8 @@ export const getStop = /* GraphQL */ `query GetStop($id: ID!) {
   }
 }
 ` as GeneratedQuery<APITypes.GetStopQueryVariables, APITypes.GetStopQuery>;
-export const getUser = /* GraphQL */ `query GetUser($id: ID!, $orgId: ID!) {
-  getUser(id: $id, orgId: $orgId) {
+export const getUser = /* GraphQL */ `query GetUser($id: ID!) {
+  getUser(id: $id) {
     admin {
       createdAt
       id
@@ -525,6 +525,36 @@ export const listAddresses = /* GraphQL */ `query ListAddresses(
   APITypes.ListAddressesQueryVariables,
   APITypes.ListAddressesQuery
 >;
+export const listAdminByOrgId = /* GraphQL */ `query ListAdminByOrgId(
+  $filter: ModelAdminFilterInput
+  $limit: Int
+  $nextToken: String
+  $orgId: ID!
+  $sortDirection: ModelSortDirection
+) {
+  listAdminByOrgId(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    orgId: $orgId
+    sortDirection: $sortDirection
+  ) {
+    items {
+      createdAt
+      id
+      orgId
+      updatedAt
+      userId
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListAdminByOrgIdQueryVariables,
+  APITypes.ListAdminByOrgIdQuery
+>;
 export const listAdmins = /* GraphQL */ `query ListAdmins(
   $filter: ModelAdminFilterInput
   $limit: Int
@@ -592,6 +622,66 @@ export const listBuses = /* GraphQL */ `query ListBuses($filter: ModelBusFilterI
   }
 }
 ` as GeneratedQuery<APITypes.ListBusesQueryVariables, APITypes.ListBusesQuery>;
+export const listBusesForOrg = /* GraphQL */ `query ListBusesForOrg {
+  listBusesForOrg {
+    busNumber
+    createdAt
+    id
+    orgId
+    organization {
+      createdAt
+      id
+      loginImageKey
+      orgName
+      updatedAt
+      __typename
+    }
+    updatedAt
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListBusesForOrgQueryVariables,
+  APITypes.ListBusesForOrgQuery
+>;
+export const listExceptionByOrgId = /* GraphQL */ `query ListExceptionByOrgId(
+  $filter: ModelExceptionFilterInput
+  $limit: Int
+  $nextToken: String
+  $orgId: ID!
+  $sortDirection: ModelSortDirection
+) {
+  listExceptionByOrgId(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    orgId: $orgId
+    sortDirection: $sortDirection
+  ) {
+    items {
+      authorized
+      createdAt
+      date
+      dropoff
+      dropoffGuardianId
+      dropoffStopId
+      id
+      orgId
+      pickup
+      pickupGuardianId
+      pickupStopId
+      riderId
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListExceptionByOrgIdQueryVariables,
+  APITypes.ListExceptionByOrgIdQuery
+>;
 export const listExceptions = /* GraphQL */ `query ListExceptions(
   $filter: ModelExceptionFilterInput
   $id: ID
@@ -652,6 +742,38 @@ export const listOrganizations = /* GraphQL */ `query ListOrganizations(
   APITypes.ListOrganizationsQueryVariables,
   APITypes.ListOrganizationsQuery
 >;
+export const listRiderByOrgId = /* GraphQL */ `query ListRiderByOrgId(
+  $filter: ModelRiderFilterInput
+  $limit: Int
+  $nextToken: String
+  $orgId: ID!
+  $sortDirection: ModelSortDirection
+) {
+  listRiderByOrgId(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    orgId: $orgId
+    sortDirection: $sortDirection
+  ) {
+    items {
+      createdAt
+      firstName
+      id
+      lastName
+      orgId
+      routeId
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListRiderByOrgIdQueryVariables,
+  APITypes.ListRiderByOrgIdQuery
+>;
 export const listRiders = /* GraphQL */ `query ListRiders(
   $filter: ModelRiderFilterInput
   $limit: Int
@@ -701,6 +823,38 @@ export const listRouteActions = /* GraphQL */ `query ListRouteActions(
   APITypes.ListRouteActionsQueryVariables,
   APITypes.ListRouteActionsQuery
 >;
+export const listRouteByOrgId = /* GraphQL */ `query ListRouteByOrgId(
+  $filter: ModelRouteFilterInput
+  $limit: Int
+  $nextToken: String
+  $orgId: ID!
+  $sortDirection: ModelSortDirection
+) {
+  listRouteByOrgId(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    orgId: $orgId
+    sortDirection: $sortDirection
+  ) {
+    items {
+      createdAt
+      id
+      isActive
+      orgId
+      riders
+      routeNumber
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListRouteByOrgIdQueryVariables,
+  APITypes.ListRouteByOrgIdQuery
+>;
 export const listRoutes = /* GraphQL */ `query ListRoutes(
   $filter: ModelRouteFilterInput
   $limit: Int
@@ -725,6 +879,39 @@ export const listRoutes = /* GraphQL */ `query ListRoutes(
   APITypes.ListRoutesQueryVariables,
   APITypes.ListRoutesQuery
 >;
+export const listScanByOrgId = /* GraphQL */ `query ListScanByOrgId(
+  $filter: ModelScanFilterInput
+  $limit: Int
+  $nextToken: String
+  $orgId: ID!
+  $sortDirection: ModelSortDirection
+) {
+  listScanByOrgId(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    orgId: $orgId
+    sortDirection: $sortDirection
+  ) {
+    items {
+      createdAt
+      guardianIds
+      id
+      manualScan
+      orgId
+      riderIds
+      stopId
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListScanByOrgIdQueryVariables,
+  APITypes.ListScanByOrgIdQuery
+>;
 export const listScans = /* GraphQL */ `query ListScans(
   $filter: ModelScanFilterInput
   $limit: Int
@@ -747,6 +934,39 @@ export const listScans = /* GraphQL */ `query ListScans(
   }
 }
 ` as GeneratedQuery<APITypes.ListScansQueryVariables, APITypes.ListScansQuery>;
+export const listSchoolByOrgId = /* GraphQL */ `query ListSchoolByOrgId(
+  $filter: ModelSchoolFilterInput
+  $limit: Int
+  $nextToken: String
+  $orgId: ID!
+  $sortDirection: ModelSortDirection
+) {
+  listSchoolByOrgId(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    orgId: $orgId
+    sortDirection: $sortDirection
+  ) {
+    items {
+      addressId
+      createdAt
+      id
+      orgId
+      riderIds
+      schoolName
+      stopIds
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListSchoolByOrgIdQueryVariables,
+  APITypes.ListSchoolByOrgIdQuery
+>;
 export const listSchoolHours = /* GraphQL */ `query ListSchoolHours(
   $filter: ModelSchoolHourFilterInput
   $limit: Int
@@ -796,6 +1016,38 @@ export const listSchools = /* GraphQL */ `query ListSchools(
   APITypes.ListSchoolsQueryVariables,
   APITypes.ListSchoolsQuery
 >;
+export const listStopByOrgId = /* GraphQL */ `query ListStopByOrgId(
+  $filter: ModelStopFilterInput
+  $limit: Int
+  $nextToken: String
+  $orgId: ID!
+  $sortDirection: ModelSortDirection
+) {
+  listStopByOrgId(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    orgId: $orgId
+    sortDirection: $sortDirection
+  ) {
+    items {
+      createdAt
+      id
+      name
+      orgId
+      riderIds
+      routeId
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListStopByOrgIdQueryVariables,
+  APITypes.ListStopByOrgIdQuery
+>;
 export const listStops = /* GraphQL */ `query ListStops(
   $filter: ModelStopFilterInput
   $limit: Int
@@ -817,12 +1069,46 @@ export const listStops = /* GraphQL */ `query ListStops(
   }
 }
 ` as GeneratedQuery<APITypes.ListStopsQueryVariables, APITypes.ListStopsQuery>;
-export const listUsers = /* GraphQL */ `query ListUsers(
+export const listUserByOrgId = /* GraphQL */ `query ListUserByOrgId(
   $filter: ModelUserFilterInput
-  $id: ModelIDKeyConditionInput
   $limit: Int
   $nextToken: String
-  $orgId: ID
+  $orgId: ID!
+  $sortDirection: ModelSortDirection
+) {
+  listUserByOrgId(
+    filter: $filter
+    limit: $limit
+    nextToken: $nextToken
+    orgId: $orgId
+    sortDirection: $sortDirection
+  ) {
+    items {
+      adminId
+      createdAt
+      email
+      firstName
+      id
+      lastName
+      orgId
+      stopId
+      title
+      updatedAt
+      __typename
+    }
+    nextToken
+    __typename
+  }
+}
+` as GeneratedQuery<
+  APITypes.ListUserByOrgIdQueryVariables,
+  APITypes.ListUserByOrgIdQuery
+>;
+export const listUsers = /* GraphQL */ `query ListUsers(
+  $filter: ModelUserFilterInput
+  $id: ID
+  $limit: Int
+  $nextToken: String
   $sortDirection: ModelSortDirection
 ) {
   listUsers(
@@ -830,7 +1116,6 @@ export const listUsers = /* GraphQL */ `query ListUsers(
     id: $id
     limit: $limit
     nextToken: $nextToken
-    orgId: $orgId
     sortDirection: $sortDirection
   ) {
     items {

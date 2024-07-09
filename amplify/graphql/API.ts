@@ -486,19 +486,6 @@ export type ModelScanConnection = {
   nextToken?: string | null,
 };
 
-export type ModelSchoolHourFilterInput = {
-  and?: Array< ModelSchoolHourFilterInput | null > | null,
-  createdAt?: ModelStringInput | null,
-  dayName?: ModelStringInput | null,
-  endTime?: ModelStringInput | null,
-  id?: ModelIDInput | null,
-  not?: ModelSchoolHourFilterInput | null,
-  or?: Array< ModelSchoolHourFilterInput | null > | null,
-  schoolId?: ModelIDInput | null,
-  startTime?: ModelStringInput | null,
-  updatedAt?: ModelStringInput | null,
-};
-
 export type ModelSchoolFilterInput = {
   addressId?: ModelIDInput | null,
   and?: Array< ModelSchoolFilterInput | null > | null,
@@ -510,6 +497,19 @@ export type ModelSchoolFilterInput = {
   riderIds?: ModelIDInput | null,
   schoolName?: ModelStringInput | null,
   stopIds?: ModelIDInput | null,
+  updatedAt?: ModelStringInput | null,
+};
+
+export type ModelSchoolHourFilterInput = {
+  and?: Array< ModelSchoolHourFilterInput | null > | null,
+  createdAt?: ModelStringInput | null,
+  dayName?: ModelStringInput | null,
+  endTime?: ModelStringInput | null,
+  id?: ModelIDInput | null,
+  not?: ModelSchoolHourFilterInput | null,
+  or?: Array< ModelSchoolHourFilterInput | null > | null,
+  schoolId?: ModelIDInput | null,
+  startTime?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
 };
 
@@ -540,16 +540,6 @@ export type ModelUserFilterInput = {
   stopId?: ModelIDInput | null,
   title?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
-};
-
-export type ModelIDKeyConditionInput = {
-  beginsWith?: string | null,
-  between?: Array< string | null > | null,
-  eq?: string | null,
-  ge?: string | null,
-  gt?: string | null,
-  le?: string | null,
-  lt?: string | null,
 };
 
 export type ModelAddressConditionInput = {
@@ -875,6 +865,7 @@ export type ModelUserConditionInput = {
   lastName?: ModelStringInput | null,
   not?: ModelUserConditionInput | null,
   or?: Array< ModelUserConditionInput | null > | null,
+  orgId?: ModelIDInput | null,
   stopId?: ModelIDInput | null,
   title?: ModelStringInput | null,
   updatedAt?: ModelStringInput | null,
@@ -941,7 +932,6 @@ export type DeleteStopInput = {
 
 export type DeleteUserInput = {
   id: string,
-  orgId: string,
 };
 
 export type UpdateAddressInput = {
@@ -1058,7 +1048,7 @@ export type UpdateUserInput = {
   firstName?: string | null,
   id: string,
   lastName?: string | null,
-  orgId: string,
+  orgId?: string | null,
   stopId?: string | null,
   title?: string | null,
 };
@@ -1381,7 +1371,7 @@ export type GetCurrentUserQueryVariables = {
 };
 
 export type GetCurrentUserQuery = {
-  getCurrentUser?:  {
+  getCurrentUser:  {
     __typename: "User",
     admin?:  {
       __typename: "Admin",
@@ -1409,7 +1399,7 @@ export type GetCurrentUserQuery = {
     stopId?: string | null,
     title?: string | null,
     updatedAt: string,
-  } | null,
+  },
 };
 
 export type GetExceptionQueryVariables = {
@@ -1684,7 +1674,6 @@ export type GetStopQuery = {
 
 export type GetUserQueryVariables = {
   id: string,
-  orgId: string,
 };
 
 export type GetUserQuery = {
@@ -1829,6 +1818,29 @@ export type ListAddressesQuery = {
   } | null,
 };
 
+export type ListAdminByOrgIdQueryVariables = {
+  filter?: ModelAdminFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  orgId: string,
+  sortDirection?: ModelSortDirection | null,
+};
+
+export type ListAdminByOrgIdQuery = {
+  listAdminByOrgId?:  {
+    __typename: "ModelAdminConnection",
+    items:  Array< {
+      __typename: "Admin",
+      createdAt: string,
+      id: string,
+      orgId: string,
+      updatedAt: string,
+      userId: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
 export type ListAdminsQueryVariables = {
   filter?: ModelAdminFilterInput | null,
   limit?: number | null,
@@ -1894,6 +1906,59 @@ export type ListBusesQuery = {
   } | null,
 };
 
+export type ListBusesForOrgQueryVariables = {
+};
+
+export type ListBusesForOrgQuery = {
+  listBusesForOrg:  Array< {
+    __typename: "Bus",
+    busNumber: string,
+    createdAt: string,
+    id: string,
+    orgId: string,
+    organization?:  {
+      __typename: "Organization",
+      createdAt: string,
+      id: string,
+      loginImageKey?: string | null,
+      orgName: string,
+      updatedAt: string,
+    } | null,
+    updatedAt: string,
+  } | null >,
+};
+
+export type ListExceptionByOrgIdQueryVariables = {
+  filter?: ModelExceptionFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  orgId: string,
+  sortDirection?: ModelSortDirection | null,
+};
+
+export type ListExceptionByOrgIdQuery = {
+  listExceptionByOrgId?:  {
+    __typename: "ModelExceptionConnection",
+    items:  Array< {
+      __typename: "Exception",
+      authorized?: boolean | null,
+      createdAt: string,
+      date: string,
+      dropoff: OverrideType,
+      dropoffGuardianId?: string | null,
+      dropoffStopId?: string | null,
+      id: string,
+      orgId: string,
+      pickup: OverrideType,
+      pickupGuardianId?: string | null,
+      pickupStopId?: string | null,
+      riderId?: string | null,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
 export type ListExceptionsQueryVariables = {
   filter?: ModelExceptionFilterInput | null,
   id?: string | null,
@@ -1940,6 +2005,31 @@ export type ListOrganizationsQuery = {
       id: string,
       loginImageKey?: string | null,
       orgName: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type ListRiderByOrgIdQueryVariables = {
+  filter?: ModelRiderFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  orgId: string,
+  sortDirection?: ModelSortDirection | null,
+};
+
+export type ListRiderByOrgIdQuery = {
+  listRiderByOrgId?:  {
+    __typename: "ModelRiderConnection",
+    items:  Array< {
+      __typename: "Rider",
+      createdAt: string,
+      firstName: string,
+      id: string,
+      lastName: string,
+      orgId: string,
+      routeId: string,
       updatedAt: string,
     } | null >,
     nextToken?: string | null,
@@ -1993,6 +2083,31 @@ export type ListRouteActionsQuery = {
   } | null,
 };
 
+export type ListRouteByOrgIdQueryVariables = {
+  filter?: ModelRouteFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  orgId: string,
+  sortDirection?: ModelSortDirection | null,
+};
+
+export type ListRouteByOrgIdQuery = {
+  listRouteByOrgId?:  {
+    __typename: "ModelRouteConnection",
+    items:  Array< {
+      __typename: "Route",
+      createdAt: string,
+      id: string,
+      isActive?: boolean | null,
+      orgId: string,
+      riders: Array< string | null >,
+      routeNumber: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
 export type ListRoutesQueryVariables = {
   filter?: ModelRouteFilterInput | null,
   limit?: number | null,
@@ -2010,6 +2125,32 @@ export type ListRoutesQuery = {
       orgId: string,
       riders: Array< string | null >,
       routeNumber: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type ListScanByOrgIdQueryVariables = {
+  filter?: ModelScanFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  orgId: string,
+  sortDirection?: ModelSortDirection | null,
+};
+
+export type ListScanByOrgIdQuery = {
+  listScanByOrgId?:  {
+    __typename: "ModelScanConnection",
+    items:  Array< {
+      __typename: "Scan",
+      createdAt: string,
+      guardianIds?: Array< string | null > | null,
+      id: string,
+      manualScan?: boolean | null,
+      orgId: string,
+      riderIds: Array< string | null >,
+      stopId: string,
       updatedAt: string,
     } | null >,
     nextToken?: string | null,
@@ -2034,6 +2175,32 @@ export type ListScansQuery = {
       orgId: string,
       riderIds: Array< string | null >,
       stopId: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type ListSchoolByOrgIdQueryVariables = {
+  filter?: ModelSchoolFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  orgId: string,
+  sortDirection?: ModelSortDirection | null,
+};
+
+export type ListSchoolByOrgIdQuery = {
+  listSchoolByOrgId?:  {
+    __typename: "ModelSchoolConnection",
+    items:  Array< {
+      __typename: "School",
+      addressId: string,
+      createdAt: string,
+      id: string,
+      orgId: string,
+      riderIds?: Array< string | null > | null,
+      schoolName: string,
+      stopIds?: Array< string | null > | null,
       updatedAt: string,
     } | null >,
     nextToken?: string | null,
@@ -2087,6 +2254,31 @@ export type ListSchoolsQuery = {
   } | null,
 };
 
+export type ListStopByOrgIdQueryVariables = {
+  filter?: ModelStopFilterInput | null,
+  limit?: number | null,
+  nextToken?: string | null,
+  orgId: string,
+  sortDirection?: ModelSortDirection | null,
+};
+
+export type ListStopByOrgIdQuery = {
+  listStopByOrgId?:  {
+    __typename: "ModelStopConnection",
+    items:  Array< {
+      __typename: "Stop",
+      createdAt: string,
+      id: string,
+      name: string,
+      orgId: string,
+      riderIds: Array< string | null >,
+      routeId: string,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
 export type ListStopsQueryVariables = {
   filter?: ModelStopFilterInput | null,
   limit?: number | null,
@@ -2110,12 +2302,39 @@ export type ListStopsQuery = {
   } | null,
 };
 
-export type ListUsersQueryVariables = {
+export type ListUserByOrgIdQueryVariables = {
   filter?: ModelUserFilterInput | null,
-  id?: ModelIDKeyConditionInput | null,
   limit?: number | null,
   nextToken?: string | null,
-  orgId?: string | null,
+  orgId: string,
+  sortDirection?: ModelSortDirection | null,
+};
+
+export type ListUserByOrgIdQuery = {
+  listUserByOrgId?:  {
+    __typename: "ModelUserConnection",
+    items:  Array< {
+      __typename: "User",
+      adminId?: string | null,
+      createdAt: string,
+      email?: string | null,
+      firstName: string,
+      id: string,
+      lastName: string,
+      orgId: string,
+      stopId?: string | null,
+      title?: string | null,
+      updatedAt: string,
+    } | null >,
+    nextToken?: string | null,
+  } | null,
+};
+
+export type ListUsersQueryVariables = {
+  filter?: ModelUserFilterInput | null,
+  id?: string | null,
+  limit?: number | null,
+  nextToken?: string | null,
   sortDirection?: ModelSortDirection | null,
 };
 
@@ -2229,6 +2448,29 @@ export type CreateBusMutationVariables = {
 
 export type CreateBusMutation = {
   createBus?:  {
+    __typename: "Bus",
+    busNumber: string,
+    createdAt: string,
+    id: string,
+    orgId: string,
+    organization?:  {
+      __typename: "Organization",
+      createdAt: string,
+      id: string,
+      loginImageKey?: string | null,
+      orgName: string,
+      updatedAt: string,
+    } | null,
+    updatedAt: string,
+  } | null,
+};
+
+export type CreateBusForOrgMutationVariables = {
+  busNumber: string,
+};
+
+export type CreateBusForOrgMutation = {
+  createBusForOrg?:  {
     __typename: "Bus",
     busNumber: string,
     createdAt: string,

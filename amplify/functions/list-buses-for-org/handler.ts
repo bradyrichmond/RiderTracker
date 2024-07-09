@@ -1,8 +1,8 @@
 import { Amplify } from 'aws-amplify'
-import { env } from '$amplify/env/get-org'
+import { env } from '$amplify/env/list-buses-for-org'
 import { Schema } from '../../data/resource'
 import { generateClient } from 'aws-amplify/data'
-import { getUser } from '../../graphql/queries'
+import { listBusByOrgId } from '../../graphql/queries'
 import { AppSyncResolverHandler } from 'aws-lambda'
 
 Amplify.configure(
@@ -35,36 +35,34 @@ Amplify.configure(
 
 const client = generateClient<Schema>()
 
-export const handler: AppSyncResolverHandler<Schema['getCurrentUser']['args'], Schema['getCurrentUser']['returnType'], Schema['getCurrentUser']> = async (event) => {
+export const handler: AppSyncResolverHandler<Schema['listBusesForOrg']['args'], Schema['listBusesForOrg']['returnType'], Schema['getUserOrg']> = async (event) => {
     const { identity } = event
 
     if (!identity) {
         throw 'Missing identity from handler function'
     }
 
-    if ('groups' in identity && 'sub' in identity) {
+    if ('groups' in identity) {
         const { groups } = identity
 
         if (groups) {
             const orgGroup = groups.find((g: string) => g.includes('RiderTrackerOrgId#'))
-            const { sub: userId } = identity
 
-            if (orgGroup && userId) {
+            if (orgGroup) {
+                const orgId = orgGroup.split('#')[1]
                 const { data } = await client.graphql({
-                    query: getUser,
+                    query: listBusByOrgId,
                     variables: {
-                        id: userId
+                        orgId
                     }
                 })
 
-                const currentUser = data.getUser
-
-                if (currentUser) {
-                    return currentUser
-                }
+                const response = data.listBusByOrgId
+                const buses = response.items
+                return buses
             }
         }
     }
 
-    throw 'Failed to find user'
+    throw 'Failed to find organization'
 }

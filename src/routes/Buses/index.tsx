@@ -5,10 +5,12 @@ import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import { useTranslation } from 'react-i18next'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { useBusStore } from '@/store/BusStore'
-import { useEffect } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import CreateBusDialog from '@/forms/CreateBusDialog'
 
 const Buses = () => {
-    const { buses, updateBuses, deleteBus, createBus } = useBusStore()
+    const [isAddingBus, setIsAddingBus] = useState(false)
+    const { buses, updateBuses, deleteBus } = useBusStore()
     const { t } = useTranslation(['buses', 'common'])
 
     useEffect(() => {
@@ -20,14 +22,18 @@ const Buses = () => {
         await updateBuses()
     }
 
-    const createBusAction = async () => {
-        // Need to add form for this, and unique bus identifications
-        await createBus('42')
+    const existingBusNumbers = useMemo(() => {
+        const numbers = buses?.map((b) => b.busNumber)
+        return numbers
+    }, [buses])
+
+    const toggleAddingBus = () => {
+        setIsAddingBus((cur) => !cur)
     }
 
     const generateGridColumns = (): GridColDef[] => {
         const initialGridColumns: GridColDef[] = [
-            { field: 'id', headerName: 'ID', flex: 1, align: 'center', headerAlign: 'center' }
+            { field: 'busNumber', headerName: 'Bus Number', flex: 1, align: 'center', headerAlign: 'center' }
         ]
 
         initialGridColumns.push({
@@ -59,6 +65,7 @@ const Buses = () => {
 
     return (
         <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <CreateBusDialog isAddingBus={isAddingBus} cancel={toggleAddingBus} existingBusNumbers={existingBusNumbers ?? []} />
             <Box sx={{ mb: 4, display: 'flex', flexDirection: 'row' }}>
                 <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
                     <Typography variant='h2'>
@@ -66,7 +73,7 @@ const Buses = () => {
                     </Typography>
                 </Box>
                 <Box sx={{ p: 4, flex: 1, display: 'flex', justifyContent: 'flex-end', flexDirection: 'row' }}>
-                    <Button variant='contained' onClick={createBusAction}>
+                    <Button variant='contained' onClick={toggleAddingBus}>
                         <Box sx={{ display: 'flex', flexDirection: 'row' }}>
                             <AddCircleIcon />
                             <Box sx={{ flex: 1, ml: 2 }}>

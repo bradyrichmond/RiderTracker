@@ -4,14 +4,8 @@ import { createOrgUser } from './create-org-user/resource'
 import { validateAddress } from './validate-address/resource'
 import { getOrg } from '../functions/get-org/resource'
 import { getCurrentUser } from '../functions/get-current-user/resource'
-// import { listAdminsForOrg } from '../functions/list-admins-for-org/resource'
-// import { listBusesForOrg } from '../functions/list-buses-for-org/resource'
-// import { listDriversForOrg } from '../functions/list-drivers-for-org/resource'
-// import { listGuardiansForOrg } from '../functions/list-guardians-for-org/resource'
-// import { listRidersForOrg } from '../functions/list-riders-for-org/resource'
-// import { listRoutesForOrg } from '../functions/list-routes-for-org/resource'
-// import { listScansForOrg } from '../functions/list-scans-for-org/resource'
-// import { listSchoolsForOrg } from '../functions/list-schools-for-org/resource'
+import { listBusesForOrg } from '../functions/list-buses-for-org/resource'
+import { createBusForOrg } from '../functions/create-bus-for-org/resource'
 
 const schema = a.schema({
   // Queries
@@ -25,46 +19,11 @@ const schema = a.schema({
     .returns(a.ref('Organization'))
     .authorization((allow) => [allow.authenticated()])
     .handler(a.handler.function(getOrg)),
-  // listAdminsForOrg: a
-  //   .query()
-  //   .returns(a.ref('User').array().required())
-  //   .authorization((allow) => [allow.group('ADMINS')])
-  //   .handler(a.handler.function(listAdminsForOrg)),
-  // listBusesForOrg: a
-  //   .query()
-  //   .returns(a.ref('Bus').array().required())
-  //   .authorization((allow) => [allow.group('ADMINS')])
-  //   .handler(a.handler.function(listBusesForOrg)),
-  // listDriversForOrg: a
-  //   .query()
-  //   .returns(a.ref('User').array().required())
-  //   .authorization((allow) => [allow.group('ADMINS')])
-  //   .handler(a.handler.function(listDriversForOrg)),
-  // listGuardiansForOrg: a
-  //   .query()
-  //   .returns(a.ref('User').array().required())
-  //   .authorization((allow) => [allow.group('ADMINS')])
-  //   .handler(a.handler.function(listGuardiansForOrg)),
-  // listRidersForOrg: a
-  //   .query()
-  //   .returns(a.ref('Rider').array().required())
-  //   .authorization((allow) => [allow.group('ADMINS')])
-  //   .handler(a.handler.function(listRidersForOrg)),
-  // listRoutesForOrg: a
-  //   .query()
-  //   .returns(a.ref('Route').array().required())
-  //   .authorization((allow) => [allow.group('ADMINS')])
-  //   .handler(a.handler.function(listRoutesForOrg)),
-  // listScansForOrg: a
-  //   .query()
-  //   .returns(a.ref('Scan').array().required())
-  //   .authorization((allow) => [allow.group('ADMINS')])
-  //   .handler(a.handler.function(listScansForOrg)),
-  // listSchoolsForOrg: a
-  //   .query()
-  //   .returns(a.ref('School').array().required())
-  //   .authorization((allow) => [allow.group('ADMINS')])
-  //   .handler(a.handler.function(listSchoolsForOrg)),
+  listBusesForOrg: a
+    .query()
+    .returns(a.ref('Bus').array().required())
+    .authorization((allow) => [allow.group('ADMINS')])
+    .handler(a.handler.function(listBusesForOrg)),
 
   // Mutations
   addUserToGroup: a
@@ -75,6 +34,14 @@ const schema = a.schema({
     })
     .handler(a.handler.function(addUserToGroup))
     .returns(a.json()),
+  createBusForOrg: a
+    .mutation()
+    .arguments({
+      busNumber: a.string().required()
+    })
+    .authorization((allow) => [allow.group('ADMINS')])
+    .handler(a.handler.function(createBusForOrg))
+    .returns(a.ref('Bus')),
   createOrgUser: a
     .mutation()
     .arguments({
@@ -179,9 +146,10 @@ const schema = a.schema({
     .model({
       org: a.belongsTo('Organization', 'orgId'),
       orgId: a.id().required(),
-      user: a.belongsTo('User', ['orgId', 'userId']),
+      user: a.belongsTo('User', 'userId'),
       userId: a.id().required()
-    }),
+    })
+    .secondaryIndexes((index) => [index('orgId')]),
   Bus: a
     .model({
       busNumber: a.string().required(),
@@ -202,7 +170,8 @@ const schema = a.schema({
       pickupGuardianId: a.id(),
       pickupStopId: a.id(),
       riderId: a.id()
-    }),
+    })
+    .secondaryIndexes((index) => [index('orgId')]),
   Rider: a
     .model({
       firstName: a.string().required(),
@@ -210,7 +179,8 @@ const schema = a.schema({
       organization: a.belongsTo('Organization', 'orgId'),
       orgId: a.id().required(),
       routeId: a.id().required()
-    }),
+    })
+    .secondaryIndexes((index) => [index('orgId')]),
   Route: a
     .model({
       isActive: a.boolean(),
@@ -218,7 +188,8 @@ const schema = a.schema({
       orgId: a.id().required(),
       riders: a.id().array().required(),
       routeNumber: a.string().required()
-    }),
+    })
+    .secondaryIndexes((index) => [index('orgId')]),
   RouteAction: a
     .model({
       actionType: a.ref('RouteActionTypes').required(),
@@ -236,7 +207,8 @@ const schema = a.schema({
       orgId: a.id().required(),
       riderIds: a.id().array().required(),
       stopId: a.id().required()
-    }),
+    })
+    .secondaryIndexes((index) => [index('orgId')]),
   School: a
     .model({
       address: a.hasOne('Address', 'schoolId'),
@@ -247,7 +219,8 @@ const schema = a.schema({
       SchoolHours: a.hasMany('SchoolHour', 'schoolId'),
       schoolName: a.string().required(),
       stopIds: a.id().array(),
-    }),
+    })
+    .secondaryIndexes((index) => [index('orgId')]),
   SchoolHour: a
     .model({
       school: a.belongsTo('School', 'schoolId'),
@@ -263,10 +236,11 @@ const schema = a.schema({
       orgId: a.id().required(),
       riderIds: a.id().array().required(),
       routeId: a.id().required()
-    }),
+    })
+    .secondaryIndexes((index) => [index('orgId')]),
   User: a
     .model({
-      admin: a.hasOne('Admin', ['orgId', 'userId']),
+      admin: a.hasOne('Admin', 'userId'),
       adminId: a.id(),
       email: a.email(),
       firstName: a.string().required(),
@@ -277,19 +251,13 @@ const schema = a.schema({
       stopId: a.id(),
       title: a.string()
     })
-    .identifier(['orgId', 'id'])
+    .secondaryIndexes((index) => [index('orgId')])
 }).authorization((allow) => [
   allow.authenticated(),
+  allow.resource(createBusForOrg),
   allow.resource(getCurrentUser),
   allow.resource(getOrg),
-  // allow.resource(listAdminsForOrg),
-  // allow.resource(listBusesForOrg),
-  // allow.resource(listDriversForOrg),
-  // allow.resource(listGuardiansForOrg),
-  // allow.resource(listRidersForOrg),
-  // allow.resource(listRoutesForOrg),
-  // allow.resource(listScansForOrg),
-  // allow.resource(listSchoolsForOrg)
+  allow.resource(listBusesForOrg),
 ])
 
 export type Schema = ClientSchema<typeof schema>
