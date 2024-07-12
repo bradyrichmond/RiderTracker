@@ -2,29 +2,9 @@ import { type ClientSchema, a, defineData } from '@aws-amplify/backend'
 import { addUserToGroup } from './add-user-to-group/resource'
 import { createOrgUser } from './create-org-user/resource'
 import { validateAddress } from './validate-address/resource'
-import { getOrg } from '../functions/get-org/resource'
-import { getCurrentUser } from '../functions/get-current-user/resource'
-import { listBusesForOrg } from '../functions/list-buses-for-org/resource'
-import { createBusForOrg } from '../functions/create-bus-for-org/resource'
+import { postConfirmation } from '../auth/post-confirmation/resource'
 
 const schema = a.schema({
-  // Queries
-  getCurrentUser: a
-    .query()
-    .returns(a.ref('User').required())
-    .authorization((allow) => [allow.authenticated()])
-    .handler(a.handler.function(getCurrentUser)),
-  getUserOrg: a
-    .query()
-    .returns(a.ref('Organization'))
-    .authorization((allow) => [allow.authenticated()])
-    .handler(a.handler.function(getOrg)),
-  listBusesForOrg: a
-    .query()
-    .returns(a.ref('Bus').array().required())
-    .authorization((allow) => [allow.group('ADMINS')])
-    .handler(a.handler.function(listBusesForOrg)),
-
   // Mutations
   addUserToGroup: a
     .mutation()
@@ -34,14 +14,6 @@ const schema = a.schema({
     })
     .handler(a.handler.function(addUserToGroup))
     .returns(a.json()),
-  createBusForOrg: a
-    .mutation()
-    .arguments({
-      busNumber: a.string().required()
-    })
-    .authorization((allow) => [allow.group('ADMINS')])
-    .handler(a.handler.function(createBusForOrg))
-    .returns(a.ref('Bus')),
   createOrgUser: a
     .mutation()
     .arguments({
@@ -124,7 +96,7 @@ const schema = a.schema({
       stops: a.hasMany('Stop', 'orgId'),
       users: a.hasMany('User', 'orgId')
     })
-    .authorization((allow) => [allow.guest().to(['create'])]),
+    .authorization((allow) => [allow.guest().to(['create']), allow.authenticated().to(['read', 'update'])]),
   Address: a
     .model({
       city: a.string().required(),
@@ -254,10 +226,10 @@ const schema = a.schema({
     .secondaryIndexes((index) => [index('orgId')])
 }).authorization((allow) => [
   allow.authenticated(),
-  allow.resource(createBusForOrg),
-  allow.resource(getCurrentUser),
-  allow.resource(getOrg),
-  allow.resource(listBusesForOrg),
+  allow.resource(addUserToGroup),
+  allow.resource(createOrgUser),
+  allow.resource(validateAddress),
+  allow.resource(postConfirmation)
 ])
 
 export type Schema = ClientSchema<typeof schema>

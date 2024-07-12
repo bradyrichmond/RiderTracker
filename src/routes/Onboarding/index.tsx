@@ -2,14 +2,13 @@ import { Box, Button, Step, StepLabel, Stepper, Typography } from '@mui/material
 import { useState } from 'react'
 import SetOrganizationName from './SetOrganizationName'
 import { FormProvider, useForm } from 'react-hook-form'
-import { confirmSignUp, signIn, signOut, signUp } from 'aws-amplify/auth'
+import { confirmSignUp, signIn, signOut } from 'aws-amplify/auth'
 import CreateOrganizationAdmin from './CreateOrganizationAdmin'
 import ConfirmOrganizationAdmin from './ConfirmOrganizationAdmin'
 import OnboardingComplete from './OnboardingComplete'
 import { useTranslation } from 'react-i18next'
 import { useOrgStore } from '@/store/OrgStore'
 import { useNavigate } from 'react-router-dom'
-import { useUserStore } from '@/store/UserStore'
 
 interface StepType {
     label: string
@@ -36,12 +35,9 @@ interface NewAdmin {
 const Onboarding = () => {
     const [activeStep, setActiveStep] = useState(0)
     const [isLoading, setIsLoading] = useState(false)
-    const [orgId, setOrgId] = useState('')
     const [newAdmin, setNewAdmin] = useState<NewAdmin>()
     const createOrg = useOrgStore().createOrg
     const navigate = useNavigate()
-    const addUserToOrg = useUserStore().addUserToOrg
-    const addUserToAdminGroup = useUserStore().addUserToAdminGroup
     const { t } = useTranslation(['onboarding', 'common'])
     const methods = useForm<CreateOrganizationInputs>()
     const { watch } = methods
@@ -66,8 +62,9 @@ const Onboarding = () => {
     const handleNext = async () => {
         // TODO: Add form validation to rhf
         if (activeStep === 0) {
-            if (orgName.length > 3) {
-                await createNewOrg()
+            if (orgName.length >= 3) {
+                // ensure there is no user signed in
+                await signOut()
                 setActiveStep((current) => current + 1)
             }
 
@@ -76,7 +73,7 @@ const Onboarding = () => {
 
         if (activeStep === 1) {
             setIsLoading(true)
-            await createNewAWSUser()
+            await createNewOrg()
             setIsLoading(false)
             setActiveStep((current) => current + 1)
 
@@ -98,64 +95,40 @@ const Onboarding = () => {
         }
     }
 
-    const createNewAWSUser = async () => {
-        const { userId } = await signUp({
+    const confirmAwsUser = async () => {
+        if (newAdmin) {
+            await confirmSignUp({ username: newAdmin.id, confirmationCode })
+            await signIn({ username: newAdmin.id, password: adminPassword })
+        }
+    }
+
+    const createNewOrg = async () => {
+        const adminArgs = {
             username: adminEmail,
             password: adminPassword,
             options: {
                 userAttributes: {
                     given_name: adminFirstName,
                     family_name: adminLastName,
-                    email: adminEmail,
-                    'custom:orgId': orgId
+                    email: adminEmail
                 },
                 autoSignIn: true
             }
-        })
+        }
+
+        const { userId, orgId } = await createOrg(orgName, adminArgs)
 
         if (userId) {
             const newAdminObj = {
                 id: userId,
                 firstName: adminFirstName,
                 lastName: adminLastName,
-                email: adminEmail
+                email: adminEmail,
+                orgId
             }
 
             setNewAdmin(newAdminObj)
         }
-    }
-
-    const confirmAwsUser = async () => {
-        if (newAdmin) {
-            await confirmSignUp({ username: newAdmin.id, confirmationCode })
-            await signIn({ username: newAdmin.id, password: adminPassword })
-            await createNewOrgAdmin()
-        }
-    }
-
-    const createNewOrgAdmin = async () => {
-        if (orgId && newAdmin && newAdmin?.id) {
-            const admin = {
-                id: newAdmin?.id,
-                email: adminEmail,
-                firstName: adminFirstName,
-                orgId,
-                lastName: adminLastName,
-                title: 'Admin'
-            }
-
-            const createdAdmin = await addUserToOrg(admin)
-
-            if (createdAdmin) {
-                await addUserToAdminGroup(createdAdmin)
-            }
-        }
-    }
-
-    const createNewOrg = async () => {
-        await signOut()
-        const newOrg = await createOrg(orgName)
-        setOrgId(newOrg.id)
     }
 
     const handleBack = () => {

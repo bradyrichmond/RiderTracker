@@ -1,35 +1,57 @@
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
-import { useUserStore } from './UserStore'
-import { fetchUserAttributes } from 'aws-amplify/auth'
+import { fetchUserAttributes, signUp } from 'aws-amplify/auth'
 import { OrganizationType } from '@/types/AmplifyTypes'
+
+interface CreateFirstAdminArgs {
+    username: string
+    password: string
+    options: {
+        userAttributes: {
+            given_name: string
+            family_name: string
+            email: string
+            'custom:orgId'?: string
+        }
+        autoSignIn: boolean
+    }
+}
 
 export interface OrgStore {
     orgData?: OrganizationType
-    createOrg(orgName: string): Promise<OrganizationType>
+    createOrg(orgName: string, admin: CreateFirstAdminArgs): Promise<{ userId: string, orgId: string }>
     getOrgId(): Promise<string>
     updateOrgData(): Promise<void>
 }
 
-export const useOrgStore = create<OrgStore>((set) => ({
+export const useOrgStore = create<OrgStore>((set, get) => ({
     orgData: undefined,
-    createOrg: async (orgName: string) => {
-        await useUserStore.getState().signOutAws()
+    createOrg: async (orgName: string, admin: CreateFirstAdminArgs) => {
         const client = await useApiStore.getState().getClient()
-        const { data } = await client.models.Organization.create({ orgName }, { authMode: 'iam' })
+        const { data } = await client.models.Organization.create({ orgName })
+        const orgId = data?.id
 
-        if (data) {
-            return data
+        if (orgId) {
+            admin.options.userAttributes['custom:orgId'] = orgId
+            const { userId } = await signUp(admin)
+
+            if (userId) {
+                return { userId, orgId }
+            }
         }
 
         throw 'Failed to create org'
     },
     updateOrgData: async () => {
         const client = await useApiStore.getState().getClient()
-        const { data: orgData } = await client.queries.getUserOrg()
+        const orgId = await get().getOrgId()
 
-        if (orgData) {
-            set({ orgData })
+        if (orgId) {
+            const { data: orgData } = await client.models.Organization.get({ id: orgId })
+
+            if (orgData) {
+                set({ orgData })
+            }
         }
     },
     getOrgId: async () => {

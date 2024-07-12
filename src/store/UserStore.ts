@@ -5,7 +5,6 @@ import { signOut } from 'aws-amplify/auth'
 import { useOrgStore } from './OrgStore'
 import { CreateUserTypeInput, UserType } from '@/types/AmplifyTypes'
 
-
 export interface CreateCognitoUserInput {
     family_name: string
     given_name: string
@@ -84,12 +83,12 @@ export const useUserStore = create<UserStore>((set, get) => ({
         set({ currentUser: undefined })
     },
     updateUserData: async () => {
-        const client = await useApiStore.getState().getClient()
+        const client = await useApiStore.getState().getClient(true)
         const session = await fetchAuthSession()
         const userId = session.userSub
 
         if (userId) {
-            const { data: currentUser } = await client.queries.getCurrentUser()
+            const { data: currentUser } = await client.models.User.get({ id: userId }, { authMode: 'userPool' })
 
             if (currentUser) {
                 set({ currentUser, fullName: `${currentUser.firstName} ${currentUser.lastName}` })

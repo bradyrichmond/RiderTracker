@@ -13,7 +13,7 @@ const Root = () => {
 
     const initialize = useCallback(async () => {
         await updateUserData()
-        updateOrgData()
+        await updateOrgData()
         setIsInitialized(true)
     }, [updateOrgData, updateUserData])
 
