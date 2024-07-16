@@ -96,8 +96,7 @@ const schema = a.schema({
       routes: a.hasMany('Route', 'orgId'),
       stops: a.hasMany('Stop', 'orgId'),
       users: a.hasMany('User', 'orgId')
-    })
-    .authorization((allow) => allow.custom()),
+    }),
   Address: a
     .model({
       city: a.string().required(),
@@ -114,7 +113,8 @@ const schema = a.schema({
       state: a.string().required(),
       streetName: a.string().required()
     })
-    .secondaryIndexes((index) => [index('orgId')]),
+    .secondaryIndexes((index) => [index('orgId')])
+    .authorization((allow) => allow.custom()),
   Admin: a
     .model({
       org: a.belongsTo('Organization', 'orgId'),
@@ -122,14 +122,16 @@ const schema = a.schema({
       user: a.belongsTo('User', 'userId'),
       userId: a.id().required()
     })
-    .secondaryIndexes((index) => [index('orgId')]),
+    .secondaryIndexes((index) => [index('orgId')])
+    .authorization((allow) => allow.custom()),
   Bus: a
     .model({
       busNumber: a.string().required(),
       organization: a.belongsTo('Organization', 'orgId'),
       orgId: a.id().required()
     })
-    .secondaryIndexes((index) => [index('orgId')]),
+    .secondaryIndexes((index) => [index('orgId')])
+    .authorization((allow) => allow.custom()),
   Exception: a
     .model({
       authorized: a.boolean(),
@@ -144,7 +146,8 @@ const schema = a.schema({
       pickupStopId: a.id(),
       riderId: a.id()
     })
-    .secondaryIndexes((index) => [index('orgId')]),
+    .secondaryIndexes((index) => [index('orgId')])
+    .authorization((allow) => allow.custom()),
   Rider: a
     .model({
       firstName: a.string().required(),
@@ -153,7 +156,8 @@ const schema = a.schema({
       orgId: a.id().required(),
       routeId: a.id().required()
     })
-    .secondaryIndexes((index) => [index('orgId')]),
+    .secondaryIndexes((index) => [index('orgId')])
+    .authorization((allow) => allow.custom()),
   Route: a
     .model({
       isActive: a.boolean(),
@@ -162,7 +166,8 @@ const schema = a.schema({
       riders: a.id().array().required(),
       routeNumber: a.string().required()
     })
-    .secondaryIndexes((index) => [index('orgId')]),
+    .secondaryIndexes((index) => [index('orgId')])
+    .authorization((allow) => allow.custom()),
   RouteAction: a
     .model({
       actionType: a.ref('RouteActionTypes').required(),
@@ -181,7 +186,8 @@ const schema = a.schema({
       riderIds: a.id().array().required(),
       stopId: a.id().required()
     })
-    .secondaryIndexes((index) => [index('orgId')]),
+    .secondaryIndexes((index) => [index('orgId')])
+    .authorization((allow) => allow.custom()),
   School: a
     .model({
       address: a.hasOne('Address', 'schoolId'),
@@ -193,7 +199,8 @@ const schema = a.schema({
       schoolName: a.string().required(),
       stopIds: a.id().array(),
     })
-    .secondaryIndexes((index) => [index('orgId')]),
+    .secondaryIndexes((index) => [index('orgId')])
+    .authorization((allow) => allow.custom()),
   SchoolHour: a
     .model({
       school: a.belongsTo('School', 'schoolId'),
@@ -210,7 +217,8 @@ const schema = a.schema({
       riderIds: a.id().array().required(),
       routeId: a.id().required()
     })
-    .secondaryIndexes((index) => [index('orgId')]),
+    .secondaryIndexes((index) => [index('orgId')])
+    .authorization((allow) => allow.custom()),
   User: a
     .model({
       admin: a.hasOne('Admin', 'userId'),
@@ -225,9 +233,8 @@ const schema = a.schema({
       title: a.string()
     })
     .secondaryIndexes((index) => [index('orgId')])
-    .authorization((allow) => allow.custom())
 }).authorization((allow) => [
-  allow.authenticated(),
+  allow.custom(),
   allow.resource(addUserToGroup),
   allow.resource(createOrgUser),
   allow.resource(validateAddress),

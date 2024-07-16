@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
 import { BusType, UpdateBusTypeInput } from '@/types/AmplifyTypes'
+import { useUserStore } from './UserStore'
 
 interface BusStore {
     buses?: BusType[]
@@ -14,8 +15,13 @@ export const useBusStore = create<BusStore>((set, get) => ({
     buses: [],
     createBus: async (busNumber: string) => {
         const client = await useApiStore.getState().getClient()
+        const orgId = useUserStore.getState().currentUser?.orgId
 
-        const { data: bus } = await client.mutations.createBusForOrg({ busNumber })
+        if (!orgId) {
+            throw 'Missing orgId'
+        }
+
+        const { data: bus } = await client.models.Bus.create({ orgId, busNumber })
 
         await get().updateBuses()
 
@@ -44,11 +50,16 @@ export const useBusStore = create<BusStore>((set, get) => ({
     },
     updateBuses: async () => {
         const client = await useApiStore.getState().getClient()
-        const { data: buses } = await client.queries.listBusesForOrg()
-        const filteredBuses = buses?.filter((b) => !!b)
+        const orgId = useUserStore.getState().currentUser?.orgId
+
+        if (!orgId) {
+            throw 'Missing orgId'
+        }
+
+        const { data: buses } = await client.models.Bus.listBusByOrgId({ orgId })
 
         if (buses) {
-            set({ buses: filteredBuses })
+            set({ buses })
             return
         }
 

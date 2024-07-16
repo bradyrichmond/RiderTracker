@@ -72,8 +72,13 @@ export const useUserStore = create<UserStore>((set, get) => ({
     currentUser: undefined,
     getUsers: async () => {
         const client = await useApiStore.getState().getClient()
+        const orgId = get().currentUser?.orgId
 
-        const { data } = await client.models.User.list()
+        if (!orgId) {
+            throw 'No orgId for user'
+        }
+
+        const { data } = await client.models.User.listUserByOrgId({ orgId })
 
         set({ users: data })
         return data
