@@ -2,14 +2,15 @@ import { Box, Button, Step, StepLabel, Stepper, Typography } from '@mui/material
 import { useState } from 'react'
 import SetOrganizationName from './SetOrganizationName'
 import { FormProvider, useForm } from 'react-hook-form'
-import { confirmSignUp, signIn, signOut, signUp } from 'aws-amplify/auth'
+import { signOut } from 'aws-amplify/auth'
 import CreateOrganizationAdmin from './CreateOrganizationAdmin'
 import ConfirmOrganizationAdmin from './ConfirmOrganizationAdmin'
 import OnboardingComplete from './OnboardingComplete'
 import { useTranslation } from 'react-i18next'
 import { useOrgStore } from '@/store/OrgStore'
 import { useNavigate } from 'react-router-dom'
-import { useUserStore } from '@/store/UserStore'
+import { v4 as uuid } from 'uuid'
+import { CreateUserTypeInput } from '@/types/AmplifyTypes'
 
 interface StepType {
     label: string
@@ -26,32 +27,24 @@ interface CreateOrganizationInputs {
     confirmationCode: string
 }
 
-interface NewAdmin {
-    id: string
-    firstName: string
-    lastName: string
-    email: string
-}
-
 const Onboarding = () => {
     const [activeStep, setActiveStep] = useState(0)
-    const [isLoading, setIsLoading] = useState(false)
     const [orgId, setOrgId] = useState('')
-    const [newAdmin, setNewAdmin] = useState<NewAdmin>()
+    const [isLoading, setIsLoading] = useState(false)
+    const [userId, setUserId] = useState('')
     const createOrg = useOrgStore().createOrg
+    const createFirstAdmin = useOrgStore().createFirstAdmin
     const navigate = useNavigate()
-    const addUserToOrg = useUserStore().addUserToOrg
-    const addUserToAdminGroup = useUserStore().addUserToAdminGroup
     const { t } = useTranslation(['onboarding', 'common'])
     const methods = useForm<CreateOrganizationInputs>()
     const { watch } = methods
 
     const steps: StepType[] = [
         {
-            label: t('setOrgName')
+            label: t('createOrgAdmin')
         },
         {
-            label: t('createOrgAdmin')
+            label: t('setOrgName')
         },
         {
             label: t('confirmAdmin')
@@ -64,28 +57,40 @@ const Onboarding = () => {
     const { orgName, adminFirstName, adminLastName, adminEmail, adminPassword, confirmationCode } = watch()
 
     const handleNext = async () => {
-        // TODO: Add form validation to rhf
         if (activeStep === 0) {
-            if (orgName.length > 3) {
-                await createNewOrg()
-                setActiveStep((current) => current + 1)
-            }
-
-            return
-        }
-
-        if (activeStep === 1) {
-            setIsLoading(true)
-            await createNewAWSUser()
-            setIsLoading(false)
+            const newOrgId = uuid()
+            setOrgId(newOrgId)
+            // ensure there is no user signed in
+            await signOut()
+            const newUserId = await createFirstAdmin({
+                username: adminEmail,
+                password: adminPassword,
+                options: {
+                    userAttributes: {
+                        given_name: adminFirstName,
+                        family_name: adminLastName,
+                        email: adminEmail,
+                        'custom:orgId': newOrgId
+                    },
+                    autoSignIn: true
+                }
+            })
+            setUserId(newUserId)
             setActiveStep((current) => current + 1)
 
             return
         }
 
+        if (activeStep === 1) {
+            if (orgName.length >= 3) {
+                setActiveStep((current) => current + 1)
+            }
+            return
+        }
+
         if (activeStep === 2) {
             setIsLoading(true)
-            await confirmAwsUser()
+            await createNewOrg()
             setIsLoading(false)
             setActiveStep((current) => current + 1)
 
@@ -98,64 +103,16 @@ const Onboarding = () => {
         }
     }
 
-    const createNewAWSUser = async () => {
-        const { userId } = await signUp({
-            username: adminEmail,
-            password: adminPassword,
-            options: {
-                userAttributes: {
-                    given_name: adminFirstName,
-                    family_name: adminLastName,
-                    email: adminEmail,
-                    'custom:orgId': orgId
-                },
-                autoSignIn: true
-            }
-        })
-
-        if (userId) {
-            const newAdminObj = {
-                id: userId,
-                firstName: adminFirstName,
-                lastName: adminLastName,
-                email: adminEmail
-            }
-
-            setNewAdmin(newAdminObj)
-        }
-    }
-
-    const confirmAwsUser = async () => {
-        if (newAdmin) {
-            await confirmSignUp({ username: newAdmin.id, confirmationCode })
-            await signIn({ username: newAdmin.id, password: adminPassword })
-            await createNewOrgAdmin()
-        }
-    }
-
-    const createNewOrgAdmin = async () => {
-        if (orgId && newAdmin && newAdmin?.id) {
-            const admin = {
-                id: newAdmin?.id,
-                email: adminEmail,
-                firstName: adminFirstName,
-                orgId,
-                lastName: adminLastName,
-                title: 'Admin'
-            }
-
-            const createdAdmin = await addUserToOrg(admin)
-
-            if (createdAdmin) {
-                await addUserToAdminGroup(createdAdmin)
-            }
-        }
-    }
-
     const createNewOrg = async () => {
-        await signOut()
-        const newOrg = await createOrg(orgName)
-        setOrgId(newOrg.id)
+        const user: CreateUserTypeInput = {
+            id: userId,
+            email: adminEmail,
+            firstName: adminFirstName,
+            lastName: adminLastName,
+            orgId
+        }
+
+        await createOrg(orgId, orgName, adminEmail, confirmationCode, adminPassword, user)
     }
 
     const handleBack = () => {
@@ -179,8 +136,8 @@ const Onboarding = () => {
                             }
                         </Stepper>
                         <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            {activeStep === 0 ? <SetOrganizationName /> : null}
-                            {activeStep === 1 ? <CreateOrganizationAdmin /> : null}
+                            {activeStep === 0 ? <CreateOrganizationAdmin /> : null}
+                            {activeStep === 1 ? <SetOrganizationName /> : null}
                             {activeStep === 2 ? <ConfirmOrganizationAdmin /> : null}
                             {activeStep === 3 ? <OnboardingComplete /> : null}
                         </Box>

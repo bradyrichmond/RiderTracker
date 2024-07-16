@@ -2,6 +2,8 @@ import { type ClientSchema, a, defineData } from '@aws-amplify/backend'
 import { addUserToGroup } from './add-user-to-group/resource'
 import { createOrgUser } from './create-org-user/resource'
 import { validateAddress } from './validate-address/resource'
+import { postConfirmation } from '../auth/post-confirmation/resource'
+import { customAuthorizer } from './custom-authorizer/resource'
 
 const schema = a.schema({
   // Mutations
@@ -67,7 +69,7 @@ const schema = a.schema({
   }),
 
   // Enums
-  DeliveryMediumType: a.enum([ 'EMAIL', 'SMS' ]),
+  DeliveryMediumType: a.enum(['EMAIL', 'SMS']),
   RouteActionTypes: a.enum(['ROUTE_START', 'ROUTE_END', 'ROUTE_SCAN']),
   OverrideType: a.enum(['OVERRIDE', 'CANCEL', 'NO_CHANGE']),
   UserStatusType: a.enum([
@@ -82,131 +84,164 @@ const schema = a.schema({
   ]),
 
   // Models
-  Organization: a.model({
-    orgName: a.string().required(),
-    loginImageKey: a.string(),
-    users: a.hasMany('User', 'orgId'),
-    admins: a.string().array(),
-    guardians: a.string().array(),
-    drivers: a.string().array(),
-    riders: a.hasMany('Rider', 'orgId'),
-    buses: a.hasMany('Bus', 'orgId'),
-    schools: a.hasMany('School', 'orgId'),
-    routes: a.hasMany('Route', 'orgId'),
-    stops: a.hasMany('Stop', 'orgId'),
-    routeActions: a.hasMany('RouteAction', 'orgId')
-  })
-  .authorization((allow) => [
-    allow.authenticated(),
-    allow.guest().to(['create'])
-  ]),
-  Address: a.model({
-    city: a.string().required(),
-    country: a.string().required(),
-    county: a.string().required(),
-    formatted: a.string().required(),
-    houseNumber: a.string().required(),
-    lat: a.string().required(),
-    lon: a.string().required(),
-    orgId: a.id().required(),
-    postcode: a.string().required(),
-    school: a.belongsTo('School', 'schoolId'),
-    schoolId: a.id(),
-    state: a.string().required(),
-    streetName: a.string().required()
-  })
-  .secondaryIndexes((index) => [index('orgId')]),
-  Bus: a.model({
-    busNumber: a.string().required(),
-    organization: a.belongsTo('Organization', 'orgId'),
-    orgId: a.id().required()
-  })
-  .secondaryIndexes((index) => [index('orgId')]),
-  Exception: a.model({
-    authorized: a.boolean(),
-    date: a.date().required(),
-    dropoff: a.ref('OverrideType').required(),
-    dropoffGuardianId: a.id(),
-    dropoffStopId: a.id(),
-    id: a.id(),
-    orgId: a.id().required(),
-    pickup: a.ref('OverrideType').required(),
-    pickupGuardianId: a.id(),
-    pickupStopId: a.id(),
-    riderId: a.id()
-  }),
-  Rider: a.model({
-    firstName: a.string().required(),
-    lastName: a.string().required(),
-    organization: a.belongsTo('Organization', 'orgId'),
-    orgId: a.id().required(),
-    routeId: a.id().required()
-  }),
-  Route: a.model({
-    isActive: a.boolean(),
-    organization: a.belongsTo('Organization', 'orgId'),
-    orgId: a.id().required(),
-    riders: a.id().array().required(),
-    routeNumber: a.string().required()
-  }),
-  RouteAction: a.model({
-    actionType: a.ref('RouteActionTypes').required(),
-    driverId: a.id().required(),
-    organization: a.belongsTo('Organization', 'orgId'),
-    orgId: a.id().required(),
-    riderIds: a.id().array(),
-    routeId: a.id().required()
-  }),
-  Scan: a.model({
-    deviceLocationOnSubmit: a.ref('Location'),
-    guardianIds: a.id().array(),
-    manualScan: a.boolean(),
-    orgId: a.id().required(),
-    riderIds: a.id().array().required(),
-    stopId: a.id().required()
-  }),
-  School: a.model({
-    address: a.hasOne('Address', 'schoolId'),
-    addressId: a.id().required(),
-    organization: a.belongsTo('Organization', 'orgId'),
-    orgId: a.id().required(),
-    riderIds: a.id().array(),
-    SchoolHours: a.hasMany('SchoolHour', 'schoolId'),
-    schoolName: a.string().required(),
-    stopIds: a.id().array(),
-  }),
-  SchoolHour: a.model({
-    school: a.belongsTo('School', 'schoolId'),
-    schoolId: a.id().required(),
-    dayName: a.string().required(),
-    endTime: a.time().required(),
-    startTime: a.time().required()
-  }),
-  Stop: a.model({
-    name: a.string().required(),
-    organization: a.belongsTo('Organization', 'orgId'),
-    orgId: a.id().required(),
-    riderIds: a.id().array().required(),
-    routeId: a.id().required()
-  }),
-  User: a.model({
-    email: a.email(),
-    firstName: a.string().required(),
-    id: a.id().required(),
-    lastName: a.string().required(),
-    organization: a.belongsTo('Organization', 'orgId'),
-    orgId: a.id().required(),
-    stopId: a.id(),
-    title: a.string()
-  })
-}).authorization((allow) => [allow.authenticated()])
+  Organization: a
+    .model({
+      admins: a.hasMany('Admin', 'orgId'),
+      buses: a.hasMany('Bus', 'orgId'),
+      loginImageKey: a.string(),
+      orgName: a.string().required(),
+      riders: a.hasMany('Rider', 'orgId'),
+      schools: a.hasMany('School', 'orgId'),
+      routeActions: a.hasMany('RouteAction', 'orgId'),
+      routes: a.hasMany('Route', 'orgId'),
+      stops: a.hasMany('Stop', 'orgId'),
+      users: a.hasMany('User', 'orgId')
+    })
+    .authorization((allow) => allow.custom()),
+  Address: a
+    .model({
+      city: a.string().required(),
+      country: a.string().required(),
+      county: a.string().required(),
+      formatted: a.string().required(),
+      houseNumber: a.string().required(),
+      lat: a.string().required(),
+      lon: a.string().required(),
+      orgId: a.id().required(),
+      postcode: a.string().required(),
+      school: a.belongsTo('School', 'schoolId'),
+      schoolId: a.id(),
+      state: a.string().required(),
+      streetName: a.string().required()
+    })
+    .secondaryIndexes((index) => [index('orgId')]),
+  Admin: a
+    .model({
+      org: a.belongsTo('Organization', 'orgId'),
+      orgId: a.id().required(),
+      user: a.belongsTo('User', 'userId'),
+      userId: a.id().required()
+    })
+    .secondaryIndexes((index) => [index('orgId')]),
+  Bus: a
+    .model({
+      busNumber: a.string().required(),
+      organization: a.belongsTo('Organization', 'orgId'),
+      orgId: a.id().required()
+    })
+    .secondaryIndexes((index) => [index('orgId')]),
+  Exception: a
+    .model({
+      authorized: a.boolean(),
+      date: a.date().required(),
+      dropoff: a.ref('OverrideType').required(),
+      dropoffGuardianId: a.id(),
+      dropoffStopId: a.id(),
+      id: a.id(),
+      orgId: a.id().required(),
+      pickup: a.ref('OverrideType').required(),
+      pickupGuardianId: a.id(),
+      pickupStopId: a.id(),
+      riderId: a.id()
+    })
+    .secondaryIndexes((index) => [index('orgId')]),
+  Rider: a
+    .model({
+      firstName: a.string().required(),
+      lastName: a.string().required(),
+      organization: a.belongsTo('Organization', 'orgId'),
+      orgId: a.id().required(),
+      routeId: a.id().required()
+    })
+    .secondaryIndexes((index) => [index('orgId')]),
+  Route: a
+    .model({
+      isActive: a.boolean(),
+      organization: a.belongsTo('Organization', 'orgId'),
+      orgId: a.id().required(),
+      riders: a.id().array().required(),
+      routeNumber: a.string().required()
+    })
+    .secondaryIndexes((index) => [index('orgId')]),
+  RouteAction: a
+    .model({
+      actionType: a.ref('RouteActionTypes').required(),
+      driverId: a.id().required(),
+      organization: a.belongsTo('Organization', 'orgId'),
+      orgId: a.id().required(),
+      riderIds: a.id().array(),
+      routeId: a.id().required()
+    }),
+  Scan: a
+    .model({
+      deviceLocationOnSubmit: a.ref('Location'),
+      guardianIds: a.id().array(),
+      manualScan: a.boolean(),
+      orgId: a.id().required(),
+      riderIds: a.id().array().required(),
+      stopId: a.id().required()
+    })
+    .secondaryIndexes((index) => [index('orgId')]),
+  School: a
+    .model({
+      address: a.hasOne('Address', 'schoolId'),
+      addressId: a.id().required(),
+      organization: a.belongsTo('Organization', 'orgId'),
+      orgId: a.id().required(),
+      riderIds: a.id().array(),
+      SchoolHours: a.hasMany('SchoolHour', 'schoolId'),
+      schoolName: a.string().required(),
+      stopIds: a.id().array(),
+    })
+    .secondaryIndexes((index) => [index('orgId')]),
+  SchoolHour: a
+    .model({
+      school: a.belongsTo('School', 'schoolId'),
+      schoolId: a.id().required(),
+      dayName: a.string().required(),
+      endTime: a.time().required(),
+      startTime: a.time().required()
+    }),
+  Stop: a
+    .model({
+      name: a.string().required(),
+      organization: a.belongsTo('Organization', 'orgId'),
+      orgId: a.id().required(),
+      riderIds: a.id().array().required(),
+      routeId: a.id().required()
+    })
+    .secondaryIndexes((index) => [index('orgId')]),
+  User: a
+    .model({
+      admin: a.hasOne('Admin', 'userId'),
+      adminId: a.id(),
+      email: a.email(),
+      firstName: a.string().required(),
+      id: a.id().required(),
+      lastName: a.string().required(),
+      organization: a.belongsTo('Organization', 'orgId'),
+      orgId: a.id().required(),
+      stopId: a.id(),
+      title: a.string()
+    })
+    .secondaryIndexes((index) => [index('orgId')])
+    .authorization((allow) => allow.custom())
+}).authorization((allow) => [
+  allow.authenticated(),
+  allow.resource(addUserToGroup),
+  allow.resource(createOrgUser),
+  allow.resource(validateAddress),
+  allow.resource(postConfirmation)
+])
 
 export type Schema = ClientSchema<typeof schema>
 
 export const data = defineData({
   schema,
   authorizationModes: {
-    defaultAuthorizationMode: 'userPool'
+    defaultAuthorizationMode: 'lambda',
+    lambdaAuthorizationMode: {
+      function: customAuthorizer
+    }
   }
 })
-

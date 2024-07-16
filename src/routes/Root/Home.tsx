@@ -1,24 +1,18 @@
 import { useOrgStore } from '@/store/OrgStore'
 import { useUserStore } from '@/store/UserStore'
 import { Box, Typography } from '@mui/material'
-import { useCallback, useEffect } from 'react'
+import { useEffect } from 'react'
 
 const Home = () => {
     const updateUserData = useUserStore().updateUserData
     const currentUser = useUserStore().currentUser
-    const startOrgSubscription = useOrgStore().startOrgSubscription
-    const stopOrgSubscription = useOrgStore().stopOrgSubscription
+    const updateOrgData = useOrgStore().updateOrgData
     const orgData = useOrgStore().orgData
-
-    const setupOrgSubscription = useCallback(async () => {
-        await stopOrgSubscription()
-        await startOrgSubscription()
-    }, [stopOrgSubscription, startOrgSubscription])
 
     useEffect(() => {
         updateUserData()
-        setupOrgSubscription()
-    }, [updateUserData, setupOrgSubscription])
+        updateOrgData()
+    }, [updateUserData, updateOrgData])
 
     return (
         <Box display='flex' justifyContent='center' alignItems='center' width='100%' flexDirection='column'>

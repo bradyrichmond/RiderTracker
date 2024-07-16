@@ -1,31 +1,77 @@
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
-import { useUserStore } from './UserStore'
-import { fetchUserAttributes } from 'aws-amplify/auth'
-import { Subscription } from 'rxjs'
-import { OrganizationType } from '@/types/AmplifyTypes'
+import { confirmSignUp, ConfirmSignUpOutput, fetchUserAttributes, signIn, SignInOutput, signUp, SignUpOutput } from 'aws-amplify/auth'
+import { CreateUserTypeInput, OrganizationType } from '@/types/AmplifyTypes'
+
+interface CreateFirstAdminArgs {
+    username: string
+    password: string
+    options: {
+        userAttributes: {
+            given_name: string
+            family_name: string
+            email: string
+            'custom:orgId'?: string
+        }
+        autoSignIn: boolean
+    }
+}
 
 export interface OrgStore {
     orgData?: OrganizationType
-    createOrg(orgName: string): Promise<OrganizationType>
+    createFirstAdmin(admin: CreateFirstAdminArgs): Promise<string>
+    createOrg(orgId: string, orgName: string, username: string, confirmationCode: string, userPassword: string, user: CreateUserTypeInput): Promise<string>
     getOrgId(): Promise<string>
-    startOrgSubscription(): Promise<void>
-    stopOrgSubscription(): Promise<void>
-    subscription?: Subscription
+    updateOrgData(): Promise<void>
 }
 
 export const useOrgStore = create<OrgStore>((set, get) => ({
     orgData: undefined,
-    createOrg: async (orgName: string) => {
-        await useUserStore.getState().signOutAws()
-        const client = await useApiStore.getState().getClient()
-        const { data } = await client.models.Organization.create({ orgName }, { authMode: 'iam' })
+    createFirstAdmin: async (admin: CreateFirstAdminArgs) => {
+        const { userId }: SignUpOutput = await signUp(admin)
 
-        if (data) {
-            return data
+        if (userId) {
+            return userId
         }
 
+        throw 'Failed to create user'
+    },
+    createOrg: async (orgId: string, orgName: string, username: string, confirmationCode: string, password: string, user: CreateUserTypeInput) => {
+        const { isSignUpComplete }: ConfirmSignUpOutput = await confirmSignUp({ username, confirmationCode })
+
+        if (isSignUpComplete) {
+            const { isSignedIn }: SignInOutput = await signIn({ username, password })
+
+            if (isSignedIn) {
+                const client = await useApiStore.getState().getClient(true)
+                await client.models.Organization.create({ id: orgId, orgName })
+                const { data: userData } = await client.models.User.create(user)
+                const userId = userData?.id
+
+                if (!userId) {
+                    throw 'failed to create admin in database'
+                }
+
+                await client.models.Admin.create({ userId, orgId })
+
+                return orgId
+            }
+        }
+
+
         throw 'Failed to create org'
+    },
+    updateOrgData: async () => {
+        const client = await useApiStore.getState().getClient()
+        const orgId = await get().getOrgId()
+
+        if (orgId) {
+            const { data: orgData } = await client.models.Organization.get({ id: orgId })
+
+            if (orgData) {
+                set({ orgData })
+            }
+        }
     },
     getOrgId: async () => {
         const attributes = await fetchUserAttributes()
@@ -36,29 +82,5 @@ export const useOrgStore = create<OrgStore>((set, get) => ({
         }
 
         throw 'Unable to get org id'
-    },
-    startOrgSubscription: async () => {
-        const client = await useApiStore.getState().getClient()
-        const orgId = await get().getOrgId()
-
-        if (orgId) {
-            const subscription = client.models.Organization.observeQuery({ filter: { id: { eq: orgId } } }).subscribe({
-                next: ({ items }) => {
-                    console.log('Organization update')
-                    set({ orgData: items[0] })
-                },
-                error: () => {
-                    console.error('Subscription problem')
-                }
-            })
-            set({ subscription })
-        }
-    },
-    stopOrgSubscription: async () => {
-        const subscription = get().subscription
-
-        if (subscription) {
-            subscription.unsubscribe()
-        }
     }
 }))

@@ -1,21 +1,25 @@
 import { Box, Container, LinearProgress } from '@mui/material'
-import { Outlet } from 'react-router-dom'
+import { Outlet, useLocation } from 'react-router-dom'
 import NavigationContainer from '@/components/NavigationContainer'
-import { useOrgStore } from '@/store/OrgStore'
 import { useUserStore } from '@/store/UserStore'
 import { useState, useEffect, useCallback } from 'react'
 import { Hub } from 'aws-amplify/utils'
+import { useOrgStore } from '@/store/OrgStore'
 
 const Root = () => {
     const [isInitialized, setIsInitialized] = useState<boolean>(false)
     const updateUserData = useUserStore().updateUserData
-    const startOrgSubscription = useOrgStore().startOrgSubscription
+    const updateOrgData = useOrgStore().updateOrgData
+    const { pathname } = useLocation()
 
     const initialize = useCallback(async () => {
-        await updateUserData()
-        startOrgSubscription()
+        if (pathname !== '/onboarding') {
+            await updateUserData()
+            await updateOrgData()
+        }
+
         setIsInitialized(true)
-    }, [startOrgSubscription, updateUserData])
+    }, [updateOrgData, updateUserData, pathname])
 
     useEffect(() => {
         initialize()
