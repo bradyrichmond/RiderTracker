@@ -6,10 +6,20 @@ export type CreateAddressTypeInput = Schema['Address']['createType']
 export type DeleteAddressTypeInput = Schema['Address']['deleteType']
 export type UpdateAddressTypeInput = Schema['Address']['updateType']
 
+export type AdminType = Schema['Admin']['type']
+export type CreateAdminTypeInput = Schema['Admin']['createType']
+export type DeleteAdminTypeInput = Schema['Admin']['deleteType']
+export type UpdateAdminTypeInput = Schema['Admin']['updateType']
+
 export type BusType = Schema['Bus']['type']
 export type CreateBusTypeInput = Schema['Bus']['createType']
 export type DeleteBusTypeInput = Schema['Bus']['deleteType']
 export type UpdateBusTypeInput = Schema['Bus']['updateType']
+
+export type DriverType = Schema['Driver']['type']
+export type CreateDriverTypeInput = Schema['Driver']['createType']
+export type DeleteDriverTypeInput = Schema['Driver']['deleteType']
+export type UpdateDriverTypeInput = Schema['Driver']['updateType']
 
 export type ExceptionType = Schema['Exception']['type']
 export type CreateExceptionTypeInput = Schema['Exception']['createType']

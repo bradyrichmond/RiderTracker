@@ -53,7 +53,7 @@ export const handler: AppSyncAuthorizerHandler<ResolverContext> = async (
     return generateGetUserAuth(userOrgId, requestUserId, userIsAdmin, userIsDriver, userId)
   }
 
-  if (qs.includes('createUser')) {
+  if (qs.includes('createUser') || qs.includes('createOrgUser')) {
     console.log('createUser')
     return generateCreateUserAuth(userOrgId, requestContext.variables.orgId, userIsAdmin)
   }
@@ -78,8 +78,32 @@ export const handler: AppSyncAuthorizerHandler<ResolverContext> = async (
   }
 
   if (qs.includes('deleteBus')) {
-    console.log('createBus')
+    console.log('deleteBus')
     return generateDeleteBusAuth(userOrgId, requestContext.variables.orgId, userIsAdmin)
+  }
+
+  if (qs.includes('getDriver')) {
+    console.log('getDriver')
+    const requestDriverId = requestContext.variables.id
+
+    return generateGetDriverAuth(userOrgId, requestDriverId, userIsAdmin, userIsDriver)
+  }
+
+  if (qs.includes('listDriverByOrgId')) {
+    console.log('listDriverByOrgId')
+    const requestDriverId = requestContext.variables.id
+
+    return generateListDriverAuth(userOrgId, requestDriverId, userIsAdmin, userIsDriver)
+  }
+
+  if (qs.includes('createDriver')) {
+    console.log('createDriver')
+    return generateCreateDriverAuth(userOrgId, requestContext.variables.orgId, userIsAdmin)
+  }
+
+  if (qs.includes('deleteDriver')) {
+    console.log('deleteDriver')
+    return generateDeleteDriverAuth(userOrgId, requestContext.variables.orgId, userIsAdmin)
   }
 
   const response = {
@@ -183,7 +207,63 @@ const generateDeleteBusAuth = (orgId: string, requestOrgId: string, userIsAdmin:
   const response = {
     isAuthorized: orgId === requestOrgId && userIsAdmin,
     resolverContext: {
-      operationName: 'CreateBus',
+      operationName: 'DeleteBus',
+      orgId
+    }
+  }
+
+  console.log(`RESPONSE: ${JSON.stringify(response)}`)
+
+  return response
+}
+
+const generateGetDriverAuth = (orgId: string, requestOrgId: string, userIsAdmin: boolean, userIsDriver: boolean): AuthorizerResponse => {
+  const response = {
+    isAuthorized: orgId === requestOrgId && (userIsAdmin || userIsDriver),
+    resolverContext: {
+      operationName: 'GetDriver',
+      orgId
+    }
+  }
+
+  console.log(`RESPONSE: ${JSON.stringify(response)}`)
+
+  return response
+}
+
+const generateListDriverAuth = (orgId: string, requestOrgId: string, userIsAdmin: boolean, userIsDriver: boolean): AuthorizerResponse => {
+  const response = {
+    isAuthorized: orgId === requestOrgId && (userIsAdmin || userIsDriver),
+    resolverContext: {
+      operationName: 'ListDrivers',
+      orgId
+    }
+  }
+
+  console.log(`RESPONSE: ${JSON.stringify(response)}`)
+
+  return response
+}
+
+const generateCreateDriverAuth = (orgId: string, requestOrgId: string, userIsAdmin: boolean): AuthorizerResponse => {
+  const response = {
+    isAuthorized: orgId === requestOrgId && userIsAdmin,
+    resolverContext: {
+      operationName: 'CreateDriver',
+      orgId
+    }
+  }
+
+  console.log(`RESPONSE: ${JSON.stringify(response)}`)
+
+  return response
+}
+
+const generateDeleteDriverAuth = (orgId: string, requestOrgId: string, userIsAdmin: boolean): AuthorizerResponse => {
+  const response = {
+    isAuthorized: orgId === requestOrgId && userIsAdmin,
+    resolverContext: {
+      operationName: 'DeleteDriver',
       orgId
     }
   }

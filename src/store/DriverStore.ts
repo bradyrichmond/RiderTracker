@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
-import { UserType } from '@/types/AmplifyTypes'
+import { DriverType, UserType } from '@/types/AmplifyTypes'
+import { useUserStore } from './UserStore'
 
 interface DriverStore {
     drivers: UserType[]
@@ -13,7 +14,16 @@ export const useDriverStore = create<DriverStore>((set, get) => ({
     drivers: [],
     updateDrivers: async () => {
         const client = await useApiStore.getState().getClient()
-        const { data: drivers } = await client.models.User.list()
+        const orgId = useUserStore.getState().currentUser?.orgId
+
+        if (!orgId) {
+            throw 'User missing orgId'
+        }
+
+        const { data: driverItems } = await client.models.Driver.listDriverByOrgId({ orgId })
+        const driverItemsFiltered = driverItems.filter((d) => !!d)
+        const driverDatum = await Promise.all(driverItemsFiltered.map(async (d: DriverType) => await d.user()))
+        const drivers = driverDatum.map((d) => d.data).filter((d) => !!d)
 
         if (drivers) {
             set({ drivers })

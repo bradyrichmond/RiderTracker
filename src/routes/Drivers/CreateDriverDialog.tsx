@@ -32,6 +32,7 @@ const CreateDriverDialog = ({ cancel, isAddingDriver }: CreateDriverDialogProps)
             await createDriver(data)
             setDisableButtons(false)
             reset()
+            cancel()
         } catch (e) {
             // TODO: Need better error handling
             console.error(e as string)

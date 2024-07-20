@@ -31,6 +31,9 @@ const Root = () => {
                 case 'signedIn':
                     initialize()
                     break
+                case 'tokenRefresh':
+                    initialize()
+                    break
                 default:
                     console.log('Auth listener event complete', `Event: ${JSON.stringify(event)}`)
             }

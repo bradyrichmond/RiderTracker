@@ -5,7 +5,7 @@ import {
     AdminCreateUserCommandOutput,
     CognitoIdentityProviderClient,
 } from '@aws-sdk/client-cognito-identity-provider'
-import { Handler } from 'aws-lambda'
+import { AppSyncResolverHandler } from 'aws-lambda'
 
 interface CreateOrgUserInput {
     email: string
@@ -16,8 +16,9 @@ interface CreateOrgUserInput {
 
 const client = new CognitoIdentityProviderClient()
 
-export const handler: Handler<CreateOrgUserInput, AdminCreateUserCommandOutput> = async (event) => {
-    const { email, family_name, given_name, orgId } = event
+export const handler: AppSyncResolverHandler<CreateOrgUserInput, AdminCreateUserCommandOutput> = async (event) => {
+    console.log(`EVENT: ${JSON.stringify(event)}`)
+    const { email, family_name, given_name, orgId } = event.arguments
     const commandInput: AdminCreateUserCommandInput = {
         DesiredDeliveryMediums: ['EMAIL'],
         UserAttributes: [
@@ -41,6 +42,8 @@ export const handler: Handler<CreateOrgUserInput, AdminCreateUserCommandOutput> 
         Username: email,
         UserPoolId: env.AMPLIFY_AUTH_USERPOOL_ID,
     }
+
+    console.log(JSON.stringify(commandInput))
 
     const command = new AdminCreateUserCommand(commandInput)
 

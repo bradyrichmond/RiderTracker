@@ -46,17 +46,23 @@ export const useUserStore = create<UserStore>((set, get) => ({
         }
 
         const response = await get().createUser(newDriver)
+        const userId = response.id
 
-        await client.mutations.addUserToGroup({ userId: response.id, groupName: 'DRIVERS' })
-        await get().addUserToOrg(response)
+        await client.models.Driver.create({ orgId, userId })
+        await client.mutations.addUserToGroup({ userId, groupName: 'DRIVERS' })
 
         return response
     },
     createUser: async (user: CreateUserTypeInput) => {
         const client = await useApiStore.getState().getClient()
+        const email = user.email
+
+        if (!email) {
+            throw 'Email address is required'
+        }
 
         const { data: createCognitoUserData } = await client.mutations.createOrgUser({
-            email: user.email ?? '',
+            email: email,
             family_name: user.lastName,
             given_name: user.firstName,
             orgId: user.orgId
@@ -67,7 +73,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
             return await get().addUserToOrg(user)
         }
 
-        throw 'Failed to create admin'
+        throw 'Failed to create user'
     },
     currentUser: undefined,
     getUsers: async () => {

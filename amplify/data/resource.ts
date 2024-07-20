@@ -24,6 +24,7 @@ const schema = a.schema({
       orgId: a.string().required()
     })
     .handler(a.handler.function(createOrgUser))
+    .authorization((allow) => allow.custom())
     .returns(a.ref('CreateAdminOutput')),
   validateAddress: a
     .mutation()
@@ -88,6 +89,7 @@ const schema = a.schema({
     .model({
       admins: a.hasMany('Admin', 'orgId'),
       buses: a.hasMany('Bus', 'orgId'),
+      drivers: a.hasMany('Driver', 'orgId'),
       loginImageKey: a.string(),
       orgName: a.string().required(),
       riders: a.hasMany('Rider', 'orgId'),
@@ -132,6 +134,14 @@ const schema = a.schema({
     })
     .secondaryIndexes((index) => [index('orgId')])
     .authorization((allow) => allow.custom()),
+  Driver: a
+    .model({
+      org: a.belongsTo('Organization', 'orgId'),
+      orgId: a.id().required(),
+      user: a.belongsTo('User', 'userId'),
+      userId: a.id().required()
+    })
+    .secondaryIndexes((index) => [index('orgId')]),
   Exception: a
     .model({
       authorized: a.boolean(),
@@ -223,6 +233,8 @@ const schema = a.schema({
     .model({
       admin: a.hasOne('Admin', 'userId'),
       adminId: a.id(),
+      driver: a.hasOne('Driver', 'userId'),
+      driverId: a.id(),
       email: a.email(),
       firstName: a.string().required(),
       id: a.id().required(),
