@@ -1,12 +1,12 @@
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
 import { useOrgStore } from './OrgStore'
-import { AddressType } from '@/types/AmplifyTypes'
+import { AddressType, CreateAddressTypeInput } from '@/types/AmplifyTypes'
 
 interface AddressStore {
     addresses: AddressType[],
     updateAddresses(): Promise<void>
-    createAddress(address: string): Promise<AddressType>
+    createAddress(address: CreateAddressTypeInput): Promise<CreateAddressTypeInput>
 }
 
 export const useAddressStore = create<AddressStore>((set) => ({
@@ -21,23 +21,13 @@ export const useAddressStore = create<AddressStore>((set) => ({
             set({ addresses })
         }
     },
-    createAddress: async (address: string) => {
+    createAddress: async (validatedAddress: CreateAddressTypeInput) => {
         const client = await useApiStore.getState().getClient()
-        const orgId = await useOrgStore.getState().getOrgId()
 
-        const { data: validatedAddress } = await client.mutations.validateAddress({ address })
+        const { data } = await client.models.Address.create(validatedAddress)
 
-        if (validatedAddress) {
-            const newAddress = {
-                ...validatedAddress,
-                orgId
-            }
-
-            const { data } = await client.models.Address.create(newAddress)
-
-            if (data) {
-                return data
-            }
+        if (data) {
+            return data
         }
 
         throw 'Failed to create address'

@@ -5,19 +5,21 @@ import { Transition } from '@/components/Transition'
 import { useTranslation } from 'react-i18next'
 import { CreateGuardianInput } from '.'
 import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
-import { yupResolver } from '@hookform/resolvers/yup'
-import { guardianSchema } from '@/validation/guardianSchema'
+import { useUserStore } from '@/store/UserStore'
+import { useGuardianStore } from '@/store/GuardianStore'
 
 interface CreateGuardianDialogProps {
     cancel(): void
-    createGuardian(input: CreateGuardianInput ): Promise<void>
     isAddingGuardian: boolean
 }
 
-const CreateGuardianDialog = ({ cancel, createGuardian, isAddingGuardian }: CreateGuardianDialogProps) => {
+const CreateGuardianDialog = ({ cancel, isAddingGuardian }: CreateGuardianDialogProps) => {
     const [disableButtons, setDisableButtons] = useState<boolean>(false)
     const { t } = useTranslation(['guardians', 'common'])
     const { showErrorSnackbar } = useContext(SnackbarContext)
+    const createGuardian = useUserStore().createGuardian
+    const updateGuardians = useGuardianStore().updateGuardians
+
     const {
         handleSubmit,
         register,
@@ -26,7 +28,7 @@ const CreateGuardianDialog = ({ cancel, createGuardian, isAddingGuardian }: Crea
             errors,
             touchedFields
         }
-    } = useForm<CreateGuardianInput>({ resolver: yupResolver(guardianSchema) })
+    } = useForm<CreateGuardianInput>()
 
     const createGuardianAction = async (data: CreateGuardianInput) => {
         try {
@@ -34,12 +36,14 @@ const CreateGuardianDialog = ({ cancel, createGuardian, isAddingGuardian }: Crea
             await createGuardian(data)
             setDisableButtons(false)
             reset()
+            cancel()
         } catch (e) {
             // TODO: Need better error handling
             console.error(e as string)
             setDisableButtons(false)
             showErrorSnackbar('Error creating Guardian.')
         }
+        await updateGuardians()
     }
 
     return (

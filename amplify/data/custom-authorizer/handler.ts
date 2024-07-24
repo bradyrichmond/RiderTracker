@@ -60,16 +60,12 @@ export const handler: AppSyncAuthorizerHandler<ResolverContext> = async (
 
   if (qs.includes('getBus')) {
     console.log('getBus')
-    const requestBusId = requestContext.variables.id
-
-    return generateGetBusAuth(userOrgId, requestBusId, userIsAdmin, userIsDriver)
+    return generateGetBusAuth(userOrgId, requestContext.variables.orgId, userIsAdmin, userIsDriver)
   }
 
   if (qs.includes('listBusByOrgId')) {
     console.log('listBusByOrgId')
-    const requestBusId = requestContext.variables.id
-
-    return generateListBusAuth(userOrgId, requestBusId, userIsAdmin, userIsDriver)
+    return generateListBusAuth(userOrgId, requestContext.variables.orgId, userIsAdmin, userIsDriver)
   }
 
   if (qs.includes('createBus')) {
@@ -84,16 +80,12 @@ export const handler: AppSyncAuthorizerHandler<ResolverContext> = async (
 
   if (qs.includes('getDriver')) {
     console.log('getDriver')
-    const requestDriverId = requestContext.variables.id
-
-    return generateGetDriverAuth(userOrgId, requestDriverId, userIsAdmin, userIsDriver)
+    return generateGetDriverAuth(userOrgId, requestContext.variables.orgId, userIsAdmin, userIsDriver)
   }
 
   if (qs.includes('listDriverByOrgId')) {
     console.log('listDriverByOrgId')
-    const requestDriverId = requestContext.variables.id
-
-    return generateListDriverAuth(userOrgId, requestDriverId, userIsAdmin, userIsDriver)
+    return generateListDriverAuth(userOrgId, requestContext.variables.orgId, userIsAdmin, userIsDriver)
   }
 
   if (qs.includes('createDriver')) {
@@ -104,6 +96,57 @@ export const handler: AppSyncAuthorizerHandler<ResolverContext> = async (
   if (qs.includes('deleteDriver')) {
     console.log('deleteDriver')
     return generateDeleteDriverAuth(userOrgId, requestContext.variables.orgId, userIsAdmin)
+  }
+
+  if (qs.includes('getGuardian')) {
+    console.log('getGuardian')
+    return generateGetGuardianAuth(userOrgId, requestContext.variables.orgId, userIsAdmin, userIsDriver)
+  }
+
+  if (qs.includes('listGuardianByOrgId')) {
+    console.log('listGuardianByOrgId')
+    return generateListGuardianAuth(userOrgId, requestContext.variables.orgId, userIsAdmin, userIsDriver)
+  }
+
+  if (qs.includes('createGuardian')) {
+    console.log('createGuardian')
+    return generateCreateGuardianAuth(userOrgId, requestContext.variables.orgId, userIsAdmin)
+  }
+
+  if (qs.includes('deleteGuardian')) {
+    console.log('deleteGuardian')
+    return generateDeleteGuardianAuth(userOrgId, requestContext.variables.orgId, userIsAdmin)
+  }
+
+  if (qs.includes('getRider')) {
+    console.log('getRider')
+    return generateGetRiderAuth(userOrgId, requestContext.variables.orgId, userIsAdmin, userIsDriver)
+  }
+
+  if (qs.includes('listRiderByOrgId')) {
+    console.log('listRiderByOrgId')
+    return generateListRiderAuth(userOrgId, requestContext.variables.orgId, userIsAdmin, userIsDriver)
+  }
+
+  if (qs.includes('createRider')) {
+    console.log('createRider')
+    return generateCreateRiderAuth(userOrgId, requestContext.variables.orgId, userIsAdmin)
+  }
+
+  if (qs.includes('deleteRider')) {
+    console.log('deleteRider')
+    return generateDeleteRiderAuth(userOrgId, requestContext.variables.orgId, userIsAdmin)
+  }
+
+  if (qs.includes('validateAddress')) {
+    console.log('validateAddress')
+    return {
+      isAuthorized: true,
+      resolverContext: {
+        operationName: 'ValidateAddress',
+        orgId: userOrgId
+      }
+    }
   }
 
   const response = {
@@ -180,7 +223,10 @@ const generateListBusAuth = (orgId: string, requestOrgId: string, userIsAdmin: b
     isAuthorized: orgId === requestOrgId && (userIsAdmin || userIsDriver),
     resolverContext: {
       operationName: 'ListBuses',
-      orgId
+      orgId,
+      requestOrgId,
+      userIsAdmin,
+      userIsDriver
     }
   }
 
@@ -264,6 +310,119 @@ const generateDeleteDriverAuth = (orgId: string, requestOrgId: string, userIsAdm
     isAuthorized: orgId === requestOrgId && userIsAdmin,
     resolverContext: {
       operationName: 'DeleteDriver',
+      orgId
+    }
+  }
+
+  console.log(`RESPONSE: ${JSON.stringify(response)}`)
+
+  return response
+}
+
+const generateGetGuardianAuth = (orgId: string, requestOrgId: string, userIsAdmin: boolean, userIsDriver: boolean): AuthorizerResponse => {
+  const response = {
+    isAuthorized: orgId === requestOrgId && (userIsAdmin || userIsDriver),
+    resolverContext: {
+      operationName: 'GetGuardian',
+      orgId
+    }
+  }
+
+  console.log(`RESPONSE: ${JSON.stringify(response)}`)
+
+  return response
+}
+
+const generateListGuardianAuth = (orgId: string, requestOrgId: string, userIsAdmin: boolean, userIsDriver: boolean): AuthorizerResponse => {
+  const response = {
+    isAuthorized: orgId === requestOrgId && (userIsAdmin || userIsDriver),
+    resolverContext: {
+      operationName: 'ListGuardians',
+      orgId
+    }
+  }
+
+  console.log(`RESPONSE: ${JSON.stringify(response)}`)
+
+  return response
+}
+
+const generateCreateGuardianAuth = (orgId: string, requestOrgId: string, userIsAdmin: boolean): AuthorizerResponse => {
+  const response = {
+    isAuthorized: orgId === requestOrgId && userIsAdmin,
+    resolverContext: {
+      operationName: 'CreateGuardian',
+      orgId
+    }
+  }
+
+  console.log(`RESPONSE: ${JSON.stringify(response)}`)
+
+  return response
+}
+
+const generateDeleteGuardianAuth = (orgId: string, requestOrgId: string, userIsAdmin: boolean): AuthorizerResponse => {
+  const response = {
+    isAuthorized: orgId === requestOrgId && userIsAdmin,
+    resolverContext: {
+      operationName: 'DeleteGuardian',
+      orgId
+    }
+  }
+
+  console.log(`RESPONSE: ${JSON.stringify(response)}`)
+
+  return response
+}
+
+const generateGetRiderAuth = (orgId: string, requestOrgId: string, userIsAdmin: boolean, userIsDriver: boolean): AuthorizerResponse => {
+  // need to add guardians that have auth to get their own riders
+  const response = {
+    isAuthorized: orgId === requestOrgId && (userIsAdmin || userIsDriver),
+    resolverContext: {
+      operationName: 'GetRider',
+      orgId
+    }
+  }
+
+  console.log(`RESPONSE: ${JSON.stringify(response)}`)
+
+  return response
+}
+
+const generateListRiderAuth = (orgId: string, requestOrgId: string, userIsAdmin: boolean, userIsDriver: boolean): AuthorizerResponse => {
+  const response = {
+    isAuthorized: orgId === requestOrgId && (userIsAdmin || userIsDriver),
+    resolverContext: {
+      operationName: 'ListRiders',
+      orgId
+    }
+  }
+
+  console.log(`RESPONSE: ${JSON.stringify(response)}`)
+
+  return response
+}
+
+const generateCreateRiderAuth = (orgId: string, requestOrgId: string, userIsAdmin: boolean): AuthorizerResponse => {
+  const response = {
+    isAuthorized: orgId === requestOrgId && userIsAdmin,
+    resolverContext: {
+      operationName: 'CreateRider',
+      orgId
+    }
+  }
+
+  console.log(`RESPONSE: ${JSON.stringify(response)}`)
+
+  return response
+}
+
+const generateDeleteRiderAuth = (orgId: string, requestOrgId: string, userIsAdmin: boolean): AuthorizerResponse => {
+  const response = {
+    isAuthorized: orgId === requestOrgId && userIsAdmin,
+    resolverContext: {
+      operationName: 'DeleteRider',
       orgId
     }
   }

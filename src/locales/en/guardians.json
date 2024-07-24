@@ -1,5 +1,6 @@
 {
     "addGuardian": "Add Guardian",
+    "createGuardian": "Create Guardian",
     "createRider": "Create Rider",
     "deleteGuardian": "Delete Guardian",
     "guardians": "Guardians",

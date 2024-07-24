@@ -2,22 +2,29 @@ import { create } from 'zustand'
 import { Client, generateClient } from 'aws-amplify/data'
 import type { Schema } from '../../amplify/data/resource'
 import { fetchAuthSession } from 'aws-amplify/auth'
+import { CLIENT_REFRESH_INTERVAL } from '@/constants/Numbers'
 
 interface ApiStore {
     client?: Client<Schema>
-    getClient(updateCredentials?: boolean): Promise<Client<Schema>>
+    getClient(): Promise<Client<Schema>>
     updateClient(): Promise<Client<Schema>>
 }
 
 
 export const useApiStore = create<ApiStore>((set, get) => ({
     client: undefined,
-    getClient: async (updateCredentials?: boolean) => {
+    getClient: async () => {
         const client = get().client
 
-        if (!client || updateCredentials) {
+        if (!client) {
             const newApi = await get().updateClient()
             set({ client: newApi })
+
+            setInterval(async () => {
+                console.log('Refreshing client')
+                await get().updateClient()
+            }, CLIENT_REFRESH_INTERVAL)
+
             return newApi
         }
 
@@ -26,9 +33,10 @@ export const useApiStore = create<ApiStore>((set, get) => ({
     updateClient: async () => {
         const session = await fetchAuthSession()
         const tokens = session.tokens
-        const authToken = tokens?.accessToken.toString()
+        const accessToken = tokens?.accessToken
 
-        if (authToken) {
+        if (accessToken) {
+            const authToken = accessToken.toString()
 
             const newClient = generateClient<Schema>({
                 authMode: 'lambda',
@@ -37,6 +45,7 @@ export const useApiStore = create<ApiStore>((set, get) => ({
 
             return newClient
         }
+
 
         throw 'No authToken for generate client'
     }

@@ -1,12 +1,13 @@
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
-import { UserType } from '@/types/AmplifyTypes'
+import { GuardianType, UserType } from '@/types/AmplifyTypes'
+import { useUserStore } from './UserStore'
 
 interface GuardianStore {
     changeSearchArg(searchArg: string): Promise<void>
     deleteGuardian(guardian: UserType): Promise<void>
     getGuardianById: (guardianId: string) => Promise<UserType>
-    getGuardians(guardianIds?: string[]): Promise<void>
+    updateGuardians(guardianIds?: string[]): Promise<void>
     guardians: UserType[]
     guardiansFilter(g: UserType): boolean
     searchArg: string
@@ -17,7 +18,7 @@ export const useGuardianStore = create<GuardianStore>((set, get) => ({
         set({ searchArg })
 
         if (!searchArg) {
-            get().getGuardians()
+            get().updateGuardians()
             return
         }
 
@@ -39,11 +40,24 @@ export const useGuardianStore = create<GuardianStore>((set, get) => ({
 
         throw 'Failed to get guardian by id'
     },
-    getGuardians: async () => {
+    updateGuardians: async () => {
         const client = await useApiStore.getState().getClient()
+        const orgId = useUserStore.getState().currentUser?.orgId
 
-        const { data: fetchedGuardians } = await client.models.User.list()
-        set({ guardians: fetchedGuardians })
+        if (!orgId) {
+            throw 'User missing orgId'
+        }
+
+        const { data: guardianItems } = await client.models.Guardian.listGuardianByOrgId({ orgId })
+        const guardianItemsFiltered = guardianItems.filter((g) => !!g)
+        const guardianDatum = await Promise.all(guardianItemsFiltered.map(async (g: GuardianType) => await g.user()))
+        const guardians = guardianDatum.map((g) => g.data).filter((g) => !!g)
+
+        if (guardians) {
+            set({ guardians })
+        }
+
+        throw 'failed to get guardians'
     },
     guardians: [],
     guardiansFilter: (g: UserType) => {

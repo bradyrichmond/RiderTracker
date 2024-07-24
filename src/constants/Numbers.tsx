@@ -1,1 +1,2 @@
 export const MB = 1048576
+export const CLIENT_REFRESH_INTERVAL = 3600001

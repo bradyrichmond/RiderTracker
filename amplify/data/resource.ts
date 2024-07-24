@@ -24,7 +24,6 @@ const schema = a.schema({
       orgId: a.string().required()
     })
     .handler(a.handler.function(createOrgUser))
-    .authorization((allow) => allow.custom())
     .returns(a.ref('CreateAdminOutput')),
   validateAddress: a
     .mutation()
@@ -90,6 +89,7 @@ const schema = a.schema({
       admins: a.hasMany('Admin', 'orgId'),
       buses: a.hasMany('Bus', 'orgId'),
       drivers: a.hasMany('Driver', 'orgId'),
+      guardians: a.hasMany('Guardian', 'orgId'),
       loginImageKey: a.string(),
       orgName: a.string().required(),
       riders: a.hasMany('Rider', 'orgId'),
@@ -106,6 +106,7 @@ const schema = a.schema({
       county: a.string().required(),
       formatted: a.string().required(),
       houseNumber: a.string().required(),
+      id: a.id().required(),
       lat: a.string().required(),
       lon: a.string().required(),
       orgId: a.id().required(),
@@ -113,7 +114,9 @@ const schema = a.schema({
       school: a.belongsTo('School', 'schoolId'),
       schoolId: a.id(),
       state: a.string().required(),
-      streetName: a.string().required()
+      streetName: a.string().required(),
+      user: a.belongsTo('User', 'userId'),
+      userId: a.id()
     })
     .secondaryIndexes((index) => [index('orgId')])
     .authorization((allow) => allow.custom()),
@@ -142,6 +145,23 @@ const schema = a.schema({
       userId: a.id().required()
     })
     .secondaryIndexes((index) => [index('orgId')]),
+  Guardian: a
+    .model({
+      id: a.string().required(),
+      org: a.belongsTo('Organization', 'orgId'),
+      orgId: a.id().required(),
+      riders: a.hasMany('GuardianRider', 'guardianId'),
+      user: a.belongsTo('User', 'userId'),
+      userId: a.id().required()
+    })
+    .secondaryIndexes((index) => [index('orgId')]),
+  GuardianRider: a
+    .model({
+      guardian: a.belongsTo('Guardian', 'guardianId'),
+      guardianId: a.id().required(),
+      rider: a.belongsTo('Rider', 'riderId'),
+      riderId: a.id().required()
+    }),
   Exception: a
     .model({
       authorized: a.boolean(),
@@ -161,6 +181,7 @@ const schema = a.schema({
   Rider: a
     .model({
       firstName: a.string().required(),
+      guardians: a.hasMany('GuardianRider', 'riderId'),
       lastName: a.string().required(),
       organization: a.belongsTo('Organization', 'orgId'),
       orgId: a.id().required(),
@@ -231,10 +252,13 @@ const schema = a.schema({
     .authorization((allow) => allow.custom()),
   User: a
     .model({
+      address: a.hasOne('Address', 'userId'),
       admin: a.hasOne('Admin', 'userId'),
       adminId: a.id(),
       driver: a.hasOne('Driver', 'userId'),
       driverId: a.id(),
+      guardian: a.hasOne('Guardian', 'userId'),
+      guardianId: a.id(),
       email: a.email(),
       firstName: a.string().required(),
       id: a.id().required(),

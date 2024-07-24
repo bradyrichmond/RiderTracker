@@ -24,21 +24,18 @@ interface GuardiansProps {
 }
 
 const Guardians = ({ activeGuardian }: GuardiansProps) => {
-    const { guardians, getGuardians, changeSearchArg } = useGuardianStore()
+    const guardians = useGuardianStore().guardians
+    const updateGuardians = useGuardianStore().updateGuardians
+    const changeSearchArg = useGuardianStore().changeSearchArg
     const getRiders = useRiderStore().getRiders
     const navigate = useNavigate()
     const [isAddingGuardian, setIsAddingGuardian] = useState<boolean>(false)
     const { t } = useTranslation('guardians')
 
     useEffect(() => {
-        getGuardians()
+        updateGuardians()
         getRiders()
-    }, [getGuardians, getRiders])
-
-    const createGuardianAction = async () => {
-        console.log('disabled create guardian for now')
-        toggleShowModal()
-    }
+    }, [updateGuardians, getRiders])
 
     const generateGridColumns = (): GridColDef[] => {
         const initialGridColumns: GridColDef[] = [
@@ -66,57 +63,61 @@ const Guardians = ({ activeGuardian }: GuardiansProps) => {
         navigate(`/app/guardians/${id}`)
     }
 
+    const handleSearchChange = async (val: string) => {
+        await changeSearchArg(val)
+    }
+
     return (
-        <Grid container spacing={2}>
-            <GuardianDrawer open={!!activeGuardian} guardian={guardians.find((g: UserType) => g.id === activeGuardian)} />
-            <CreateGuardianDialog createGuardian={createGuardianAction} isAddingGuardian={isAddingGuardian} cancel={toggleShowModal} />
-            <Grid xs={12} md={6}>
-                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
-                    <Typography variant='h2'>
-                        {t('guardians')}
-                    </Typography>
-                </Box>
-            </Grid>
-            <Grid xs={12} md={6}>
-                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            <Button variant='contained' onClick={toggleShowModal}>
-                                <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                                    <AddCircleIcon />
-                                    <Box sx={{ flex: 1, ml: 2 }}>
-                                        <Typography>{t('addGuardian')}</Typography>
-                                    </Box>
-                                </Box>
-                            </Button>
+        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <Box>
+                <Grid container spacing={2} sx={{ height: '100%' }}>
+                    <GuardianDrawer open={!!activeGuardian} guardian={guardians.find((g: UserType) => g.id === activeGuardian)} />
+                    <CreateGuardianDialog isAddingGuardian={isAddingGuardian} cancel={toggleShowModal} />
+                    <Grid xs={12} md={6}>
+                        <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <Typography variant='h2'>
+                                {t('guardians')}
+                            </Typography>
                         </Box>
+                    </Grid>
+                    <Grid xs={12} md={6}>
+                        <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <Button variant='contained' onClick={toggleShowModal}>
+                                    <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                        <AddCircleIcon />
+                                        <Box sx={{ flex: 1, ml: 2 }}>
+                                            <Typography>{t('addGuardian')}</Typography>
+                                        </Box>
                                     </Box>
-            </Grid>
-            <Grid xs={12}>
-                <Box sx={{ mb: 2 }}>
-                    <SearchBar onChange={changeSearchArg} fullWidth />
-                </Box>
-            </Grid>
-            <Grid xs>
-                <Box sx={{ height: '100%', width: '100%' }}>
-                    {guardians ?
-                        <DataGrid
-                            rows={guardians}
-                            columns={generateGridColumns()}
-                            rowHeight={100}
-                            processRowUpdate={processRowUpdate}
-                            onRowClick={(params) => handleRowClick(params.row.id)}
-                            initialState={{
-                                sorting: {
-                                    sortModel: [{ field: 'lastName', sort: 'asc' }],
-                                },
-                            }}
-                        />
-                        :
-                        null
-                    }
-                </Box>
-            </Grid>
-        </Grid>
+                                </Button>
+                            </Box>
+                        </Box>
+                    </Grid>
+                </Grid>
+            </Box>
+            <Box sx={{ mb: 2 }}>
+                <SearchBar onChange={handleSearchChange} fullWidth />
+            </Box>
+            <Box sx={{ width: '100%', flex: 1 }}>
+                {guardians ?
+                    <DataGrid
+                        rows={guardians}
+                        columns={generateGridColumns()}
+                        rowHeight={100}
+                        processRowUpdate={processRowUpdate}
+                        onRowClick={(params) => handleRowClick(params.row.id)}
+                        initialState={{
+                            sorting: {
+                                sortModel: [{ field: 'lastName', sort: 'asc' }],
+                            },
+                        }}
+                    />
+                    :
+                    null
+                }
+            </Box>
+        </Box>
     )
 }
 

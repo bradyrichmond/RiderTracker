@@ -21,6 +21,11 @@ export type CreateDriverTypeInput = Schema['Driver']['createType']
 export type DeleteDriverTypeInput = Schema['Driver']['deleteType']
 export type UpdateDriverTypeInput = Schema['Driver']['updateType']
 
+export type GuardianType = Schema['Guardian']['type']
+export type CreateGuardianTypeInput = Schema['Guardian']['createType']
+export type DeleteGuardianTypeInput = Schema['Guardian']['deleteType']
+export type UpdateGuardianTypeInput = Schema['Guardian']['updateType']
+
 export type ExceptionType = Schema['Exception']['type']
 export type CreateExceptionTypeInput = Schema['Exception']['createType']
 export type DeleteExceptionTypeInput = Schema['Exception']['deleteType']

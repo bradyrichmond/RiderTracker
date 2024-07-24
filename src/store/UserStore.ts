@@ -4,6 +4,7 @@ import { fetchAuthSession } from 'aws-amplify/auth'
 import { signOut } from 'aws-amplify/auth'
 import { useOrgStore } from './OrgStore'
 import { CreateUserTypeInput, UserType } from '@/types/AmplifyTypes'
+import { useAddressStore } from './AddressStore'
 
 export interface CreateCognitoUserInput {
     family_name: string
@@ -11,9 +12,17 @@ export interface CreateCognitoUserInput {
     email: string
 }
 
+export interface CreateGuardianInput {
+    family_name: string
+    given_name: string
+    email: string
+    address: string
+}
+
 interface UserStore {
     addUserToOrg(admin: CreateUserTypeInput): Promise<UserType>
     createDriver(driver: CreateCognitoUserInput): Promise<UserType>
+    createGuardian(driver: CreateCognitoUserInput): Promise<UserType>
     createUser(admin: CreateUserTypeInput): Promise<UserType>
     currentUser?: UserType
     fullName?: string
@@ -50,6 +59,48 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
         await client.models.Driver.create({ orgId, userId })
         await client.mutations.addUserToGroup({ userId, groupName: 'DRIVERS' })
+
+        return response
+    },
+    createGuardian: async (guardian: CreateGuardianInput) => {
+        const client = await useApiStore.getState().getClient()
+        const orgId = await useOrgStore.getState().getOrgId()
+        const createAddress = useAddressStore.getState().createAddress
+
+        const { address } = guardian
+
+        const { data: validatedAddress } = await client.mutations.validateAddress({ address })
+
+        if (!validatedAddress) {
+            throw 'Invalid Address'
+        }
+
+        const newGuardian = {
+            orgId,
+            firstName: guardian.given_name,
+            lastName: guardian.family_name,
+            email: guardian.email
+        }
+
+        const response = await get().createUser(newGuardian)
+        const userId = response.id
+
+        if (!userId) {
+            throw 'Failed to create user'
+        }
+
+        try {
+            await client.models.Guardian.create({ orgId, userId })
+            await client.mutations.addUserToGroup({ userId, groupName: 'GUARDIANS' })
+        } catch {
+            throw 'Failed to set user as Guardian'
+        }
+
+        try {
+            await createAddress({ ...validatedAddress, orgId })
+        } catch {
+            throw 'Failed to create address'
+        }
 
         return response
     },
@@ -94,7 +145,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
         set({ currentUser: undefined })
     },
     updateUserData: async () => {
-        const client = await useApiStore.getState().getClient(true)
+        const client = await useApiStore.getState().getClient()
         const session = await fetchAuthSession()
         const userId = session.userSub
 
