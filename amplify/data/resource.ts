@@ -86,10 +86,7 @@ const schema = a.schema({
   // Models
   Organization: a
     .model({
-      admins: a.hasMany('Admin', 'orgId'),
       buses: a.hasMany('Bus', 'orgId'),
-      drivers: a.hasMany('Driver', 'orgId'),
-      guardians: a.hasMany('Guardian', 'orgId'),
       loginImageKey: a.string(),
       orgName: a.string().required(),
       riders: a.hasMany('Rider', 'orgId'),
@@ -118,46 +115,17 @@ const schema = a.schema({
       user: a.belongsTo('User', 'userId'),
       userId: a.id()
     })
-    .secondaryIndexes((index) => [index('orgId')])
-    .authorization((allow) => allow.custom()),
-  Admin: a
-    .model({
-      org: a.belongsTo('Organization', 'orgId'),
-      orgId: a.id().required(),
-      user: a.belongsTo('User', 'userId'),
-      userId: a.id().required()
-    })
-    .secondaryIndexes((index) => [index('orgId')])
-    .authorization((allow) => allow.custom()),
+    .secondaryIndexes((index) => [index('orgId')]),
   Bus: a
     .model({
       busNumber: a.string().required(),
       organization: a.belongsTo('Organization', 'orgId'),
       orgId: a.id().required()
     })
-    .secondaryIndexes((index) => [index('orgId')])
-    .authorization((allow) => allow.custom()),
-  Driver: a
-    .model({
-      org: a.belongsTo('Organization', 'orgId'),
-      orgId: a.id().required(),
-      user: a.belongsTo('User', 'userId'),
-      userId: a.id().required()
-    })
-    .secondaryIndexes((index) => [index('orgId')]),
-  Guardian: a
-    .model({
-      id: a.string().required(),
-      org: a.belongsTo('Organization', 'orgId'),
-      orgId: a.id().required(),
-      riders: a.hasMany('GuardianRider', 'guardianId'),
-      user: a.belongsTo('User', 'userId'),
-      userId: a.id().required()
-    })
     .secondaryIndexes((index) => [index('orgId')]),
   GuardianRider: a
     .model({
-      guardian: a.belongsTo('Guardian', 'guardianId'),
+      guardian: a.belongsTo('User', 'guardianId'),
       guardianId: a.id().required(),
       rider: a.belongsTo('Rider', 'riderId'),
       riderId: a.id().required()
@@ -185,7 +153,7 @@ const schema = a.schema({
       lastName: a.string().required(),
       organization: a.belongsTo('Organization', 'orgId'),
       orgId: a.id().required(),
-      routeId: a.id().required()
+      routeId: a.id()
     })
     .secondaryIndexes((index) => [index('orgId')])
     .authorization((allow) => allow.custom()),
@@ -217,8 +185,7 @@ const schema = a.schema({
       riderIds: a.id().array().required(),
       stopId: a.id().required()
     })
-    .secondaryIndexes((index) => [index('orgId')])
-    .authorization((allow) => allow.custom()),
+    .secondaryIndexes((index) => [index('orgId')]),
   School: a
     .model({
       address: a.hasOne('Address', 'schoolId'),
@@ -230,8 +197,7 @@ const schema = a.schema({
       schoolName: a.string().required(),
       stopIds: a.id().array(),
     })
-    .secondaryIndexes((index) => [index('orgId')])
-    .authorization((allow) => allow.custom()),
+    .secondaryIndexes((index) => [index('orgId')]),
   SchoolHour: a
     .model({
       school: a.belongsTo('School', 'schoolId'),
@@ -248,24 +214,19 @@ const schema = a.schema({
       riderIds: a.id().array().required(),
       routeId: a.id().required()
     })
-    .secondaryIndexes((index) => [index('orgId')])
-    .authorization((allow) => allow.custom()),
+    .secondaryIndexes((index) => [index('orgId')]),
   User: a
     .model({
       address: a.hasOne('Address', 'userId'),
-      admin: a.hasOne('Admin', 'userId'),
-      adminId: a.id(),
-      driver: a.hasOne('Driver', 'userId'),
-      driverId: a.id(),
-      guardian: a.hasOne('Guardian', 'userId'),
-      guardianId: a.id(),
       email: a.email(),
       firstName: a.string().required(),
-      id: a.id().required(),
+      isAdmin: a.boolean(),
+      isDriver: a.boolean(),
+      isGuardian: a.boolean(),
       lastName: a.string().required(),
       organization: a.belongsTo('Organization', 'orgId'),
       orgId: a.id().required(),
-      stopId: a.id(),
+      riders: a.hasMany('GuardianRider', 'guardianId'),
       title: a.string()
     })
     .secondaryIndexes((index) => [index('orgId')])

@@ -6,8 +6,8 @@ import { useTranslation } from 'react-i18next'
 import EntityDrawer, { DrawerListActionProps } from '@/components/EntityDrawer'
 import { useRiderStore } from '@/store/RiderStore'
 import { useStopStore } from '@/store/StopStore'
-import { useGuardianStore } from '@/store/GuardianStore'
 import { RiderType, StopType, UserType } from '@/types/AmplifyTypes'
+import { useUserStore } from '@/store/UserStore'
 
 interface RiderDrawerProps {
     open: boolean
@@ -17,16 +17,15 @@ interface RiderDrawerProps {
 const RiderDrawer = ({ open, rider }: RiderDrawerProps) => {
     const stops = useStopStore().stops
     const getStops = useStopStore().getStops
-    const guardians = useGuardianStore().guardians
-    const getGuardians = useGuardianStore().getGuardians
+    const users = useUserStore().users
+    const updateUsers = useUserStore().updateUsers
     const { deleteRider } = useRiderStore()
     const navigate = useNavigate()
     const { t } = useTranslation(['riders', 'common'])
 
     useEffect(() => {
-        getStops()
-        getGuardians()
-    }, [getStops, getGuardians])
+        updateUsers
+    }, [getStops, updateUsers])
 
     const viewStopDetail = useCallback((stopId: string) => {
         navigate(`/app/stops/${stopId}`)
@@ -36,12 +35,18 @@ const RiderDrawer = ({ open, rider }: RiderDrawerProps) => {
         navigate(`/app/guardians/${guardianId}`)
     }, [navigate])
 
+    const guardians = useMemo(() => {
+        if (users) {
+            return users.filter((u) => u.isGuardian)
+        }
+
+        return []
+    }, [users])
+
     const lists = useMemo(() => {
         if (rider) {
-            const filteredStops = stops
-            const mappedStops = filteredStops.map((s: StopType) => ({ id: s.id, label: s.name }))
-            const filteredGuardians = guardians
-            const mappedGuardians = filteredGuardians.map((g: UserType) => ({ id: g.id, label: `${g.firstName} ${g.lastName}` }))
+            const mappedStops = stops.map((s: StopType) => ({ id: s.id, label: s.name }))
+            const mappedGuardians = guardians.map((g: UserType) => ({ id: g.id, label: `${g.firstName} ${g.lastName}` }))
 
             return [
                 {

@@ -1,16 +1,16 @@
 import { Transition } from '@/components/Transition'
 import { useExceptionStore } from '@/store/ExceptionStore'
-import { useGuardianStore } from '@/store/GuardianStore'
 import { OptionsType } from '@/types/OptionsType'
 import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, TextField } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import { DatePicker } from '@mui/x-date-pickers'
-import { SyntheticEvent, useMemo, useState } from 'react'
+import { SyntheticEvent, useEffect, useMemo, useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import ExceptionTypeToggleButton from './ExceptionTypeToggleButton'
 import { CreateExceptionTypeInput, OverrideType, UserType } from '@/types/AmplifyTypes'
+import { useUserStore } from '@/store/UserStore'
 
 interface AddExceptionToRiderDialogProps {
     cancelAction(): void
@@ -18,15 +18,30 @@ interface AddExceptionToRiderDialogProps {
 }
 
 const AddExceptionToRiderDialog = ({ cancelAction, isAddingException }: AddExceptionToRiderDialogProps) => {
+    const users = useUserStore().users
+    const updateUsers = useUserStore().updateUsers
     const [disableButtons, setDisableButtons] = useState(false)
     const createException = useExceptionStore().createException
-    const guardians = useGuardianStore().guardians
     const getExceptions = useExceptionStore().getExceptions
     const { t } = useTranslation(['riders', 'common'])
     const { id: riderId } = useParams()
     const { control, handleSubmit, reset, resetField, setValue, formState: { errors }, watch } = useForm<CreateExceptionTypeInput>()
 
-    const allGuardians = useMemo(() => guardians.map((g: UserType) => ({ id: g.id, label: `${g.firstName} ${g.lastName}` })), [guardians])
+    useEffect(() => {
+        updateUsers()
+    }, [updateUsers])
+
+    const guardians = useMemo(() => {
+        if (users) {
+            return users.filter((u) => u.isGuardian)
+        }
+
+        return []
+    }, [users])
+
+    const allGuardians = useMemo(() => (
+        guardians.map((g: UserType) => ({ id: g.id, label: `${g.firstName} ${g.lastName}` }))
+    ), [guardians])
 
     const { pickup, dropoff } = watch()
 

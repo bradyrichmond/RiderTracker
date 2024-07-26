@@ -3,25 +3,30 @@ import { Box, Button, Typography } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { useTranslation } from 'react-i18next'
-import { useEffect, useState } from 'react'
-import { useDriverStore } from '@/store/DriverStore'
+import { useEffect, useMemo, useState } from 'react'
 import DriverDrawer from './DriverDrawer'
 import CreateDriverDialog from './CreateDriverDialog'
 import { UserType } from '@/types/AmplifyTypes'
+import { useUserStore } from '@/store/UserStore'
 
 interface DriversProps {
     activeDriver?: string
 }
 
 const Drivers = ({ activeDriver }: DriversProps) => {
+    const users = useUserStore().users
+    const updateUsers = useUserStore().updateUsers
     const [isAddingDriver, setIsAddingDriver] = useState(false)
-    const { drivers, updateDrivers } = useDriverStore()
     const navigate = useNavigate()
     const { t } = useTranslation('drivers')
 
     useEffect(() => {
-        updateDrivers()
-    }, [updateDrivers])
+        updateUsers()
+    }, [updateUsers])
+
+    const drivers = useMemo(() => {
+        return users.filter((u) => u.isDriver)
+    }, [users])
 
     const toggleAddingDriver = () => {
         setIsAddingDriver((current) => !current)

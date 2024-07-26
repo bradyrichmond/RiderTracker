@@ -1,19 +1,19 @@
 import { Box, Typography } from '@mui/material'
 import { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { useGuardianStore } from '@/store/GuardianStore'
 import { UserType } from '@/types/AmplifyTypes'
+import { useUserStore } from '@/store/UserStore'
 
 const Guardian = () => {
     const [guardian, setGuardian] = useState<UserType>()
     const { id } = useParams()
-    const { getGuardianById } = useGuardianStore()
+    const getUserById = useUserStore().getUserById
 
     useEffect(() => {
         const getGuardianData = async () => {
             if (id) {
                 try {
-                    const guardianData = await getGuardianById(id)
+                    const guardianData = await getUserById(id)
                     setGuardian(guardianData)
                 } catch {
                     console.error('Error setting guardian')
@@ -22,7 +22,7 @@ const Guardian = () => {
         }
 
         getGuardianData()
-    }, [id, getGuardianById])
+    }, [id, getUserById])
 
     return (
         <Box height='100%'>

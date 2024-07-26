@@ -11,39 +11,33 @@ import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 import RiderDrawer from './RiderDrawer'
 import SearchBar from '@/components/SearchBar'
 import { useSchoolStore } from '@/store/SchoolStore'
-import { useStopStore } from '@/store/StopStore'
-import { useGuardianStore } from '@/store/GuardianStore'
 import Grid from '@mui/material/Unstable_Grid2'
 import { CreateRiderTypeInput, RiderType, UpdateRiderTypeInput, UserType } from '@/types/AmplifyTypes'
+import { useUserStore } from '@/store/UserStore'
 
 interface RidersProps {
     activeRider?: string
 }
 
 const Riders = ({ activeRider }: RidersProps) => {
-    const { createRider, getRiders, riders, changeSearchArg } = useRiderStore()
-    const { schools, getSchools } = useSchoolStore()
-    const { stops, getStops } = useStopStore()
-    const { guardians, getGuardians } = useGuardianStore()
+    const riders = useRiderStore().riders
+    const createRider = useRiderStore().createRider
+    const updateRiders = useRiderStore().updateRiders
+    const updateUsers = useUserStore().updateUsers
+    const users = useUserStore().users
+    const changeSearchArg = useRiderStore().changeSearchArg
+    const updateSchools = useSchoolStore().updateSchools
+    const schools = useSchoolStore().schools
     const { showErrorSnackbar } = useContext(SnackbarContext)
     const [isAddingRider, setIsAddingRider] = useState(false)
     const navigate = useNavigate()
     const { t } = useTranslation(['riders', 'common'])
 
     useEffect(() => {
-        const getData = async () => {
-            try {
-                await getSchools()
-                await getStops()
-                await getGuardians()
-                await getRiders()
-            } catch {
-                showErrorSnackbar('Failed to get all data')
-            }
-        }
-
-        getData()
-    }, [getGuardians, getRiders, getSchools, getStops, showErrorSnackbar])
+        updateSchools()
+        updateUsers()
+        updateRiders()
+    }, [updateUsers, updateRiders, updateSchools, showErrorSnackbar])
 
     const allSchools: OptionsType[] = useMemo(() => {
         if (schools) {
@@ -56,12 +50,13 @@ const Riders = ({ activeRider }: RidersProps) => {
         }
     }, [schools])
 
-    const allStops: OptionsType[] = useMemo(() => {
-        return stops.map((s) => ({
-            label: s.name,
-            id: s.id
-        }))
-    }, [stops])
+    const guardians = useMemo(() => {
+        if (users) {
+            return users.filter((u) => u.isGuardian)
+        }
+
+        return []
+    }, [users])
 
     const allGuardians: OptionsType[] = useMemo(() => {
         return guardians.map((g: UserType) => ({
@@ -87,9 +82,9 @@ const Riders = ({ activeRider }: RidersProps) => {
         }
 
         const initialGridColumns: GridColDef[] = [
-            { field: 'firstName',  headerName: 'First Name', flex: 1, align: 'center', headerAlign: 'center' },
-            { field: 'lastName',  headerName: 'Last Name', flex: 1, align: 'center', headerAlign: 'center' },
-            { field: 'schoolId',  headerName: 'School', flex: 1, align: 'center', headerAlign: 'center', valueGetter: (value) => getSchoolNameById(value) }
+            { field: 'firstName', headerName: 'First Name', flex: 1, align: 'center', headerAlign: 'center' },
+            { field: 'lastName', headerName: 'Last Name', flex: 1, align: 'center', headerAlign: 'center' },
+            { field: 'schoolId', headerName: 'School', flex: 1, align: 'center', headerAlign: 'center', valueGetter: (value) => getSchoolNameById(value) }
         ]
 
         return initialGridColumns
@@ -117,7 +112,6 @@ const Riders = ({ activeRider }: RidersProps) => {
                 createRider={handleCreateRider}
                 isAddingRider={isAddingRider}
                 allGuardians={allGuardians}
-                allStops={allStops}
                 cancelAction={cancelAction}
             />
             <RiderDrawer open={!!activeRider} rider={riders.find((r: RiderType) => r.id === activeRider)} />
@@ -158,7 +152,7 @@ const Riders = ({ activeRider }: RidersProps) => {
                             onRowClick={(params) => handleRowClick(params.row.id)}
                             initialState={{
                                 sorting: {
-                                  sortModel: [{ field: 'lastName', sort: 'asc' }],
+                                    sortModel: [{ field: 'lastName', sort: 'asc' }],
                                 },
                             }}
                         />

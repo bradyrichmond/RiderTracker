@@ -11,13 +11,13 @@ interface SchoolProps {
 
 const School = ({ activeSchool }: SchoolProps) => {
     const [isEditingHours, setIsEditingHours] = useState(false)
-    const getSchools = useSchoolStore().getSchools
+    const updateSchools = useSchoolStore().updateSchools
     const schools = useSchoolStore().schools
     const updateSchoolHours = useSchoolStore().updateSchoolHours
 
     useEffect(() => {
-        getSchools()
-    }, [getSchools])
+        updateSchools()
+    }, [updateSchools])
 
     const school = useMemo(() => {
         const selectedSchool = schools.find((s: SchoolType) => s.id === activeSchool)
@@ -34,7 +34,7 @@ const School = ({ activeSchool }: SchoolProps) => {
     const updateHours = async (newTimeObject: []) => {
         if (activeSchool) {
             await updateSchoolHours(activeSchool, newTimeObject)
-            await getSchools()
+            await updateSchools()
         }
     }
 

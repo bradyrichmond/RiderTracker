@@ -6,7 +6,6 @@ import { useTranslation } from 'react-i18next'
 import { CreateGuardianInput } from '.'
 import { SnackbarContext } from '@/contexts/SnackbarContextProvider'
 import { useUserStore } from '@/store/UserStore'
-import { useGuardianStore } from '@/store/GuardianStore'
 
 interface CreateGuardianDialogProps {
     cancel(): void
@@ -18,7 +17,7 @@ const CreateGuardianDialog = ({ cancel, isAddingGuardian }: CreateGuardianDialog
     const { t } = useTranslation(['guardians', 'common'])
     const { showErrorSnackbar } = useContext(SnackbarContext)
     const createGuardian = useUserStore().createGuardian
-    const updateGuardians = useGuardianStore().updateGuardians
+    const updateUsers = useUserStore().updateUsers
 
     const {
         handleSubmit,
@@ -43,7 +42,7 @@ const CreateGuardianDialog = ({ cancel, isAddingGuardian }: CreateGuardianDialog
             setDisableButtons(false)
             showErrorSnackbar('Error creating Guardian.')
         }
-        await updateGuardians()
+        await updateUsers()
     }
 
     return (

@@ -26,7 +26,8 @@ interface UserStore {
     createUser(admin: CreateUserTypeInput): Promise<UserType>
     currentUser?: UserType
     fullName?: string
-    getUsers(): Promise<UserType[]>
+    getUserById(id: string): Promise<UserType>
+    updateUsers(): Promise<void>
     signOutAws(): Promise<void>
     updateUserData(): Promise<void>
     users: UserType[]
@@ -48,16 +49,16 @@ export const useUserStore = create<UserStore>((set, get) => ({
         const orgId = await useOrgStore.getState().getOrgId()
 
         const newDriver = {
-            orgId,
+            email: driver.email,
             firstName: driver.given_name,
+            isDriver: true,
             lastName: driver.family_name,
-            email: driver.email
+            orgId
         }
 
         const response = await get().createUser(newDriver)
         const userId = response.id
 
-        await client.models.Driver.create({ orgId, userId })
         await client.mutations.addUserToGroup({ userId, groupName: 'DRIVERS' })
 
         return response
@@ -68,7 +69,6 @@ export const useUserStore = create<UserStore>((set, get) => ({
         const createAddress = useAddressStore.getState().createAddress
 
         const { address } = guardian
-
         const { data: validatedAddress } = await client.mutations.validateAddress({ address })
 
         if (!validatedAddress) {
@@ -76,10 +76,11 @@ export const useUserStore = create<UserStore>((set, get) => ({
         }
 
         const newGuardian = {
-            orgId,
+            email: guardian.email,
             firstName: guardian.given_name,
+            isGuardian: true,
             lastName: guardian.family_name,
-            email: guardian.email
+            orgId
         }
 
         const response = await get().createUser(newGuardian)
@@ -90,7 +91,6 @@ export const useUserStore = create<UserStore>((set, get) => ({
         }
 
         try {
-            await client.models.Guardian.create({ orgId, userId })
             await client.mutations.addUserToGroup({ userId, groupName: 'GUARDIANS' })
         } catch {
             throw 'Failed to set user as Guardian'
@@ -127,7 +127,21 @@ export const useUserStore = create<UserStore>((set, get) => ({
         throw 'Failed to create user'
     },
     currentUser: undefined,
-    getUsers: async () => {
+    getUserById: async (id: string) => {
+        const client = await useApiStore.getState().getClient()
+        const { data: user } = await client.models.User.get({ id })
+
+        if (user) {
+            return user
+        }
+
+        throw 'Could not find user by id'
+    },
+    signOutAws: async () => {
+        await signOut()
+        set({ currentUser: undefined })
+    },
+    updateUsers: async () => {
         const client = await useApiStore.getState().getClient()
         const orgId = get().currentUser?.orgId
 
@@ -138,11 +152,6 @@ export const useUserStore = create<UserStore>((set, get) => ({
         const { data } = await client.models.User.listUserByOrgId({ orgId })
 
         set({ users: data })
-        return data
-    },
-    signOutAws: async () => {
-        await signOut()
-        set({ currentUser: undefined })
     },
     updateUserData: async () => {
         const client = await useApiStore.getState().getClient()

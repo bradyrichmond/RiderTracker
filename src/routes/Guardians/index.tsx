@@ -1,16 +1,16 @@
 import { useNavigate } from 'react-router-dom'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Box, Button, Typography } from '@mui/material'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import CreateGuardianDialog from './CreateGuardianDialog'
-import { useGuardianStore } from '@/store/GuardianStore'
 import { useTranslation } from 'react-i18next'
 import SearchBar from '@/components/SearchBar'
 import GuardianDrawer from './GuardianDrawer'
 import { useRiderStore } from '@/store/RiderStore'
 import Grid from '@mui/material/Unstable_Grid2'
 import { UpdateUserTypeInput, UserType } from '@/types/AmplifyTypes'
+import { useUserStore } from '@/store/UserStore'
 
 export interface CreateGuardianInput {
     given_name: string
@@ -24,18 +24,22 @@ interface GuardiansProps {
 }
 
 const Guardians = ({ activeGuardian }: GuardiansProps) => {
-    const guardians = useGuardianStore().guardians
-    const updateGuardians = useGuardianStore().updateGuardians
-    const changeSearchArg = useGuardianStore().changeSearchArg
-    const getRiders = useRiderStore().getRiders
+    const users = useUserStore().users
+    const updateUsers = useUserStore().updateUsers
+    const updateRiders = useRiderStore().updateRiders
     const navigate = useNavigate()
     const [isAddingGuardian, setIsAddingGuardian] = useState<boolean>(false)
     const { t } = useTranslation('guardians')
 
     useEffect(() => {
-        updateGuardians()
-        getRiders()
-    }, [updateGuardians, getRiders])
+        updateUsers()
+        updateRiders()
+    }, [updateUsers, updateRiders])
+
+    const guardians = useMemo(() => {
+        const items = users.filter((u) => u.isGuardian)
+        return items
+    }, [users])
 
     const generateGridColumns = (): GridColDef[] => {
         const initialGridColumns: GridColDef[] = [
@@ -64,7 +68,7 @@ const Guardians = ({ activeGuardian }: GuardiansProps) => {
     }
 
     const handleSearchChange = async (val: string) => {
-        await changeSearchArg(val)
+        console.log(`filter by ${val}`)
     }
 
     return (

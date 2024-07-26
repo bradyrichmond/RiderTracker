@@ -1,14 +1,12 @@
 import { useCallback, useMemo, useState } from 'react'
-import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import { useRiderStore } from '@/store/RiderStore'
 import EntityDrawer, { DrawerListActionProps } from '@/components/EntityDrawer'
-import { useGuardianStore } from '@/store/GuardianStore'
-import { useStopStore } from '@/store/StopStore'
 import CreateRiderDialog from '../Riders/CreateRiderDialog'
 import { CreateRiderTypeInput, RiderType, UserType } from '@/types/AmplifyTypes'
+import { useUserStore } from '@/store/UserStore'
 
 interface GuardianDrawerProps {
     open: boolean
@@ -17,17 +15,11 @@ interface GuardianDrawerProps {
 
 const GuardianDrawer = ({ open, guardian }: GuardianDrawerProps) => {
     const [isAddingRider, setIsAddingRider] = useState(false)
-    const { getGuardians, deleteGuardian } = useGuardianStore()
-    const { riders, createRider } = useRiderStore()
-    const { stops } = useStopStore()
+    const riders = useRiderStore().riders
+    const createRider = useRiderStore().createRider
+    const updateUsers = useUserStore().updateUsers
     const navigate = useNavigate()
     const { t } = useTranslation('guardians')
-
-    const deleteGuardianAction = useCallback(async () => {
-        if (guardian) {
-            await deleteGuardian(guardian)
-        }
-    }, [guardian, deleteGuardian])
 
     const viewRiderDetail = useCallback((riderId: string) => {
         navigate(`/app/riders/${riderId}`)
@@ -45,14 +37,9 @@ const GuardianDrawer = ({ open, guardian }: GuardianDrawerProps) => {
             tooltipTitle: t('createRider'),
             Icon: PersonAddIcon
         })
-        builtActionItems.push({
-            handleClick: deleteGuardianAction,
-            tooltipTitle: t('deleteGuardian'),
-            Icon: DeleteForeverIcon
-        })
 
         return builtActionItems
-    }, [deleteGuardianAction, t])
+    }, [t])
 
     const lists = useMemo(() => {
         const filteredRiders = riders
@@ -69,7 +56,7 @@ const GuardianDrawer = ({ open, guardian }: GuardianDrawerProps) => {
     const createRiderAction = async (newRider: CreateRiderTypeInput) => {
         await createRider(newRider)
         toggleAddingRider()
-        getGuardians()
+        updateUsers()
     }
 
     const handleBack = () => {
@@ -82,7 +69,6 @@ const GuardianDrawer = ({ open, guardian }: GuardianDrawerProps) => {
                 isAddingRider={isAddingRider}
                 allGuardians={[]}
                 guardianId={guardian?.id}
-                allStops={stops.map((s) => ({ id: s.id, label: s.name }))}
                 createRider={createRiderAction}
                 cancelAction={toggleAddingRider}
             />

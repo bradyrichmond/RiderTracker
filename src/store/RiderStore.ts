@@ -3,22 +3,28 @@ import { useApiStore } from './ApiStore'
 import { CreateRiderTypeInput, RiderType } from '@/types/AmplifyTypes'
 
 interface RiderStore {
+    assignRiderToGuardian(riderId: string, guardianId: string): Promise<void>
     changeSearchArg(searchArg: string): Promise<void>
     createRider(rider: CreateRiderTypeInput): Promise<void>
     deleteRider(riderId: string): Promise<void>
     getRiderById(riderId: string): Promise<RiderType>
-    getRiders(): Promise<void>
+    updateRiders(): Promise<void>
     riders: RiderType[]
     ridersFilter(r: RiderType): boolean
     searchArg: string
 }
 
 export const useRiderStore = create<RiderStore>((set, get) => ({
+    assignRiderToGuardian: async (riderId: string, guardianId: string) => {
+        const client = await useApiStore.getState().getClient()
+
+        await client.models.GuardianRider.create({ riderId, guardianId })
+    },
     changeSearchArg: async (searchArg: string) => {
         set({ searchArg })
 
         if (!searchArg) {
-            get().getRiders()
+            get().updateRiders()
             return
         }
 
@@ -36,7 +42,7 @@ export const useRiderStore = create<RiderStore>((set, get) => ({
 
         await client.models.Rider.delete({ id: riderId })
     },
-    getRiders: async () => {
+    updateRiders: async () => {
         const client = await useApiStore.getState().getClient()
 
         const { data: riders } = await client.models.Rider.list()

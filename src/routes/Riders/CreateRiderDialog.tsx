@@ -9,7 +9,6 @@ import { v4 as uuid } from 'uuid'
 
 interface CreateRiderDialogProps {
     allGuardians: OptionsType[]
-    allStops: OptionsType[]
     cancelAction(): void
     createRider(data: Partial<RiderType>): Promise<void>
     guardianId?: string
@@ -60,7 +59,6 @@ const CreateRiderDialog = ({ cancelAction, createRider, isAddingRider }: CreateR
                     error={!!errors.lastName?.message && touchedFields.lastName}
                     helperText={errors.lastName?.message ? t(errors.lastName.message) : ''}
                 />
-                {/* TODO: Add Guardian and stop id selection back in here */}
             </DialogContent>
             <DialogActions sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
                 <Button disabled={disableButtons} variant='contained' onClick={cancelAction}>{t('cancel', { ns: 'common' })}</Button>

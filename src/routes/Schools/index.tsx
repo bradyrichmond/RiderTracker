@@ -18,24 +18,26 @@ interface SchoolsProps {
 
 const Schools = ({ activeSchool }: SchoolsProps) => {
     const [isAddingSchool, setIsAddingSchool] = useState<boolean>(false)
-    const { createSchool, getSchools, schools } = useSchoolStore()
+    const createSchool = useSchoolStore().createSchool
+    const updateSchools = useSchoolStore().updateSchools
+    const schools = useSchoolStore().schools
     const addresses = useAddressStore().addresses
     const updateAddresses = useAddressStore().updateAddresses
-    const getRiders = useRiderStore().getRiders
+    const updateRiders = useRiderStore().updateRiders
     const canEditSchool = true
     const navigate = useNavigate()
     const { t } = useTranslation('schools')
 
     useEffect(() => {
-        getSchools()
+        updateSchools()
         updateAddresses()
-        getRiders()
-    }, [getSchools, updateAddresses, getRiders])
+        updateRiders()
+    }, [updateSchools, updateAddresses, updateRiders])
 
     const createSchoolAction = async (newSchool: CreateSchoolTypeInput) => {
         await createSchool(newSchool)
 
-        getSchools()
+        updateSchools()
         updateAddresses()
     }
 

@@ -1,30 +1,44 @@
 import { Transition } from '@/components/Transition'
-import { useStopStore } from '@/store/StopStore'
+import { useUserStore } from '@/store/UserStore'
+import { UserType } from '@/types/AmplifyTypes'
 import { OptionsType } from '@/types/OptionsType'
 import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle, FormControl, TextField } from '@mui/material'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 
-interface AddStopToRiderDialogProps {
+interface AssignGuardianToRiderDialogProps {
     cancelAction(): void
-    isAddingStop: boolean
+    isAddingGuardian: boolean
 }
 
-const AddStopToRiderDialog = ({ cancelAction, isAddingStop }: AddStopToRiderDialogProps) => {
+const AssignGuardianToRiderDialog = ({ cancelAction, isAddingGuardian }: AssignGuardianToRiderDialogProps) => {
+    const users = useUserStore().users
+    const updateUsers = useUserStore().updateUsers
     const [disableButtons, setDisableButtons] = useState(false)
     const { t } = useTranslation(['riders', 'common'])
-    const stops = useStopStore().stops
-    const { handleSubmit, reset, resetField, setValue, formState: { errors } } = useForm<{ stopId: string }>()
+    const { handleSubmit, reset, resetField, setValue, formState: { errors } } = useForm<{ guardianIds: string[] }>()
     const { id: riderId } = useParams()
 
-    const allStops = useMemo((): OptionsType[] => stops.map((stop) => ({ id: stop.id, label: stop.name })), [stops])
+    useEffect(() => {
+        updateUsers()
+    }, [updateUsers])
 
-    const updateRiderStops = async () => {
+    const guardians = useMemo(() => {
+        if (users) {
+            return users.filter((u) => u.isGuardian)
+        }
+
+        return []
+    }, [users])
+
+    const allGuardians = useMemo((): OptionsType[] => guardians.map((g: UserType) => ({ id: g.id, label: `${g.firstName} ${g.lastName}` })), [guardians])
+
+    const updateRiderGuardians = async () => {
         setDisableButtons(true)
         if (riderId) {
-            // TODO: Fix add rider to stop
+            // TODO: Fix adding guardians to rider
             resetForm()
             setDisableButtons(false)
         }
@@ -32,40 +46,37 @@ const AddStopToRiderDialog = ({ cancelAction, isAddingStop }: AddStopToRiderDial
 
     const resetForm = () => {
         reset()
-        resetField('stopId')
+        resetField('guardianIds')
     }
 
     return (
         <Dialog
-            open={isAddingStop}
+            open={isAddingGuardian}
             onClose={cancelAction}
             TransitionComponent={Transition}
             PaperProps={{
                 component: 'form',
-                onSubmit: handleSubmit(updateRiderStops),
+                onSubmit: handleSubmit(updateRiderGuardians),
                 sx: { padding: 4, minWidth: '25%' }
             }}
         >
-            <DialogTitle textAlign='center'>{t('addStopToRider')}</DialogTitle>
+            <DialogTitle textAlign='center'>{t('addGuardianToRider')}</DialogTitle>
             <DialogContent>
                 <FormControl fullWidth>
                     <Autocomplete
-                        id='StopAutoComplete'
-                        options={allStops}
+                        multiple
+                        id='GuardianAutoComplete'
+                        options={allGuardians}
                         getOptionLabel={(option: OptionsType) => option.label}
                         filterSelectedOptions
-                        onChange={(_e, value: OptionsType | null) => {
-                            if (value) {
-                                setValue('stopId', value.id) }
-                            }
-                        }
+                        onChange={(_e, values: OptionsType[]) => setValue('guardianIds', values.map((v: OptionsType) => v.id))}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
-                                label='Stop'
-                                id='StopLabel'
-                                error={!!errors.stopId?.message}
-                                helperText={errors.stopId?.message ? t(errors.stopId.message) : ''}
+                                label='Guardian'
+                                id='GuardianLabel'
+                                error={!!errors.guardianIds?.message}
+                                helperText={errors.guardianIds?.message ? t(errors.guardianIds.message) : ''}
                             />
                         )}
                     />
@@ -79,4 +90,4 @@ const AddStopToRiderDialog = ({ cancelAction, isAddingStop }: AddStopToRiderDial
     )
 }
 
-export default AddStopToRiderDialog
+export default AssignGuardianToRiderDialog

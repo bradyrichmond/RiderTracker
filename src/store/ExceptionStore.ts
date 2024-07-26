@@ -54,7 +54,6 @@ export const useExceptionStore = create<ExceptionStore>((set) => ({
                 const { data: pickupGuardian } = await client.models.User.get({ id: newException.pickupGuardianId })
 
                 if (pickupGuardian) {
-                    exception.pickupStopId = pickupGuardian.stopId
                     exception.pickupGuardianId = pickupGuardian.id
                 }
             }
@@ -63,7 +62,6 @@ export const useExceptionStore = create<ExceptionStore>((set) => ({
                 const { data: dropoffGuardian } = await client.models.User.get({ id: newException.dropoffGuardianId })
 
                 if (dropoffGuardian) {
-                    exception.dropoffStopId = dropoffGuardian.stopId
                     exception.dropoffGuardianId = dropoffGuardian.id
                 }
             }

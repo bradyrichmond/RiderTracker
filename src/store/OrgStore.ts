@@ -43,16 +43,14 @@ export const useOrgStore = create<OrgStore>((set, get) => ({
             const { isSignedIn }: SignInOutput = await signIn({ username, password })
 
             if (isSignedIn) {
-                const client = await useApiStore.getState().getClient(true)
+                const client = await useApiStore.getState().getClient()
                 await client.models.Organization.create({ id: orgId, orgName })
-                const { data: userData } = await client.models.User.create(user)
+                const { data: userData } = await client.models.User.create({ ...user, isAdmin: true })
                 const userId = userData?.id
 
                 if (!userId) {
                     throw 'failed to create admin in database'
                 }
-
-                await client.models.Admin.create({ userId, orgId })
 
                 return orgId
             }

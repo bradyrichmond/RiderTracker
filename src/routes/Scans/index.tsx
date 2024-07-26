@@ -10,16 +10,21 @@ import { useTranslation } from 'react-i18next'
 import CreateScanDialog from './CreateScanDialog'
 import { useRiderStore } from '@/store/RiderStore'
 import { useStopStore } from '@/store/StopStore'
-import { useGuardianStore } from '@/store/GuardianStore'
 import { useScanStore } from '@/store/ScanStore'
 import Grid from '@mui/material/Unstable_Grid2'
+import { useUserStore } from '@/store/UserStore'
 
 const Scans = () => {
     const [isAddingScan, setIsAddingScan] = useState(false)
-    const { scans, updateScans, createScan } = useScanStore()
-    const { riders, getRiders } = useRiderStore()
-    const { stops, getStops } = useStopStore()
-    const { guardians, getGuardians } = useGuardianStore()
+    const scans = useScanStore().scans
+    const updateScans = useScanStore().updateScans
+    const createScan = useScanStore().createScan
+    const riders = useRiderStore().riders
+    const updateRiders = useRiderStore().updateRiders
+    const stops = useStopStore().stops
+    const getStops = useStopStore().getStops
+    const users = useUserStore().users
+    const updateUsers = useUserStore().updateUsers
     const navigate = useNavigate()
     const { getCurrentPosition } = useDeviceLocation()
     const { t } = useTranslation('scans')
@@ -68,6 +73,13 @@ const Scans = () => {
         return initialGridColumns
     }
 
+    const guardians = useMemo(() => {
+        if (users) {
+            return users.filter((u) => u.isGuardian)
+        }
+
+        return []
+    }, [users])
     const allRiders = useMemo(() => riders.map((r: RiderType) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` })), [riders])
     const allStops = useMemo(() => stops.map((s: StopType) => ({ id: s.id, label: s.name })), [stops])
     const allGuardians = useMemo(() => guardians.map((g: UserType) => ({ id: g.id, label: `${g.firstName} ${g.lastName}` })), [guardians])
@@ -75,13 +87,13 @@ const Scans = () => {
     useEffect(() => {
         const updateData = async () => {
             await updateScans()
-            await getRiders()
+            await updateRiders()
             await getStops()
-            await getGuardians()
+            await updateUsers()
         }
 
         updateData()
-    }, [updateScans, getRiders, getStops, getGuardians])
+    }, [updateScans, updateRiders, getStops, updateUsers])
 
     const handleRowClick = (scanId: string) => {
         navigate(`/scans/${scanId}`)

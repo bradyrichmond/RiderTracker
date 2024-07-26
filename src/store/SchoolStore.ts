@@ -5,10 +5,10 @@ import { useApiStore } from './ApiStore'
 interface SchoolStore {
     createSchool(school: CreateSchoolTypeInput): Promise<void>
     deleteSchool(schoolId: string): Promise<void>
-    getSchools(): Promise<void>
     getSchoolById(schoolId: string): Promise<SchoolType>
     schools: SchoolType[]
     updateSchoolHours(schoolId: string, hours: SchoolHourType[]): Promise<void>
+    updateSchools(): Promise<void>
 }
 
 export const useSchoolStore = create<SchoolStore>((set, get) => ({
@@ -16,14 +16,14 @@ export const useSchoolStore = create<SchoolStore>((set, get) => ({
         const client = await useApiStore.getState().getClient()
 
         await client.models.School.create(school)
-        await get().getSchools()
+        await get().updateSchools()
     },
     deleteSchool: async (schoolId: string) => {
         const client = await useApiStore.getState().getClient()
 
         await client.models.School.delete({ id: schoolId })
     },
-    getSchools: async () => {
+    updateSchools: async () => {
         const client = await useApiStore.getState().getClient()
 
         const { data: schools } = await client.models.School.list()
