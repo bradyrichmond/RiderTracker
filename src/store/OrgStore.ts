@@ -23,6 +23,7 @@ export interface OrgStore {
     createOrg(orgId: string, orgName: string, username: string, confirmationCode: string, userPassword: string, user: CreateUserTypeInput): Promise<string>
     getOrgId(): Promise<string>
     updateOrgData(): Promise<void>
+    updateOrgData(): Promise<void>
 }
 
 export const useOrgStore = create<OrgStore>((set, get) => ({
@@ -58,6 +59,18 @@ export const useOrgStore = create<OrgStore>((set, get) => ({
 
 
         throw 'Failed to create org'
+    },
+    updateOrgData: async () => {
+        const client = await useApiStore.getState().getClient()
+        const orgId = await get().getOrgId()
+
+        if (orgId) {
+            const { data: orgData } = await client.models.Organization.get({ id: orgId })
+
+            if (orgData) {
+                set({ orgData })
+            }
+        }
     },
     updateOrgData: async () => {
         const client = await useApiStore.getState().getClient()
