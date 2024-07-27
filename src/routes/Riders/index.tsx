@@ -12,7 +12,7 @@ import RiderDrawer from './RiderDrawer'
 import SearchBar from '@/components/SearchBar'
 import { useSchoolStore } from '@/store/SchoolStore'
 import Grid from '@mui/material/Unstable_Grid2'
-import { CreateRiderTypeInput, RiderType, UpdateRiderTypeInput, UserType } from '@/types/AmplifyTypes'
+import { RiderType, UpdateRiderTypeInput } from '@/types/AmplifyTypes'
 import { useUserStore } from '@/store/UserStore'
 
 interface RidersProps {
@@ -21,10 +21,8 @@ interface RidersProps {
 
 const Riders = ({ activeRider }: RidersProps) => {
     const riders = useRiderStore().riders
-    const createRider = useRiderStore().createRider
     const updateRiders = useRiderStore().updateRiders
     const updateUsers = useUserStore().updateUsers
-    const users = useUserStore().users
     const changeSearchArg = useRiderStore().changeSearchArg
     const updateSchools = useSchoolStore().updateSchools
     const schools = useSchoolStore().schools
@@ -49,30 +47,6 @@ const Riders = ({ activeRider }: RidersProps) => {
             return []
         }
     }, [schools])
-
-    const guardians = useMemo(() => {
-        if (users) {
-            return users.filter((u) => u.isGuardian)
-        }
-
-        return []
-    }, [users])
-
-    const allGuardians: OptionsType[] = useMemo(() => {
-        return guardians.map((g: UserType) => ({
-            label: `${g.firstName} ${g.lastName}`,
-            id: g.id
-        }))
-    }, [guardians])
-
-    const handleCreateRider = async (newRider: CreateRiderTypeInput) => {
-        try {
-            await createRider(newRider)
-            setIsAddingRider(false)
-        } catch {
-            showErrorSnackbar('Failed to create rider.')
-        }
-    }
 
     const columns = useMemo((): GridColDef[] => {
         const getSchoolNameById = (schoolId: string) => {
@@ -100,6 +74,7 @@ const Riders = ({ activeRider }: RidersProps) => {
 
     const cancelAction = () => {
         setIsAddingRider(false)
+        updateRiders()
     }
 
     const handleRowClick = (id: string) => {
@@ -107,40 +82,40 @@ const Riders = ({ activeRider }: RidersProps) => {
     }
 
     return (
-        <Grid container spacing={2}>
-            <CreateRiderDialog
-                createRider={handleCreateRider}
-                isAddingRider={isAddingRider}
-                allGuardians={allGuardians}
-                cancelAction={cancelAction}
-            />
-            <RiderDrawer open={!!activeRider} rider={riders.find((r: RiderType) => r.id === activeRider)} />
-            <Grid xs={12} md={6}>
-                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
-                    <Typography variant='h2'>
-                        {t('riders')}
-                    </Typography>
-                </Box>
-            </Grid>
-            <Grid xs={12} md={6}>
-                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <Button variant='contained' onClick={startAddingRider}>
-                            <Box display='flex' flexDirection='row'>
-                                <AddCircleIcon />
-                                <Box sx={{ flex: 1, ml: 2 }}>
-                                    <Typography>{t('addRider')}</Typography>
-                                </Box>
+        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <Box>
+                <Grid container spacing={2} sx={{ height: '100%' }}>
+                    <CreateRiderDialog
+                        isAddingRider={isAddingRider}
+                        cancelAction={cancelAction}
+                    />
+                    <RiderDrawer open={!!activeRider} rider={riders.find((r: RiderType) => r.id === activeRider)} />
+                    <Grid xs={12} md={6}>
+                        <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
+                            <Typography variant='h2'>
+                                {t('riders')}
+                            </Typography>
+                        </Box>
+                    </Grid>
+                    <Grid xs={12} md={6}>
+                        <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <Button variant='contained' onClick={startAddingRider}>
+                                    <Box display='flex' flexDirection='row'>
+                                        <AddCircleIcon />
+                                        <Box sx={{ flex: 1, ml: 2 }}>
+                                            <Typography>{t('addRider')}</Typography>
+                                        </Box>
+                                    </Box>
+                                </Button>
                             </Box>
-                        </Button>
-                    </Box>
-                </Box>
-            </Grid>
-            <Grid xs={12}>
-                <Box sx={{ mb: 2 }}>
-                    <SearchBar onChange={changeSearchArg} fullWidth />
-                </Box>
-            </Grid>
+                        </Box>
+                    </Grid>
+                </Grid>
+            </Box>
+            <Box sx={{ mb: 2 }}>
+                <SearchBar onChange={changeSearchArg} fullWidth />
+            </Box>
             <Grid xs>
                 <Box sx={{ height: '100%', width: '100%' }}>
                     {riders ?
@@ -161,7 +136,7 @@ const Riders = ({ activeRider }: RidersProps) => {
                     }
                 </Box>
             </Grid>
-        </Grid>
+        </Box>
     )
 }
 

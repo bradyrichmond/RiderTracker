@@ -192,7 +192,7 @@ const schema = a.schema({
       addressId: a.id().required(),
       organization: a.belongsTo('Organization', 'orgId'),
       orgId: a.id().required(),
-      riderIds: a.id().array(),
+      riders: a.hasMany('Rider', 'schoolId'),
       SchoolHours: a.hasMany('SchoolHour', 'schoolId'),
       schoolName: a.string().required(),
       stopIds: a.id().array(),

@@ -1,11 +1,12 @@
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
 import { CreateRiderTypeInput, RiderType } from '@/types/AmplifyTypes'
+import { useUserStore } from './UserStore'
 
 interface RiderStore {
     assignRiderToGuardian(riderId: string, guardianId: string): Promise<void>
     changeSearchArg(searchArg: string): Promise<void>
-    createRider(rider: CreateRiderTypeInput): Promise<void>
+    createRider(rider: CreateRiderTypeInput, guardianIds: string[]): Promise<void>
     deleteRider(riderId: string): Promise<void>
     getRiderById(riderId: string): Promise<RiderType>
     updateRiders(): Promise<void>
@@ -32,10 +33,18 @@ export const useRiderStore = create<RiderStore>((set, get) => ({
 
         set({ riders })
     },
-    createRider: async (rider: CreateRiderTypeInput) => {
+    createRider: async (rider: CreateRiderTypeInput, guardianIds: string[]) => {
         const client = await useApiStore.getState().getClient()
+        const orgId = useUserStore.getState().currentUser?.orgId
 
-        await client.models.Rider.create(rider)
+        if (orgId) {
+            const { data: riderData } = await client.models.Rider.create({ ...rider, orgId })
+            if (riderData) {
+                const riderId = riderData.id
+
+                guardianIds.forEach((g) => get().assignRiderToGuardian(riderId, g))
+            }
+        }
     },
     deleteRider: async (riderId: string) => {
         const client = await useApiStore.getState().getClient()
@@ -44,11 +53,14 @@ export const useRiderStore = create<RiderStore>((set, get) => ({
     },
     updateRiders: async () => {
         const client = await useApiStore.getState().getClient()
+        const orgId = useUserStore.getState().currentUser?.orgId
 
-        const { data: riders } = await client.models.Rider.list()
+        if (orgId) {
+            const { data: riders } = await client.models.Rider.listRiderByOrgId({ orgId })
 
-        if (riders) {
-            set({ riders })
+            if (riders) {
+                set({ riders })
+            }
         }
     },
     getRiderById: async (riderId: string) => {

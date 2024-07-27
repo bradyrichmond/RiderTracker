@@ -65,6 +65,13 @@ export const handler: AppSyncAuthorizerHandler<ResolverContext> = async (
     return generateGetUserAuth(userOrgId, requestUserId, userIsAdmin, userIsDriver, userId)
   }
 
+  if (qs.includes('listUserByOrgId')) {
+    console.log('listUserByOrgId')
+    const requestOrgId = requestContext.variables.orgId
+
+    return generateListUserByOrgIdAuth(userOrgId, requestOrgId, userIsAdmin, userIsDriver, userId)
+  }
+
   if (qs.includes('createUser') || qs.includes('createOrgUser')) {
     console.log('createUser')
     return generateCreateUserAuth(userOrgId, requestContext.variables.orgId, userIsAdmin)
@@ -191,6 +198,20 @@ const generateGetOrganizationAuth = (orgId: string, requestOrgId: string): Autho
 const generateGetUserAuth = (orgId: string, requestUserId: string, userIsAdmin: boolean, userIsDriver: boolean, userId: string): AuthorizerResponse => {
   const response = {
     isAuthorized: userId === requestUserId || userIsAdmin || userIsDriver,
+    resolverContext: {
+      operationName: 'GetUser',
+      orgId
+    }
+  }
+
+  console.log(`RESPONSE: ${JSON.stringify(response)}`)
+
+  return response
+}
+
+const generateListUserByOrgIdAuth = (orgId: string, requestOrgId: string, userIsAdmin: boolean, userIsDriver: boolean, userId: string): AuthorizerResponse => {
+  const response = {
+    isAuthorized: userId === requestOrgId || userIsAdmin || userIsDriver,
     resolverContext: {
       operationName: 'GetUser',
       orgId
@@ -421,6 +442,8 @@ const generateCreateRiderAuth = (orgId: string, requestOrgId: string, userIsAdmi
     isAuthorized: orgId === requestOrgId && userIsAdmin,
     resolverContext: {
       operationName: 'CreateRider',
+      userIsAdmin,
+      requestOrgId,
       orgId
     }
   }
@@ -435,6 +458,8 @@ const generateDeleteRiderAuth = (orgId: string, requestOrgId: string, userIsAdmi
     isAuthorized: orgId === requestOrgId && userIsAdmin,
     resolverContext: {
       operationName: 'DeleteRider',
+      userIsAdmin,
+      requestOrgId,
       orgId
     }
   }

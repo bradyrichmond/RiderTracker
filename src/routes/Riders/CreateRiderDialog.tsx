@@ -1,30 +1,49 @@
 import { Transition } from '@/components/Transition'
-import { CreateRiderTypeInput, RiderType } from '@/types/AmplifyTypes'
+import { useRiderStore } from '@/store/RiderStore'
+import { useUserStore } from '@/store/UserStore'
+import { CreateRiderTypeInput } from '@/types/AmplifyTypes'
 import { OptionsType } from '@/types/OptionsType'
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
-import { useState } from 'react'
+import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogTitle, TextField } from '@mui/material'
+import { useEffect, useMemo, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { v4 as uuid } from 'uuid'
 
 interface CreateRiderDialogProps {
-    allGuardians: OptionsType[]
     cancelAction(): void
-    createRider(data: Partial<RiderType>): Promise<void>
     guardianId?: string
     isAddingRider: boolean
 }
 
-const CreateRiderDialog = ({ cancelAction, createRider, isAddingRider }: CreateRiderDialogProps) => {
+const CreateRiderDialog = ({ cancelAction, guardianId, isAddingRider }: CreateRiderDialogProps) => {
+    const [guardianIds, setGuardianIds] = useState<string[]>([])
+    const updateUsers = useUserStore().updateUsers
+    const createRider = useRiderStore().createRider
+    const users = useUserStore().users
     const [disableButtons, setDisableButtons] = useState(false)
-    const { t } = useTranslation(['riders','common'])
+    const { t } = useTranslation(['riders', 'common'])
     const { handleSubmit, register, reset, formState: { errors, touchedFields } } = useForm<CreateRiderTypeInput>()
+
+    useEffect(() => {
+        if (isAddingRider) {
+            updateUsers()
+        }
+    }, [updateUsers, isAddingRider])
+
+    const guardians = useMemo(() => {
+        const items = users.filter((u) => u.isGuardian).map((u) => ({
+            id: u.id,
+            label: `${u.firstName} ${u.lastName}`
+        }))
+        return items
+    }, [users])
 
     const handleCreateRider = async (newRider: CreateRiderTypeInput) => {
         setDisableButtons(true)
         newRider.id = uuid()
-        await createRider(newRider)
+        await createRider(newRider, guardianId ? [guardianId] : guardianIds)
         resetForm()
+        cancelAction()
         setDisableButtons(false)
     }
 
@@ -59,6 +78,25 @@ const CreateRiderDialog = ({ cancelAction, createRider, isAddingRider }: CreateR
                     error={!!errors.lastName?.message && touchedFields.lastName}
                     helperText={errors.lastName?.message ? t(errors.lastName.message) : ''}
                 />
+                {!guardianId && guardians.length ?
+                    <Autocomplete
+                        multiple
+                        id='GuardianAutoComplete'
+                        options={guardians}
+                        getOptionLabel={(option: OptionsType) => option.label}
+                        filterSelectedOptions
+                        onChange={(_e, values: OptionsType[]) => setGuardianIds(values.map((v: OptionsType) => v.id))}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                label='Guardian'
+                                id='GuardianLabel'
+                            />
+                        )}
+                    />
+                    :
+                    null
+                }
             </DialogContent>
             <DialogActions sx={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' }}>
                 <Button disabled={disableButtons} variant='contained' onClick={cancelAction}>{t('cancel', { ns: 'common' })}</Button>
