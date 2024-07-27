@@ -2,33 +2,17 @@ import { create } from 'zustand'
 import { Client, generateClient } from 'aws-amplify/data'
 import type { Schema } from '../../amplify/data/resource'
 import { fetchAuthSession } from 'aws-amplify/auth'
-import { CLIENT_REFRESH_INTERVAL } from '@/constants/Numbers'
 
 interface ApiStore {
-    client?: Client<Schema>
     getClient(): Promise<Client<Schema>>
     updateClient(): Promise<Client<Schema>>
 }
 
 
-export const useApiStore = create<ApiStore>((set, get) => ({
-    client: undefined,
+export const useApiStore = create<ApiStore>((_set, get) => ({
     getClient: async () => {
-        const client = get().client
-
-        if (!client) {
-            const newApi = await get().updateClient()
-            set({ client: newApi })
-
-            setInterval(async () => {
-                console.log('Refreshing client')
-                await get().updateClient()
-            }, CLIENT_REFRESH_INTERVAL)
-
-            return newApi
-        }
-
-        return client
+            const client = await get().updateClient()
+            return client
     },
     updateClient: async () => {
         const session = await fetchAuthSession()
@@ -40,7 +24,7 @@ export const useApiStore = create<ApiStore>((set, get) => ({
 
             const newClient = generateClient<Schema>({
                 authMode: 'lambda',
-                authToken: authToken
+                authToken: `RiderTracker#${authToken}`
             })
 
             return newClient

@@ -1,9 +1,10 @@
 import type { AppSyncAuthorizerHandler } from 'aws-lambda'
 import { CognitoJwtVerifier } from 'aws-jwt-verify'
+import { env } from '$amplify/env/custom-authorizer'
 
 interface ResolverContext {
   operationName: string
-  orgId: string
+  orgId?: string
 }
 
 interface AuthorizerResponse {
@@ -13,9 +14,9 @@ interface AuthorizerResponse {
 }
 
 const verifier = CognitoJwtVerifier.create({
-  userPoolId: 'us-west-2_OkP47GEUy',
+  userPoolId: env.USER_POOL_ID,
   tokenUse: 'access',
-  clientId: '20h7risji8pjbjlk219cl5kfqn',
+  clientId: env.WEB_CLIENT_ID
 });
 
 export const handler: AppSyncAuthorizerHandler<ResolverContext> = async (
@@ -28,13 +29,24 @@ export const handler: AppSyncAuthorizerHandler<ResolverContext> = async (
     requestContext
   } = event
 
-  const payload = await verifier.verify(authorizationToken)
+  const trimmedAuthorizationToken = authorizationToken.split('#')[1]
+
+  const payload = await verifier.verify(trimmedAuthorizationToken)
   const qs = requestContext.queryString
   const userGroups = payload['cognito:groups']
   const userOrgId = userGroups?.find((g) => g.includes('RiderTrackerOrgId'))?.split('#')[1]
   const userIsAdmin = userGroups?.includes('ADMINS') ?? false
   const userIsDriver = userGroups?.includes('DRIVERS') ?? false
   const userId = payload.username
+
+  if (qs.includes('createOrganization')) {
+    return {
+      isAuthorized: true,
+      resolverContext: {
+        operationName: 'createOrganization'
+      }
+    }
+  }
 
   if (!userOrgId) {
     throw 'User missing orgId'
