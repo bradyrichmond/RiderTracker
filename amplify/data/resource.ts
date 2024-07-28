@@ -153,7 +153,9 @@ const schema = a.schema({
       lastName: a.string().required(),
       organization: a.belongsTo('Organization', 'orgId'),
       orgId: a.id().required(),
-      routeId: a.id()
+      routeId: a.id(),
+      school: a.belongsTo('School', 'schoolId'),
+      schoolId: a.id()
     })
     .secondaryIndexes((index) => [index('orgId')])
     .authorization((allow) => allow.custom()),

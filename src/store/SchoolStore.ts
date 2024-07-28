@@ -1,6 +1,7 @@
 import { CreateSchoolTypeInput, SchoolHourType, SchoolType } from '@/types/AmplifyTypes'
 import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
+import { useUserStore } from './UserStore'
 
 interface SchoolStore {
     createSchool(school: CreateSchoolTypeInput): Promise<void>
@@ -25,8 +26,13 @@ export const useSchoolStore = create<SchoolStore>((set, get) => ({
     },
     updateSchools: async () => {
         const client = await useApiStore.getState().getClient()
+        const orgId = await useUserStore.getState().currentUser?.orgId
 
-        const { data: schools } = await client.models.School.list()
+        if (!orgId) {
+            throw 'No org id for user'
+        }
+
+        const { data: schools } = await client.models.School.listSchoolByOrgId({ orgId })
         set({ schools })
     },
     getSchoolById: async (schoolId: string) => {

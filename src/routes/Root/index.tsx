@@ -5,7 +5,6 @@ import { useUserStore } from '@/store/UserStore'
 import { useState, useEffect, useCallback } from 'react'
 import { Hub } from 'aws-amplify/utils'
 import { useOrgStore } from '@/store/OrgStore'
-import { useOrgStore } from '@/store/OrgStore'
 
 const Root = () => {
     const [isInitialized, setIsInitialized] = useState<boolean>(false)
