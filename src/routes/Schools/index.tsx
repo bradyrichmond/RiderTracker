@@ -1,16 +1,14 @@
 import { useEffect, useState } from 'react'
 import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Button, CircularProgress, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
 import SchoolDrawer from './SchoolDrawer'
 import CreateSchoolDialog from './CreateSchoolDialog'
-import { useSchoolStore } from '@/store/SchoolStore'
-import { useAddressStore } from '@/store/AddressStore'
+import { SelectionSetSchool, useSchoolStore } from '@/store/SchoolStore'
 import { useRiderStore } from '@/store/RiderStore'
 import Grid from '@mui/material/Unstable_Grid2'
-import { CreateSchoolTypeInput, SchoolType } from '@/types/AmplifyTypes'
 
 interface SchoolsProps {
     activeSchool?: string
@@ -18,32 +16,16 @@ interface SchoolsProps {
 
 const Schools = ({ activeSchool }: SchoolsProps) => {
     const [isAddingSchool, setIsAddingSchool] = useState<boolean>(false)
-    const createSchool = useSchoolStore().createSchool
     const updateSchools = useSchoolStore().updateSchools
     const schools = useSchoolStore().schools
-    const addresses = useAddressStore().addresses
-    const updateAddresses = useAddressStore().updateAddresses
     const updateRiders = useRiderStore().updateRiders
-    const canEditSchool = true
     const navigate = useNavigate()
     const { t } = useTranslation('schools')
 
     useEffect(() => {
         updateSchools()
-        updateAddresses()
         updateRiders()
-    }, [updateSchools, updateAddresses, updateRiders])
-
-    const createSchoolAction = async (newSchool: CreateSchoolTypeInput) => {
-        await createSchool(newSchool)
-
-        updateSchools()
-        updateAddresses()
-    }
-
-    const getFormattedAddressById = (addressId: string) => {
-        return addresses.find((a) => a.id === addressId)?.formatted
-    }
+    }, [updateSchools, updateRiders])
 
     const generateGridColumns = (): GridColDef[] => {
         const initialGridColumns: GridColDef[] = [
@@ -52,15 +34,14 @@ const Schools = ({ activeSchool }: SchoolsProps) => {
                 headerName: 'School Name',
                 flex: 1,
                 align: 'center',
-                headerAlign: 'center',
-                editable: canEditSchool
+                headerAlign: 'center'
             },
             {
                 field: 'address',
                 headerName: 'Address',
                 flex: 1, align: 'center',
                 headerAlign: 'center',
-                valueGetter: (value: string) => getFormattedAddressById(value)
+                valueGetter: (value: { formatted: string }) => value.formatted
             }
         ]
 
@@ -73,33 +54,38 @@ const Schools = ({ activeSchool }: SchoolsProps) => {
 
     const toggleAddingSchool = () => {
         setIsAddingSchool((current) => !current)
+        updateSchools()
     }
 
     return (
-        <Grid container spacing={2}>
-            <SchoolDrawer open={!!activeSchool} school={schools.find((s: SchoolType) => s.id === activeSchool)} />
-            <CreateSchoolDialog createSchool={createSchoolAction} cancelAction={toggleAddingSchool} open={isAddingSchool} />
-            <Grid xs={12} md={6}>
-                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
-                    <Typography variant='h2'>
-                        {t('schools')}
-                    </Typography>
-                </Box>
-            </Grid>
-            <Grid xs={12} md={6}>
-                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <Button variant='contained' onClick={toggleAddingSchool}>
-                            <Box display='flex' flexDirection='row'>
-                                <AddCircleIcon />
-                                <Box sx={{ flex: 1, ml: 2 }}>
-                                    <Typography>{t('addSchool')}</Typography>
-                                </Box>
+        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <Box>
+                <Grid container spacing={2} sx={{ height: '100%' }}>
+                    <SchoolDrawer open={!!activeSchool} school={schools.find((s: SelectionSetSchool) => s.id === activeSchool)} />
+                    <CreateSchoolDialog cancelAction={toggleAddingSchool} open={isAddingSchool} />
+                    <Grid xs={12} md={6}>
+                        <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
+                            <Typography variant='h2'>
+                                {t('schools')}
+                            </Typography>
+                        </Box>
+                    </Grid>
+                    <Grid xs={12} md={6}>
+                        <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <Button variant='contained' onClick={toggleAddingSchool}>
+                                    <Box display='flex' flexDirection='row'>
+                                        <AddCircleIcon />
+                                        <Box sx={{ flex: 1, ml: 2 }}>
+                                            <Typography>{t('addSchool')}</Typography>
+                                        </Box>
+                                    </Box>
+                                </Button>
                             </Box>
-                        </Button>
-                    </Box>
-                </Box>
-            </Grid>
+                        </Box>
+                    </Grid>
+                </Grid>
+            </Box>
             <Grid xs>
                 <Box sx={{ height: '100%', width: '100%' }}>
                     {schools ?
@@ -110,16 +96,16 @@ const Schools = ({ activeSchool }: SchoolsProps) => {
                             onRowClick={(params) => handleRowClick(params.row.id)}
                             initialState={{
                                 sorting: {
-                                  sortModel: [{ field: 'schoolName', sort: 'asc' }],
+                                    sortModel: [{ field: 'schoolName', sort: 'asc' }],
                                 },
                             }}
                         />
                         :
-                        null
+                        <CircularProgress />
                     }
                 </Box>
             </Grid>
-        </Grid>
+        </Box >
     )
 }
 

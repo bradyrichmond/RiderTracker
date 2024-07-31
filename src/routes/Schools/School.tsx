@@ -1,9 +1,8 @@
-import { useSchoolStore } from '@/store/SchoolStore'
+import { SelectionSetSchool, useSchoolStore } from '@/store/SchoolStore'
 import { Paper, Typography } from '@mui/material'
 import Grid from '@mui/material/Unstable_Grid2'
 import { useEffect, useMemo, useState } from 'react'
 import EditSchoolDialog from './EditSchoolHoursDialog'
-import { SchoolType } from '@/types/AmplifyTypes'
 
 interface SchoolProps {
     activeSchool?: string
@@ -20,7 +19,7 @@ const School = ({ activeSchool }: SchoolProps) => {
     }, [updateSchools])
 
     const school = useMemo(() => {
-        const selectedSchool = schools.find((s: SchoolType) => s.id === activeSchool)
+        const selectedSchool = schools.find((s: SelectionSetSchool) => s.id === activeSchool)
 
         if (selectedSchool) {
             return selectedSchool

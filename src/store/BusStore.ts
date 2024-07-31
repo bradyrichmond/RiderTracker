@@ -6,8 +6,6 @@ import { useUserStore } from './UserStore'
 interface BusStore {
     buses?: BusType[]
     createBus(busNumber: string): Promise<UpdateBusTypeInput>
-    buses?: BusType[]
-    createBus(busNumber: string): Promise<UpdateBusTypeInput>
     deleteBus(busId: string): Promise<void>
     getBusById(busId: string): Promise<BusType>
     updateBuses(): Promise<void>
@@ -26,12 +24,6 @@ export const useBusStore = create<BusStore>((set, get) => ({
         const { data: bus } = await client.models.Bus.create({ orgId, busNumber })
 
         await get().updateBuses()
-
-        if (bus) {
-            return bus
-        }
-
-        throw 'Failed to create bus'
 
         if (bus) {
             return bus
@@ -67,7 +59,7 @@ export const useBusStore = create<BusStore>((set, get) => ({
         const { data: buses } = await client.models.Bus.listBusByOrgId({ orgId })
 
         if (buses) {
-            set({ buses: filteredBuses })
+            set({ buses })
             return
         }
 

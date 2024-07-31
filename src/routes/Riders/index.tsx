@@ -85,10 +85,7 @@ const Riders = ({ activeRider }: RidersProps) => {
         <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
             <Box>
                 <Grid container spacing={2} sx={{ height: '100%' }}>
-                    <CreateRiderDialog
-                        isAddingRider={isAddingRider}
-                        cancelAction={cancelAction}
-                    />
+                    <CreateRiderDialog isAddingRider={isAddingRider} cancelAction={cancelAction} />
                     <RiderDrawer open={!!activeRider} rider={riders.find((r: RiderType) => r.id === activeRider)} />
                     <Grid xs={12} md={6}>
                         <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>

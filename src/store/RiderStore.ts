@@ -6,7 +6,7 @@ import { useUserStore } from './UserStore'
 interface RiderStore {
     assignRiderToGuardian(riderId: string, guardianId: string): Promise<void>
     changeSearchArg(searchArg: string): Promise<void>
-    createRider(rider: CreateRiderTypeInput, guardianIds: string[]): Promise<void>
+    createRider(rider: CreateRiderTypeInput, guardianIds?: string[]): Promise<void>
     deleteRider(riderId: string): Promise<void>
     getRiderById(riderId: string): Promise<RiderType>
     updateRiders(): Promise<void>
@@ -33,7 +33,7 @@ export const useRiderStore = create<RiderStore>((set, get) => ({
 
         set({ riders })
     },
-    createRider: async (rider: CreateRiderTypeInput, guardianIds: string[]) => {
+    createRider: async (rider: CreateRiderTypeInput, guardianIds?: string[]) => {
         const client = await useApiStore.getState().getClient()
         const orgId = useUserStore.getState().currentUser?.orgId
 
@@ -42,7 +42,7 @@ export const useRiderStore = create<RiderStore>((set, get) => ({
             if (riderData) {
                 const riderId = riderData.id
 
-                guardianIds.forEach((g) => get().assignRiderToGuardian(riderId, g))
+                guardianIds?.forEach((g) => get().assignRiderToGuardian(riderId, g))
             }
         }
     },

@@ -149,12 +149,32 @@ export const handler: AppSyncAuthorizerHandler<ResolverContext> = async (
 
   if (qs.includes('createRider')) {
     console.log('createRider')
-    return generateCreateRiderAuth(userOrgId, requestContext.variables.orgId, userIsAdmin)
+    return generateCreateRiderAuth(userOrgId, requestContext.variables.input.orgId, userIsAdmin)
   }
 
   if (qs.includes('deleteRider')) {
     console.log('deleteRider')
     return generateDeleteRiderAuth(userOrgId, requestContext.variables.orgId, userIsAdmin)
+  }
+
+  if (qs.includes('getSchool')) {
+    console.log('getSchool')
+    return generateGetSchoolAuth(userOrgId, requestContext.variables.orgId, userIsAdmin, userIsDriver)
+  }
+
+  if (qs.includes('listSchoolByOrgId')) {
+    console.log('listSchoolByOrgId')
+    return generateListSchoolAuth(userOrgId, requestContext.variables.orgId, userIsAdmin, userIsDriver)
+  }
+
+  if (qs.includes('createschool')) {
+    console.log('createschool')
+    return generateCreateSchoolAuth(userOrgId, requestContext.variables.orgId, userIsAdmin)
+  }
+
+  if (qs.includes('deleteSchool')) {
+    console.log('deleteSchool')
+    return generateDeleteSchoolAuth(userOrgId, requestContext.variables.orgId, userIsAdmin)
   }
 
   if (qs.includes('validateAddress')) {
@@ -213,7 +233,7 @@ const generateListUserByOrgIdAuth = (orgId: string, requestOrgId: string, userIs
   const response = {
     isAuthorized: userId === requestOrgId || userIsAdmin || userIsDriver,
     resolverContext: {
-      operationName: 'GetUser',
+      operationName: 'ListUsersByOrgId',
       orgId
     }
   }
@@ -458,6 +478,66 @@ const generateDeleteRiderAuth = (orgId: string, requestOrgId: string, userIsAdmi
     isAuthorized: orgId === requestOrgId && userIsAdmin,
     resolverContext: {
       operationName: 'DeleteRider',
+      userIsAdmin,
+      requestOrgId,
+      orgId
+    }
+  }
+
+  console.log(`RESPONSE: ${JSON.stringify(response)}`)
+
+  return response
+}
+
+const generateGetSchoolAuth = (orgId: string, requestOrgId: string, userIsAdmin: boolean, userIsDriver: boolean): AuthorizerResponse => {
+  const response = {
+    isAuthorized: orgId === requestOrgId && (userIsAdmin || userIsDriver),
+    resolverContext: {
+      operationName: 'GetSchool',
+      orgId
+    }
+  }
+
+  console.log(`RESPONSE: ${JSON.stringify(response)}`)
+
+  return response
+}
+
+const generateListSchoolAuth = (orgId: string, requestOrgId: string, userIsAdmin: boolean, userIsDriver: boolean): AuthorizerResponse => {
+  const response = {
+    isAuthorized: orgId === requestOrgId && (userIsAdmin || userIsDriver),
+    resolverContext: {
+      operationName: 'ListSchools',
+      orgId
+    }
+  }
+
+  console.log(`RESPONSE: ${JSON.stringify(response)}`)
+
+  return response
+}
+
+const generateCreateSchoolAuth = (orgId: string, requestOrgId: string, userIsAdmin: boolean): AuthorizerResponse => {
+  const response = {
+    isAuthorized: orgId === requestOrgId && userIsAdmin,
+    resolverContext: {
+      operationName: 'CreateSchool',
+      userIsAdmin,
+      requestOrgId,
+      orgId
+    }
+  }
+
+  console.log(`RESPONSE: ${JSON.stringify(response)}`)
+
+  return response
+}
+
+const generateDeleteSchoolAuth = (orgId: string, requestOrgId: string, userIsAdmin: boolean): AuthorizerResponse => {
+  const response = {
+    isAuthorized: orgId === requestOrgId && userIsAdmin,
+    resolverContext: {
+      operationName: 'DeleteSchool',
       userIsAdmin,
       requestOrgId,
       orgId

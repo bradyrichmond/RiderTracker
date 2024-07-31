@@ -72,18 +72,6 @@ export const useOrgStore = create<OrgStore>((set, get) => ({
             }
         }
     },
-    updateOrgData: async () => {
-        const client = await useApiStore.getState().getClient()
-        const orgId = await get().getOrgId()
-
-        if (orgId) {
-            const { data: orgData } = await client.models.Organization.get({ id: orgId })
-
-            if (orgData) {
-                set({ orgData })
-            }
-        }
-    },
     getOrgId: async () => {
         const attributes = await fetchUserAttributes()
         const orgId = attributes['custom:orgId']

@@ -45,6 +45,7 @@ export type UpdateScanTypeInput = Schema['Scan']['updateType']
 
 export type SchoolType = Schema['School']['type']
 export type CreateSchoolTypeInput = Schema['School']['createType']
+export type CreateSchoolInput = { school: CreateSchoolTypeInput, address: string }
 export type DeleteSchoolTypeInput = Schema['School']['deleteType']
 export type UpdateSchoolTypeInput = Schema['School']['updateType']
 

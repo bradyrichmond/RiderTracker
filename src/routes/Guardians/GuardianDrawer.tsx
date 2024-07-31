@@ -5,8 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { useRiderStore } from '@/store/RiderStore'
 import EntityDrawer, { DrawerListActionProps } from '@/components/EntityDrawer'
 import CreateRiderDialog from '../Riders/CreateRiderDialog'
-import { CreateRiderTypeInput, RiderType, UserType } from '@/types/AmplifyTypes'
-import { useUserStore } from '@/store/UserStore'
+import { RiderType, UserType } from '@/types/AmplifyTypes'
 
 interface GuardianDrawerProps {
     open: boolean
@@ -16,8 +15,6 @@ interface GuardianDrawerProps {
 const GuardianDrawer = ({ open, guardian }: GuardianDrawerProps) => {
     const [isAddingRider, setIsAddingRider] = useState(false)
     const riders = useRiderStore().riders
-    const createRider = useRiderStore().createRider
-    const updateUsers = useUserStore().updateUsers
     const navigate = useNavigate()
     const { t } = useTranslation('guardians')
 
@@ -53,12 +50,6 @@ const GuardianDrawer = ({ open, guardian }: GuardianDrawerProps) => {
         ]
     }, [t, viewRiderDetail, riders])
 
-    const createRiderAction = async (newRider: CreateRiderTypeInput) => {
-        await createRider(newRider)
-        toggleAddingRider()
-        updateUsers()
-    }
-
     const handleBack = () => {
         navigate('/app/guardians')
     }
@@ -67,9 +58,7 @@ const GuardianDrawer = ({ open, guardian }: GuardianDrawerProps) => {
         <>
             <CreateRiderDialog
                 isAddingRider={isAddingRider}
-                allGuardians={[]}
                 guardianId={guardian?.id}
-                createRider={createRiderAction}
                 cancelAction={toggleAddingRider}
             />
             <EntityDrawer

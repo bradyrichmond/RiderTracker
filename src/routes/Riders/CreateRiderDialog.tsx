@@ -1,5 +1,6 @@
 import { Transition } from '@/components/Transition'
 import { useRiderStore } from '@/store/RiderStore'
+import { useSchoolStore } from '@/store/SchoolStore'
 import { useUserStore } from '@/store/UserStore'
 import { CreateRiderTypeInput } from '@/types/AmplifyTypes'
 import { OptionsType } from '@/types/OptionsType'
@@ -13,11 +14,15 @@ interface CreateRiderDialogProps {
     cancelAction(): void
     guardianId?: string
     isAddingRider: boolean
+    schoolId?: string
 }
 
-const CreateRiderDialog = ({ cancelAction, guardianId, isAddingRider }: CreateRiderDialogProps) => {
+const CreateRiderDialog = ({ cancelAction, guardianId, isAddingRider, schoolId }: CreateRiderDialogProps) => {
     const [guardianIds, setGuardianIds] = useState<string[]>([])
+    const [selectedSchoolId, setSelectedSchoolId] = useState<string>()
     const updateUsers = useUserStore().updateUsers
+    const updateSchools = useSchoolStore().updateSchools
+    const baseSchools = useSchoolStore().schools
     const createRider = useRiderStore().createRider
     const users = useUserStore().users
     const [disableButtons, setDisableButtons] = useState(false)
@@ -27,8 +32,9 @@ const CreateRiderDialog = ({ cancelAction, guardianId, isAddingRider }: CreateRi
     useEffect(() => {
         if (isAddingRider) {
             updateUsers()
+            updateSchools()
         }
-    }, [updateUsers, isAddingRider])
+    }, [updateUsers, updateSchools, isAddingRider])
 
     const guardians = useMemo(() => {
         const items = users.filter((u) => u.isGuardian).map((u) => ({
@@ -38,9 +44,19 @@ const CreateRiderDialog = ({ cancelAction, guardianId, isAddingRider }: CreateRi
         return items
     }, [users])
 
+    const schools = useMemo(() => {
+        const items = baseSchools.map((s) => ({
+            id: s.id,
+            label: s.schoolName
+        }))
+
+        return items
+    }, [baseSchools])
+
     const handleCreateRider = async (newRider: CreateRiderTypeInput) => {
         setDisableButtons(true)
         newRider.id = uuid()
+        newRider.schoolId = schoolId || selectedSchoolId
         await createRider(newRider, guardianId ? [guardianId] : guardianIds)
         resetForm()
         cancelAction()
@@ -78,6 +94,24 @@ const CreateRiderDialog = ({ cancelAction, guardianId, isAddingRider }: CreateRi
                     error={!!errors.lastName?.message && touchedFields.lastName}
                     helperText={errors.lastName?.message ? t(errors.lastName.message) : ''}
                 />
+                {!schoolId && schools.length ?
+                    <Autocomplete
+                        id='SchoolAutoComplete'
+                        options={schools}
+                        getOptionLabel={(option: OptionsType) => option.label}
+                        filterSelectedOptions
+                        onChange={(_e, value: OptionsType | null) => setSelectedSchoolId(value?.id)}
+                        renderInput={(params) => (
+                            <TextField
+                                {...params}
+                                label='School'
+                                id='SchoolLabel'
+                            />
+                        )}
+                    />
+                    :
+                    null
+                }
                 {!guardianId && guardians.length ?
                     <Autocomplete
                         multiple

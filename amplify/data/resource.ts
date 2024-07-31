@@ -103,7 +103,6 @@ const schema = a.schema({
       county: a.string().required(),
       formatted: a.string().required(),
       houseNumber: a.string().required(),
-      id: a.id().required(),
       lat: a.string().required(),
       lon: a.string().required(),
       orgId: a.id().required(),
@@ -135,16 +134,11 @@ const schema = a.schema({
       authorized: a.boolean(),
       date: a.date().required(),
       dropoff: a.ref('OverrideType').required(),
-      dropoffGuardianId: a.id(),
-      dropoffStopId: a.id(),
-      id: a.id(),
-      orgId: a.id().required(),
       pickup: a.ref('OverrideType').required(),
       pickupGuardianId: a.id(),
       pickupStopId: a.id(),
       riderId: a.id()
     })
-    .secondaryIndexes((index) => [index('orgId')])
     .authorization((allow) => allow.custom()),
   Rider: a
     .model({
@@ -191,13 +185,12 @@ const schema = a.schema({
   School: a
     .model({
       address: a.hasOne('Address', 'schoolId'),
-      addressId: a.id().required(),
       organization: a.belongsTo('Organization', 'orgId'),
       orgId: a.id().required(),
       riders: a.hasMany('Rider', 'schoolId'),
       SchoolHours: a.hasMany('SchoolHour', 'schoolId'),
       schoolName: a.string().required(),
-      stopIds: a.id().array(),
+      stopIds: a.id().array()
     })
     .secondaryIndexes((index) => [index('orgId')]),
   SchoolHour: a

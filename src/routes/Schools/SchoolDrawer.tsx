@@ -3,24 +3,20 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import InfoIcon from '@mui/icons-material/Info'
 import { useNavigate } from 'react-router-dom'
 import { useTranslation } from 'react-i18next'
-import { useRiderStore } from '@/store/RiderStore'
 import EntityDrawer, { DrawerListActionProps } from '@/components/EntityDrawer'
-import { useSchoolStore } from '@/store/SchoolStore'
+import { SchoolRider, SelectionSetSchool, useSchoolStore } from '@/store/SchoolStore'
 import CreateSchoolDialog from './CreateSchoolDialog'
-import { CreateSchoolTypeInput, RiderType, SchoolType } from '@/types/AmplifyTypes'
 
 interface RouteDrawerProps {
     open: boolean
-    school?: SchoolType
+    school?: SelectionSetSchool
 }
 
 const RouteDrawer = ({ open, school }: RouteDrawerProps) => {
     const [isAddingSchool, setIsAddingSchool] = useState<boolean>(false)
-    const { createSchool, deleteSchool } = useSchoolStore()
-    const riders = useRiderStore().riders
+    const deleteSchool = useSchoolStore().deleteSchool
     const navigate = useNavigate()
     const { t } = useTranslation(['routes', 'common'])
-
 
     const deleteSchoolAction = useCallback(async () => {
         if (school) {
@@ -55,26 +51,25 @@ const RouteDrawer = ({ open, school }: RouteDrawerProps) => {
     }, [deleteSchoolAction, viewSchoolDetail, t])
 
     const lists = useMemo(() => {
-        const filteredRiders = riders
-        const mappedRiders = filteredRiders.map((r: RiderType) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` }))
-        const builtLists = [
-            {
-                title: t('riders'),
-                action: viewRiderDetail,
-                items: mappedRiders
-            }
-        ]
+        if (school) {
 
-        return builtLists
-    }, [t, viewRiderDetail, riders])
+            const mappedRiders = school.riders.map((r: SchoolRider) => ({ id: r.id, label: `${r.firstName} ${r.lastName}` }))
+            const builtLists = [
+                {
+                    title: t('riders'),
+                    action: viewRiderDetail,
+                    items: mappedRiders
+                }
+            ]
+
+            return builtLists
+        }
+
+        return []
+    }, [t, viewRiderDetail, school])
 
     const toggleAddingSchool = () => {
         setIsAddingSchool((current) => !current)
-    }
-
-    const createSchoolAction = async (newSchool: CreateSchoolTypeInput) => {
-        await createSchool(newSchool)
-        toggleAddingSchool()
     }
 
     const handleBack = () => {
@@ -83,7 +78,7 @@ const RouteDrawer = ({ open, school }: RouteDrawerProps) => {
 
     return (
         <>
-            <CreateSchoolDialog open={isAddingSchool} createSchool={createSchoolAction} cancelAction={toggleAddingSchool} />
+            <CreateSchoolDialog open={isAddingSchool} cancelAction={toggleAddingSchool} />
             <EntityDrawer
                 actionItems={actionItems}
                 back={handleBack}

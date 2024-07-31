@@ -2,7 +2,7 @@ import { create } from 'zustand'
 import { useApiStore } from './ApiStore'
 import { useOrgStore } from './OrgStore'
 import { v4 as uuid } from 'uuid'
-import { CreateExceptionTypeInput, ExceptionType, OverrideType } from '@/types/AmplifyTypes'
+import { CreateExceptionTypeInput, ExceptionType } from '@/types/AmplifyTypes'
 
 interface ExceptionStore {
     exceptions: ExceptionType[]
@@ -43,27 +43,10 @@ export const useExceptionStore = create<ExceptionStore>((set) => ({
 
             const exception: Omit<ExceptionType, 'createdAt' | 'updatedAt'> = {
                 id: exceptionId,
-                orgId: orgId ?? '',
                 riderId: riderId,
                 date: newException.date,
                 dropoff: newException.dropoff,
                 pickup: newException.pickup
-            }
-
-            if (newException.pickup === OverrideType.OVERRIDE && newException.pickupGuardianId) {
-                const { data: pickupGuardian } = await client.models.User.get({ id: newException.pickupGuardianId })
-
-                if (pickupGuardian) {
-                    exception.pickupGuardianId = pickupGuardian.id
-                }
-            }
-
-            if (newException.dropoff === OverrideType.OVERRIDE && newException.dropoffGuardianId) {
-                const { data: dropoffGuardian } = await client.models.User.get({ id: newException.dropoffGuardianId })
-
-                if (dropoffGuardian) {
-                    exception.dropoffGuardianId = dropoffGuardian.id
-                }
             }
 
             await client.models.Exception.create(exception)
