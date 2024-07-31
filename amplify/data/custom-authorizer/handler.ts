@@ -172,6 +172,11 @@ export const handler: AppSyncAuthorizerHandler<ResolverContext> = async (
     return generateCreateSchoolAuth(userOrgId, requestContext.variables.orgId, userIsAdmin)
   }
 
+  if (qs.includes('updateSchool')) {
+    console.log('updateSchool')
+    return generateUpdateSchoolAuth(userOrgId, requestContext.variables.orgId, userIsAdmin)
+  }
+
   if (qs.includes('deleteSchool')) {
     console.log('deleteSchool')
     return generateDeleteSchoolAuth(userOrgId, requestContext.variables.orgId, userIsAdmin)
@@ -522,6 +527,22 @@ const generateCreateSchoolAuth = (orgId: string, requestOrgId: string, userIsAdm
     isAuthorized: orgId === requestOrgId && userIsAdmin,
     resolverContext: {
       operationName: 'CreateSchool',
+      userIsAdmin,
+      requestOrgId,
+      orgId
+    }
+  }
+
+  console.log(`RESPONSE: ${JSON.stringify(response)}`)
+
+  return response
+}
+
+const generateUpdateSchoolAuth = (orgId: string, requestOrgId: string, userIsAdmin: boolean): AuthorizerResponse => {
+  const response = {
+    isAuthorized: orgId === requestOrgId && userIsAdmin,
+    resolverContext: {
+      operationName: 'UpdateSchool',
       userIsAdmin,
       requestOrgId,
       orgId
