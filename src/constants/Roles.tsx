@@ -1,4 +1,4 @@
-type ResourceType = 'buses' | 'drivers' | 'guardians' | 'organizations' | 'riders' | 'routes' | 'scans' | 'stops'
+type ResourceType = 'buses' | 'drivers' | 'guardians' | 'organizations' | 'riders' | 'routes' | 'schools' | 'stops'
 
 interface RiderTrackerPermission {
     action: RiderTrackerAction;
@@ -40,9 +40,6 @@ export type RiderTrackerAction =
     | 'CREATE_RIDER'
     | 'UPDATE_RIDER'
     | 'DELETE_RIDER'
-    | 'CREATE_SCAN'
-    | 'UPDATE_SCAN'
-    | 'DELETE_SCAN'
     | 'CREATE_SCHOOL'
     | 'UPDATE_SCHOOL'
     | 'DELETE_SCHOOL'
@@ -82,12 +79,9 @@ export const permissions: Record<RiderTrackerAction, RiderTrackerPermission> = {
     CREATE_ROUTE: { action: 'CREATE_ROUTE', name: 'Create Route', resourceType: 'routes' },
     UPDATE_ROUTE: { action: 'UPDATE_ROUTE', name: 'Update Route', resourceType: 'routes' },
     DELETE_ROUTE: { action: 'DELETE_ROUTE', name: 'Delete Route', resourceType: 'routes', requiresConfirmation: true },
-    CREATE_SCAN: { action: 'CREATE_SCAN', name: 'Create Scan', resourceType: 'scans' },
-    UPDATE_SCAN: { action: 'UPDATE_SCAN', name: 'Update Scan', resourceType: 'scans' },
-    DELETE_SCAN: { action: 'DELETE_SCAN', name: 'Delete Scan', resourceType: 'scans', requiresConfirmation: true },
-    CREATE_SCHOOL: { action: 'CREATE_SCHOOL', name: 'Create School', resourceType: 'scans' },
-    UPDATE_SCHOOL: { action: 'UPDATE_SCHOOL', name: 'Update School', resourceType: 'scans' },
-    DELETE_SCHOOL: { action: 'DELETE_SCHOOL', name: 'Delete School', resourceType: 'scans', requiresConfirmation: true },
+    CREATE_SCHOOL: { action: 'CREATE_SCHOOL', name: 'Create School', resourceType: 'schools' },
+    UPDATE_SCHOOL: { action: 'UPDATE_SCHOOL', name: 'Update School', resourceType: 'schools' },
+    DELETE_SCHOOL: { action: 'DELETE_SCHOOL', name: 'Delete School', resourceType: 'schools', requiresConfirmation: true },
     CREATE_STOP: { action: 'CREATE_STOP', name: 'Create Stop', resourceType: 'stops' },
     UPDATE_STOP: { action: 'UPDATE_STOP', name: 'Update Stop', resourceType: 'stops' },
     DELETE_STOP: { action: 'DELETE_STOP', name: 'Delete Stop', resourceType: 'stops', requiresConfirmation: true },
@@ -121,9 +115,6 @@ export const RIDERTRACKER_PERMISSIONS_BY_ROLE: Record<RiderTrackerRole, RiderTra
         permissions.CREATE_ROUTE,
         permissions.UPDATE_ROUTE,
         permissions.DELETE_ROUTE,
-        permissions.CREATE_SCAN,
-        permissions.UPDATE_SCAN,
-        permissions.DELETE_SCAN,
         permissions.CREATE_SCHOOL,
         permissions.UPDATE_SCHOOL,
         permissions.DELETE_SCHOOL,
@@ -142,8 +133,7 @@ export const RIDERTRACKER_PERMISSIONS_BY_ROLE: Record<RiderTrackerRole, RiderTra
         permissions.DELETE_BUS,
         permissions.UPDATE_DRIVER,
         permissions.CREATE_RIDER,
-        permissions.UPDATE_RIDER,
-        permissions.CREATE_SCAN
+        permissions.UPDATE_RIDER
     ],
     RiderTracker_Guardian: [
         permissions.UPDATE_RIDER

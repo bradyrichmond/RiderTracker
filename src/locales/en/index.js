@@ -6,7 +6,6 @@ import guardians from './guardians.json'
 import onboarding from './onboarding.json'
 import riders from './riders.json'
 import routes from './routes.json'
-import scans from './scans.json'
 import schools from './schools.json'
 import settings from './settings.json'
 
@@ -19,7 +18,6 @@ export default {
     onboarding,
     riders,
     routes,
-    scans,
     schools,
     settings
 }

@@ -2,7 +2,6 @@ import { NavItemType } from '../components/NavigationDrawer'
 import DirectionsBusIcon from '@mui/icons-material/DirectionsBus'
 import WorkIcon from '@mui/icons-material/Work'
 import ChildCareIcon from '@mui/icons-material/ChildCare'
-import ArticleIcon from '@mui/icons-material/Article'
 import PersonIcon from '@mui/icons-material/Person'
 import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew'
 import SchoolIcon from '@mui/icons-material/School'
@@ -35,8 +34,6 @@ const ALL_ROUTES: string[] = [
     '/app/riders/:id/detail',
     '/app/routes',
     '/app/routes/:id',
-    '/app/scans',
-    '/app/scans/:id',
     '/app/schools',
     '/app/schools/:id/detail',
     '/app/schools/:id',
@@ -58,8 +55,6 @@ const ORG_ADMIN_ROUTES: string[] = [
     '/app/riders/:id/detail',
     '/app/routes',
     '/app/routes/:id',
-    '/app/scans',
-    '/app/scans/:id',
     '/app/stops',
     '/app/stops/:stopId',
     '/app/schools',
@@ -123,11 +118,6 @@ const WIZARD_NAV_ITEMS: NavItemType[] = [
         Icon: MapIcon
     },
     {
-        path: '/app/scans',
-        label: 'Scans',
-        Icon: ArticleIcon
-    },
-    {
         path: '/app/schools',
         label: 'Schools',
         Icon: SchoolIcon
@@ -159,11 +149,6 @@ const ORG_ADMIN_NAV_ITEMS: NavItemType[] = [
         path: '/app/routes',
         label: 'Routes',
         Icon: MapIcon
-    },
-    {
-        path: '/app/scans',
-        label: 'Scans',
-        Icon: ArticleIcon
     },
     {
         path: '/app/schools',

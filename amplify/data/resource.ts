@@ -172,16 +172,6 @@ const schema = a.schema({
       riderIds: a.id().array(),
       routeId: a.id().required()
     }),
-  Scan: a
-    .model({
-      deviceLocationOnSubmit: a.ref('Location'),
-      guardianIds: a.id().array(),
-      manualScan: a.boolean(),
-      orgId: a.id().required(),
-      riderIds: a.id().array().required(),
-      stopId: a.id().required()
-    })
-    .secondaryIndexes((index) => [index('orgId')]),
   School: a
     .model({
       address: a.hasOne('Address', 'schoolId'),

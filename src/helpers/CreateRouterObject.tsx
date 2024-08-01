@@ -3,11 +3,9 @@ import { createBrowserRouter, redirect } from 'react-router-dom'
 import Bus from '@/routes/Buses/Bus'
 import Buses from '@/routes/Buses'
 import Home from '@/routes/Root/Home'
-import Scans from '@/routes/Scans'
 import ProtectedRoute from '@/routes/Protected/ProtectedRoute'
 import Root from '@/routes/Root'
 import Unauthorized from '@/routes/Protected/Unauthorized'
-import Scan from '@/routes/Scans/Scan'
 import Settings from '@/routes/Settings'
 import Logout from '@/routes/Auth/Logout'
 import Auth from '@/routes/Auth'
@@ -89,14 +87,6 @@ export const createRouterObject = () => {
                     {
                         path: '/app/routes/:id',
                         element: <ProtectedRoute route='/app/routes/:id'><RoutesWrapper /></ProtectedRoute>
-                    },
-                    {
-                        path: '/app/scans',
-                        element: <ProtectedRoute route='/app/scans'><Scans /></ProtectedRoute>
-                    },
-                    {
-                        path: '/app/scans/:id',
-                        element: <ProtectedRoute route='/app/scans/:id'><Scan /></ProtectedRoute>
                     },
                     {
                         path: '/app/stops/:stopId',
