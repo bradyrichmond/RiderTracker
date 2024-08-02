@@ -4,6 +4,14 @@ import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-lib
 import { AsRole, ProviderWrapperAsRole } from '@/helpers/ProviderWrapper'
 import Guardians from '..'
 import { PropsWithChildren } from 'react'
+import { generateMockUserStore } from '@/helpers/GenerateMockUserStore'
+import { useUserStore } from '@/store/UserStore'
+
+jest.mock('@/store/UserStore', () => ({
+  useUserStore: jest.fn()
+}))
+
+const mockUseUserStore = useUserStore as unknown as jest.Mock
 
 afterEach(() => {
   jest.restoreAllMocks()
@@ -11,6 +19,7 @@ afterEach(() => {
 
 describe('Guardians Tests', () => {
   it('shows add guardian button when authorized to add guardian', async () => {
+    mockUseUserStore.mockReturnValue(generateMockUserStore({ isAdmin: true, isDriver: false, isGuardian: false }))
     render(<Guardians />, { wrapper: ProviderWrapperAsRole })
 
     await waitFor(() => {
@@ -51,6 +60,7 @@ describe('Guardians Tests', () => {
   })
 
   it('hides add guardian button when not authorized to add guardians', async () => {
+    mockUseUserStore.mockReturnValue(generateMockUserStore({ isAdmin: false, isDriver: false, isGuardian: true }))
     render(<Guardians />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} userRole="RiderTracker_Guardian" /> })
 
     await waitFor(() => {
@@ -59,11 +69,12 @@ describe('Guardians Tests', () => {
   })
 
   it('loads rows into data grid when there is data', async () => {
+    mockUseUserStore.mockReturnValue(generateMockUserStore({ isAdmin: true, isDriver: false, isGuardian: false }))
     render(<Guardians />, { wrapper: ProviderWrapperAsRole })
 
     await waitFor(() => {
       expect(screen.getByRole('gridcell', {
-        name: /test/i
+        name: /ginny/i
       })).toBeInTheDocument()
     })
   })

@@ -39,6 +39,19 @@ export const useUserStore = () => ({
             title: null,
             createdAt: '2024-08-02T18:23:55.234Z',
             updatedAt: '2024-08-02T18:23:55.234Z'
+        },
+        {
+            id: '1b539fab-d8d0-46aa-a57a-875d986aa108',
+            email: 'GinnyGuardian@ridertracker.com',
+            firstName: 'Ginny',
+            isAdmin: null,
+            isDriver: null,
+            isGuardian: true,
+            lastName: 'Guardian',
+            orgId: '1cf1a2b2-30dd-43ea-b854-e6217073fe06',
+            title: null,
+            createdAt: '2024-08-02T18:23:55.234Z',
+            updatedAt: '2024-08-02T18:23:55.234Z'
         }
     ],
     signOutAws: jest.fn(),
