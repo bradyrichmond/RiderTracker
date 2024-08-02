@@ -23,6 +23,7 @@ const Riders = ({ activeRider }: RidersProps) => {
     const riders = useRiderStore().riders
     const updateRiders = useRiderStore().updateRiders
     const updateUsers = useUserStore().updateUsers
+    const isAdmin = useUserStore().currentUser?.isAdmin
     const changeSearchArg = useRiderStore().changeSearchArg
     const updateSchools = useSchoolStore().updateSchools
     const schools = useSchoolStore().schools
@@ -94,20 +95,24 @@ const Riders = ({ activeRider }: RidersProps) => {
                             </Typography>
                         </Box>
                     </Grid>
-                    <Grid xs={12} md={6}>
-                        <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                    {isAdmin ?
+                        <Grid xs={12} md={6}>
                             <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                <Button variant='contained' onClick={startAddingRider}>
-                                    <Box display='flex' flexDirection='row'>
-                                        <AddCircleIcon />
-                                        <Box sx={{ flex: 1, ml: 2 }}>
-                                            <Typography>{t('addRider')}</Typography>
+                                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                    <Button variant='contained' onClick={startAddingRider}>
+                                        <Box display='flex' flexDirection='row'>
+                                            <AddCircleIcon />
+                                            <Box sx={{ flex: 1, ml: 2 }}>
+                                                <Typography>{t('addRider')}</Typography>
+                                            </Box>
                                         </Box>
-                                    </Box>
-                                </Button>
+                                    </Button>
+                                </Box>
                             </Box>
-                        </Box>
-                    </Grid>
+                        </Grid>
+                        :
+                        null
+                    }
                 </Grid>
             </Box>
             <Box sx={{ mb: 2 }}>

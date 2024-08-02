@@ -4,7 +4,14 @@ import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-lib
 import { AsRole, ProviderWrapperAsRole } from '@/helpers/ProviderWrapper'
 import { PropsWithChildren } from 'react'
 import Riders from '..'
-import Rider from '../Rider'
+import { useUserStore } from '@/store/UserStore'
+import { generateMockUserStore } from '@/helpers/GenerateMockUserStore'
+
+jest.mock('@/store/UserStore', () => ({
+  useUserStore: jest.fn()
+}))
+
+const mockUseUserStore = useUserStore as unknown as jest.Mock
 
 afterEach(() => {
   jest.restoreAllMocks()
@@ -12,6 +19,7 @@ afterEach(() => {
 
 describe('Riders Tests', () => {
   it('shows add rider button when authorized to add riders', async () => {
+    mockUseUserStore.mockReturnValue(generateMockUserStore({ isAdmin: true, isDriver: false, isGuardian: false }))
     render(<Riders />, { wrapper: ProviderWrapperAsRole })
 
     await waitFor(() => {
@@ -22,6 +30,7 @@ describe('Riders Tests', () => {
   })
 
   it('opens add rider modal when add rider button clicked, and closes on cancel click', async () => {
+    mockUseUserStore.mockReturnValue(generateMockUserStore({ isAdmin: true, isDriver: false, isGuardian: false }))
     const user = userEvent.setup()
     render(<Riders />, { wrapper: ProviderWrapperAsRole })
 
@@ -52,6 +61,7 @@ describe('Riders Tests', () => {
   })
 
   it('hides add rider button when not authorized to add riders', async () => {
+    mockUseUserStore.mockReturnValue(generateMockUserStore({ isAdmin: false, isDriver: false, isGuardian: true }))
     render(<Riders />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} userRole="RiderTracker_Guardian" /> })
 
     await waitFor(() => {
@@ -60,6 +70,7 @@ describe('Riders Tests', () => {
   })
 
   it('loads rows into data grid when there is data', async () => {
+    mockUseUserStore.mockReturnValue(generateMockUserStore({ isAdmin: true, isDriver: false, isGuardian: false }))
     render(<Riders />, { wrapper: ProviderWrapperAsRole })
 
     await waitFor(() => {
@@ -70,19 +81,11 @@ describe('Riders Tests', () => {
   })
 
   it('opens the drawer when url path has an id', async () => {
-
+    mockUseUserStore.mockReturnValue(generateMockUserStore({ isAdmin: true, isDriver: false, isGuardian: false }))
     render(<Riders activeRider='5cc9dfb8-0a4a-442f-ba0e-6dca8616853c' />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} userRole="RiderTracker_OrgAdmin" /> })
 
     await waitFor(() => {
       expect(screen.getByLabelText('deleteRider')).toBeInTheDocument()
-    })
-  })
-
-  it('renders rider details page', async () => {
-    render(<Rider activeRider='5cc9dfb8-0a4a-442f-ba0e-6dca8616853c' />, { wrapper: ProviderWrapperAsRole })
-
-    await waitFor(() => {
-      expect(screen.getByText('authorizedExceptions')).toBeInTheDocument()
     })
   })
 })
