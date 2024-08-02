@@ -52,7 +52,7 @@ export const handler: AppSyncAuthorizerHandler<ResolverContext> = async (
 
   const payload = await verifier.verify(trimmedAuthorizationToken)
   const userGroups = payload['cognito:groups']
-  const userOrgId = userGroups?.find((g) => g.includes('RiderTrackerOrgId'))?.split('#')[1]
+  const userOrgId = userGroups?.find((g: string) => g.includes('RiderTrackerOrgId'))?.split('#')[1]
   const userIsAdmin = userGroups?.includes('ADMINS') ?? false
   const userIsDriver = userGroups?.includes('DRIVERS') ?? false
   const userId = payload.username
