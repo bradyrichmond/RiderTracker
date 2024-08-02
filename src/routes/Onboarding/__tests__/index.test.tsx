@@ -12,7 +12,7 @@ describe('Onboarding Tests', () => {
         render(<Onboarding />, { wrapper: ProviderWrapperAsRole })
 
         await waitFor(() => {
-            expect(screen.getByText(/setorgname/i, { selector: 'h5' })).toBeInTheDocument()
+            expect(screen.getByText(/createFirstAdmin/i, { selector: 'h5' })).toBeInTheDocument()
         })
     })
 })
