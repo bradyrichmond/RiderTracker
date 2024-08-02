@@ -21,7 +21,7 @@ const generateMockUserStore = (config: { isAdmin: boolean, isDriver: boolean, is
       createdAt: '2024-08-02T18:23:55.234Z',
       updatedAt: '2024-08-02T18:23:55.234Z'
     },
-    getUsers: async () => {
+    updateUsers: async () => {
       return [
         {
           id: '88f1f380-b0d1-70ce-de47-0cf24f97e0e5',

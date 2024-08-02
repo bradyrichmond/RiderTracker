@@ -14,6 +14,7 @@ interface DriversProps {
 }
 
 const Drivers = ({ activeDriver }: DriversProps) => {
+    const isAdmin = useUserStore().currentUser?.isAdmin
     const users = useUserStore().users
     const updateUsers = useUserStore().updateUsers
     const [isAddingDriver, setIsAddingDriver] = useState(false)
@@ -25,7 +26,7 @@ const Drivers = ({ activeDriver }: DriversProps) => {
     }, [updateUsers])
 
     const drivers = useMemo(() => {
-        return users.filter((u) => u.isDriver)
+        return users.filter((u: UserType) => u.isDriver)
     }, [users])
 
     const toggleAddingDriver = () => {
@@ -41,10 +42,6 @@ const Drivers = ({ activeDriver }: DriversProps) => {
         return initialGridColumns
     }
 
-    const processRowUpdate = async (updatedRow: UserType) => {
-        return updatedRow
-    }
-
     const handleRowClick = (driverId: string) => {
         navigate(`/app/drivers/${driverId}`)
     }
@@ -57,16 +54,22 @@ const Drivers = ({ activeDriver }: DriversProps) => {
                         {t('drivers')}
                     </Typography>
                 </Box>
-                <Box sx={{ padding: 4, flex: 1, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
-                    <Button variant='contained' onClick={toggleAddingDriver}>
-                        <Box display='flex' flexDirection='row'>
-                            <AddCircleIcon />
-                            <Box sx={{ flex: 1, ml: 2 }}>
-                                <Typography>{t('addDriver')}</Typography>
+                <p>USERS: {JSON.stringify(users)}</p>
+                <p>DRIVERS: {JSON.stringify(drivers)}</p>
+                {isAdmin ?
+                    <Box sx={{ padding: 4, flex: 1, display: 'flex', flexDirection: 'row', justifyContent: 'flex-end' }}>
+                        <Button variant='contained' onClick={toggleAddingDriver}>
+                            <Box display='flex' flexDirection='row'>
+                                <AddCircleIcon />
+                                <Box sx={{ flex: 1, ml: 2 }}>
+                                    <Typography>{t('addDriver')}</Typography>
+                                </Box>
                             </Box>
-                        </Box>
-                    </Button>
-                </Box>
+                        </Button>
+                    </Box>
+                    :
+                    null
+                }
             </Box>
             <DriverDrawer open={!!activeDriver} driverId={activeDriver ?? ''} />
             <CreateDriverDialog
@@ -75,18 +78,15 @@ const Drivers = ({ activeDriver }: DriversProps) => {
             />
             <Box sx={{ flex: 1 }}>
                 <Box sx={{ height: '100%', width: '100%' }}>
-                    {drivers ?
+                    {drivers && drivers.length ?
                         <DataGrid
                             rows={drivers}
                             columns={generateGridColumns()}
                             rowHeight={100}
-                            processRowUpdate={processRowUpdate}
                             onRowClick={(params) => handleRowClick(params.row.id)}
                         />
                         :
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-
-                        </Box>
+                        null
                     }
                 </Box>
             </Box>
