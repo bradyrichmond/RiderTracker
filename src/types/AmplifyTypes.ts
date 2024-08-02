@@ -38,11 +38,6 @@ export type CreateRouteTypeInput = Schema['Route']['createType']
 export type DeleteRouteTypeInput = Schema['Route']['deleteType']
 export type UpdateRouteTypeInput = Schema['Route']['updateType']
 
-export type ScanType = Schema['Scan']['type']
-export type CreateScanTypeInput = Schema['Scan']['createType']
-export type DeleteScanTypeInput = Schema['Scan']['deleteType']
-export type UpdateScanTypeInput = Schema['Scan']['updateType']
-
 export type SchoolType = Schema['School']['type']
 export type CreateSchoolTypeInput = Schema['School']['createType']
 export type CreateSchoolInput = { school: CreateSchoolTypeInput, address: string }
