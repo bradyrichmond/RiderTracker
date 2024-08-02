@@ -1,37 +1,47 @@
 export const useUserStore = () => ({
     currentUser: {
-        email: 'testuser@ridertracker.com',
-        firstName: 'Test',
-        id: '77463cae-8fcd-48c8-a526-a8997a4e167e',
-        lastName: 'User',
-        orgId: '1cf1a2b2-30dd-43ea-b854-e6217073fe06',
-        stopId: 'e620782f-77c1-4fe6-9139-bb3b6df593f4',
-        title: 'Title'
+        id: '88f1f380-b0d1-70ce-de47-0cf24f97e0e5',
+        email: 'eeeemail@ridertracker.com',
+        firstName: 'User',
+        isAdmin: true,
+        isDriver: null,
+        isGuardian: null,
+        lastName: 'Name',
+        orgId: 'e435c34e-d0a2-4906-93f5-54fd8fe478bc',
+        title: null,
+        createdAt: '2024-08-02T18:23:55.234Z',
+        updatedAt: '2024-08-02T18:23:55.234Z'
     },
     getUsers: async () => {
         return [
             {
-                email: 'testuser@ridertracker.com',
-                firstName: 'Test',
-                id: '77463cae-8fcd-48c8-a526-a8997a4e167e',
-                lastName: 'User',
-                orgId: '1cf1a2b2-30dd-43ea-b854-e6217073fe06',
-                stopId: 'e620782f-77c1-4fe6-9139-bb3b6df593f4',
-                title: 'Title'
+                id: '88f1f380-b0d1-70ce-de47-0cf24f97e0e5',
+                email: 'eeeemail@ridertracker.com',
+                firstName: 'User',
+                isAdmin: true,
+                isDriver: null,
+                isGuardian: null,
+                lastName: 'Name',
+                orgId: 'e435c34e-d0a2-4906-93f5-54fd8fe478bc',
+                title: null,
+                createdAt: '2024-08-02T18:23:55.234Z',
+                updatedAt: '2024-08-02T18:23:55.234Z'
             }
         ]
     },
-    users: [
-        {
-            email: 'testuser@ridertracker.com',
-            firstName: 'Test',
-            id: '77463cae-8fcd-48c8-a526-a8997a4e167e',
-            lastName: 'User',
-            orgId: '1cf1a2b2-30dd-43ea-b854-e6217073fe06',
-            stopId: 'e620782f-77c1-4fe6-9139-bb3b6df593f4',
-            title: 'Title'
-        }
-    ],
+    users: [{
+        id: '88f1f380-b0d1-70ce-de47-0cf24f97e0e5',
+        email: 'eeeemail@ridertracker.com',
+        firstName: 'User',
+        isAdmin: true,
+        isDriver: null,
+        isGuardian: null,
+        lastName: 'Name',
+        orgId: 'e435c34e-d0a2-4906-93f5-54fd8fe478bc',
+        title: null,
+        createdAt: '2024-08-02T18:23:55.234Z',
+        updatedAt: '2024-08-02T18:23:55.234Z'
+    }],
     signOutAws: jest.fn(),
     updateUserData: jest.fn()
 })

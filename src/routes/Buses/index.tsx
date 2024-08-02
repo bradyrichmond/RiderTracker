@@ -7,8 +7,10 @@ import AddCircleIcon from '@mui/icons-material/AddCircle'
 import { useBusStore } from '@/store/BusStore'
 import { useEffect, useMemo, useState } from 'react'
 import CreateBusDialog from '@/forms/CreateBusDialog'
+import { useUserStore } from '@/store/UserStore'
 
 const Buses = () => {
+    const isAdmin = useUserStore().currentUser?.isAdmin
     const [isAddingBus, setIsAddingBus] = useState(false)
     const { buses, updateBuses, deleteBus } = useBusStore()
     const { t } = useTranslation(['buses', 'common'])
@@ -72,16 +74,20 @@ const Buses = () => {
                         {t('buses')}
                     </Typography>
                 </Box>
-                <Box sx={{ p: 4, flex: 1, display: 'flex', justifyContent: 'flex-end', flexDirection: 'row' }}>
-                    <Button variant='contained' onClick={toggleAddingBus}>
-                        <Box sx={{ display: 'flex', flexDirection: 'row' }}>
-                            <AddCircleIcon />
-                            <Box sx={{ flex: 1, ml: 2 }}>
-                                <Typography>{t('addBus')}</Typography>
+                {isAdmin ?
+                    <Box sx={{ p: 4, flex: 1, display: 'flex', justifyContent: 'flex-end', flexDirection: 'row' }}>
+                        <Button variant='contained' onClick={toggleAddingBus}>
+                            <Box sx={{ display: 'flex', flexDirection: 'row' }}>
+                                <AddCircleIcon />
+                                <Box sx={{ flex: 1, ml: 2 }}>
+                                    <Typography>{t('addBus')}</Typography>
+                                </Box>
                             </Box>
-                        </Box>
-                    </Button>
-                </Box>
+                        </Button>
+                    </Box>
+                    :
+                    null
+                }
             </Box>
             <Box flex='1'>
                 <Box sx={{ height: '100%', width: '100%' }}>
