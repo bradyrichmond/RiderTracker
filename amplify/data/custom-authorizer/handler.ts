@@ -1,6 +1,6 @@
 import type { AppSyncAuthorizerHandler } from 'aws-lambda'
 import { CognitoJwtVerifier } from 'aws-jwt-verify'
-import { env } from '$amplify/env/custom-authorizer'
+import { decomposeUnverifiedJwt } from 'aws-jwt-verify/jwt'
 
 interface ResolverContext {
   operationName: string
@@ -13,12 +13,6 @@ interface AuthorizerResponse {
   deniedFields?: string[]
 }
 
-const verifier = CognitoJwtVerifier.create({
-  userPoolId: env.USER_POOL_ID,
-  tokenUse: 'access',
-  clientId: env.WEB_CLIENT_ID
-});
-
 export const handler: AppSyncAuthorizerHandler<ResolverContext> = async (
   event
 ) => {
@@ -29,15 +23,7 @@ export const handler: AppSyncAuthorizerHandler<ResolverContext> = async (
     requestContext
   } = event
 
-  const trimmedAuthorizationToken = authorizationToken.split('#')[1]
-
-  const payload = await verifier.verify(trimmedAuthorizationToken)
   const qs = requestContext.queryString
-  const userGroups = payload['cognito:groups']
-  const userOrgId = userGroups?.find((g) => g.includes('RiderTrackerOrgId'))?.split('#')[1]
-  const userIsAdmin = userGroups?.includes('ADMINS') ?? false
-  const userIsDriver = userGroups?.includes('DRIVERS') ?? false
-  const userId = payload.username
 
   if (qs.includes('createOrganization')) {
     return {
@@ -47,6 +33,29 @@ export const handler: AppSyncAuthorizerHandler<ResolverContext> = async (
       }
     }
   }
+
+  const trimmedAuthorizationToken = authorizationToken.split('#')[1]
+
+  const { payload: unverifiedPayload } = decomposeUnverifiedJwt(trimmedAuthorizationToken)
+  const userPoolId = unverifiedPayload.iss
+  const clientId = unverifiedPayload.aud
+
+  if (!userPoolId || !clientId) {
+    throw 'missing verification data'
+  }
+
+  const verifier = CognitoJwtVerifier.create({
+    userPoolId,
+    tokenUse: 'access',
+    clientId
+  });
+
+  const payload = await verifier.verify(trimmedAuthorizationToken)
+  const userGroups = payload['cognito:groups']
+  const userOrgId = userGroups?.find((g) => g.includes('RiderTrackerOrgId'))?.split('#')[1]
+  const userIsAdmin = userGroups?.includes('ADMINS') ?? false
+  const userIsDriver = userGroups?.includes('DRIVERS') ?? false
+  const userId = payload.username
 
   if (!userOrgId) {
     throw 'User missing orgId'
