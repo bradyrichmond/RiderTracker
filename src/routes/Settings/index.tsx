@@ -3,6 +3,7 @@ import { SyntheticEvent, useState } from 'react'
 import Profile from './UserSettings/Profile'
 import Organization from './OrganizationSettings/Organization'
 import { useTranslation } from 'react-i18next'
+import { useUserStore } from '@/store/UserStore'
 
 interface TabPanelProps {
     children?: React.ReactNode
@@ -39,6 +40,7 @@ function a11yProps(index: number) {
 }
 
 const Settings = () => {
+    const isAdmin = useUserStore().currentUser?.isAdmin
     const [activeTab, setActiveTab] = useState<number>(0)
     const { t } = useTranslation('settings')
 
@@ -48,22 +50,24 @@ const Settings = () => {
 
     return (
         <Box sx={{ display: 'flex', height: '100%', width: '100%', flexDirection: 'column' }}>
-            <Tabs value={activeTab} onChange={handleChange} aria-label="settings tabs">
-                [
-                <Tab label={t('profile')} {...a11yProps(0)} key={0} />,
-                <Tab label={t('orgSettings')} {...a11yProps(1)} key={1} />
-                ]
-            </Tabs>
-            <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
-                [
-                <CustomTabPanel value={activeTab} index={0} key={0}>
-                    <Profile />
-                </CustomTabPanel>,
-                <CustomTabPanel value={activeTab} index={1} key={1}>
-                    <Organization />
-                </CustomTabPanel>
-                ]
-            </Box>
+            {isAdmin ?
+                <>
+                    <Tabs value={activeTab} onChange={handleChange} aria-label="settings tabs">
+                        <Tab label={t('profile')} {...a11yProps(0)} key={0} />
+                        <Tab label={t('orgSettings')} {...a11yProps(1)} key={1} />
+                    </Tabs>
+                    <Box sx={{ flex: 1, display: 'flex', justifyContent: 'center' }}>
+                        <CustomTabPanel value={activeTab} index={0} key={0}>
+                            <Profile />
+                        </CustomTabPanel>
+                        <CustomTabPanel value={activeTab} index={1} key={1}>
+                            <Organization />
+                        </CustomTabPanel>
+                    </Box>
+                </>
+            :
+                <Profile />
+            }
         </Box>
     )
 }
