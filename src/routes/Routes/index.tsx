@@ -9,6 +9,7 @@ import { useNavigate } from 'react-router-dom'
 import { useRouteStore } from '@/store/RouteStore'
 import Grid from '@mui/material/Unstable_Grid2'
 import { CreateRouteTypeInput, RouteType } from '@/types/AmplifyTypes'
+import { useUserStore } from '@/store/UserStore'
 
 interface RoutesProps {
     activeRoute?: string
@@ -19,7 +20,10 @@ const routeNumberComparator: GridComparatorFn<string> = (v1, v2) =>
 
 const Routes = ({ activeRoute }: RoutesProps) => {
     const [isAddingRoute, setIsAddingRoute] = useState(false)
-    const { routes, getRoutes, createRoute } = useRouteStore()
+    const isAdmin = useUserStore().currentUser?.isAdmin
+    const routes = useRouteStore().routes
+    const getRoutes = useRouteStore().getRoutes
+    const createRoute = useRouteStore().createRoute
     const { t } = useTranslation('routes')
     const navigate = useNavigate()
 
@@ -34,7 +38,7 @@ const Routes = ({ activeRoute }: RoutesProps) => {
 
     const generateGridColumns = (): GridColDef[] => {
         const initialGridColumns: GridColDef[] = [
-            { field: 'routeNumber',  headerName: 'Route Number', flex: 1, align: 'center', headerAlign: 'center', sortComparator: routeNumberComparator },
+            { field: 'routeNumber', headerName: 'Route Number', flex: 1, align: 'center', headerAlign: 'center', sortComparator: routeNumberComparator },
             { field: 'stopIds', headerName: 'Stops', flex: 1, align: 'center', headerAlign: 'center', valueGetter: (value: string[] | null) => value ? value.length : 0 },
             { field: 'riderIds', headerName: 'Riders', flex: 1, align: 'center', headerAlign: 'center', valueGetter: (value: string[] | null) => value ? value.length : 0 }
         ]
@@ -65,20 +69,24 @@ const Routes = ({ activeRoute }: RoutesProps) => {
                     </Typography>
                 </Box>
             </Grid>
-            <Grid xs={12} md={6}>
-                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <Button variant='contained' onClick={toggleIsAddingRoute}>
-                            <Box display='flex' flexDirection='row'>
-                                <AddCircleIcon />
-                                <Box sx={{ flex: 1, ml: 2 }}>
-                                    <Typography>{t('addRoute')}</Typography>
+            {isAdmin ?
+                <Grid xs={12} md={6}>
+                    <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                            <Button variant='contained' onClick={toggleIsAddingRoute}>
+                                <Box display='flex' flexDirection='row'>
+                                    <AddCircleIcon />
+                                    <Box sx={{ flex: 1, ml: 2 }}>
+                                        <Typography>{t('addRoute')}</Typography>
+                                    </Box>
                                 </Box>
-                            </Box>
-                        </Button>
+                            </Button>
+                        </Box>
                     </Box>
-                </Box>
-            </Grid>
+                </Grid>
+                :
+                null
+            }
             <Grid xs>
                 <Box sx={{ height: '100%', width: '100%' }}>
                     {routes ?
@@ -90,12 +98,12 @@ const Routes = ({ activeRoute }: RoutesProps) => {
                             onRowClick={(params) => handleRowClick(params.row.id)}
                             initialState={{
                                 sorting: {
-                                  sortModel: [{ field: 'routeNumber', sort: 'asc' }],
+                                    sortModel: [{ field: 'routeNumber', sort: 'asc' }],
                                 },
                             }}
                         />
                         :
-                        <CircularProgress  />
+                        <CircularProgress />
                     }
                 </Box>
             </Grid>

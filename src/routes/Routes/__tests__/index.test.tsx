@@ -4,6 +4,14 @@ import Routes from '..'
 import { AsRole, ProviderWrapperAsRole } from '@/helpers/ProviderWrapper'
 import userEvent from '@testing-library/user-event'
 import { PropsWithChildren } from 'react'
+import { useUserStore } from '@/store/UserStore'
+import { generateMockUserStore } from '@/helpers/GenerateMockUserStore'
+
+jest.mock('@/store/UserStore', () => ({
+  useUserStore: jest.fn()
+}))
+
+const mockUseUserStore = useUserStore as unknown as jest.Mock
 
 afterEach(() => {
     jest.restoreAllMocks()
@@ -11,6 +19,7 @@ afterEach(() => {
 
 describe('Routes Tests', () => {
     it('shows add route button when authorized to add routes', async () => {
+        mockUseUserStore.mockReturnValue(generateMockUserStore({ isAdmin: true, isDriver: false, isGuardian: false }))
         render(<Routes />, { wrapper: ProviderWrapperAsRole })
 
         await waitFor(() => {
@@ -21,6 +30,7 @@ describe('Routes Tests', () => {
     })
 
     it('opens add route modal when add route button clicked, and closes on cancel click', async () => {
+        mockUseUserStore.mockReturnValue(generateMockUserStore({ isAdmin: true, isDriver: false, isGuardian: false }))
         const user = userEvent.setup()
         render(<Routes />, { wrapper: ProviderWrapperAsRole })
 
@@ -51,6 +61,7 @@ describe('Routes Tests', () => {
     })
 
     it('hides add route button when not authorized to add routes', async () => {
+        mockUseUserStore.mockReturnValue(generateMockUserStore({ isAdmin: false, isDriver: false, isGuardian: true }))
         render(<Routes />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} userRole="RiderTracker_Guardian" /> })
 
         await waitFor(() => {
@@ -59,6 +70,7 @@ describe('Routes Tests', () => {
     })
 
     it('loads rows into data grid when there is data', async () => {
+        mockUseUserStore.mockReturnValue(generateMockUserStore({ isAdmin: true, isDriver: false, isGuardian: false }))
         render(<Routes />, { wrapper: ProviderWrapperAsRole })
 
         await waitFor(() => {
