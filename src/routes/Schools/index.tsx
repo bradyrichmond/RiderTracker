@@ -9,6 +9,7 @@ import CreateSchoolDialog from './CreateSchoolDialog'
 import { SelectionSetSchool, useSchoolStore } from '@/store/SchoolStore'
 import { useRiderStore } from '@/store/RiderStore'
 import Grid from '@mui/material/Unstable_Grid2'
+import { useUserStore } from '@/store/UserStore'
 
 interface SchoolsProps {
     activeSchool?: string
@@ -19,6 +20,7 @@ const Schools = ({ activeSchool }: SchoolsProps) => {
     const updateSchools = useSchoolStore().updateSchools
     const schools = useSchoolStore().schools
     const updateRiders = useRiderStore().updateRiders
+    const isAdmin = useUserStore().currentUser?.isAdmin
     const navigate = useNavigate()
     const { t } = useTranslation('schools')
 
@@ -70,20 +72,24 @@ const Schools = ({ activeSchool }: SchoolsProps) => {
                             </Typography>
                         </Box>
                     </Grid>
-                    <Grid xs={12} md={6}>
-                        <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                <Button variant='contained' onClick={toggleAddingSchool}>
-                                    <Box display='flex' flexDirection='row'>
-                                        <AddCircleIcon />
-                                        <Box sx={{ flex: 1, ml: 2 }}>
-                                            <Typography>{t('addSchool')}</Typography>
+                    {isAdmin ?
+                        <Grid xs={12} md={6}>
+                            <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                    <Button variant='contained' onClick={toggleAddingSchool}>
+                                        <Box display='flex' flexDirection='row'>
+                                            <AddCircleIcon />
+                                            <Box sx={{ flex: 1, ml: 2 }}>
+                                                <Typography>{t('addSchool')}</Typography>
+                                            </Box>
                                         </Box>
-                                    </Box>
-                                </Button>
+                                    </Button>
+                                </Box>
                             </Box>
-                        </Box>
-                    </Grid>
+                        </Grid>
+                        :
+                        null
+                    }
                 </Grid>
             </Box>
             <Grid xs>

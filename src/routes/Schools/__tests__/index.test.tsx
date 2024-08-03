@@ -4,6 +4,14 @@ import { render, screen, waitFor, waitForElementToBeRemoved } from '@testing-lib
 import { AsRole, ProviderWrapperAsRole } from '@/helpers/ProviderWrapper'
 import Schools from '..'
 import { PropsWithChildren } from 'react'
+import { useUserStore } from '@/store/UserStore'
+import { generateMockUserStore } from '@/helpers/GenerateMockUserStore'
+
+jest.mock('@/store/UserStore', () => ({
+  useUserStore: jest.fn()
+}))
+
+const mockUseUserStore = useUserStore as unknown as jest.Mock
 
 afterEach(() => {
   jest.restoreAllMocks()
@@ -11,6 +19,7 @@ afterEach(() => {
 
 describe('Schools Tests', () => {
   it('shows add school button when authorized to add schools', async () => {
+    mockUseUserStore.mockReturnValue(generateMockUserStore({ isAdmin: true, isDriver: false, isGuardian: false }))
     render(<Schools />, { wrapper: ProviderWrapperAsRole })
 
     await waitFor(() => {
@@ -21,6 +30,7 @@ describe('Schools Tests', () => {
   })
 
   it('opens add school modal when add school button clicked, and closes on cancel click', async () => {
+    mockUseUserStore.mockReturnValue(generateMockUserStore({ isAdmin: true, isDriver: false, isGuardian: false }))
     const user = userEvent.setup()
     render(<Schools />, { wrapper: ProviderWrapperAsRole })
 
@@ -51,6 +61,7 @@ describe('Schools Tests', () => {
   })
 
   it('hides add school button when not authorized to add schools', async () => {
+    mockUseUserStore.mockReturnValue(generateMockUserStore({ isAdmin: false, isDriver: false, isGuardian: true }))
     render(<Schools />, { wrapper: (props: PropsWithChildren<AsRole>) => <ProviderWrapperAsRole {...props} userRole="RiderTracker_Guardian" /> })
 
     await waitFor(() => {
@@ -59,6 +70,7 @@ describe('Schools Tests', () => {
   })
 
   it('loads rows into data grid when there is data', async () => {
+    mockUseUserStore.mockReturnValue(generateMockUserStore({ isAdmin: true, isDriver: false, isGuardian: false }))
     render(<Schools />, { wrapper: ProviderWrapperAsRole })
 
     await waitFor(() => {
