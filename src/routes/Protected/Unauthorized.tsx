@@ -1,12 +1,16 @@
-import { Box } from '@mui/material'
-import { useTranslation } from 'react-i18next'
+import { useUserStore } from '@/store/UserStore'
+import { Navigate } from 'react-router-dom'
 
 const Unauthorized = () => {
-    const { t } = useTranslation('common')
+    const userId = useUserStore().currentUser?.id
 
-    return (
-        <Box>{t('unauthorized')}</Box>
-    )
+    const previousPath = location.pathname
+
+    if (!userId) {
+        return <Navigate to='/login' replace state={{ previousPath }} />
+    }
+
+    return <Navigate to='/app' />
 }
 
 export default Unauthorized

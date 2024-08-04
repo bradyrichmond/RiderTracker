@@ -219,42 +219,36 @@ const SETTINGS_NAV_ITEMS: SettingsItemType[] = [
     }
 ]
 
-interface RouteProtectionItem {
-    name: string,
+export interface RouteProtectionItem {
     routes: string[],
     navItems: NavItemType[],
     settingsItems: SettingsItemType[]
 }
 
-export const ROUTE_PROTECTION: RouteProtectionItem[] = [
-    {
-        name: 'RiderTracker_Wizard',
+export const ROUTE_PROTECTION: Record<string, RouteProtectionItem> = {
+    isWizard: {
         routes: ALL_ROUTES,
         navItems: WIZARD_NAV_ITEMS,
         settingsItems: SETTINGS_NAV_ITEMS
     },
-    {
-        name: 'RiderTracker_OrgAdmin',
+    isAdmin: {
         routes: ORG_ADMIN_ROUTES,
         navItems: ORG_ADMIN_NAV_ITEMS,
         settingsItems: SETTINGS_NAV_ITEMS
     },
-    {
-        name: 'RiderTracker_Driver',
+    isDriver: {
         routes: DRIVER_ROUTES,
         navItems: DRIVER_NAV_ITEMS,
         settingsItems: SETTINGS_NAV_ITEMS
     },
-    {
-        name: 'RiderTracker_Guardian',
+    isGuardian: {
         routes: GUARDIAN_ROUTES,
         navItems: GUARDIAN_NAV_ITEMS,
         settingsItems: SETTINGS_NAV_ITEMS
     },
-    {
-        name: 'RiderTracker_Unauthenticated',
+    isUnauthenticated: {
         routes: UNAUTH_ROUTES,
         navItems: UNAUTH_NAV_ITEMS,
         settingsItems: []
     }
-]
+}

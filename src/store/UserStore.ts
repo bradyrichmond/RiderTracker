@@ -5,6 +5,7 @@ import { signOut } from 'aws-amplify/auth'
 import { useOrgStore } from './OrgStore'
 import { CreateUserTypeInput, UserType } from '@/types/AmplifyTypes'
 import { useAddressStore } from './AddressStore'
+import { ROUTE_PROTECTION, RouteProtectionItem } from '@/constants/RouteProtection'
 
 export interface CreateCognitoUserInput {
     family_name: string
@@ -27,8 +28,9 @@ interface UserStore {
     currentUser?: UserType
     fullName?: string
     getUserById(id: string): Promise<UserType>
-    updateUsers(): Promise<void>
+    routePermissions?: RouteProtectionItem
     signOutAws(): Promise<void>
+    updateUsers(): Promise<void>
     updateUserData(): Promise<void>
     users: UserType[]
 }
@@ -137,6 +139,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
         throw 'Could not find user by id'
     },
+    routePermissions: ROUTE_PROTECTION.isUnauthenticated,
     signOutAws: async () => {
         await signOut()
         set({ currentUser: undefined })
@@ -162,9 +165,26 @@ export const useUserStore = create<UserStore>((set, get) => ({
             const { data: currentUser } = await client.models.User.get({ id: userId })
 
             if (currentUser) {
-                set({ currentUser, fullName: `${currentUser.firstName} ${currentUser.lastName}` })
+                const routePermissions = _generateRoutePermissions(currentUser)
+                set({ currentUser, fullName: `${currentUser.firstName} ${currentUser.lastName}`, routePermissions })
             }
         }
     },
     users: []
 }))
+
+const _generateRoutePermissions = (currentUser: UserType) => {
+    if (currentUser.isAdmin) {
+        return ROUTE_PROTECTION.isAdmin
+    }
+
+    if (currentUser.isDriver) {
+        return ROUTE_PROTECTION.isDriver
+    }
+
+    if (currentUser.isGuardian) {
+        return ROUTE_PROTECTION.isGuardian
+    }
+
+    return ROUTE_PROTECTION.isUnauthenticated
+}

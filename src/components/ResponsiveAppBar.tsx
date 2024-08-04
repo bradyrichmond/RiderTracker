@@ -13,12 +13,10 @@ import MenuItem from '@mui/material/MenuItem'
 import AdbIcon from '@mui/icons-material/Adb'
 import { ComponentType, MouseEvent, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { ROUTE_PROTECTION, SettingsItemType } from '../constants/RouteProtection'
+import { SettingsItemType } from '../constants/RouteProtection'
 import { useTheme } from '@mui/material'
 import { NavItemType } from './NavigationDrawer'
 import { useUserStore } from '@/store/UserStore'
-import { RIDER_TRACKER_ROLES } from '@/constants/Roles'
-
 
 interface MenuItemWithIconProps {
     Icon: ComponentType
@@ -41,14 +39,14 @@ export const MenuItemWithIcon = ({ Icon, label, color }: MenuItemWithIconProps) 
 
 const ResponsiveAppBar = () => {
     const theme = useTheme()
+    const routePermissions = useUserStore().routePermissions
 
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null)
     const navigate = useNavigate()
     const fullName = useUserStore().fullName
-    const routeProtection = ROUTE_PROTECTION.find((r) => r.name === RIDER_TRACKER_ROLES.RIDER_TRACKER_WIZARD)
-    const pages: NavItemType[] = routeProtection?.navItems ?? []
-    const settings: SettingsItemType[] = routeProtection?.settingsItems ?? []
+    const pages: NavItemType[] = routePermissions?.navItems ?? []
+    const settings: SettingsItemType[] = routePermissions?.settingsItems ?? []
 
     const handleOpenNavMenu = (event: MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget)
