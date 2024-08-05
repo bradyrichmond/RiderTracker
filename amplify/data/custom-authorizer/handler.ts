@@ -37,8 +37,15 @@ export const handler: AppSyncAuthorizerHandler<ResolverContext> = async (
   const trimmedAuthorizationToken = authorizationToken.split('#')[1]
 
   const { payload: unverifiedPayload } = decomposeUnverifiedJwt(trimmedAuthorizationToken)
-  const userPoolId = unverifiedPayload.iss
-  const clientId = unverifiedPayload.aud
+  const userPoolIdUrl = unverifiedPayload.iss
+
+  if (!userPoolIdUrl) {
+    throw 'Missing issuer from token'
+  }
+
+  const userPoolIdUrlSplit = userPoolIdUrl.split('/')
+  const userPoolId = userPoolIdUrlSplit.at(-1)
+  const clientId = unverifiedPayload.client_id?.toString()
 
   if (!userPoolId || !clientId) {
     throw 'missing verification data'
