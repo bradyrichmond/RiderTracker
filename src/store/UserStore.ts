@@ -6,6 +6,8 @@ import { useOrgStore } from './OrgStore'
 import { CreateUserTypeInput, UserType } from '@/types/AmplifyTypes'
 import { useAddressStore } from './AddressStore'
 import { ROUTE_PROTECTION, RouteProtectionItem } from '@/constants/RouteProtection'
+import { getUrl } from 'aws-amplify/storage'
+import { S3Paths } from '@/constants/S3Paths'
 
 export interface CreateCognitoUserInput {
     family_name: string
@@ -32,6 +34,7 @@ interface UserStore {
     signOutAws(): Promise<void>
     updateUsers(): Promise<void>
     updateUserData(): Promise<void>
+    userProfileImageUrl?: string
     users: UserType[]
 }
 
@@ -166,10 +169,22 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
             if (currentUser) {
                 const routePermissions = _generateRoutePermissions(currentUser)
-                set({ currentUser, fullName: `${currentUser.firstName} ${currentUser.lastName}`, routePermissions })
+                let userProfileImageUrl
+
+                try {
+                    const { url } = await getUrl({
+                        path: `${S3Paths.profilePictures}/${currentUser.id}/profile`
+                    })
+                    userProfileImageUrl = url.toString()
+                    set({ currentUser, fullName: `${currentUser.firstName} ${currentUser.lastName}`, routePermissions, userProfileImageUrl })
+                } catch (e) {
+                    console.log(JSON.stringify(e))
+                    set({ currentUser, fullName: `${currentUser.firstName} ${currentUser.lastName}`, routePermissions })
+                }
             }
         }
     },
+    userProfileImageUrl: undefined,
     users: []
 }))
 

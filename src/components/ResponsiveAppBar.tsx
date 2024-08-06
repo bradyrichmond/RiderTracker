@@ -40,6 +40,7 @@ export const MenuItemWithIcon = ({ Icon, label, color }: MenuItemWithIconProps) 
 const ResponsiveAppBar = () => {
     const theme = useTheme()
     const routePermissions = useUserStore().routePermissions
+    const userProfileImageUrl = useUserStore().userProfileImageUrl
 
     const [anchorElNav, setAnchorElNav] = useState<null | HTMLElement>(null)
     const [anchorElUser, setAnchorElUser] = useState<null | HTMLElement>(null)
@@ -162,7 +163,7 @@ const ResponsiveAppBar = () => {
                             <Box sx={{ flexGrow: 0 }}>
                                 <Tooltip title={'Open settings'}>
                                     <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                                        <Avatar alt={fullName} src={''} />
+                                        <Avatar alt={fullName} src={userProfileImageUrl} />
                                     </IconButton>
                                 </Tooltip>
                                 <Menu

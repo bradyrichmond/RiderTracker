@@ -55,7 +55,7 @@ export const handler: AppSyncAuthorizerHandler<ResolverContext> = async (
     userPoolId,
     tokenUse: 'access',
     clientId
-  });
+  })
 
   const payload = await verifier.verify(trimmedAuthorizationToken)
   const userGroups = payload['cognito:groups']
@@ -252,9 +252,10 @@ const generateGetUserAuth = (orgId: string, requestUserId: string, userIsAdmin: 
 
 const generateListUserByOrgIdAuth = (orgId: string, requestOrgId: string, userIsAdmin: boolean, userIsDriver: boolean, userId: string): AuthorizerResponse => {
   const response = {
-    isAuthorized: userId === requestOrgId || userIsAdmin || userIsDriver,
+    isAuthorized: orgId === requestOrgId && (userIsAdmin || userIsDriver),
     resolverContext: {
       operationName: 'ListUsersByOrgId',
+      userId,
       orgId
     }
   }
