@@ -5,7 +5,7 @@ export const storage = defineStorage({
     access: (allow) => ({
         'profile-pictures/*': [
             allow.groups(['ADMINS']).to(['read', 'write', 'delete']),
-            allow.entity('identity').to(['read', 'write', 'delete'])
+            allow.entity('identity').to(['read', 'write'])
         ]
     })
 })
