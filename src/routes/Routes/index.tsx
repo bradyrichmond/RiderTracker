@@ -59,34 +59,38 @@ const Routes = ({ activeRoute }: RoutesProps) => {
     }
 
     return (
-        <Grid container spacing={2}>
-            <RouteDrawer open={!!activeRoute} routeId={activeRoute ?? ''} />
-            <CreateRouteDialog createRoute={createRouteAction} cancelAction={toggleIsAddingRoute} isAddingRoute={isAddingRoute} />
-            <Grid xs={12} md={6}>
-                <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
-                    <Typography variant='h2'>
-                        {t('routes')}
-                    </Typography>
-                </Box>
-            </Grid>
-            {isAdmin ?
-                <Grid xs={12} md={6}>
-                    <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                            <Button variant='contained' onClick={toggleIsAddingRoute}>
-                                <Box display='flex' flexDirection='row'>
-                                    <AddCircleIcon />
-                                    <Box sx={{ flex: 1, ml: 2 }}>
-                                        <Typography>{t('addRoute')}</Typography>
-                                    </Box>
-                                </Box>
-                            </Button>
+        <Box sx={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
+            <Box>
+                <Grid container spacing={2} sx={{ height: '100%' }}>
+                    <RouteDrawer open={!!activeRoute} routeId={activeRoute ?? ''} />
+                    <CreateRouteDialog createRoute={createRouteAction} cancelAction={toggleIsAddingRoute} isAddingRoute={isAddingRoute} />
+                    <Grid xs={12} md={6}>
+                        <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center', mt: 2 }}>
+                            <Typography variant='h2'>
+                                {t('routes')}
+                            </Typography>
                         </Box>
-                    </Box>
+                    </Grid>
+                    {isAdmin ?
+                        <Grid xs={12} md={6}>
+                            <Box sx={{ height: '100%', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                    <Button variant='contained' onClick={toggleIsAddingRoute}>
+                                        <Box display='flex' flexDirection='row'>
+                                            <AddCircleIcon />
+                                            <Box sx={{ flex: 1, ml: 2 }}>
+                                                <Typography>{t('addRoute')}</Typography>
+                                            </Box>
+                                        </Box>
+                                    </Button>
+                                </Box>
+                            </Box>
+                        </Grid>
+                        :
+                        null
+                    }
                 </Grid>
-                :
-                null
-            }
+            </Box>
             <Grid xs>
                 <Box sx={{ height: '100%', width: '100%' }}>
                     {routes ?
@@ -107,7 +111,7 @@ const Routes = ({ activeRoute }: RoutesProps) => {
                     }
                 </Box>
             </Grid>
-        </Grid>
+        </Box>
     )
 }
 
